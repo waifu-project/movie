@@ -8,7 +8,7 @@
   <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
    <application
-        android:label="毛片"
+        android:label="YY播放器"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"

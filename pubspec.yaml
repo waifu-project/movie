@@ -30,8 +30,9 @@ dev_dependencies:
     git:
       url: https://github.com/d1y/flutter_launcher_name
 
+# flutter pub run flutter_launcher_name:main
 flutter_launcher_name:
-  name: "毛片"
+  name: "YY播放器"
 
 flutter: 
   uses-material-design: true

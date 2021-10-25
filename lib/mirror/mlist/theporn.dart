@@ -21,7 +21,7 @@ import 'theporn_models/theporn_av_json_data.dart';
 
 class ThePornMirror extends MovieImpl {
   Dio dio = Dio(BaseOptions(
-    baseUrl: 'https://api.theporn22.xyz',
+    baseUrl: 'https://api.theporn.xyz',
   ));
 
   @override

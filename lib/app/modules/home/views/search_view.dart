@@ -13,29 +13,31 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import 'package:equatable/equatable.dart';
+import 'package:flappy_search_bar_ns/flappy_search_bar_ns.dart';
+import 'package:flutter/material.dart';
 
-class Video extends Equatable {
-  final List<dynamic>? resolution;
+import 'package:get/get.dart';
 
-  const Video({this.resolution});
+// https://blog.smartnsoft.com/an-automatic-search-bar-in-flutter-flappy-search-bar-a470bc67fa1f
 
-  factory Video.fromJson(Map<String, dynamic> json) => Video(
-        resolution: json['resolution'] as List<dynamic>?,
-      );
-
-  Map<String, dynamic> toJson() => {
-        'resolution': resolution,
-      };
-
-  Video copyWith({
-    List<int>? resolution,
-  }) {
-    return Video(
-      resolution: resolution ?? this.resolution,
+class SearchView extends GetView {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: SafeArea(
+        child: SearchBar<dynamic>(
+          onItemFound: (item, int index) {
+            return Container(
+              child: Center(
+                child: Text("#future"),
+              ),
+            );
+          },
+          onSearch: (String? text) async {
+            return [];
+          },
+        ),
+      ),
     );
   }
-
-  @override
-  List<Object?> get props => [resolution];
 }

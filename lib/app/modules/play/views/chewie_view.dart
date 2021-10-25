@@ -1,0 +1,78 @@
+import 'package:chewie/chewie.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+
+import 'package:get/get.dart';
+import 'package:video_player/video_player.dart';
+
+class ChewieView extends StatefulWidget {
+  const ChewieView({Key? key}) : super(key: key);
+
+  @override
+  _ChewieViewState createState() => _ChewieViewState();
+}
+
+class _ChewieViewState extends State<ChewieView> {
+  late VideoPlayerController videoPlayerController;
+
+  late ChewieController chewieController;
+
+  @override
+  void initState() {
+    super.initState();
+    initializePlayer();
+  }
+
+  @override
+  void dispose() {
+    videoPlayerController.dispose();
+    chewieController.dispose();
+    super.dispose();
+  }
+
+  Map<String ,dynamic> get args {
+    return Get.arguments;
+  }
+
+  initializePlayer() async {
+    videoPlayerController = VideoPlayerController.network(
+      args['url'],
+    );
+    await videoPlayerController.initialize();
+    chewieController = ChewieController(
+      videoPlayerController: videoPlayerController,
+      autoPlay: true,
+      customControls: CupertinoControls(
+        backgroundColor: Colors.black38,
+        iconColor: Colors.white,
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        elevation: 0,
+      ),
+      body: Chewie(
+          controller: ChewieController(
+            videoPlayerController: videoPlayerController,
+            autoPlay: true,
+            customControls: CupertinoControls(
+              backgroundColor: Colors.black38,
+              iconColor: Colors.white,
+            ),
+            deviceOrientationsAfterFullScreen: [
+              DeviceOrientation.portraitUp,
+              DeviceOrientation.portraitDown
+            ],
+            placeholder: Center(
+              child: Image.network(args['cover']),
+            ),
+          ),
+        ),
+    );
+    ;
+  }
+}

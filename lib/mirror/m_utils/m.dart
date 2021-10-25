@@ -13,29 +13,31 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import 'package:equatable/equatable.dart';
+// https://github.com/cuiocean/ZY-Player-APP/blob/main/utils/request.js
 
-class Video extends Equatable {
-  final List<dynamic>? resolution;
+// import 'package:movie/impl/movie.dart';
+// import 'package:movie/mirror/mirror_serialize.dart';
 
-  const Video({this.resolution});
+// class KBaseMirrorMovie extends MovieImpl {
+//   @override
+//   getDetail(String movie_id) {
+//     // TODO: implement getDetail
+//     throw UnimplementedError();
+//   }
 
-  factory Video.fromJson(Map<String, dynamic> json) => Video(
-        resolution: json['resolution'] as List<dynamic>?,
-      );
+//   @override
+//   Future<List<MirrorCardSerialize>> getHome() {
+//     // TODO: implement getHome
+//     throw UnimplementedError();
+//   }
 
-  Map<String, dynamic> toJson() => {
-        'resolution': resolution,
-      };
+//   @override
+//   getSearch(String keyword) {
+//     // TODO: implement getSearch
+//     throw UnimplementedError();
+//   }
 
-  Video copyWith({
-    List<int>? resolution,
-  }) {
-    return Video(
-      resolution: resolution ?? this.resolution,
-    );
-  }
-
-  @override
-  List<Object?> get props => [resolution];
-}
+//   @override
+//   bool get isNsfw => false;
+  
+// }

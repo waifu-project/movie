@@ -1,3 +1,18 @@
+// Copyright (C) 2021 d1y <chenhonzhou@gmail.com>
+//
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Affero General Public License as
+// published by the Free Software Foundation, either version 3 of the
+// License, or (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Affero General Public License for more details.
+//
+// You should have received a copy of the GNU Affero General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 import 'package:dio/dio.dart';
 import 'package:movie/impl/movie.dart';
 
@@ -6,7 +21,7 @@ import 'theporn_models/theporn_av_json_data.dart';
 
 class ThePornMirror extends MovieImpl {
   Dio dio = Dio(BaseOptions(
-    baseUrl: 'https://api.theporn.xyz',
+    baseUrl: 'https://api.theporn22.xyz',
   ));
 
   @override
@@ -16,21 +31,48 @@ class ThePornMirror extends MovieImpl {
   }
 
   @override
-  Future<List<MirrorCardSerialize>> getHome({ page=0, limit=0 }) async {
-    var resp = await dio.get("/v1/video/list");
+  Future<List<MirrorOnceItemSerialize>> getHome({page = 1, limit = 10}) async {
+    var _page = page;
+    if (page >= 1) _page--;
+    var resp = await dio.get("/v1/video/list", queryParameters: {
+      "start": _page * limit,
+      "limit": limit,
+    });
     var theporn = ThepornAvJsonData.fromJson(resp.data);
     var avdatas = theporn.data?.avdatas ?? [];
     if (avdatas.isEmpty) return [];
     List<MirrorOnceItemSerialize> cards = avdatas.map((avdata) {
+      var desc = "";
+      if (avdata.actress != null) {
+        avdata.actress!.map((e) {
+          if (e is String) {
+            desc += ', $e';
+          }
+        }).toList();
+      }
+      if (avdata.categories != null) {
+        avdata.categories!.map((e) {
+          if (e is String) {
+            desc += ' | $e';
+          }
+        }).toList();
+      }
       return MirrorOnceItemSerialize(
         id: avdata.tid.toString(),
-        smallCoverImage: avdata.smallCoverImageUrl,
-        title: avdata.title,
-        videoType: MirrorSerializeVideoType.iframe,
-        videoUrl: avdata.embedIframeUrl,
+        smallCoverImage: avdata.smallCoverImageUrl ?? "",
+        bigCoverImage: avdata.bigCoverImageUrl ?? "",
+        title: avdata.title ?? "",
+        desc: desc,
+        videos: [
+          MirrorSerializeVideoInfo(
+            url: avdata.embedIframeUrl ?? "",
+            type: MirrorSerializeVideoType.iframe,
+            name: '官方源',
+          ),
+        ],
       );
     }).toList();
-    return [MirrorCardSerialize(cards: cards)];
+    return cards;
   }
 
   @override
@@ -41,4 +83,11 @@ class ThePornMirror extends MovieImpl {
 
   @override
   bool get isNsfw => true;
+
+  @override
+  MovieMetaData get meta => MovieMetaData(
+        name: "ThePorn",
+        logo: "https://theporn22.xyz/static/logo-tp.png",
+        desc: "免费成人高清在线视频,日本AV,国产AV,欧美AV",
+      );
 }

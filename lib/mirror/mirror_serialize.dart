@@ -1,3 +1,18 @@
+// Copyright (C) 2021 d1y <chenhonzhou@gmail.com>
+//
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Affero General Public License as
+// published by the Free Software Foundation, either version 3 of the
+// License, or (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Affero General Public License for more details.
+//
+// You should have received a copy of the GNU Affero General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 enum MirrorSerializeVideoType {
   iframe,
 
@@ -17,6 +32,7 @@ class MirrorSerializeVideoSize {
   final double duration;
 
   /// 视频大小
+  /// TODO 视频大小应该在 [MirrorSerializeVideoInfo] 中包含
   final double size;
 
   /// TODO
@@ -37,12 +53,29 @@ class MirrorSerializeVideoSize {
 
 const MirrorSerializeVideoSize kDefaultVideoSiz = MirrorSerializeVideoSize();
 
+class MirrorSerializeVideoInfo {
+  final String name;
+
+  final MirrorSerializeVideoType type;
+
+  final String url;
+
+  MirrorSerializeVideoInfo({
+    this.name = "未命名",
+    this.type = MirrorSerializeVideoType.iframe,
+    required this.url,
+  });
+}
+
 class MirrorOnceItemSerialize {
   /// id
-  final String? id;
+  final String id;
 
   /// 标题
-  final String? title;
+  final String title;
+
+  /// 介绍
+  final String desc;
 
   /// 喜欢
   final int likeCount;
@@ -54,16 +87,13 @@ class MirrorOnceItemSerialize {
   final int dislikeCount;
 
   /// 小封面图(必须要有)
-  final String? smallCoverImage;
+  final String smallCoverImage;
 
   /// 大封面图
   final String bigCoverImage;
 
-  /// 视频类型
-  final MirrorSerializeVideoType videoType;
-
-  /// 视频链接
-  final String? videoUrl;
+  /// 视频列表
+  final List<MirrorSerializeVideoInfo> videos;
 
   /// 视频信息
   /// 视频尺寸大小
@@ -73,24 +103,13 @@ class MirrorOnceItemSerialize {
   MirrorOnceItemSerialize({
     required this.id,
     required this.title,
+    this.desc = "",
     this.likeCount = 0,
     this.viewCount = 0,
     this.dislikeCount = 0,
     this.bigCoverImage = "",
     required this.smallCoverImage,
-    required this.videoType,
-    required this.videoUrl,
     this.videoInfo = kDefaultVideoSiz,
-  });
-}
-
-class MirrorCardSerialize {
-  List<MirrorOnceItemSerialize> cards;
-
-  String cardTitle;
-
-  MirrorCardSerialize({
-    this.cardTitle = "推荐",
-    required this.cards,
+    this.videos = const [],
   });
 }

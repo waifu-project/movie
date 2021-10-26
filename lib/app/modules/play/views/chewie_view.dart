@@ -34,6 +34,8 @@ class _ChewieViewState extends State<ChewieView> {
     return Get.arguments;
   }
 
+  /// NOTE:
+  ///   => 返回一个 `future`
   initializePlayer() async {
     videoPlayerController = VideoPlayerController.network(
       args['url'],

@@ -1,15 +1,15 @@
 // Copyright (C) 2021 d1y <chenhonzhou@gmail.com>
-// 
+//
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License as
 // published by the Free Software Foundation, either version 3 of the
 // License, or (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Affero General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
@@ -66,9 +66,16 @@ class ListX {
   late final String recordcount;
 
   ListX.fromJson(Map<String, dynamic> json) {
-    video = List.from(json['video']).map((e) {
-      return Video.fromJson(e);
-    }).toList();
+    var v = json['video'];
+    List<Video> rv = [];
+    if (v is Map) {
+      rv = [Video.fromJson(v.cast())];
+    } else {
+      rv = List.from(v).map((e) {
+        return Video.fromJson(e);
+      }).toList();
+    }
+    video = rv;
     page = json['@page'];
     pagecount = json['@pagecount'];
     pagesize = json['@pagesize'];

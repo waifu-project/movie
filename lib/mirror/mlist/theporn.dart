@@ -31,11 +31,12 @@ class ThePornMirror extends MovieImpl {
   }
 
   @override
-  Future<List<MirrorOnceItemSerialize>> getHome({page = 1, limit = 10}) async {
-    var _page = page;
-    if (page >= 1) _page--;
+  Future<List<MirrorOnceItemSerialize>> getHome({
+    page = 1,
+    limit = 10,
+  }) async {
     var resp = await dio.get("/v1/video/list", queryParameters: {
-      "start": _page * limit,
+      "start": page * limit,
       "limit": limit,
     });
     var theporn = ThepornAvJsonData.fromJson(resp.data);
@@ -76,9 +77,51 @@ class ThePornMirror extends MovieImpl {
   }
 
   @override
-  getSearch(String keyword) {
-    // TODO: implement getSearch
-    throw UnimplementedError();
+  Future<List<MirrorOnceItemSerialize>> getSearch({
+    required String keyword,
+    int page = 1,
+    int limit = 10,
+  }) async {
+    var resp = await dio.get("/v1/search", queryParameters: {
+      "keyword": keyword,
+      "start": page * limit,
+      "limit": limit,
+    });
+    var theporn = ThepornAvJsonData.fromJson(resp.data);
+    var avdatas = theporn.data?.avdatas ?? [];
+    if (avdatas.isEmpty) return [];
+    List<MirrorOnceItemSerialize> cards = avdatas.map((avdata) {
+      var desc = "";
+      if (avdata.actress != null) {
+        avdata.actress!.map((e) {
+          if (e is String) {
+            desc += ', $e';
+          }
+        }).toList();
+      }
+      if (avdata.categories != null) {
+        avdata.categories!.map((e) {
+          if (e is String) {
+            desc += ' | $e';
+          }
+        }).toList();
+      }
+      return MirrorOnceItemSerialize(
+        id: avdata.tid.toString(),
+        smallCoverImage: avdata.smallCoverImageUrl ?? "",
+        bigCoverImage: avdata.bigCoverImageUrl ?? "",
+        title: avdata.title ?? "",
+        desc: desc,
+        videos: [
+          MirrorSerializeVideoInfo(
+            url: avdata.embedIframeUrl ?? "",
+            type: MirrorSerializeVideoType.iframe,
+            name: '官方源',
+          ),
+        ],
+      );
+    }).toList();
+    return cards;
   }
 
   @override

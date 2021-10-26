@@ -221,6 +221,13 @@ packages:
       url: "https://mirrors.tuna.tsinghua.edu.cn/dart-pub/"
     source: hosted
     version: "4.3.8"
+  get_storage:
+    dependency: "direct main"
+    description:
+      name: get_storage
+      url: "https://mirrors.tuna.tsinghua.edu.cn/dart-pub/"
+    source: hosted
+    version: "2.0.3"
   html:
     dependency: "direct main"
     description:

@@ -1,19 +1,20 @@
 // Copyright (C) 2021 d1y <chenhonzhou@gmail.com>
-// 
+//
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License as
 // published by the Free Software Foundation, either version 3 of the
 // License, or (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Affero General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import 'dart:convert';
+import 'package:movie/mirror/mlist/base_models/xml_search_data.dart';
 import 'package:path/path.dart' as path;
 
 import 'package:dio/dio.dart';
@@ -22,9 +23,8 @@ import 'package:movie/mirror/mirror_serialize.dart';
 import 'package:movie/mirror/mlist/base_models/xml_data.dart';
 import 'package:xml2json/xml2json.dart';
 
+/// 该资源不支持 `limit` 参数
 class K88zyw extends MovieImpl {
-
-  
   // <dd flag="88zy">
   //   <![CDATA[https://v2.88zy.site/share/k2m2IGr4C53EFGWK]]>
   // </dd>
@@ -51,9 +51,40 @@ class K88zyw extends MovieImpl {
   ));
 
   @override
-  getDetail(String movie_id) {
-    // TODO: implement getDetail
-    throw UnimplementedError();
+  Future<MirrorOnceItemSerialize> getDetail(String movie_id) async {
+    var resp = await dio.post("/inc/api.php", queryParameters: {
+      "ac": "videolist",
+      "ids": movie_id,
+    });
+    var x2j = Xml2Json();
+    x2j.parse(resp.data);
+    var _json = x2j.toBadgerfish();
+    var _ = json.decode(_json);
+    KBaseMovieXmlData xml = KBaseMovieXmlData.fromJson(_);
+    var video = xml.rss.list.video;
+    var cards = video.map(
+      (e) {
+        var __dd = e.dl.dd;
+        List<MirrorSerializeVideoInfo> videos = __dd.map((item) {
+          return MirrorSerializeVideoInfo(
+            url: item.cData,
+            name: item.flag,
+            type: easyGetVideoType(item.cData),
+          );
+        }).toList();
+        return MirrorOnceItemSerialize(
+          id: e.id,
+          smallCoverImage: e.pic,
+          title: e.name,
+          videos: videos,
+          desc: e.des,
+        );
+      },
+    ).toList();
+    if (cards.isEmpty) {
+      throw UnimplementedError();
+    }
+    return cards[0];
   }
 
   @override
@@ -65,7 +96,7 @@ class K88zyw extends MovieImpl {
       "/inc/api.php",
       queryParameters: {
         "ac": "videolist",
-        "t": limit,
+        // "t": limit,
         "pg": page,
       },
     );
@@ -97,9 +128,35 @@ class K88zyw extends MovieImpl {
   }
 
   @override
-  getSearch(String keyword) {
-    // TODO: implement getSearch
-    throw UnimplementedError();
+  Future<List<MirrorOnceItemSerialize>> getSearch({
+    required String keyword,
+    int page = 1,
+    int limit = 10,
+  }) async {
+    var resp = await dio.post(
+      "/inc/api.php",
+      queryParameters: {
+        // "t": limit,
+        "pg": page,
+        "wd": keyword,
+      },
+    );
+    var x2j = Xml2Json();
+    x2j.parse(resp.data);
+    var _json = x2j.toBadgerfish();
+    KBaseMovieSearchXmlData searchData = kBaseMovieSearchXmlDataFromJson(_json);
+    var defaultCoverImage = meta.logo;
+    List<MirrorOnceItemSerialize> result = searchData.rss?.list?.video!
+            .map(
+              (e) => MirrorOnceItemSerialize(
+                id: e.id ?? "",
+                smallCoverImage: defaultCoverImage,
+                title: e.name?.cdata ?? "",
+              ),
+            )
+            .toList() ??
+        [];
+    return result;
   }
 
   @override

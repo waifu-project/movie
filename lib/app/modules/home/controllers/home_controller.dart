@@ -18,6 +18,7 @@ import 'package:cupertino_list_tile/cupertino_list_tile.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:movie/impl/movie.dart';
 import 'package:movie/mirror/mirror.dart';
@@ -27,8 +28,15 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 class HomeController extends GetxController {
   var currentBarIndex = 0;
 
-  // 源
-  int mirrorIndex = 0;
+  final localStorage = GetStorage();
+
+  int get mirrorIndex {
+    return localStorage.read("mirrorIndex") ?? 0;
+  }
+
+  set mirrorIndex(int newVal) {
+    localStorage.write("mirrorIndex", newVal);
+  }
 
   set _mirrorIndex(int newVal) {
     mirrorIndex = newVal;
@@ -125,7 +133,12 @@ class HomeController extends GetxController {
     updateHomeData(isFirst: true);
   }
 
-  /// [isFirst] 初始化加载数据需要将 isLoading => true
+  updateSearchData(String keyword) async {
+    var resp = await currentMirrorItem.getSearch(keyword: keyword);
+    return resp;
+  }
+
+  /// [isFirst] 初始化加载数据需要将 [isLoading] => true
   updateHomeData({bool isFirst = false}) async {
     if (isFirst) {
       isLoading = true;

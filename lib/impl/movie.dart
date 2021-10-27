@@ -64,6 +64,5 @@ abstract class MovieImpl {
   });
 
   /// 获取视频详情
-  /// TODO
-  getDetail(String movie_id);
+  Future<MirrorOnceItemSerialize> getDetail(String movie_id);
 }

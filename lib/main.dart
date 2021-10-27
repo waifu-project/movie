@@ -32,7 +32,7 @@ void main() async {
       getPages: AppPages.routes,
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        brightness: localStorage.read(ConstDart.ls_isDark) ? Brightness.dark : Brightness.light,
+        brightness: (localStorage.read(ConstDart.ls_isDark) ?? false) ? Brightness.dark : Brightness.light,
       ),
     ),
   );

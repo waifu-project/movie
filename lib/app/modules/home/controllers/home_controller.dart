@@ -31,6 +31,18 @@ class HomeController extends GetxController {
 
   final localStorage = GetStorage();
 
+  bool _isNsfw = false;
+
+  bool get isNsfw {
+    return _isNsfw;
+  }
+
+  set isNsfw(newVal) {
+    _isNsfw = newVal;
+    update();
+    localStorage.write(ConstDart.is_nsfw, newVal);
+  }
+
   int get mirrorIndex {
     return localStorage.read(ConstDart.ls_mirrorIndex) ?? 0;
   }
@@ -48,7 +60,12 @@ class HomeController extends GetxController {
   }
 
   MovieImpl get currentMirrorItem {
-    return MirrorList[mirrorIndex];
+    return mirrorList[mirrorIndex];
+  }
+
+  List<MovieImpl> get mirrorList {
+    if (isNsfw) return MirrorList;
+    return MirrorList.where((e)=> !e.isNsfw).toList();
   }
 
   int page = 1;
@@ -80,7 +97,7 @@ class HomeController extends GetxController {
         ),
         child: SafeArea(
           child: Column(
-            children: MirrorList.map(
+            children: mirrorList.map(
               (e) => CupertinoListTile(
                 onTap: () {
                   var index = MirrorList.indexOf(e);
@@ -90,10 +107,17 @@ class HomeController extends GetxController {
                 title: Text(
                   e.meta.name,
                   style: TextStyle(
-                    color: e.isNsfw ? Colors.red : (Get.isDarkMode ? Colors.white : Colors.black),
+                    color: e.isNsfw
+                        ? Colors.red
+                        : (Get.isDarkMode ? Colors.white : Colors.black),
                   ),
                 ),
-                subtitle: Text(e.meta.desc, style: TextStyle(color: Get.isDarkMode ? Colors.white : Colors.black,),),
+                subtitle: Text(
+                  e.meta.desc,
+                  style: TextStyle(
+                    color: Get.isDarkMode ? Colors.white : Colors.black,
+                  ),
+                ),
                 leading: e.meta.logo.isEmpty
                     ? Icon(
                         CupertinoIcons.arrowshape_turn_up_right_circle_fill,
@@ -131,7 +155,13 @@ class HomeController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    updateNsfwSetting();
     updateHomeData(isFirst: true);
+  }
+
+  updateNsfwSetting() {
+    _isNsfw = localStorage.read(ConstDart.is_nsfw) ?? false;
+    update();
   }
 
   updateSearchData(String keyword) async {

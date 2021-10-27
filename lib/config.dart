@@ -15,9 +15,11 @@
 
 /// 映射常量表
 class ConstDart {
-
   /// 镜像索引
   static final String ls_mirrorIndex = "mirrorIndex";
+
+  /// nsfw
+  static final String is_nsfw = "isNsfw";
 
   /// 是否为暗色模式
   static final String ls_isDark = "isDark";

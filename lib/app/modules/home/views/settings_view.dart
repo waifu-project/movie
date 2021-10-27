@@ -21,10 +21,6 @@ import 'package:get/get.dart';
 import 'package:movie/app/modules/home/controllers/home_controller.dart';
 import 'package:movie/config.dart';
 
-CSWidgetStyle brightnessStyle = const CSWidgetStyle(
-  icon: const Icon(Icons.brightness_medium, color: Colors.black54),
-);
-
 // https://pub.flutter-io.cn/packages/flutter_cupertino_settings
 
 class SettingsView extends StatefulWidget {
@@ -59,9 +55,26 @@ class _SettingsViewState extends State<SettingsView> {
     super.initState();
   }
 
+  bool get showNSFW {
+    return nShowNSFW >= 10;
+  }
+
+  set showNSFW(newVal) {
+    setState(() {
+      nShowNSFW = !newVal ? 0 : 10;
+    });
+  }
+
+  int nShowNSFW = 0;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text("设置"),
+        centerTitle: true,
+        elevation: 0,
+      ),
       body: CupertinoSettings(items: <Widget>[
         const CSHeader('常规设置'),
         CSControl(
@@ -72,18 +85,38 @@ class _SettingsViewState extends State<SettingsView> {
               isDark = value;
             },
           ),
-          style: brightnessStyle,
-        ),
-        CSControl(
-          nameWidget: Text('NSFW'),
-          contentWidget: CupertinoSwitch(
-            value: false,
-            onChanged: (bool value) {},
+          style: const CSWidgetStyle(
+            icon: const Icon(Icons.settings_brightness, color: Colors.black54),
           ),
-          style: brightnessStyle,
         ),
-        CSDescription(
-          "@陈大大哦了",
+        showNSFW
+            ? CSControl(
+                nameWidget: Text('NSFW'),
+                contentWidget: CupertinoSwitch(
+                  value: home.isNsfw,
+                  onChanged: (bool value) {
+                    home.isNsfw = value;
+                  },
+                ),
+                style: const CSWidgetStyle(
+                  icon: const Icon(Icons.stop_screen_share,
+                      color: Colors.black54),
+                ),
+              )
+            : SizedBox.shrink(),
+        GestureDetector(
+          onTap: () {
+            if (showNSFW) {
+              showNSFW = false;
+            } else {
+              setState(() {
+                nShowNSFW++;
+              });
+            }
+          },
+          child: CSDescription(
+            "@陈大大哦了",
+          ),
         ),
       ]),
     );

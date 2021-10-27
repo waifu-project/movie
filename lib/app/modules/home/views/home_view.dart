@@ -28,6 +28,8 @@ import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 import '../controllers/home_controller.dart';
 
 class HomeView extends GetView<HomeController> {
+
+  bool get isDark => Get.isDarkMode;
   
   @override
   Widget build(BuildContext context) {
@@ -49,12 +51,12 @@ class HomeView extends GetView<HomeController> {
         ),
         bottomNavigationBar: BottomAppBar(
           elevation: 0,
-          color: Color.fromRGBO(255, 255, 255, .63),
+          color: isDark ? Color.fromRGBO(0, 0, 0, .63) : Color.fromRGBO(255, 255, 255, .63),
           child: SizedBox(
             height: kBarHeight,
             child: ClipRect(
               child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                filter: ImageFilter.blur(sigmaX: 40, sigmaY: 40),
                 child: SalomonBottomBar(
                   itemPadding: EdgeInsets.symmetric(
                     vertical: 9,
@@ -68,6 +70,7 @@ class HomeView extends GetView<HomeController> {
                     SalomonBottomBarItem(
                       icon: Icon(CupertinoIcons.home),
                       title: Text("首页"),
+                      selectedColor: Colors.blue,
                     ),
                     SalomonBottomBarItem(
                       icon: Icon(CupertinoIcons.search),

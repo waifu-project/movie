@@ -14,14 +14,6 @@ class WebviewView extends GetView {
       builder: (play) => Scaffold(
         appBar: AppBar(
           elevation: 0,
-          backgroundColor: Colors.blue,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(
-              Radius.circular(
-                6,
-              ),
-            ),
-          ),
         ),
         body: WebView(
           initialUrl: Get.arguments,

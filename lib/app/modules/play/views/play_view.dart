@@ -27,15 +27,9 @@ class PlayView extends GetView<PlayController> {
   @override
   Widget build(BuildContext context) {
     return GetBuilder<PlayController>(
-      builder: (play) => CupertinoPageScaffold(
-        navigationBar: CupertinoNavigationBar(
-          leading: CupertinoNavigationBarBackButton(),
-          trailing: CupertinoButton(
-            onPressed: () {},
-            child: Icon(CupertinoIcons.share),
-          ),
-        ),
-        child: SafeArea(
+      builder: (play) => Scaffold(
+        appBar: AppBar(),
+        body: SafeArea(
           child: SingleChildScrollView(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -83,7 +77,6 @@ class PlayView extends GetView<PlayController> {
                     play.movieItem.desc,
                     style: TextStyle(
                       fontSize: 12,
-                      color: Colors.black45,
                     ),
                   ),
                 ),
@@ -95,7 +88,6 @@ class PlayView extends GetView<PlayController> {
                   child: Text(
                     "播放列表",
                     style: TextStyle(
-                      color: Colors.black,
                       fontSize: 18,
                     ),
                   ),
@@ -105,20 +97,18 @@ class PlayView extends GetView<PlayController> {
                     ...play.movieItem.videos
                         .map(
                           (e) => Container(
-                            width: Get.width / 3, // 播放三等分
+                            width: Get.width / 3,
                             child: CupertinoButton(
                               child: Text(
                                 e.name,
                               ),
                               onPressed: () {
-                                // TODO
                                 if (e.type == MirrorSerializeVideoType.iframe) {
                                   Get.to(
                                     () => WebviewView(),
                                     arguments: e.url,
                                   );
-                                } else if (e.type ==
-                                    MirrorSerializeVideoType.m3u8) {
+                                } else if (e.type == MirrorSerializeVideoType.m3u8) {
                                   Get.to(
                                     () => ChewieView(),
                                     arguments: {

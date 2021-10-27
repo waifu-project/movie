@@ -30,6 +30,9 @@ class SearchView extends GetView {
     return Scaffold(
       body: SafeArea(
         child: SearchBar<MirrorOnceItemSerialize>(
+          textStyle: TextStyle(
+            color: Get.isDarkMode ? Colors.white : Colors.black,
+          ),
           onItemFound: (item, int index) {
             return GestureDetector(
               onTap: () async {
@@ -54,7 +57,7 @@ class SearchView extends GetView {
                   border: Border(
                     bottom: BorderSide(
                       width: 1.2,
-                      color: Colors.black12,
+                      color: Theme.of(context).primaryColor,
                     ),
                   ),
                 ),

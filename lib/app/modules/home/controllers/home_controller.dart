@@ -20,6 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:movie/config.dart';
 import 'package:movie/impl/movie.dart';
 import 'package:movie/mirror/mirror.dart';
 import 'package:movie/mirror/mirror_serialize.dart';
@@ -31,11 +32,11 @@ class HomeController extends GetxController {
   final localStorage = GetStorage();
 
   int get mirrorIndex {
-    return localStorage.read("mirrorIndex") ?? 0;
+    return localStorage.read(ConstDart.ls_mirrorIndex) ?? 0;
   }
 
   set mirrorIndex(int newVal) {
-    localStorage.write("mirrorIndex", newVal);
+    localStorage.write(ConstDart.ls_mirrorIndex, newVal);
   }
 
   set _mirrorIndex(int newVal) {
@@ -89,10 +90,10 @@ class HomeController extends GetxController {
                 title: Text(
                   e.meta.name,
                   style: TextStyle(
-                    color: e.isNsfw ? Colors.red : Colors.black,
+                    color: e.isNsfw ? Colors.red : (Get.isDarkMode ? Colors.white : Colors.black),
                   ),
                 ),
-                subtitle: Text(e.meta.desc),
+                subtitle: Text(e.meta.desc, style: TextStyle(color: Get.isDarkMode ? Colors.white : Colors.black,),),
                 leading: e.meta.logo.isEmpty
                     ? Icon(
                         CupertinoIcons.arrowshape_turn_up_right_circle_fill,

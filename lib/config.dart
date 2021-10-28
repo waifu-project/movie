@@ -23,4 +23,10 @@ class ConstDart {
 
   /// 是否为暗色模式
   static final String ls_isDark = "isDark";
+
+  /// 是否为开发模式
+  /// TODDO
+  static bool get isDev {
+    return false;
+  }
 }

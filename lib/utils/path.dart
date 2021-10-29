@@ -13,17 +13,28 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import 'package:cookie_jar/cookie_jar.dart';
-import 'package:dio/dio.dart';
-import 'package:dio_cookie_manager/dio_cookie_manager.dart';
+import 'dart:io';
+import 'package:path_provider/path_provider.dart';
 
-Dio createDio() {
-  var dio = Dio();
-  var cookieJar = CookieJar();
-  dio.interceptors
-    ..add(LogInterceptor())
-    ..add(CookieManager(cookieJar));
-  return dio;
+///文件路径工具类
+class PathUtils {
+  PathUtils._internal();
+
+  ///获取缓存目录路径
+  static Future<String> getCacheDirPath() async {
+    Directory directory = await getTemporaryDirectory();
+    return directory.path;
+  }
+
+  ///获取文件缓存目录路径
+  static Future<String> getFilesDirPath() async {
+    Directory directory = await getApplicationSupportDirectory();
+    return directory.path;
+  }
+
+  ///获取文档存储目录路径
+  static Future<String> getDocumentsDirPath() async {
+    Directory directory = await getApplicationDocumentsDirectory();
+    return directory.path;
+  }
 }
-
-var dio = createDio();

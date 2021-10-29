@@ -25,6 +25,7 @@ dependencies:
   chewie: ^1.2.2
   video_player: ^2.2.5
   get_storage: ^2.0.3
+  path_provider: ^2.0.6
   
   flutter: 
     sdk: flutter

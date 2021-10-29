@@ -15,6 +15,7 @@
 
 import 'dart:convert';
 import 'package:movie/mirror/mlist/base_models/xml_search_data.dart';
+import 'package:movie/utils/http.dart';
 import 'package:path/path.dart' as path;
 
 import 'package:dio/dio.dart';
@@ -45,17 +46,24 @@ class K88zyw extends MovieImpl {
     }
   }
 
-  Dio dio = Dio(BaseOptions(
-    baseUrl: 'http://www.88zyw.net',
+  createUrl({suffix = "/inc/api.php"}) {
+    return "http://www.88zyw.net" + suffix;
+  }
+
+  Options ops = Options(
     responseType: ResponseType.plain,
-  ));
+  );
 
   @override
   Future<MirrorOnceItemSerialize> getDetail(String movie_id) async {
-    var resp = await dio.post("/inc/api.php", queryParameters: {
-      "ac": "videolist",
-      "ids": movie_id,
-    });
+    var resp = await XHttp.dio.post(
+      createUrl(),
+      queryParameters: {
+        "ac": "videolist",
+        "ids": movie_id,
+      },
+      options: ops,
+    );
     var x2j = Xml2Json();
     x2j.parse(resp.data);
     var _json = x2j.toBadgerfish();
@@ -92,13 +100,14 @@ class K88zyw extends MovieImpl {
     int page = 1,
     int limit = 10,
   }) async {
-    var resp = await dio.get(
-      "/inc/api.php",
+    var resp = await XHttp.dio.get(
+      createUrl(),
       queryParameters: {
         "ac": "videolist",
         // "t": limit,
         "pg": page,
       },
+      options: ops,
     );
     var x2j = Xml2Json();
     x2j.parse(resp.data);
@@ -133,13 +142,14 @@ class K88zyw extends MovieImpl {
     int page = 1,
     int limit = 10,
   }) async {
-    var resp = await dio.post(
-      "/inc/api.php",
+    var resp = await XHttp.dio.post(
+      createUrl(),
       queryParameters: {
         // "t": limit,
         "pg": page,
         "wd": keyword,
       },
+      options: ops,
     );
     var x2j = Xml2Json();
     x2j.parse(resp.data);

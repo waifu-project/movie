@@ -15,9 +15,11 @@
 
 import 'package:movie/impl/movie.dart';
 import 'package:movie/mirror/mlist/k_88zyw.dart';
+import 'package:movie/mirror/mlist/nfmovie.dart';
 import 'package:movie/mirror/mlist/theporn.dart';
 
 List<MovieImpl> MirrorList = [
+  NfmovieMirror(),
   K88zyw(),
   ThePornMirror(),
 ];

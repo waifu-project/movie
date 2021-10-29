@@ -13,20 +13,19 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import 'package:dio/dio.dart';
 import 'package:movie/impl/movie.dart';
+import 'package:movie/utils/http.dart';
 
 import '../mirror_serialize.dart';
 import 'theporn_models/theporn_av_json_data.dart';
 
 class ThePornMirror extends MovieImpl {
-  Dio dio = Dio(BaseOptions(
-    baseUrl: 'https://api.theporn.xyz',
-  ));
+  createURL({suffix = "/v1/video/list"}) {
+    return 'https://api.theporn.xyz' + suffix;
+  }
 
   @override
   getDetail(String movie_id) {
-    // TODO: implement getDetail
     throw UnimplementedError();
   }
 
@@ -35,10 +34,13 @@ class ThePornMirror extends MovieImpl {
     page = 1,
     limit = 10,
   }) async {
-    var resp = await dio.get("/v1/video/list", queryParameters: {
-      "start": page * limit,
-      "limit": limit,
-    });
+    var resp = await XHttp.dio.get(
+      createURL(),
+      queryParameters: {
+        "start": page * limit,
+        "limit": limit,
+      },
+    );
     var theporn = ThepornAvJsonData.fromJson(resp.data);
     var avdatas = theporn.data?.avdatas ?? [];
     if (avdatas.isEmpty) return [];
@@ -82,11 +84,16 @@ class ThePornMirror extends MovieImpl {
     int page = 1,
     int limit = 10,
   }) async {
-    var resp = await dio.get("/v1/search", queryParameters: {
-      "keyword": keyword,
-      "start": page * limit,
-      "limit": limit,
-    });
+    var resp = await XHttp.dio.get(
+      createURL(
+        suffix: "/v1/search",
+      ),
+      queryParameters: {
+        "keyword": keyword,
+        "start": page * limit,
+        "limit": limit,
+      },
+    );
     var theporn = ThepornAvJsonData.fromJson(resp.data);
     var avdatas = theporn.data?.avdatas ?? [];
     if (avdatas.isEmpty) return [];

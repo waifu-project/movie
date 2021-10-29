@@ -20,9 +20,11 @@ import 'package:get_storage/get_storage.dart';
 import 'package:movie/config.dart';
 
 import 'app/routes/app_pages.dart';
+import 'utils/http.dart';
 
 void main() async {
-  
+  WidgetsFlutterBinding.ensureInitialized();
+  await XHttp.init();
   await GetStorage.init();
   final localStorage = GetStorage();
   runApp(
@@ -32,7 +34,9 @@ void main() async {
       getPages: AppPages.routes,
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        brightness: (localStorage.read(ConstDart.ls_isDark) ?? false) ? Brightness.dark : Brightness.light,
+        brightness: (localStorage.read(ConstDart.ls_isDark) ?? false)
+            ? Brightness.dark
+            : Brightness.light,
       ),
     ),
   );

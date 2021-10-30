@@ -107,10 +107,15 @@ class IndexHomeView extends GetView {
                               (subItem) => MovieCardItem(
                                 imageUrl: subItem.smallCoverImage,
                                 title: subItem.title,
-                                onTap: () {
+                                onTap: () async {
+                                  var data = subItem;
+                                  if (subItem.videos.isEmpty) {
+                                    var id = subItem.id;
+                                    data = await homeview.currentMirrorItem.getDetail(id);
+                                  }
                                   Get.toNamed(
                                     Routes.PLAY,
-                                    arguments: subItem,
+                                    arguments: data,
                                   );
                                 },
                               ),

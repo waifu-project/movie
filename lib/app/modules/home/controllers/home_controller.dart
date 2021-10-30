@@ -96,7 +96,8 @@ class HomeController extends GetxController {
           middle: Text('视频源'),
         ),
         child: SafeArea(
-          child: Column(
+          child: SingleChildScrollView(
+            child: Column(
             children: mirrorList.map(
               (e) => CupertinoListTile(
                 onTap: () {
@@ -139,6 +140,7 @@ class HomeController extends GetxController {
                       ),
               ),
             ).toList(),
+          ),
           ),
         ),
       ),

@@ -45,15 +45,15 @@ class XHttp {
     dio.interceptors.add(
       InterceptorsWrapper(
         onRequest: (RequestOptions options, handler) {
-          print("请求之前");
+          // print("请求之前");
           return handler.next(options);
         },
         onResponse: (Response response, handler) {
-          print("响应之前");
+          // print("响应之前");
           return handler.next(response);
         },
         onError: (DioError e, handler) {
-          print("错误之前");
+          // print("错误之前");
           handleError(e);
           return handler.next(e);
         },

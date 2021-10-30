@@ -13,7 +13,10 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import 'dart:io';
+
 import 'package:cookie_jar/cookie_jar.dart';
+import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import 'package:movie/utils/path.dart';
@@ -56,6 +59,28 @@ class XHttp {
         },
       ),
     );
+
+    // 证书啥的, 都是访问的盗版资源, 无所谓
+    // @陈大大哦了 <2021/10/30>
+    //   ______          _    
+    //  |  ____|        | |   
+    //  | |__ _   _  ___| | __
+    //  |  __| | | |/ __| |/ /
+    //  | |  | |_| | (__|   < 
+    //  |_|   \__,_|\___|_|\_\
+    //
+    (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate = (
+      HttpClient client,
+    ) {
+      client.badCertificateCallback = (
+        X509Certificate cert,
+        String host,
+        int port,
+      ) =>
+          true;
+      return client;
+    };
+
   }
 
   /// error统一处理

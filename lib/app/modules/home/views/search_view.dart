@@ -38,10 +38,8 @@ class SearchView extends GetView {
               onTap: () async {
                 var data = item;
                 if (item!.videos.isEmpty) {
-                  String? id = item.id;
-                  if (id != null) {
-                    data = await home.currentMirrorItem.getDetail(id);
-                  }
+                  String id = item.id;
+                  data = await home.currentMirrorItem.getDetail(id);
                 }
                 Get.toNamed(
                   Routes.PLAY,

@@ -53,11 +53,16 @@ class Rss {
   Class? rssClass;
   String? version;
 
-  factory Rss.fromJson(Map<String, dynamic> json) => Rss(
-        list: ListClass.fromJson(json["list"]),
-        rssClass: Class.fromJson(json["class"]),
-        version: json["_version"],
-      );
+  factory Rss.fromJson(Map<String, dynamic> json) {
+    var _class = json['class'];
+    return Rss(
+      list: ListClass.fromJson(json["list"]),
+      rssClass: Class.fromJson(_class ?? {
+        "ty": [],
+      }),
+      version: json["_version"],
+    );
+  }
 
   Map<String, dynamic> toJson() => {
         "list": list?.toJson(),
@@ -81,13 +86,25 @@ class ListClass {
   String? pagesize;
   String? recordcount;
 
-  factory ListClass.fromJson(Map<String, dynamic> json) => ListClass(
-        video: List<Video>.from(json["video"].map((x) => Video.fromJson(x))),
-        page: json["_page"],
-        pagecount: json["_pagecount"],
-        pagesize: json["_pagesize"],
-        recordcount: json["_recordcount"],
-      );
+  factory ListClass.fromJson(Map<String, dynamic> json) {
+    var video = json["video"];
+    List<Video> data = [];
+    if (video is Map) {
+      data.add(Video.fromJson(video.cast()));
+    } else {
+      if (video != null && video is List) {
+        var cacheVideo = List<Video>.from(video.map((x) => Video.fromJson(x)));
+        data.addAll(cacheVideo);
+      }
+    }
+    return ListClass(
+      video: data,
+      page: json["_page"],
+      pagecount: json["_pagecount"],
+      pagesize: json["_pagesize"],
+      recordcount: json["_recordcount"],
+    );
+  }
 
   Map<String, dynamic> toJson() => {
         "video": List<dynamic>.from(video!.map((x) => x.toJson())),
@@ -99,8 +116,10 @@ class ListClass {
 }
 
 /// NOTE:
-  ///   => 该库默认行为会生成一个Map,
-  dynamic autoFix2String(dynamic raw, String rawKey) {
+///   => 该库默认行为会生成一个Map,
+dynamic autoFix2String(dynamic raw, String rawKey) {
+  try {
+    if (raw == null) return "";
     if (raw is Map) {
       var r = raw[rawKey]['\$'];
       if (r == null) {
@@ -111,7 +130,10 @@ class ListClass {
       return r;
     }
     return raw[rawKey];
+  } catch (e) {
+    return "";
   }
+}
 
 class Video {
   Video({
@@ -194,10 +216,20 @@ class Ty {
   String? id;
   String? text;
 
-  factory Ty.fromJson(Map<String, dynamic> json) => Ty(
-        id: json["_id"],
-        text: json["__text"],
-      );
+  factory Ty.fromJson(Map<String, dynamic> json) {
+    var id = json["_id"];
+    if (id == null) {
+      id = json["@id"];
+    }
+    var text = json["__text"];
+    if (text == null) {
+      text = json["\$"];
+    }
+    return Ty(
+      id: id,
+      text: text,
+    );
+  }
 
   Map<String, dynamic> toJson() => {
         "_id": id,

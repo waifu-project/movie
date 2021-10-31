@@ -21,10 +21,21 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:movie/app/modules/home/controllers/home_controller.dart';
 import 'package:movie/app/routes/app_pages.dart';
+import 'package:movie/app/widget/k_tag.dart';
 import 'package:movie/mirror/mirror_serialize.dart';
 
-class SearchView extends GetView {
+class SearchView extends StatefulWidget {
+  const SearchView({Key? key}) : super(key: key);
+
+  @override
+  _SearchViewState createState() => _SearchViewState();
+}
+
+class _SearchViewState extends State<SearchView> {
   final HomeController home = Get.find<HomeController>();
+
+  final SearchBarController _searchBarController =
+      SearchBarController<MirrorOnceItemSerialize>();
 
   @override
   Widget build(BuildContext context) {
@@ -34,6 +45,7 @@ class SearchView extends GetView {
           textStyle: TextStyle(
             color: Get.isDarkMode ? Colors.white : Colors.black,
           ),
+          searchBarController: _searchBarController,
           onItemFound: (item, int index) {
             return GestureDetector(
               onTap: () async {
@@ -112,10 +124,7 @@ class SearchView extends GetView {
           debounceDuration: Duration(
             seconds: 2,
           ),
-          onSearch: (String? text) async {
-            if (text == null) return [];
-            return await home.updateSearchData(text);
-          },
+          onSearch: handleSearch,
           emptyWidget: Center(
             child: Text("搜索内容为空"),
           ),
@@ -129,8 +138,108 @@ class SearchView extends GetView {
             horizontal: 12,
             vertical: 0,
           ),
+          placeHolder: Padding(
+            padding: EdgeInsets.symmetric(
+              horizontal: 12,
+              vertical: 1,
+            ),
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Stack(
+                        children: [
+                          Positioned(
+                            left: 12,
+                            bottom: -6,
+                            child: Container(
+                              width: 120,
+                              height: 12,
+                              color: Colors.red,
+                            ),
+                          ),
+                          Text(
+                            "搜索历史",
+                            style: Theme.of(context).textTheme.headline6,
+                          ),
+                        ],
+                      ),
+                      IconButton(
+                        tooltip: "删除所有历史记录",
+                        padding: EdgeInsets.symmetric(
+                          vertical: 3,
+                          horizontal: 2,
+                        ),
+                        onPressed: () {
+                          home.handleUpdateSearchHistory(
+                            "",
+                            type: UpdateSearchHistoryType.clean,
+                          );
+                        },
+                        icon: Icon(CupertinoIcons.clear),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 12,
+                  ),
+                  home.searchHistory.isEmpty
+                      ? Text(
+                          "暂无历史记录",
+                          style: Theme.of(context).textTheme.subtitle2,
+                        )
+                      : Wrap(
+                          children: home.searchHistory
+                              .map(
+                                (e) => KTag(
+                                  child: Text(e),
+                                  backgroundColor: Theme.of(context).brightness == Brightness.dark ? Colors.black26 : Colors.black12,
+                                  onTap: (type) {
+                                    switch (type) {
+                                      case KTagTapEventType.content: // 内容
+                                        home.handleUpdateSearchHistory(
+                                          e,
+                                          type: UpdateSearchHistoryType.add,
+                                        );
+                                        _searchBarController.injectSearch(
+                                          e,
+                                          handleSearch,
+                                        );
+                                        break;
+                                      case KTagTapEventType.action: // action
+                                        home.handleUpdateSearchHistory(
+                                          e,
+                                          type: UpdateSearchHistoryType.remove,
+                                        );
+                                        break;
+                                      default:
+                                    }
+                                  },
+                                ),
+                              )
+                              .toList(),
+                        )
+                ],
+              ),
+            ),
+          ),
         ),
       ),
     );
+  }
+
+  Future<List<MirrorOnceItemSerialize>> handleSearch(String? text) async {
+    if (text == null) return [];
+    home.handleUpdateSearchHistory(
+      text,
+      type: UpdateSearchHistoryType.add,
+    );
+    var data = await home.updateSearchData(text);
+    return data;
   }
 }

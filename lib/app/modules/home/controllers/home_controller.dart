@@ -26,6 +26,18 @@ import 'package:movie/mirror/mirror.dart';
 import 'package:movie/mirror/mirror_serialize.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
+/// 历史记录处理类型
+enum UpdateSearchHistoryType {
+  /// 添加
+  add,
+
+  /// 删除
+  remove,
+
+  /// 清除所有
+  clean
+}
+
 class HomeController extends GetxController {
   var currentBarIndex = 0;
 
@@ -41,6 +53,41 @@ class HomeController extends GetxController {
     _isNsfw = newVal;
     update();
     localStorage.write(ConstDart.is_nsfw, newVal);
+  }
+
+  List<String> _searchHistory = [];
+
+  List<String> get searchHistory {
+    return _searchHistory;
+  }
+
+  set searchHistory(List<String> newSearchHistory) {
+    _searchHistory = newSearchHistory;
+    update();
+    localStorage.write(ConstDart.search_history, newSearchHistory);
+  }
+
+  /// 操作历史记录
+  handleUpdateSearchHistory(
+    String text, {
+    type = UpdateSearchHistoryType.add,
+  }) {
+    switch (type) {
+      case UpdateSearchHistoryType.add: // 添加
+        _searchHistory.remove(text);
+        _searchHistory.insert(0, text);
+        searchHistory = _searchHistory;
+        break;
+      case UpdateSearchHistoryType.remove: // 删除单个
+        _searchHistory.remove(text);
+        searchHistory = _searchHistory;
+        break;
+      case UpdateSearchHistoryType.clean: // 清除所有
+        searchHistory = [];
+        break;
+      default:
+    }
+    update();
   }
 
   int get mirrorIndex {
@@ -65,7 +112,7 @@ class HomeController extends GetxController {
 
   List<MovieImpl> get mirrorList {
     if (isNsfw) return MirrorList;
-    return MirrorList.where((e)=> !e.isNsfw).toList();
+    return MirrorList.where((e) => !e.isNsfw).toList();
   }
 
   int page = 1;
@@ -98,49 +145,52 @@ class HomeController extends GetxController {
         child: SafeArea(
           child: SingleChildScrollView(
             child: Column(
-            children: mirrorList.map(
-              (e) => CupertinoListTile(
-                onTap: () {
-                  var index = MirrorList.indexOf(e);
-                  _mirrorIndex = index;
-                  Get.back();
-                },
-                title: Text(
-                  e.meta.name,
-                  style: TextStyle(
-                    color: e.isNsfw
-                        ? Colors.red
-                        : (Get.isDarkMode ? Colors.white : Colors.black),
-                  ),
-                ),
-                subtitle: Text(
-                  e.meta.desc,
-                  style: TextStyle(
-                    color: Get.isDarkMode ? Colors.white : Colors.black,
-                  ),
-                ),
-                leading: e.meta.logo.isEmpty
-                    ? Icon(
-                        CupertinoIcons.arrowshape_turn_up_right_circle_fill,
-                      )
-                    : CachedNetworkImage(
-                        width: 80,
-                        imageUrl: e.meta.logo,
-                        placeholder: (
-                          context,
-                          url,
-                        ) =>
-                            CircularProgressIndicator(),
-                        errorWidget: (
-                          context,
-                          url,
-                          error,
-                        ) =>
-                            Icon(Icons.error),
+              children: mirrorList
+                  .map(
+                    (e) => CupertinoListTile(
+                      onTap: () {
+                        var index = MirrorList.indexOf(e);
+                        _mirrorIndex = index;
+                        Get.back();
+                      },
+                      title: Text(
+                        e.meta.name,
+                        style: TextStyle(
+                          color: e.isNsfw
+                              ? Colors.red
+                              : (Get.isDarkMode ? Colors.white : Colors.black),
+                        ),
                       ),
-              ),
-            ).toList(),
-          ),
+                      subtitle: Text(
+                        e.meta.desc,
+                        style: TextStyle(
+                          color: Get.isDarkMode ? Colors.white : Colors.black,
+                        ),
+                      ),
+                      leading: e.meta.logo.isEmpty
+                          ? Icon(
+                              CupertinoIcons
+                                  .arrowshape_turn_up_right_circle_fill,
+                            )
+                          : CachedNetworkImage(
+                              width: 80,
+                              imageUrl: e.meta.logo,
+                              placeholder: (
+                                context,
+                                url,
+                              ) =>
+                                  CircularProgressIndicator(),
+                              errorWidget: (
+                                context,
+                                url,
+                                error,
+                              ) =>
+                                  Icon(Icons.error),
+                            ),
+                    ),
+                  )
+                  .toList(),
+            ),
           ),
         ),
       ),
@@ -158,6 +208,7 @@ class HomeController extends GetxController {
   void onInit() {
     super.onInit();
     updateNsfwSetting();
+    updateSearchHistory();
     updateHomeData(isFirst: true);
   }
 
@@ -166,7 +217,13 @@ class HomeController extends GetxController {
     update();
   }
 
-  updateSearchData(String keyword) async {
+  updateSearchHistory() {
+    _searchHistory =
+        List<String>.from(localStorage.read(ConstDart.search_history) ?? []);
+    update();
+  }
+
+  Future<List<MirrorOnceItemSerialize>> updateSearchData(String keyword) async {
     var resp = await currentMirrorItem.getSearch(keyword: keyword);
     return resp;
   }

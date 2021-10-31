@@ -56,7 +56,7 @@ class _SettingsViewState extends State<SettingsView> {
   }
 
   bool get showNSFW {
-    return nShowNSFW >= 10;
+    return home.isNsfw || nShowNSFW >= 10;
   }
 
   set showNSFW(newVal) {

@@ -14,6 +14,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import 'package:flappy_search_bar_ns/flappy_search_bar_ns.dart';
+import 'package:flappy_search_bar_ns/search_bar_style.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -99,6 +100,14 @@ class SearchView extends GetView {
               ),
             );
           },
+          searchBarStyle: SearchBarStyle(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 12,
+            ),
+            borderRadius: const BorderRadius.all(
+              Radius.circular(24.0),
+            ),
+          ),
           minimumChars: 2,
           debounceDuration: Duration(
             seconds: 2,

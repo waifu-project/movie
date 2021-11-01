@@ -33,18 +33,14 @@ class KBaseMirrorMovie extends MovieImpl {
   final String logo;
   final String desc;
   final String root_url;
-  final String homePath;
-  final String detailPath;
-  final String searchPath;
+  final String api_path;
   KBaseMirrorMovie({
     this.nsfw = false,
     this.name = "",
     this.logo = "",
     this.desc = "",
     required this.root_url,
-    required this.homePath,
-    required this.detailPath,
-    required this.searchPath,
+    required this.api_path,
   });
 
   createUrl({
@@ -90,7 +86,7 @@ class KBaseMirrorMovie extends MovieImpl {
   @override
   Future<MirrorOnceItemSerialize> getDetail(String movie_id) async {
     var resp = await XHttp.dio.post(
-      createUrl(suffix: detailPath),
+      createUrl(suffix: api_path),
       queryParameters: {
         "ac": "videolist",
         "ids": movie_id,
@@ -134,7 +130,7 @@ class KBaseMirrorMovie extends MovieImpl {
     int limit = 10,
   }) async {
     var resp = await XHttp.dio.get(
-      createUrl(suffix: homePath),
+      createUrl(suffix: api_path),
       queryParameters: {
         "ac": "videolist",
         // "t": limit,
@@ -176,7 +172,7 @@ class KBaseMirrorMovie extends MovieImpl {
     int limit = 10,
   }) async {
     var resp = await XHttp.dio.post(
-      createUrl(suffix: searchPath),
+      createUrl(suffix: api_path),
       queryParameters: {
         "ac": "videolist",
         // "t": limit,

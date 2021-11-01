@@ -26,6 +26,7 @@ dependencies:
   video_player: ^2.2.5
   get_storage: ^2.0.3
   path_provider: ^2.0.6
+  flutter_html: ^2.1.5
   
   flutter: 
     sdk: flutter
@@ -50,6 +51,9 @@ flutter_launcher_name:
 
 flutter: 
   uses-material-design: true
+
+  assets:
+    - assets/data/nsfw.html
 
 # flutter pub run flutter_launcher_icons:main
 flutter_icons:

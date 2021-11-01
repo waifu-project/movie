@@ -21,7 +21,15 @@ import 'package:get/get.dart';
 import 'package:movie/app/modules/home/controllers/home_controller.dart';
 import 'package:movie/config.dart';
 
-// https://pub.flutter-io.cn/packages/flutter_cupertino_settings
+import 'nsfwtable.dart';
+
+enum GetBackResultType {
+  /// 失败
+  fail,
+
+  /// 成功
+  success
+}
 
 class SettingsView extends StatefulWidget {
   const SettingsView({Key? key}) : super(key: key);
@@ -56,7 +64,7 @@ class _SettingsViewState extends State<SettingsView> {
   }
 
   bool get showNSFW {
-    return home.isNsfw || nShowNSFW >= 10;
+    return (home.isNsfw || nShowNSFW >= 10);
   }
 
   set showNSFW(newVal) {
@@ -75,50 +83,67 @@ class _SettingsViewState extends State<SettingsView> {
         centerTitle: true,
         elevation: 0,
       ),
-      body: CupertinoSettings(items: <Widget>[
-        const CSHeader('常规设置'),
-        CSControl(
-          nameWidget: Text('深色'),
-          contentWidget: CupertinoSwitch(
-            value: isDark,
-            onChanged: (bool value) {
-              isDark = value;
+      body: CupertinoSettings(
+        items: <Widget>[
+          const CSHeader('常规设置'),
+          CSControl(
+            nameWidget: Text('深色'),
+            contentWidget: CupertinoSwitch(
+              value: isDark,
+              onChanged: (bool value) {
+                isDark = value;
+              },
+            ),
+            style: const CSWidgetStyle(
+              icon:
+                  const Icon(Icons.settings_brightness, color: Colors.black54),
+            ),
+          ),
+          showNSFW
+              ? CSControl(
+                  nameWidget: Text('NSFW'),
+                  contentWidget: CupertinoSwitch(
+                    value: home.isNsfw,
+                    onChanged: (bool value) async {
+                      if (value) {
+                        GetBackResultType result =
+                            await Get.to(() => NsfwTableView());
+                        if (result == GetBackResultType.success) {
+                          home.isNsfw = true;
+                          showNSFW = true;
+                          home.update();
+                          return;
+                        }
+                      }
+                      showNSFW = false;
+                      home.isNsfw = false;
+                      home.update();
+                    },
+                  ),
+                  style: const CSWidgetStyle(
+                    icon: const Icon(
+                      Icons.stop_screen_share,
+                      color: Colors.black54,
+                    ),
+                  ),
+                )
+              : SizedBox.shrink(),
+          GestureDetector(
+            onTap: () {
+              if (showNSFW) {
+                showNSFW = false;
+              } else {
+                setState(() {
+                  nShowNSFW++;
+                });
+              }
             },
+            child: CSDescription(
+              "@陈大大哦了",
+            ),
           ),
-          style: const CSWidgetStyle(
-            icon: const Icon(Icons.settings_brightness, color: Colors.black54),
-          ),
-        ),
-        showNSFW
-            ? CSControl(
-                nameWidget: Text('NSFW'),
-                contentWidget: CupertinoSwitch(
-                  value: home.isNsfw,
-                  onChanged: (bool value) {
-                    home.isNsfw = value;
-                  },
-                ),
-                style: const CSWidgetStyle(
-                  icon: const Icon(Icons.stop_screen_share,
-                      color: Colors.black54),
-                ),
-              )
-            : SizedBox.shrink(),
-        GestureDetector(
-          onTap: () {
-            if (showNSFW) {
-              showNSFW = false;
-            } else {
-              setState(() {
-                nShowNSFW++;
-              });
-            }
-          },
-          child: CSDescription(
-            "@陈大大哦了",
-          ),
-        ),
-      ]),
+        ],
+      ),
     );
   }
 }

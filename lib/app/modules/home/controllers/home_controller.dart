@@ -168,9 +168,9 @@ class HomeController extends GetxController {
                         ),
                       ),
                       leading: e.meta.logo.isEmpty
-                          ? Icon(
-                              CupertinoIcons
-                                  .arrowshape_turn_up_right_circle_fill,
+                          ? Image.asset(
+                              "assets/images/fishtank.png",
+                              width: 80,
                             )
                           : CachedNetworkImage(
                               width: 80,
@@ -179,7 +179,7 @@ class HomeController extends GetxController {
                                 context,
                                 url,
                               ) =>
-                                  CircularProgressIndicator(),
+                                  Center(child: CircularProgressIndicator(),),
                               errorWidget: (
                                 context,
                                 url,

@@ -22,7 +22,6 @@ import 'package:get/get.dart';
 import 'package:movie/app/modules/home/controllers/home_controller.dart';
 import 'package:movie/config.dart';
 import 'package:movie/mirror/m_utils/source_utils.dart';
-import 'package:movie/mirror/mirror.dart';
 
 import 'nsfwtable.dart';
 
@@ -120,11 +119,63 @@ class _SettingsViewState extends State<SettingsView> {
     switch (type) {
       case HandleDiglogTapType.clean:
         editingControllerValue = "";
+        Get.showSnackbar(
+          GetBar(
+            message: "解析内容已经清空!",
+            duration: Duration(seconds: 1),
+          ),
+        );
         break;
       case HandleDiglogTapType.kget:
+        if (editingControllerValue.isEmpty) {
+          Get.showSnackbar(
+            GetBar(
+              message: "内容为空, 请填入url!",
+              duration: Duration(seconds: 1),
+            ),
+          );
+          return;
+        }
         var target = SourceUtils.getSources(editingControllerValue);
+        Get.dialog(GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                CupertinoActivityIndicator(),
+                SizedBox(
+                  height: 42,
+                ),
+                CupertinoButton.filled(
+                  child: Text("关闭"),
+                  onPressed: () {
+                    Get.back();
+                  },
+                ),
+              ],
+            ),
+          ),
+        ));
         var data = await SourceUtils.runTaks(target);
+        Get.back();
+        if (data.isEmpty) {
+          Get.showSnackbar(
+            GetBar(
+              message: "获取的内容为空!",
+              duration: Duration(seconds: 1),
+            ),
+          );
+          return;
+        }
         SourceUtils.mergeMirror(data);
+        Get.showSnackbar(
+          GetBar(
+            message: "获取成功, 已合并资源",
+            duration: Duration(seconds: 1),
+          ),
+        );
         break;
       default:
     }

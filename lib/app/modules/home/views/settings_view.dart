@@ -15,11 +15,14 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_cupertino_settings/flutter_cupertino_settings.dart';
 
 import 'package:get/get.dart';
 import 'package:movie/app/modules/home/controllers/home_controller.dart';
 import 'package:movie/config.dart';
+import 'package:movie/mirror/m_utils/source_utils.dart';
+import 'package:movie/mirror/mirror.dart';
 
 import 'nsfwtable.dart';
 
@@ -31,6 +34,14 @@ enum GetBackResultType {
   success
 }
 
+enum HandleDiglogTapType {
+  /// 清空
+  clean,
+
+  /// 获取配置
+  kget,
+}
+
 class SettingsView extends StatefulWidget {
   const SettingsView({Key? key}) : super(key: key);
 
@@ -40,6 +51,12 @@ class SettingsView extends StatefulWidget {
 
 class _SettingsViewState extends State<SettingsView> {
   final HomeController home = Get.find<HomeController>();
+
+  Future<String> loadAsset() async {
+    return await rootBundle.loadString('assets/data/source_help.txt');
+  }
+
+  String sourceHelpText = "";
 
   bool _isDark = false;
 
@@ -60,7 +77,21 @@ class _SettingsViewState extends State<SettingsView> {
     setState(() {
       _isDark = home.localStorage.read(ConstDart.ls_isDark) ?? false;
     });
+    loadSourceHelp();
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _editingController.dispose();
+    super.dispose();
+  }
+
+  loadSourceHelp() async {
+    var data = await loadAsset();
+    setState(() {
+      sourceHelpText = data;
+    });
   }
 
   bool get showNSFW {
@@ -74,6 +105,30 @@ class _SettingsViewState extends State<SettingsView> {
   }
 
   int nShowNSFW = 0;
+
+  TextEditingController _editingController = TextEditingController();
+
+  String get editingControllerValue {
+    return _editingController.text.trim();
+  }
+
+  set editingControllerValue(String newVal) {
+    _editingController.text = newVal;
+  }
+
+  handleDiglogTap(HandleDiglogTapType type) async {
+    switch (type) {
+      case HandleDiglogTapType.clean:
+        editingControllerValue = "";
+        break;
+      case HandleDiglogTapType.kget:
+        var target = SourceUtils.getSources(editingControllerValue);
+        var data = await SourceUtils.runTaks(target);
+        SourceUtils.mergeMirror(data);
+        break;
+      default:
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -95,9 +150,63 @@ class _SettingsViewState extends State<SettingsView> {
               },
             ),
             style: const CSWidgetStyle(
-              icon:
-                  const Icon(Icons.settings_brightness, color: Colors.black54),
+              icon: const Icon(
+                Icons.settings_brightness,
+              ),
             ),
+          ),
+          GestureDetector(
+            child: CSControl(
+              nameWidget: Text("视频源管理"),
+              style: const CSWidgetStyle(
+                icon: const Icon(
+                  Icons.video_library,
+                ),
+              ),
+            ),
+            onTap: () {
+              Get.defaultDialog(
+                actions: [
+                  CupertinoButton.filled(
+                    child: Text("清空"),
+                    onPressed: () {
+                      handleDiglogTap(HandleDiglogTapType.clean);
+                    },
+                  ),
+                  CupertinoButton.filled(
+                    child: Text("获取配置"),
+                    onPressed: () {
+                      handleDiglogTap(HandleDiglogTapType.kget);
+                    },
+                  ),
+                ],
+                titlePadding: EdgeInsets.symmetric(
+                  horizontal: 3,
+                  vertical: 12,
+                ),
+                title: "我的视频源网络地址",
+                titleStyle: TextStyle(
+                  fontSize: 16,
+                ),
+                content: Container(
+                  height: context.heightTransformer(dividedBy: 1.8),
+                  width: context.widthTransformer(dividedBy: 1),
+                  child: Card(
+                    color: Color.fromRGBO(0, 0, 0, .02),
+                    child: Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: TextField(
+                        controller: _editingController,
+                        maxLines: 10,
+                        decoration: InputDecoration.collapsed(
+                          hintText: sourceHelpText,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              );
+            },
           ),
           showNSFW
               ? CSControl(
@@ -123,7 +232,6 @@ class _SettingsViewState extends State<SettingsView> {
                   style: const CSWidgetStyle(
                     icon: const Icon(
                       Icons.stop_screen_share,
-                      color: Colors.black54,
                     ),
                   ),
                 )

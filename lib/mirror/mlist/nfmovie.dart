@@ -210,6 +210,7 @@ class NfmovieMirror extends MovieImpl {
         name: "奈非影视",
         logo: "https://i.loli.net/2021/10/28/iIJYx3uwpVqHBTf.png",
         desc: "永久免费的福利超清影视站，没有套路，完全免费！",
+        domain: root,
       );
 
   @override

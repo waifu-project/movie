@@ -20,8 +20,11 @@ import '../mirror_serialize.dart';
 import 'theporn_models/theporn_av_json_data.dart';
 
 class ThePornMirror extends MovieImpl {
+
+  String root_url = "https://api.theporn.xyz";
+
   createURL({suffix = "/v1/video/list"}) {
-    return 'https://api.theporn.xyz' + suffix;
+    return root_url + suffix;
   }
 
   @override
@@ -139,5 +142,6 @@ class ThePornMirror extends MovieImpl {
         name: "ThePorn",
         logo: "https://theporn22.xyz/static/logo-tp.png",
         desc: "免费成人高清在线视频,日本AV,国产AV,欧美AV",
+        domain: root_url,
       );
 }

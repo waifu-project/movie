@@ -19,6 +19,9 @@ class MovieMetaData {
   /// 图标, 默认为空将使用本地资源图标
   String logo;
 
+  /// 域名, 用来去重
+  String domain;
+
   /// 资源名称
   String name;
 
@@ -38,6 +41,7 @@ class MovieMetaData {
     this.developerMail = "",
     this.desc = "",
     required this.name,
+    required this.domain,
   });
 }
 

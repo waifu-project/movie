@@ -207,5 +207,6 @@ class KBaseMirrorMovie extends MovieImpl {
         name: name,
         logo: logo,
         desc: desc,
+        domain: root_url,
       );
 }

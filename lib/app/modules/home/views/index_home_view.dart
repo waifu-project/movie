@@ -85,6 +85,7 @@ class IndexHomeView extends GetView {
                 physics: NeverScrollableScrollPhysics(),
                 child: Column(
                   children: [
+                    SizedBox(height: 24,),
                     GridView.count(
                       shrinkWrap: true,
                       controller: new ScrollController(

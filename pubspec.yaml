@@ -57,6 +57,7 @@ flutter:
     - assets/data/source_help.txt
     - assets/images/fishtank.png
     - assets/images/image_faild.png
+    - assets/data/play_tips.txt
 
 # flutter pub run flutter_launcher_icons:main
 flutter_icons:

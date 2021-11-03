@@ -30,6 +30,10 @@ class ConstDart {
   /// 镜像列表
   static final String mirror_list = "mirrorList";
 
+  /// 显示播放提示
+  /// **免责提示**
+  static final String showPlayTips = "showPlayTips";
+
   /// 是否为开发模式
   /// TODDO
   static bool get isDev {

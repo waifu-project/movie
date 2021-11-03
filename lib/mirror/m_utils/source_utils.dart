@@ -79,6 +79,7 @@ class SourceUtils {
           result.add(obj);
         }).toList();
       } catch (e) {
+        print("获取网络源失败: $e");
         return null;
       }
     });
@@ -87,27 +88,29 @@ class SourceUtils {
 
   /// [runTaks] 获取到网络资源之后
   /// 和 [MirrorList] 合并
-  static mergeMirror(List<KBaseMirrorMovie> newSourceData) {
-
-    // Note:
-    //  => 一开始是想源更新之后位置不变
-    //  => 暂时就直接添加到`0`
-    // var map = MirrorList.asMap()
-    //     .keys
-    //     .map(
-    //       (index) => {
-    //         "index": index,
-    //         "domain": MirrorList[index].meta.domain,
-    //       },
-    //     )
-    //     .toList();
-
+  static List<SourceJsonData> mergeMirror(List<KBaseMirrorMovie> newSourceData) {
     newSourceData.forEach((element) {
       var newDataDomain = element.meta.domain;
-      MirrorList.removeWhere((element) => element.meta.domain == newDataDomain);
+      MirrorManage.extend
+          .removeWhere((element) => element.meta.domain == newDataDomain);
     });
 
-    MirrorList.addAll(newSourceData);
-    
+    MirrorManage.extend.addAll(newSourceData);
+
+    var copyData = (MirrorManage.extend as List<KBaseMirrorMovie>)
+        .map(
+          (e) => SourceJsonData(
+            name: e.meta.name,
+            logo: e.meta.logo,
+            desc: e.meta.desc,
+            nsfw: e.isNsfw,
+            api: Api(
+              root: e.meta.domain,
+              path: e.api_path,
+            ),
+          ),
+        )
+        .toList();
+    return copyData;
   }
 }

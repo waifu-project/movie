@@ -27,6 +27,9 @@ class ConstDart {
   /// 搜索历史记录
   static final String search_history = "searchHistory";
 
+  /// 镜像列表
+  static final String mirror_list = "mirrorList";
+
   /// 是否为开发模式
   /// TODDO
   static bool get isDev {

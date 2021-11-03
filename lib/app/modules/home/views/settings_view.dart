@@ -22,6 +22,7 @@ import 'package:get/get.dart';
 import 'package:movie/app/modules/home/controllers/home_controller.dart';
 import 'package:movie/config.dart';
 import 'package:movie/mirror/m_utils/source_utils.dart';
+import 'package:movie/mirror/mirror.dart';
 
 import 'nsfwtable.dart';
 
@@ -137,27 +138,29 @@ class _SettingsViewState extends State<SettingsView> {
           return;
         }
         var target = SourceUtils.getSources(editingControllerValue);
-        Get.dialog(GestureDetector(
-          behavior: HitTestBehavior.opaque,
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                CupertinoActivityIndicator(),
-                SizedBox(
-                  height: 42,
-                ),
-                CupertinoButton.filled(
-                  child: Text("关闭"),
-                  onPressed: () {
-                    Get.back();
-                  },
-                ),
-              ],
+        Get.dialog(
+          GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  CupertinoActivityIndicator(),
+                  SizedBox(
+                    height: 42,
+                  ),
+                  CupertinoButton.filled(
+                    child: Text("关闭"),
+                    onPressed: () {
+                      Get.back();
+                    },
+                  ),
+                ],
+              ),
             ),
           ),
-        ));
+        );
         var data = await SourceUtils.runTaks(target);
         Get.back();
         if (data.isEmpty) {
@@ -169,7 +172,8 @@ class _SettingsViewState extends State<SettingsView> {
           );
           return;
         }
-        SourceUtils.mergeMirror(data);
+        var listData = SourceUtils.mergeMirror(data);
+        MirrorManage.mergeMirror(listData);
         Get.showSnackbar(
           GetBar(
             message: "获取成功, 已合并资源",

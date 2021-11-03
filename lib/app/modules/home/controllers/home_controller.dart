@@ -111,8 +111,8 @@ class HomeController extends GetxController {
   }
 
   List<MovieImpl> get mirrorList {
-    if (isNsfw) return MirrorList;
-    return MirrorList.where((e) => !e.isNsfw).toList();
+    if (isNsfw) return MirrorManage.data;
+    return MirrorManage.data.where((e) => !e.isNsfw).toList();
   }
 
   int page = 1;
@@ -149,7 +149,7 @@ class HomeController extends GetxController {
                   .map(
                     (e) => CupertinoListTile(
                       onTap: () {
-                        var index = MirrorList.indexOf(e);
+                        var index = mirrorList.indexOf(e);
                         _mirrorIndex = index;
                         Get.back();
                       },

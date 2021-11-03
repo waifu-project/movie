@@ -53,7 +53,13 @@ class _SearchViewState extends State<SearchView> {
                 var data = item;
                 if (item!.videos.isEmpty) {
                   String id = item.id;
+                  Get.dialog(
+                    Center(
+                      child: CupertinoActivityIndicator(),
+                    ),
+                  );
                   data = await home.currentMirrorItem.getDetail(id);
+                  Get.back();
                 }
                 Get.toNamed(
                   Routes.PLAY,

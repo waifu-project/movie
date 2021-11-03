@@ -95,8 +95,7 @@ class IndexHomeView extends GetView {
                       mainAxisSpacing: 12,
                       childAspectRatio:
                           (MediaQuery.of(context).size.width / 3) /
-                              (MediaQuery.of(context).size.height /
-                                  4),
+                              (MediaQuery.of(context).size.height / 4),
                       padding: EdgeInsets.symmetric(
                         vertical: 0,
                         horizontal: 12,
@@ -111,7 +110,14 @@ class IndexHomeView extends GetView {
                                   var data = subItem;
                                   if (subItem.videos.isEmpty) {
                                     var id = subItem.id;
-                                    data = await homeview.currentMirrorItem.getDetail(id);
+                                    Get.dialog(
+                                      Center(
+                                        child: CupertinoActivityIndicator(),
+                                      ),
+                                    );
+                                    data = await homeview.currentMirrorItem
+                                        .getDetail(id);
+                                    Get.back();
                                   }
                                   Get.toNamed(
                                     Routes.PLAY,

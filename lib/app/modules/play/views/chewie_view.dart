@@ -4,7 +4,6 @@ import 'package:flutter/services.dart';
 
 import 'package:get/get.dart';
 import 'package:video_player/video_player.dart';
-import 'package:wakelock/wakelock.dart';
 
 class ChewieView extends StatefulWidget {
   const ChewieView({Key? key}) : super(key: key);
@@ -20,14 +19,12 @@ class _ChewieViewState extends State<ChewieView> {
 
   @override
   void initState() {
-    Wakelock.enable();
     super.initState();
     initializePlayer();
   }
 
   @override
   void dispose() {
-    Wakelock.disable();
     videoPlayerController.dispose();
     chewieController.dispose();
     super.dispose();

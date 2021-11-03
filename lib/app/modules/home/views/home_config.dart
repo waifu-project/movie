@@ -20,3 +20,5 @@ const double kBarHeight = 63;
 const kBarHeightWidget = SizedBox(
   height: kBarHeight,
 );
+
+const FetchMirrorAPI = "https://cdn.jsdelivr.net/gh/d1y/assets/s.json";

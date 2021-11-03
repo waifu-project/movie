@@ -20,6 +20,7 @@ import 'package:flutter_cupertino_settings/flutter_cupertino_settings.dart';
 
 import 'package:get/get.dart';
 import 'package:movie/app/modules/home/controllers/home_controller.dart';
+import 'package:movie/app/modules/home/views/source_help.dart';
 import 'package:movie/config.dart';
 import 'package:movie/mirror/m_utils/source_utils.dart';
 import 'package:movie/mirror/mirror.dart';
@@ -291,6 +292,20 @@ class _SettingsViewState extends State<SettingsView> {
                   ),
                 )
               : SizedBox.shrink(),
+          const CSHeader('其他设置'),
+          GestureDetector(
+            onTap: () {
+              Get.to(() => SourceHelpTable());
+            },
+            child: CSControl(
+              nameWidget: Text("视频源帮助"),
+              style: const CSWidgetStyle(
+                icon: const Icon(
+                  CupertinoIcons.arrow_down_right_square_fill,
+                ),
+              ),
+            ),
+          ),
           GestureDetector(
             onTap: () {
               if (showNSFW) {

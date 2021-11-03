@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -69,8 +71,32 @@ class _ChewieViewState extends State<ChewieView> {
             DeviceOrientation.portraitUp,
             DeviceOrientation.portraitDown
           ],
-          placeholder: Center(
-            child: Image.network(args['cover']),
+          placeholder: BackdropFilter(
+            filter: ImageFilter.blur(
+              sigmaX: 15,
+              sigmaY: 15,
+            ),
+            child: Stack(
+              children: [
+                Image.network(
+                  args['cover'],
+                  fit: BoxFit.cover,
+                  width: double.infinity,
+                  height: double.infinity,
+                ),
+                Positioned.fill(
+                  child: BackdropFilter(
+                    filter: ImageFilter.blur(
+                      sigmaX: 15,
+                      sigmaY: 15,
+                    ),
+                    child: Container(
+                      color: Colors.white10,
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

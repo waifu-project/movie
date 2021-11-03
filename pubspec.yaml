@@ -56,6 +56,7 @@ flutter:
     - assets/data/nsfw.html
     - assets/data/source_help.txt
     - assets/images/fishtank.png
+    - assets/images/image_faild.png
 
 # flutter pub run flutter_launcher_icons:main
 flutter_icons:

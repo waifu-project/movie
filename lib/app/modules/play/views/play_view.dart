@@ -19,6 +19,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:movie/app/modules/play/views/chewie_view.dart';
 import 'package:movie/app/modules/play/views/webview_view.dart';
+import 'package:movie/app/widget/helper.dart';
 import 'package:movie/mirror/mirror_serialize.dart';
 
 import '../controllers/play_controller.dart';
@@ -51,9 +52,7 @@ class PlayView extends GetView<PlayController> {
                         child: CircularProgressIndicator(),
                       );
                     },
-                    errorBuilder: (context, error, stackTrace) => Center(
-                      child: Icon(Icons.error),
-                    ),
+                    errorBuilder: (context, error, stackTrace) => KCoverImage,
                   ),
                 ),
                 Container(

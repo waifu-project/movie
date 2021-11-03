@@ -21,6 +21,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:movie/app/modules/home/controllers/home_controller.dart';
 import 'package:movie/app/routes/app_pages.dart';
+import 'package:movie/app/widget/helper.dart';
 import 'package:movie/app/widget/k_tag.dart';
 import 'package:movie/mirror/mirror_serialize.dart';
 
@@ -78,16 +79,28 @@ class _SearchViewState extends State<SearchView> {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(
-                        6,
-                      ),
-                      child: Image.network(
-                        item?.smallCoverImage ??
-                            home.currentMirrorItem.meta.logo,
-                        width: 80,
-                        height: 160,
-                        fit: BoxFit.cover,
+                    Image.network(
+                      item?.smallCoverImage ?? home.currentMirrorItem.meta.logo,
+                      width: 80,
+                      height: 160,
+                      fit: BoxFit.cover,
+                      loadingBuilder: (context, child, loadingProgress) {
+                        if (loadingProgress == null)
+                          return ClipRRect(
+                            borderRadius: BorderRadius.circular(8.0),
+                            child: child,
+                          );
+                        return Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      },
+                      errorBuilder: (context, error, stackTrace) => ClipRRect(
+                        borderRadius: BorderRadius.circular(8.0),
+                        child: Image.asset(
+                          K_DEFAULT_IMAGE,
+                          fit: BoxFit.cover,
+                          width: 80,
+                        ),
                       ),
                     ),
                     SizedBox(
@@ -198,7 +211,11 @@ class _SearchViewState extends State<SearchView> {
                               .map(
                                 (e) => KTag(
                                   child: Text(e),
-                                  backgroundColor: Theme.of(context).brightness == Brightness.dark ? Colors.black26 : Colors.black12,
+                                  backgroundColor:
+                                      Theme.of(context).brightness ==
+                                              Brightness.dark
+                                          ? Colors.black26
+                                          : Colors.black12,
                                   onTap: (type) {
                                     switch (type) {
                                       case KTagTapEventType.content: // 内容

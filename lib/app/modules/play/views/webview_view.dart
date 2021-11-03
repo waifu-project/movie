@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:get/get.dart';
+import 'package:wakelock/wakelock.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class WebviewView extends StatefulWidget {
@@ -19,6 +20,7 @@ class _WebviewViewState extends State<WebviewView> {
 
   @override
   void initState() {
+    Wakelock.enable();
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.landscapeRight,
       DeviceOrientation.landscapeLeft,
@@ -28,6 +30,7 @@ class _WebviewViewState extends State<WebviewView> {
 
   @override
   void dispose() {
+    Wakelock.disable();
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,

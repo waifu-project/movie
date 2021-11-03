@@ -139,8 +139,9 @@ class HomeController extends GetxController {
       context: context,
       builder: (context) => CupertinoPageScaffold(
         navigationBar: CupertinoNavigationBar(
+          backgroundColor: Get.isDarkMode ? Colors.black12 : Colors.white,
           leading: Container(),
-          middle: Text('视频源'),
+          middle: Text('视频源', style: TextStyle(color: Get.isDarkMode ? Colors.white : Colors.black),),
         ),
         child: SafeArea(
           child: SingleChildScrollView(

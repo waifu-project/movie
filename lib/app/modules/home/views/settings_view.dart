@@ -224,12 +224,18 @@ class _SettingsViewState extends State<SettingsView> {
               Get.defaultDialog(
                 actions: [
                   CupertinoButton.filled(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 12,
+                    ),
                     child: Text("清空"),
                     onPressed: () {
                       handleDiglogTap(HandleDiglogTapType.clean);
                     },
                   ),
                   CupertinoButton.filled(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 12,
+                    ),
                     child: Text("获取配置"),
                     onPressed: () {
                       handleDiglogTap(HandleDiglogTapType.kget);
@@ -245,7 +251,7 @@ class _SettingsViewState extends State<SettingsView> {
                   fontSize: 16,
                 ),
                 content: Container(
-                  height: context.heightTransformer(dividedBy: 1.8),
+                  height: Get.height * .2,
                   width: context.widthTransformer(dividedBy: 1),
                   child: Card(
                     color: Color.fromRGBO(0, 0, 0, .02),

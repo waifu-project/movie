@@ -163,19 +163,19 @@ class PlayView extends GetView<PlayController> {
                 ),
                 Container(
                   width: double.infinity,
-                  child: playlist.length <= 1
-                      ? SizedBox.shrink()
-                      : CupertinoSlidingSegmentedControl(
-                          backgroundColor: Colors.black26,
-                          thumbColor:
-                              Get.isDarkMode ? Colors.blue : Colors.white,
-                          onValueChanged: (value) {
-                            if (value == null) return;
-                            play.changeTabIndex(value);
-                          },
-                          groupValue: play.tabIndex,
-                          children: tabviewData,
-                        ),
+                  child: Builder(builder: (_) {
+                    if (playlist.length <= 1 || tabviewData[1] == null) return SizedBox.shrink();
+                    return CupertinoSlidingSegmentedControl(
+                      backgroundColor: Colors.black26,
+                      thumbColor: Get.isDarkMode ? Colors.blue : Colors.white,
+                      onValueChanged: (value) {
+                        if (value == null) return;
+                        play.changeTabIndex(value);
+                      },
+                      groupValue: play.tabIndex,
+                      children: tabviewData,
+                    );
+                  }),
                 ),
                 SizedBox(
                   height: offsetSize,

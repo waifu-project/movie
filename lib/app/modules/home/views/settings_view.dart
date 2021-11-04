@@ -307,6 +307,57 @@ class _SettingsViewState extends State<SettingsView> {
             ),
           ),
           GestureDetector(
+            onTap: () async {
+              var ctx = Get.context;
+              if (ctx == null) return;
+              showCupertinoDialog(
+                builder: (BuildContext context) => CupertinoAlertDialog(
+                  title: const Text('提示'),
+                  content: Text("将删除所有缓存, 包括视频源和一些设置"),
+                  actions: <CupertinoDialogAction>[
+                    CupertinoDialogAction(
+                      child: const Text(
+                        '我想想',
+                        style: TextStyle(
+                          color: Colors.red,
+                        ),
+                      ),
+                      onPressed: () {
+                        Get.back();
+                      },
+                    ),
+                    CupertinoDialogAction(
+                      child: const Text(
+                        '确定',
+                        style: TextStyle(color: Colors.blue),
+                      ),
+                      isDestructiveAction: true,
+                      onPressed: () async {
+                        await home.localStorage.erase();
+                        Get.showSnackbar(
+                          GetBar(
+                            message: "已删除缓存, 重启之后生效!",
+                            duration: Duration(seconds: 1),
+                          ),
+                        );
+                        Get.back();
+                      },
+                    )
+                  ],
+                ),
+                context: ctx,
+              );
+            },
+            child: CSControl(
+              nameWidget: Text("清除缓存"),
+              style: const CSWidgetStyle(
+                icon: const Icon(
+                  CupertinoIcons.clear_thick_circled,
+                ),
+              ),
+            ),
+          ),
+          GestureDetector(
             onTap: () {
               if (showNSFW) {
                 showNSFW = false;

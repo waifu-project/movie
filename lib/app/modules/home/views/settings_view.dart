@@ -357,6 +357,7 @@ class _SettingsViewState extends State<SettingsView> {
               ),
             ),
           ),
+          SizedBox(height: 24,),
           GestureDetector(
             onTap: () {
               if (showNSFW) {

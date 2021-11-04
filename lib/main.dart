@@ -31,7 +31,7 @@ void main() async {
   final localStorage = GetStorage();
   runApp(
     GetMaterialApp(
-      title: "Application",
+      title: "YY播放器",
       initialRoute: AppPages.INITIAL,
       getPages: AppPages.routes,
       debugShowCheckedModeBanner: false,

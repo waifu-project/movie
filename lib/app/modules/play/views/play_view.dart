@@ -13,6 +13,8 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import 'dart:ui';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
@@ -95,32 +97,46 @@ class PlayView extends GetView<PlayController> {
               children: [
                 Container(
                   width: double.infinity,
-                  height: MediaQuery.of(context).size.height / 2.7,
-                  child: Image.network(
-                    play.movieItem.smallCoverImage,
-                    fit: BoxFit.fitHeight,
-                    loadingBuilder: (context, child, loadingProgress) {
-                      if (loadingProgress == null)
-                        return ClipRRect(
-                          borderRadius: BorderRadius.circular(8.0),
-                          child: child,
-                        );
-                      return Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    },
-                    errorBuilder: (context, error, stackTrace) => KCoverImage,
-                  ),
-                ),
-                Container(
-                  margin: EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 9,
-                  ),
-                  child: Text(
-                    play.movieItem.title,
-                    style: TextStyle(
-                      fontSize: 18,
+                  height: Get.height * .3,
+                  child: BackdropFilter(
+                    filter: ImageFilter.blur(
+                      sigmaX: 6,
+                      sigmaY: 6,
+                    ),
+                    child: Stack(
+                      children: [
+                        Image.network(
+                          play.movieItem.smallCoverImage,
+                          fit: BoxFit.cover,
+                          width: double.infinity,
+                          height: double.infinity,
+                        ),
+                        Positioned.fill(
+                          child: BackdropFilter(
+                            filter: ImageFilter.blur(
+                              sigmaX: 15,
+                              sigmaY: 15,
+                            ),
+                            child: Container(
+                              color: Colors.white10,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Expanded(child: SizedBox.shrink()),
+                                  Padding(
+                                    padding: EdgeInsets.all(24),
+                                    child: Text(
+                                      play.movieItem.title,
+                                      style: Theme.of(context).textTheme.headline4,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
@@ -180,7 +196,9 @@ class PlayView extends GetView<PlayController> {
                               child: CupertinoButton.filled(
                                 padding: EdgeInsets.zero,
                                 child: Text(
-                                  playlist[play.tabIndex].datas.length == 1 ? "默认" : e.name,
+                                  playlist[play.tabIndex].datas.length == 1
+                                      ? "默认"
+                                      : e.name,
                                 ),
                                 onPressed: () {
                                   var url = e.url;

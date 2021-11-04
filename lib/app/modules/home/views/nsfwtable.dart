@@ -81,8 +81,9 @@ class _NsfwTableViewState extends State<NsfwTableView> {
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
       navigationBar: CupertinoNavigationBar(
+        backgroundColor: Get.isDarkMode ? Colors.black12 : Colors.white,
         leading: CupertinoNavigationBarBackButton(),
-        middle: Text('开启NSFW'),
+        middle: Text('开启NSFW', style: TextStyle(color: Get.isDarkMode ? Colors.white : Colors.black),),
       ),
       child: SafeArea(
         child: SingleChildScrollView(

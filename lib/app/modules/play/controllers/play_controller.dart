@@ -30,6 +30,13 @@ class PlayController extends GetxController {
 
   bool _canShowPlayTips = false;
 
+  int tabIndex = 0;
+
+  changeTabIndex(dynamic i) {
+    tabIndex = i;
+    update();
+  }
+
   bool get canShowPlayTips {
     return _canShowPlayTips;
   }

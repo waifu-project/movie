@@ -20,11 +20,67 @@ import 'package:get/get.dart';
 import 'package:movie/app/modules/play/views/chewie_view.dart';
 import 'package:movie/app/modules/play/views/webview_view.dart';
 import 'package:movie/app/widget/helper.dart';
+import 'package:movie/mirror/m_utils/m.dart';
 import 'package:movie/mirror/mirror_serialize.dart';
+import 'package:movie/utils/helper.dart';
 
 import '../controllers/play_controller.dart';
 
+class PlayListData {
+  final String title;
+
+  final List<MirrorSerializeVideoInfo> datas;
+
+  PlayListData({
+    required this.title,
+    required this.datas,
+  });
+}
+
 class PlayView extends GetView<PlayController> {
+  final PlayController play = Get.find<PlayController>();
+
+  List<PlayListData> get playlist {
+    List<PlayListData> result = [];
+    var v = play.movieItem.videos;
+    v.forEach((element) {
+      var url = element.url;
+      var hasUrl = isURL(url);
+      if (hasUrl) {
+        result.add(PlayListData(datas: [
+          element,
+        ], title: element.name));
+      } else {
+        var movies = url.split("#");
+        var cache = PlayListData(title: element.name, datas: []);
+        movies.forEach((e) {
+          var subItem = e.split("\$");
+          if (subItem.length <= 1) return;
+          var title = subItem[0];
+          var _url = subItem[1];
+          // var subType = subItem[2];
+          cache.datas.add(MirrorSerializeVideoInfo(
+            name: title,
+            url: _url,
+            type: KBaseMirrorMovie.easyGetVideoType(_url),
+          ));
+        });
+        result.add(cache);
+      }
+    });
+    return result;
+  }
+
+  get tabviewData {
+    Map<int, Widget> result = {};
+    playlist.asMap().forEach((key, value) {
+      result[key] = Text(value.title);
+    });
+    return result;
+  }
+
+  final double offsetSize = 12;
+
   @override
   Widget build(BuildContext context) {
     return GetBuilder<PlayController>(
@@ -91,37 +147,69 @@ class PlayView extends GetView<PlayController> {
                     ),
                   ),
                 ),
-                Wrap(
-                  children: [
-                    ...play.movieItem.videos
-                        .map(
-                          (e) => Container(
-                            width: Get.width / 3,
-                            child: CupertinoButton(
-                              child: Text(
-                                e.name,
+                Container(
+                  width: double.infinity,
+                  child: playlist.length <= 1
+                      ? SizedBox.shrink()
+                      : CupertinoSlidingSegmentedControl(
+                          backgroundColor: Colors.black26,
+                          thumbColor:
+                              Get.isDarkMode ? Colors.blue : Colors.white,
+                          onValueChanged: (value) {
+                            if (value == null) return;
+                            play.changeTabIndex(value);
+                          },
+                          groupValue: play.tabIndex,
+                          children: tabviewData,
+                        ),
+                ),
+                SizedBox(
+                  height: offsetSize,
+                ),
+                Padding(
+                  padding: EdgeInsets.all(offsetSize),
+                  child: Wrap(
+                    children: [
+                      ...playlist[play.tabIndex]
+                          .datas
+                          .map(
+                            (e) => Container(
+                              width: Get.width / 3 - offsetSize - offsetSize,
+                              margin: EdgeInsets.only(
+                                bottom: offsetSize,
+                                left: offsetSize,
                               ),
-                              onPressed: () {
-                                if (e.type == MirrorSerializeVideoType.iframe) {
-                                  Get.to(
-                                    () => WebviewView(),
-                                    arguments: e.url,
-                                  );
-                                } else if (e.type == MirrorSerializeVideoType.m3u8) {
-                                  Get.to(
-                                    () => ChewieView(),
-                                    arguments: {
-                                      'url': e.url,
-                                      'cover': play.movieItem.smallCoverImage,
-                                    },
-                                  );
-                                }
-                              },
+                              child: CupertinoButton.filled(
+                                padding: EdgeInsets.zero,
+                                child: Text(
+                                  playlist[play.tabIndex].datas.length == 1 ? "默认" : e.name,
+                                ),
+                                onPressed: () {
+                                  var url = e.url;
+                                  print("play url: [$url]");
+                                  if (e.type ==
+                                      MirrorSerializeVideoType.iframe) {
+                                    Get.to(
+                                      () => WebviewView(),
+                                      arguments: url,
+                                    );
+                                  } else if (e.type ==
+                                      MirrorSerializeVideoType.m3u8) {
+                                    Get.to(
+                                      () => ChewieView(),
+                                      arguments: {
+                                        'url': url,
+                                        'cover': play.movieItem.smallCoverImage,
+                                      },
+                                    );
+                                  }
+                                },
+                              ),
                             ),
-                          ),
-                        )
-                        .toList(),
-                  ],
+                          )
+                          .toList(),
+                    ],
+                  ),
                 ),
               ],
             ),

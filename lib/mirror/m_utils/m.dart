@@ -54,7 +54,7 @@ class KBaseMirrorMovie extends MovieImpl {
   );
 
   /// 简单获取视频链接类型
-  MirrorSerializeVideoType easyGetVideoType(String rawUrl) {
+  static MirrorSerializeVideoType easyGetVideoType(String rawUrl) {
     var ext = path.extension(rawUrl);
     switch (ext) {
       case '.m3u8':
@@ -76,6 +76,8 @@ class KBaseMirrorMovie extends MovieImpl {
     if (raw == null) return "";
     var _raw = raw.toString().trim();
     if (isURL(_raw)) return _raw;
+    var _block = _raw.split("\$");
+    if (_block.length >= 3) return _raw;
     var sybIndex = _raw.indexOf("\$");
     if (sybIndex >= 0) {
       return _raw.substring(sybIndex + 1);

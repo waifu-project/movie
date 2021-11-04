@@ -20,6 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:movie/app/modules/home/views/mirrortable.dart';
 import 'package:movie/config.dart';
 import 'package:movie/impl/movie.dart';
 import 'package:movie/mirror/mirror.dart';
@@ -106,6 +107,10 @@ class HomeController extends GetxController {
     );
   }
 
+  updateMirrorIndex(int index) {
+    _mirrorIndex = index;
+  }
+
   MovieImpl get currentMirrorItem {
     return mirrorList[mirrorIndex];
   }
@@ -137,64 +142,7 @@ class HomeController extends GetxController {
   showMirrorModel(BuildContext context) {
     showCupertinoModalBottomSheet(
       context: context,
-      builder: (context) => CupertinoPageScaffold(
-        navigationBar: CupertinoNavigationBar(
-          backgroundColor: Get.isDarkMode ? Colors.black12 : Colors.white,
-          leading: Container(),
-          middle: Text('视频源', style: TextStyle(color: Get.isDarkMode ? Colors.white : Colors.black),),
-        ),
-        child: SafeArea(
-          child: SingleChildScrollView(
-            child: Column(
-              children: mirrorList
-                  .map(
-                    (e) => CupertinoListTile(
-                      onTap: () {
-                        var index = mirrorList.indexOf(e);
-                        _mirrorIndex = index;
-                        Get.back();
-                      },
-                      title: Text(
-                        e.meta.name,
-                        style: TextStyle(
-                          color: e.isNsfw
-                              ? Colors.red
-                              : (Get.isDarkMode ? Colors.white : Colors.black),
-                        ),
-                      ),
-                      subtitle: Text(
-                        e.meta.desc,
-                        style: TextStyle(
-                          color: Get.isDarkMode ? Colors.white : Colors.black,
-                        ),
-                      ),
-                      leading: e.meta.logo.isEmpty
-                          ? Image.asset(
-                              "assets/images/fishtank.png",
-                              width: 80,
-                            )
-                          : CachedNetworkImage(
-                              width: 80,
-                              imageUrl: e.meta.logo,
-                              placeholder: (
-                                context,
-                                url,
-                              ) =>
-                                  Center(child: CircularProgressIndicator(),),
-                              errorWidget: (
-                                context,
-                                url,
-                                error,
-                              ) =>
-                                  Icon(Icons.error),
-                            ),
-                    ),
-                  )
-                  .toList(),
-            ),
-          ),
-        ),
-      ),
+      builder: (context) => MirrorTableView(),
     );
   }
 

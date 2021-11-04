@@ -15,6 +15,7 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 
 import 'package:get/get.dart';
 import 'package:movie/app/modules/play/views/chewie_view.dart';
@@ -128,11 +129,8 @@ class PlayView extends GetView<PlayController> {
                     horizontal: 12,
                     vertical: 9,
                   ),
-                  child: Text(
-                    play.movieItem.desc,
-                    style: TextStyle(
-                      fontSize: 12,
-                    ),
+                  child: Html(
+                    data: play.movieItem.desc.replaceAll('\\\\n', '\n'),
                   ),
                 ),
                 Container(

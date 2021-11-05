@@ -20,6 +20,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:movie/app/modules/home/controllers/home_controller.dart';
+import 'package:movie/app/modules/play/views/chewie_view.dart';
+import 'package:movie/app/modules/play/views/webview_view.dart';
 import 'package:movie/config.dart';
 import 'package:movie/mirror/mirror_serialize.dart';
 
@@ -48,6 +50,25 @@ class PlayController extends GetxController {
   }
 
   String playTips = "";
+
+  handleTapPlayerButtom(MirrorSerializeVideoInfo e) {
+    var url = e.url;
+    print("play url: [$url]");
+    if (e.type == MirrorSerializeVideoType.iframe) {
+      Get.to(
+        () => WebviewView(),
+        arguments: url,
+      );
+    } else if (e.type == MirrorSerializeVideoType.m3u8) {
+      Get.to(
+        () => ChewieView(),
+        arguments: {
+          'url': url,
+          'cover': movieItem.smallCoverImage,
+        },
+      );
+    }
+  }
 
   loadAsset() async {
     var tips = await rootBundle.loadString('assets/data/play_tips.txt');

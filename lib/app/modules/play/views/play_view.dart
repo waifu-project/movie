@@ -20,9 +20,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 
 import 'package:get/get.dart';
-import 'package:movie/app/modules/play/views/chewie_view.dart';
-import 'package:movie/app/modules/play/views/webview_view.dart';
-import 'package:movie/app/widget/helper.dart';
 import 'package:movie/mirror/m_utils/m.dart';
 import 'package:movie/mirror/mirror_serialize.dart';
 import 'package:movie/utils/helper.dart';
@@ -214,24 +211,7 @@ class PlayView extends GetView<PlayController> {
                                       : e.name,
                                 ),
                                 onPressed: () {
-                                  var url = e.url;
-                                  print("play url: [$url]");
-                                  if (e.type ==
-                                      MirrorSerializeVideoType.iframe) {
-                                    Get.to(
-                                      () => WebviewView(),
-                                      arguments: url,
-                                    );
-                                  } else if (e.type ==
-                                      MirrorSerializeVideoType.m3u8) {
-                                    Get.to(
-                                      () => ChewieView(),
-                                      arguments: {
-                                        'url': url,
-                                        'cover': play.movieItem.smallCoverImage,
-                                      },
-                                    );
-                                  }
+                                  play.handleTapPlayerButtom(e);
                                 },
                               ),
                             ),

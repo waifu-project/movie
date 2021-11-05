@@ -50,10 +50,20 @@ class PlayView extends GetView<PlayController> {
       var url = element.url;
       var hasUrl = isURL(url);
       if (hasUrl) {
-        if (result.isEmpty) {
-          result.add(PlayListData(title: "默认", datas: []));
+        var output = [element];
+        result.add(PlayListData(title: element.name, datas: []));
+        var urls = url.split("#");
+        if (urls.length >= 2) {
+          output = urls
+              .map(
+                (e) => MirrorSerializeVideoInfo(
+                  url: e,
+                  type: KBaseMirrorMovie.easyGetVideoType(e),
+                ),
+              )
+              .toList();
         }
-        result[0].datas.add(element);
+        result.last.datas.addAll(output);
       } else {
         var movies = url.split("#");
         var cache = PlayListData(title: element.name, datas: []);

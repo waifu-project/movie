@@ -51,6 +51,7 @@ class HomeController extends GetxController {
   }
 
   set isNsfw(newVal) {
+    _mirrorIndex = 0;
     _isNsfw = newVal;
     update();
     localStorage.write(ConstDart.is_nsfw, newVal);

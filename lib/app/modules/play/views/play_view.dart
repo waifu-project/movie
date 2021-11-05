@@ -50,9 +50,10 @@ class PlayView extends GetView<PlayController> {
       var url = element.url;
       var hasUrl = isURL(url);
       if (hasUrl) {
-        result.add(PlayListData(datas: [
-          element,
-        ], title: element.name));
+        if (result.isEmpty) {
+          result.add(PlayListData(title: "默认", datas: []));
+        }
+        result[0].datas.add(element);
       } else {
         var movies = url.split("#");
         var cache = PlayListData(title: element.name, datas: []);
@@ -128,7 +129,8 @@ class PlayView extends GetView<PlayController> {
                                     padding: EdgeInsets.all(24),
                                     child: Text(
                                       play.movieItem.title,
-                                      style: Theme.of(context).textTheme.headline4,
+                                      style:
+                                          Theme.of(context).textTheme.headline4,
                                     ),
                                   ),
                                 ],
@@ -164,7 +166,8 @@ class PlayView extends GetView<PlayController> {
                 Container(
                   width: double.infinity,
                   child: Builder(builder: (_) {
-                    if (playlist.length <= 1 || tabviewData[1] == null) return SizedBox.shrink();
+                    if (playlist.length <= 1 || tabviewData[1] == null)
+                      return SizedBox.shrink();
                     return CupertinoSlidingSegmentedControl(
                       backgroundColor: Colors.black26,
                       thumbColor: Get.isDarkMode ? Colors.blue : Colors.white,

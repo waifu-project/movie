@@ -15,6 +15,7 @@
 
 import 'dart:async';
 
+import 'package:desktop_webview_window/desktop_webview_window.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -51,9 +52,29 @@ class PlayController extends GetxController {
 
   String playTips = "";
 
-  handleTapPlayerButtom(MirrorSerializeVideoInfo e) {
+  m3u82Iframe(String m3u8) {
+    return "https://dplayerx.com/m3u8.php?url=$m3u8";
+  }
+
+  handleTapPlayerButtom(MirrorSerializeVideoInfo e) async {
     var url = e.url;
-    print("play url: [$url]");
+    debugPrint("play url: [$url]");
+
+    /// https://github.com/MixinNetwork/flutter-plugins/tree/main/packages/desktop_webview_window
+    /// 该插件支持 `windows` | `linux`(<然而[webview.launch]方法不支持:(>) | `macos`
+    if (GetPlatform.isWindows || GetPlatform.isMacOS) {
+      /// `MP4` 理论上来说不需要操作就可以直接喂给浏览器?
+      if (e.type == MirrorSerializeVideoType.m3u8) url = m3u82Iframe(url);
+      Webview webview = await WebviewWindow.create();
+
+      /// 白嫖的第三方资源会自动跳转广告网站, 这个方法将延迟删除广告
+      int beforeRemoveADTime = 1200;
+      webview.addScriptToExecuteOnDocumentCreated(
+          "setTimeout(function() {window.removeEventListener('click', _popwnd_open);}, $beforeRemoveADTime)");
+      webview.launch(url);
+
+      return;
+    }
     if (e.type == MirrorSerializeVideoType.iframe) {
       Get.to(
         () => WebviewView(),

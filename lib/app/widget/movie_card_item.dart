@@ -50,6 +50,7 @@ class _MovieCardItemState extends State<MovieCardItem> {
             Expanded(
               child: Image.network(
                 widget.imageUrl,
+                width: double.infinity,
                 fit: BoxFit.cover,
                 loadingBuilder: (context, child, loadingProgress) {
                   if (loadingProgress == null)

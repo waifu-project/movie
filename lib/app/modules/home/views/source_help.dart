@@ -18,6 +18,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:movie/app/modules/home/views/home_config.dart';
+import 'package:movie/app/widget/window_appbar.dart';
 import 'package:movie/utils/http.dart';
 import 'package:clipboard/clipboard.dart';
 

@@ -20,6 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 
 import 'package:get/get.dart';
+import 'package:movie/app/widget/window_appbar.dart';
 import 'package:movie/mirror/m_utils/m.dart';
 import 'package:movie/mirror/mirror_serialize.dart';
 import 'package:movie/utils/helper.dart';
@@ -96,7 +97,9 @@ class PlayView extends GetView<PlayController> {
   Widget build(BuildContext context) {
     return GetBuilder<PlayController>(
       builder: (play) => Scaffold(
-        appBar: AppBar(),
+        appBar: WindowAppBar(
+          iosBackStyle: true,
+        ),
         body: SafeArea(
           child: SingleChildScrollView(
             child: Column(

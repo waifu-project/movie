@@ -31,6 +31,7 @@ dependencies:
   wakelock: ^0.5.6
   auto_orientation: ^2.1.0
   desktop_webview_window: ^0.0.5
+  bitsdojo_window: ^0.1.1+1
   
   flutter: 
     sdk: flutter

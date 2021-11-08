@@ -23,6 +23,7 @@ import 'package:movie/app/modules/home/controllers/home_controller.dart';
 import 'package:movie/app/routes/app_pages.dart';
 import 'package:movie/app/widget/helper.dart';
 import 'package:movie/app/widget/k_tag.dart';
+import 'package:movie/app/widget/window_appbar.dart';
 import 'package:movie/mirror/mirror_serialize.dart';
 
 class SearchView extends StatefulWidget {
@@ -41,6 +42,9 @@ class _SearchViewState extends State<SearchView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: GetPlatform.isDesktop ? WindowAppBar(
+        title: SizedBox.shrink(),
+      ) : null,
       body: SafeArea(
         child: SearchBar<MirrorOnceItemSerialize>(
           textStyle: TextStyle(

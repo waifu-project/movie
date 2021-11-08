@@ -13,6 +13,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -21,6 +22,7 @@ import 'package:movie/app/modules/home/controllers/home_controller.dart';
 import 'package:movie/app/modules/home/views/home_config.dart';
 import 'package:movie/app/routes/app_pages.dart';
 import 'package:movie/app/widget/movie_card_item.dart';
+import 'package:movie/app/widget/window_appbar.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class IndexHomeView extends GetView {
@@ -28,13 +30,18 @@ class IndexHomeView extends GetView {
   Widget build(BuildContext context) {
     return GetBuilder<HomeController>(
       builder: (homeview) => Scaffold(
-        appBar: AppBar(
-          elevation: 0,
-          title: Text(
-            "YY播放器",
-            style: TextStyle(
-              fontSize: 18,
-              color: Colors.white,
+        appBar: WindowAppBar(
+          iosBackStyle: true,
+          title: Padding(
+            padding: EdgeInsets.symmetric(
+              horizontal: 9,
+            ),
+            child: Text(
+              "YY播放器",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 18,
+              ),
             ),
           ),
           actions: [
@@ -85,7 +92,9 @@ class IndexHomeView extends GetView {
                 physics: NeverScrollableScrollPhysics(),
                 child: Column(
                   children: [
-                    SizedBox(height: 24,),
+                    SizedBox(
+                      height: 24,
+                    ),
                     GridView.count(
                       shrinkWrap: true,
                       controller: new ScrollController(

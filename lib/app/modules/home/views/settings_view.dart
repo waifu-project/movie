@@ -21,6 +21,7 @@ import 'package:flutter_cupertino_settings/flutter_cupertino_settings.dart';
 import 'package:get/get.dart';
 import 'package:movie/app/modules/home/controllers/home_controller.dart';
 import 'package:movie/app/modules/home/views/source_help.dart';
+import 'package:movie/app/widget/window_appbar.dart';
 import 'package:movie/config.dart';
 import 'package:movie/mirror/m_utils/source_utils.dart';
 import 'package:movie/mirror/mirror.dart';
@@ -189,10 +190,12 @@ class _SettingsViewState extends State<SettingsView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      appBar: WindowAppBar(
         title: Text("设置"),
         centerTitle: true,
-        elevation: 0,
+        actions: [
+          SizedBox.shrink()
+        ],
       ),
       body: CupertinoSettings(
         items: <Widget>[

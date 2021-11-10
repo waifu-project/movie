@@ -1,15 +1,15 @@
 // Copyright (C) 2021 d1y <chenhonzhou@gmail.com>
-// 
+//
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License as
 // published by the Free Software Foundation, either version 3 of the
 // License, or (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Affero General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
@@ -28,30 +28,34 @@ import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 import '../controllers/home_controller.dart';
 
 class HomeView extends GetView<HomeController> {
-
   bool get isDark => Get.isDarkMode;
-  
+
+  final List<Widget> views = [
+    IndexHomeView(),
+    SearchView(),
+    SettingsView(),
+  ];
+
   @override
   Widget build(BuildContext context) {
     return GetBuilder<HomeController>(
       builder: (homeview) => Scaffold(
-        body: AnimatedSwitcher(
-          duration: Duration(
-            milliseconds: 200,
-          ),
-          child: IndexedStack(
-            key: ValueKey<int>(homeview.currentBarIndex),
-            children: [
-              IndexHomeView(),
-              SearchView(),
-              SettingsView(),
-            ],
-            index: homeview.currentBarIndex,
-          ),
+        body: PageView.builder(
+          controller: homeview.currentBarController,
+          itemBuilder: (context, index) {
+            return views[index];
+          },
+          itemCount: views.length,
+          onPageChanged: (index) {
+            // TODO
+            // homeview.changeCurrentBarIndex
+          },
         ),
         bottomNavigationBar: BottomAppBar(
           elevation: 0,
-          color: isDark ? Color.fromRGBO(0, 0, 0, .63) : Color.fromRGBO(255, 255, 255, .63),
+          color: isDark
+              ? Color.fromRGBO(0, 0, 0, .63)
+              : Color.fromRGBO(255, 255, 255, .63),
           child: SizedBox(
             height: kBarHeight,
             child: ClipRect(

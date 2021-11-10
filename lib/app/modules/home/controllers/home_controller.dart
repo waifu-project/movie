@@ -42,6 +42,11 @@ enum UpdateSearchHistoryType {
 class HomeController extends GetxController {
   var currentBarIndex = 0;
 
+  PageController currentBarController = PageController(
+    initialPage: 0,
+    keepPage: true,
+  );
+
   final localStorage = GetStorage();
 
   bool _isNsfw = false;
@@ -209,6 +214,8 @@ class HomeController extends GetxController {
   void onClose() {}
   void changeCurrentBarIndex(int i) {
     currentBarIndex = i;
+    currentBarController.animateToPage(i,
+        curve: Curves.ease, duration: Duration(milliseconds: 500));
     update();
   }
 }

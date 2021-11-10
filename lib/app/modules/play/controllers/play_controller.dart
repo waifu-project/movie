@@ -56,6 +56,8 @@ class PlayController extends GetxController {
     return "https://dplayerx.com/m3u8.php?url=$m3u8";
   }
 
+  String webviewShowMessage = "请勿相信广告";
+
   handleTapPlayerButtom(MirrorSerializeVideoInfo e) async {
     var url = e.url;
     debugPrint("play url: [$url]");
@@ -70,7 +72,7 @@ class PlayController extends GetxController {
       /// 白嫖的第三方资源会自动跳转广告网站, 这个方法将延迟删除广告
       int beforeRemoveADTime = 1200;
       webview.addScriptToExecuteOnDocumentCreated(
-          "setTimeout(function() {window.removeEventListener('click', _popwnd_open);}, $beforeRemoveADTime)");
+          "alert('$webviewShowMessage');setTimeout(function() {window.removeEventListener('click', _popwnd_open);}, $beforeRemoveADTime)");
       webview.launch(url);
 
       return;

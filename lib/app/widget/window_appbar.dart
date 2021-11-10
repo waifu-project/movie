@@ -84,9 +84,16 @@ class WindowAppBar extends StatelessWidget implements PreferredSizeWidget {
     return kToolbarHeight;
   }
 
+  Color get purueColor {
+    return Get.isDarkMode ? Colors.blue : Colors.white;
+  }
+
   Widget get titleWidget {
     var _ = Get.context;
-    if (_ == null) return BackButton();
+    if (_ == null)
+      return BackButton(
+        color: purueColor,
+      );
     if (title != null)
       return DefaultTextStyle(
         style: Theme.of(_).appBarTheme.titleTextStyle ?? TextStyle(),
@@ -94,9 +101,12 @@ class WindowAppBar extends StatelessWidget implements PreferredSizeWidget {
       );
     if (iosBackStyle)
       return CupertinoNavigationBarBackButton(
+        color: purueColor,
         onPressed: () => Get.back(),
       );
-    return BackButton();
+    return BackButton(
+      color: purueColor,
+    );
   }
 
   @override

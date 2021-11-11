@@ -125,12 +125,42 @@ class _SettingsViewState extends State<SettingsView> {
   }
 
   set showNSFW(newVal) {
+    // TODO 为 `false` 时
+    // showBlurModel();
+
     setState(() {
       nShowNSFW = !newVal ? 0 : 10;
     });
   }
 
-  int nShowNSFW = 0;
+  int _nShowNSFW = 0;
+
+  int get nShowNSFW => _nShowNSFW;
+
+  set nShowNSFW(newVal) {
+    setState(() {
+      _nShowNSFW = newVal;
+    });
+    if (_nShowNSFW >= 10) {
+      showBlurModel();
+    }
+  }
+
+  showBlurModel({
+    Duration time = const Duration(seconds: 2),
+  }) {
+    // if (Get.isDialogOpen ?? false) return;
+    Get.dialog(
+      Expanded(
+        child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+        ),
+      ),
+    );
+    Future.delayed(time, () {
+      Get.back();
+    });
+  }
 
   TextEditingController _editingController = TextEditingController();
 

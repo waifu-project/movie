@@ -41,7 +41,7 @@ class _MirrorTableViewState extends State<MirrorTableView> {
     return CupertinoPageScaffold(
       navigationBar: CupertinoNavigationBar(
         backgroundColor: Get.isDarkMode ? Colors.black12 : Colors.white,
-        leading: Container(),
+        leading: GetPlatform.isDesktop ? CupertinoNavigationBarBackButton() : Container(),
         middle: Text(
           '视频源',
           style: TextStyle(color: Get.isDarkMode ? Colors.white : Colors.black),

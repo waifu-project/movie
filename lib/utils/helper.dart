@@ -1,19 +1,24 @@
 // Copyright (C) 2021 d1y <chenhonzhou@gmail.com>
-// 
+//
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License as
 // published by the Free Software Foundation, either version 3 of the
 // License, or (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Affero General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 // copy https://github.com/dart-league/validators/blob/master/lib/validators.dart
+
+import 'dart:io';
+
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 RegExp _ipv4Maybe =
     new RegExp(r'^(\d?\d?\d)\.(\d?\d?\d)\.(\d?\d?\d)\.(\d?\d?\d)$');
@@ -78,7 +83,6 @@ bool isFQDN(String str,
   }
   return true;
 }
-
 
 /// check if the string [str] is a URL
 ///
@@ -200,4 +204,34 @@ bool isURL(String? str,
   }
 
   return true;
+}
+
+/// 获取 [windows] 平台的主题
+/// 参考:
+///   => https://github.com/albertosottile/darkdetect/blob/master/darkdetect/_windows_detect.py
+Brightness getWindowsThemeMode() {
+  if (!GetPlatform.isWindows) return Brightness.light;
+  
+  // PS C:\Users\PureBoy> reg query HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize /v AppsUseLightTheme /z /t REG_DWORD
+  // HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize
+  //     AppsUseLightTheme    REG_DWORD (4)    0x1
+  // 搜索结束: 找到 1 匹配。
+
+  // 0x1 => 浅色
+  // 0x0 => 深色
+  var pipe = Process.runSync("reg", [
+    "query",
+    "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize",
+    "/v",
+    "AppsUseLightTheme",
+    "/z",
+    "/t",
+    "REG_DWORD"
+  ]);
+  var io2 = pipe.stdout.toString();
+  return [
+    {"k": "0x1", "v": Brightness.light},
+    {"k": "0x0", "v": Brightness.dark},
+  ].firstWhere((element) => io2.contains(element["k"] as String))["v"]
+      as Brightness;
 }

@@ -20,6 +20,7 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:movie/config.dart';
 import 'package:movie/mirror/mirror.dart';
+import 'package:movie/utils/helper.dart';
 
 import 'app/routes/app_pages.dart';
 import 'utils/http.dart';
@@ -30,6 +31,19 @@ void main() async {
   await GetStorage.init();
   await MirrorManage.init();
   final localStorage = GetStorage();
+
+  bool isDark = (localStorage.read(ConstDart.ls_isDark) ?? false);
+  bool systemBrightnessFlag = (localStorage.read(ConstDart.auto_dark) ?? false);
+
+  Brightness wrapperIfDark = Brightness.light;
+
+  {
+    if (isDark) wrapperIfDark = Brightness.dark;
+    if (GetPlatform.isWindows && systemBrightnessFlag) {
+      var windowMode = getWindowsThemeMode();
+      wrapperIfDark = windowMode;
+    }
+  }
   runApp(
     GetMaterialApp(
       title: "YY播放器",
@@ -37,9 +51,7 @@ void main() async {
       getPages: AppPages.routes,
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        brightness: (localStorage.read(ConstDart.ls_isDark) ?? false)
-            ? Brightness.dark
-            : Brightness.light,
+        brightness: wrapperIfDark,
       ),
     ),
   );

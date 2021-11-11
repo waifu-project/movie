@@ -24,6 +24,9 @@ class ConstDart {
   /// 是否为暗色模式
   static final String ls_isDark = "isDark";
 
+  /// 自动系统主题(暗色/浅色)
+  static final String auto_dark = "autoDark";
+
   /// 搜索历史记录
   static final String search_history = "searchHistory";
 

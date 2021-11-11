@@ -25,6 +25,7 @@ import 'package:movie/app/widget/window_appbar.dart';
 import 'package:movie/config.dart';
 import 'package:movie/mirror/m_utils/source_utils.dart';
 import 'package:movie/mirror/mirror.dart';
+import 'package:movie/utils/helper.dart';
 
 import 'nsfwtable.dart';
 
@@ -74,10 +75,33 @@ class _SettingsViewState extends State<SettingsView> {
     Get.changeTheme(!newVal ? ThemeData.light() : ThemeData.dark());
   }
 
+  bool _autoDarkMode = false;
+
+  set autoDarkMode(bool newVal) {
+    home.localStorage.write(ConstDart.auto_dark, newVal);
+    setState(() {
+      _autoDarkMode = newVal;
+    });
+    if (!newVal) {
+      Get.changeTheme(!_isDark ? ThemeData.light() : ThemeData.dark());
+      return;
+    }
+    if (GetPlatform.isWindows) {
+      var mode = getWindowsThemeMode();
+      Get.changeTheme(ThemeData(brightness: mode));
+    }
+    Get.changeThemeMode(ThemeMode.system);
+  }
+
+  bool get autoDarkMode {
+    return _autoDarkMode;
+  }
+
   @override
   void initState() {
     setState(() {
       _isDark = home.localStorage.read(ConstDart.ls_isDark) ?? false;
+      _autoDarkMode = home.localStorage.read(ConstDart.auto_dark) ?? false;
     });
     loadSourceHelp();
     super.initState();
@@ -193,24 +217,38 @@ class _SettingsViewState extends State<SettingsView> {
       appBar: WindowAppBar(
         title: Text("设置"),
         centerTitle: true,
-        actions: [
-          SizedBox.shrink()
-        ],
+        actions: [SizedBox.shrink()],
       ),
       body: CupertinoSettings(
         items: <Widget>[
           const CSHeader('常规设置'),
+          !autoDarkMode
+              ? CSControl(
+                  nameWidget: Text('深色'),
+                  contentWidget: CupertinoSwitch(
+                    value: isDark,
+                    onChanged: (bool value) {
+                      isDark = value;
+                    },
+                  ),
+                  style: const CSWidgetStyle(
+                    icon: const Icon(
+                      Icons.settings_brightness,
+                    ),
+                  ),
+                )
+              : SizedBox.shrink(),
           CSControl(
-            nameWidget: Text('深色'),
+            nameWidget: Text('深色跟随系统'),
             contentWidget: CupertinoSwitch(
-              value: isDark,
+              value: autoDarkMode,
               onChanged: (bool value) {
-                isDark = value;
+                autoDarkMode = value;
               },
             ),
             style: const CSWidgetStyle(
               icon: const Icon(
-                Icons.settings_brightness,
+                CupertinoIcons.moon_stars_fill,
               ),
             ),
           ),
@@ -366,7 +404,9 @@ class _SettingsViewState extends State<SettingsView> {
               ),
             ),
           ),
-          SizedBox(height: 24,),
+          SizedBox(
+            height: 24,
+          ),
           GestureDetector(
             onTap: () {
               if (showNSFW) {

@@ -58,7 +58,7 @@ void main() async {
 
   if (GetPlatform.isDesktop) {
     doWhenWindowReady(() {
-      final initialSize = Size(600, 450);
+      final initialSize = Size(990, 720);
       appWindow.minSize = initialSize;
       appWindow.size = initialSize;
       appWindow.alignment = Alignment.center;

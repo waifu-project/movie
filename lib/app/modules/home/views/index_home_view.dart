@@ -44,14 +44,15 @@ class IndexHomeView extends GetView {
             ),
           ),
           actions: [
-            IconButton(
+            CupertinoButton(
+              child: Icon(
+                Icons.movie,
+                color: Colors.white,
+              ),
               onPressed: () {
                 homeview.showMirrorModel(context);
               },
-              icon: Icon(
-                Icons.movie,
-              ),
-            )
+            ),
           ],
         ),
         body: SmartRefresher(

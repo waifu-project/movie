@@ -158,8 +158,8 @@ class _MacwindowctlState extends State<Macwindowctl> {
                           child: Icon(
                             item["icon"],
                             color:
-                                onHoverFlag ? Colors.black : Colors.transparent,
-                            size: (widget.buttonSize ?? 10) * .75,
+                                onHoverFlag ? Colors.black87 : Colors.transparent,
+                            size: (widget.buttonSize ?? 12) * .75,
                           ),
                         ),
                       ),

@@ -212,12 +212,20 @@ class HomeController extends GetxController {
   void onClose() {}
   void changeCurrentBarIndex(int i) {
     if (currentBarIndex == i) return;
+    int absVal = currentBarIndex - i;
     currentBarIndex = i;
-    currentBarController.animateToPage(
-      i,
-      curve: Curves.ease,
-      duration: Duration(milliseconds: 500),
-    );
+    var val = absVal.abs();
+    if (val >= 2) {
+      currentBarController.jumpToPage(
+        i,
+      );
+    } else {
+      currentBarController.animateToPage(
+        i,
+        curve: Curves.ease,
+        duration: Duration(milliseconds: 500),
+      );
+    }
     update();
   }
 }

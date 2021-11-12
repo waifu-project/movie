@@ -47,8 +47,7 @@ class HomeView extends GetView<HomeController> {
           },
           itemCount: views.length,
           onPageChanged: (index) {
-            // TODO
-            // homeview.changeCurrentBarIndex
+            homeview.changeCurrentBarIndex(index);
           },
         ),
         bottomNavigationBar: BottomAppBar(

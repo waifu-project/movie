@@ -13,8 +13,6 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:cupertino_list_tile/cupertino_list_tile.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -213,9 +211,13 @@ class HomeController extends GetxController {
   @override
   void onClose() {}
   void changeCurrentBarIndex(int i) {
+    if (currentBarIndex == i) return;
     currentBarIndex = i;
-    currentBarController.animateToPage(i,
-        curve: Curves.ease, duration: Duration(milliseconds: 500));
+    currentBarController.animateToPage(
+      i,
+      curve: Curves.ease,
+      duration: Duration(milliseconds: 500),
+    );
     update();
   }
 }

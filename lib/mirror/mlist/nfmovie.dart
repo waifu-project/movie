@@ -17,6 +17,7 @@ import 'package:dio/dio.dart';
 import 'package:html/dom.dart';
 import 'package:movie/impl/movie.dart';
 import 'package:html/parser.dart' as html;
+import 'package:movie/mirror/m_utils/m.dart';
 import 'package:movie/mirror/mirror_serialize.dart';
 import 'package:movie/utils/http.dart';
 
@@ -81,7 +82,7 @@ class NfmovieMirror extends MovieImpl {
         var title = e.title;
         var item = MirrorSerializeVideoInfo(
           url: url,
-          type: MirrorSerializeVideoType.iframe,
+          type: KBaseMirrorMovie.easyGetVideoType(url),
           name: title,
         );
         return item;

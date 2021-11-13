@@ -411,13 +411,26 @@ class _SettingsViewState extends State<SettingsView> {
                       isDestructiveAction: true,
                       onPressed: () async {
                         await home.localStorage.erase();
-                        Get.showSnackbar(
-                          GetBar(
-                            message: "已删除缓存, 重启之后生效!",
-                            duration: Duration(seconds: 1),
-                          ),
-                        );
                         Get.back();
+                        showCupertinoDialog(
+                          builder: (context) => CupertinoAlertDialog(
+                            content: Text("已删除缓存, 重启之后生效!"),
+                            actions: [
+                              CupertinoDialogAction(
+                                child: const Text(
+                                  '我知道了',
+                                  style: TextStyle(
+                                    color: Colors.red,
+                                  ),
+                                ),
+                                onPressed: () {
+                                  Get.back();
+                                },
+                              ),
+                            ],
+                          ),
+                          context: context,
+                        );
                       },
                     )
                   ],

@@ -93,58 +93,81 @@ class IndexHomeView extends GetView {
               }
               return SingleChildScrollView(
                 physics: NeverScrollableScrollPhysics(),
-                child: Column(
-                  children: [
-                    SizedBox(
-                      height: 24,
-                    ),
-                    GridView.count(
-                      shrinkWrap: true,
-                      controller: new ScrollController(
-                        keepScrollOffset: false,
+                child: Builder(builder: (context) {
+                  if (homeview.homedata.isEmpty)
+                    return Container(
+                      height: Get.height - Get.height * .2,
+                      child: Center(
+                        child: Column(
+                          children: [
+                            Image.asset(
+                              "assets/images/empty.png",
+                              fit: BoxFit.cover,
+                              width: Get.width * .8,
+                            ),
+                            CupertinoButton.filled(
+                              child: Text("重新加载"),
+                              onPressed: () {
+                                homeview.updateHomeData(isFirst: true);
+                              },
+                            ),
+                          ],
+                        ),
                       ),
-                      crossAxisCount: 3,
-                      crossAxisSpacing: 6,
-                      mainAxisSpacing: 12,
-                      childAspectRatio:
-                          (MediaQuery.of(context).size.width / 3) /
-                              (MediaQuery.of(context).size.height / 4),
-                      padding: EdgeInsets.symmetric(
-                        vertical: 0,
-                        horizontal: 12,
+                    );
+                  return Column(
+                    children: [
+                      SizedBox(
+                        height: 24,
                       ),
-                      children: [
-                        ...homeview.homedata
-                            .map(
-                              (subItem) => MovieCardItem(
-                                imageUrl: subItem.smallCoverImage,
-                                title: subItem.title,
-                                onTap: () async {
-                                  var data = subItem;
-                                  if (subItem.videos.isEmpty) {
-                                    var id = subItem.id;
-                                    Get.dialog(
-                                      Center(
-                                        child: CupertinoActivityIndicator(),
-                                      ),
+                      GridView.count(
+                        shrinkWrap: true,
+                        controller: new ScrollController(
+                          keepScrollOffset: false,
+                        ),
+                        crossAxisCount: 3,
+                        crossAxisSpacing: 6,
+                        mainAxisSpacing: 12,
+                        childAspectRatio:
+                            (MediaQuery.of(context).size.width / 3) /
+                                (MediaQuery.of(context).size.height / 4),
+                        padding: EdgeInsets.symmetric(
+                          vertical: 0,
+                          horizontal: 12,
+                        ),
+                        children: [
+                          ...homeview.homedata
+                              .map(
+                                (subItem) => MovieCardItem(
+                                  imageUrl: subItem.smallCoverImage,
+                                  title: subItem.title,
+                                  onTap: () async {
+                                    var data = subItem;
+                                    if (subItem.videos.isEmpty) {
+                                      var id = subItem.id;
+                                      Get.dialog(
+                                        Center(
+                                          child: CupertinoActivityIndicator(),
+                                        ),
+                                      );
+                                      data = await homeview.currentMirrorItem
+                                          .getDetail(id);
+                                      Get.back();
+                                    }
+                                    Get.toNamed(
+                                      Routes.PLAY,
+                                      arguments: data,
                                     );
-                                    data = await homeview.currentMirrorItem
-                                        .getDetail(id);
-                                    Get.back();
-                                  }
-                                  Get.toNamed(
-                                    Routes.PLAY,
-                                    arguments: data,
-                                  );
-                                },
-                              ),
-                            )
-                            .toList(),
-                      ],
-                    ),
-                    kBarHeightWidget,
-                  ],
-                ),
+                                  },
+                                ),
+                              )
+                              .toList(),
+                        ],
+                      ),
+                      kBarHeightWidget,
+                    ],
+                  );
+                }),
               );
             },
           ),

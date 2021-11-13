@@ -91,6 +91,10 @@ class PlayView extends GetView<PlayController> {
     return result;
   }
 
+  bool get canRenderIosStyle {
+    return playlist.length >= 4;
+  }
+
   final double offsetSize = 12;
 
   @override
@@ -175,9 +179,73 @@ class PlayView extends GetView<PlayController> {
                 ),
                 Container(
                   width: double.infinity,
+                  height: canRenderIosStyle ? 32 + 12 : null,
+                  decoration: canRenderIosStyle
+                      ? BoxDecoration(
+                          border: Border(
+                              bottom: BorderSide(
+                            color: Colors.pink,
+                            width: 1,
+                          )),
+                        )
+                      : null,
+                  padding: canRenderIosStyle
+                      ? EdgeInsets.only(
+                          bottom: 12,
+                        )
+                      : null,
                   child: Builder(builder: (_) {
-                    if (playlist.length <= 1 || tabviewData[1] == null)
-                      return SizedBox.shrink();
+                    var isNext = playlist.length <= 1 || tabviewData[1] == null;
+                    if (isNext) return SizedBox.shrink();
+                    if (canRenderIosStyle) {
+                      return ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: playlist.length,
+                        itemBuilder: (context, index) {
+                          var isCurrentIndex = index == play.tabIndex;
+                          var current = playlist[index];
+                          return GestureDetector(
+                            onTap: () {
+                              play.changeTabIndex(index);
+                            },
+                            child: AnimatedContainer(
+                              alignment: Alignment.center,
+                              // width: Get.width * .334,
+                              height: 32,
+                              duration: Duration(milliseconds: 300),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(12),
+                                border: Border.all(
+                                  color: isCurrentIndex
+                                      ? Colors.pink
+                                      : (Get.isDarkMode
+                                          ? Colors.white
+                                          : Colors.black),
+                                ),
+                              ),
+                              margin: EdgeInsets.only(
+                                right: 6,
+                                left: 9,
+                              ),
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 24,
+                              ),
+                              child: Text(
+                                current.title,
+                                style: TextStyle(
+                                  color: isCurrentIndex
+                                      ? Colors.pink
+                                      : (Get.isDarkMode
+                                          ? Colors.white
+                                          : Colors.black),
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          );
+                        },
+                      );
+                    }
                     return CupertinoSlidingSegmentedControl(
                       backgroundColor: Colors.black26,
                       thumbColor: Get.isDarkMode ? Colors.blue : Colors.white,

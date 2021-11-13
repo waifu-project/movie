@@ -64,6 +64,7 @@ flutter:
     - assets/images/image_faild.png
     - assets/data/play_tips.txt
     - assets/images/empty.png
+    - assets/images/github_logo.png
 
 # flutter pub run flutter_launcher_icons:main
 flutter_icons:

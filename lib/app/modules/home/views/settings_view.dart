@@ -115,7 +115,8 @@ class _SettingsViewState extends State<SettingsView> {
   }
 
   addMirrorMangerTextareaLister() {
-    editingControllerValue = home.localStorage.read<String>(ConstDart.mirror_textArea) ?? "";
+    editingControllerValue =
+        home.localStorage.read<String>(ConstDart.mirror_textArea) ?? "";
     _editingController.addListener(() {
       home.localStorage.write(
         ConstDart.mirror_textArea,
@@ -473,6 +474,51 @@ class _SettingsViewState extends State<SettingsView> {
             },
             child: CSDescription(
               "@陈大大哦了",
+            ),
+          ),
+          MouseRegion(
+            cursor: SystemMouseCursors.click,
+            child: GestureDetector(
+              onTap: () {
+                // TODO
+              },
+              child: Padding(
+                padding: EdgeInsets.all(12),
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.5),
+                        spreadRadius: 5,
+                        blurRadius: 7,
+                        offset: Offset(0, 3), // changes position of shadow
+                      ),
+                    ],
+                  ),
+                  child: Row(
+                    children: [
+                      SizedBox(
+                        width: 12,
+                      ),
+                      Image.asset(
+                        "assets/images/github_logo.png",
+                        width: 81,
+                      ),
+                      SizedBox(
+                        width: 12,
+                      ),
+                      Text(
+                        "开源地址ヾ(≧O≦)〃",
+                        style: TextStyle(
+                          color: Colors.blue,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
             ),
           ),
         ],

@@ -28,7 +28,9 @@ List<SourceJsonData> sourceJsonDataFromJson(String str) =>
 
 String sourceJsonDataToJson(List<SourceJsonData> data) => json.encode(
       List<dynamic>.from(
-        data.map((x) => x.toJson(),),
+        data.map(
+          (x) => x.toJson(),
+        ),
       ),
     );
 
@@ -47,13 +49,53 @@ class SourceJsonData {
   final bool? nsfw;
   final Api? api;
 
-  factory SourceJsonData.fromJson(Map<String, dynamic> json) => SourceJsonData(
-        name: json["name"],
-        logo: json["logo"],
-        desc: json["desc"],
-        nsfw: json["nsfw"],
-        api: Api.fromJson(json["api"]),
+  factory SourceJsonData.fromJson(Map<String, dynamic> json) {
+
+    /// note:
+    ///   => 尝试兼容 `ZY-Player` 的源
+    ///   => 通过判断其是否有 `id`
+    var id = json['id'];
+    if (id != null) {
+
+      // 匹配规则
+      // {
+      //   "key": "十点影视",
+      //   "id": 18,
+      //   "name": "十点影视(需解析)",
+      //   "api": "http://shidian.vip/api.php/provide/vod/at/xml",
+      //   "download": "",
+      //   "jiexiUrl": "",
+      //   "group": "需解析",
+      //   "isActive": true,
+      //   "status": "可用",
+      //   "reverseOrder": true
+      // }
+      String apiFull = json['api'];
+
+      // TODO 容错处理
+      var url = Uri.parse(apiFull);
+      
+      return SourceJsonData(
+        name: json['name'],
+        logo: "",
+        desc: "",
+        nsfw: (json['group'] ?? "") == "18禁",
+        api: Api(
+          path: url.path,
+          root: url.origin,
+        ),
       );
+
+    }
+
+    return SourceJsonData(
+      name: json["name"],
+      logo: json["logo"],
+      desc: json["desc"],
+      nsfw: json["nsfw"],
+      api: Api.fromJson(json["api"]),
+    );
+  }
 
   Map<String, dynamic> toJson() => {
         "name": name,

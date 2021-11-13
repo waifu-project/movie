@@ -44,14 +44,17 @@ class IndexHomeView extends GetView {
             ),
           ),
           actions: [
-            CupertinoButton(
-              child: Icon(
-                Icons.movie,
-                color: Colors.white,
+            MouseRegion(
+              cursor: SystemMouseCursors.click,
+              child: CupertinoButton(
+                child: Icon(
+                  Icons.movie,
+                  color: Colors.white,
+                ),
+                onPressed: () {
+                  homeview.showMirrorModel(context);
+                },
               ),
-              onPressed: () {
-                homeview.showMirrorModel(context);
-              },
             ),
           ],
         ),

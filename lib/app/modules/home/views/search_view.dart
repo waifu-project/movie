@@ -24,6 +24,7 @@ import 'package:movie/app/routes/app_pages.dart';
 import 'package:movie/app/widget/helper.dart';
 import 'package:movie/app/widget/k_tag.dart';
 import 'package:movie/app/widget/window_appbar.dart';
+import 'package:movie/config.dart';
 import 'package:movie/mirror/mirror_serialize.dart';
 
 class SearchView extends StatefulWidget {
@@ -39,12 +40,69 @@ class _SearchViewState extends State<SearchView> {
   final SearchBarController _searchBarController =
       SearchBarController<MirrorOnceItemSerialize>();
 
+  List<String> _searchHistory = [];
+
+  List<String> get searchHistory {
+    return _searchHistory;
+  }
+
+  set searchHistory(newVal) {
+    setState(() {
+      _searchHistory = newVal;
+    });
+    home.localStorage.write(ConstDart.search_history, newVal);
+  }
+
+  loadSearchHistory() {
+    var data = List<String>.from(
+      home.localStorage.read(ConstDart.search_history) ?? [],
+    );
+    setState(() {
+      _searchHistory = data;
+    });
+  }
+
+  @override
+  void initState() {
+    loadSearchHistory();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  /// 操作历史记录
+  handleUpdateSearchHistory(
+    String text, {
+    type = UpdateSearchHistoryType.add,
+  }) {
+    var oldData = _searchHistory;
+    switch (type) {
+      case UpdateSearchHistoryType.add: // 添加
+        oldData.remove(text);
+        oldData.insert(0, text);
+        break;
+      case UpdateSearchHistoryType.remove: // 删除单个
+        oldData.remove(text);
+        break;
+      case UpdateSearchHistoryType.clean: // 清除所有
+        oldData = [];
+        break;
+      default:
+    }
+    searchHistory = oldData;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: GetPlatform.isDesktop ? WindowAppBar(
-        title: SizedBox.shrink(),
-      ) : null,
+      appBar: GetPlatform.isDesktop
+          ? WindowAppBar(
+              title: SizedBox.shrink(),
+            )
+          : null,
       body: SafeArea(
         child: SearchBar<MirrorOnceItemSerialize>(
           textStyle: TextStyle(
@@ -199,7 +257,7 @@ class _SearchViewState extends State<SearchView> {
                           horizontal: 2,
                         ),
                         onPressed: () {
-                          home.handleUpdateSearchHistory(
+                          handleUpdateSearchHistory(
                             "",
                             type: UpdateSearchHistoryType.clean,
                           );
@@ -211,13 +269,13 @@ class _SearchViewState extends State<SearchView> {
                   SizedBox(
                     height: 12,
                   ),
-                  home.searchHistory.isEmpty
+                  searchHistory.isEmpty
                       ? Text(
                           "暂无历史记录",
                           style: Theme.of(context).textTheme.subtitle2,
                         )
                       : Wrap(
-                          children: home.searchHistory
+                          children: searchHistory
                               .map(
                                 (e) => KTag(
                                   child: Text(e),
@@ -229,7 +287,7 @@ class _SearchViewState extends State<SearchView> {
                                   onTap: (type) {
                                     switch (type) {
                                       case KTagTapEventType.content: // 内容
-                                        home.handleUpdateSearchHistory(
+                                        handleUpdateSearchHistory(
                                           e,
                                           type: UpdateSearchHistoryType.add,
                                         );
@@ -239,7 +297,7 @@ class _SearchViewState extends State<SearchView> {
                                         );
                                         break;
                                       case KTagTapEventType.action: // action
-                                        home.handleUpdateSearchHistory(
+                                        handleUpdateSearchHistory(
                                           e,
                                           type: UpdateSearchHistoryType.remove,
                                         );
@@ -262,7 +320,7 @@ class _SearchViewState extends State<SearchView> {
 
   Future<List<MirrorOnceItemSerialize>> handleSearch(String? text) async {
     if (text == null) return [];
-    home.handleUpdateSearchHistory(
+    handleUpdateSearchHistory(
       text,
       type: UpdateSearchHistoryType.add,
     );

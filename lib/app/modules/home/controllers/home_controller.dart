@@ -60,41 +60,6 @@ class HomeController extends GetxController {
     localStorage.write(ConstDart.is_nsfw, newVal);
   }
 
-  List<String> _searchHistory = [];
-
-  List<String> get searchHistory {
-    return _searchHistory;
-  }
-
-  set searchHistory(List<String> newSearchHistory) {
-    _searchHistory = newSearchHistory;
-    update();
-    localStorage.write(ConstDart.search_history, newSearchHistory);
-  }
-
-  /// 操作历史记录
-  handleUpdateSearchHistory(
-    String text, {
-    type = UpdateSearchHistoryType.add,
-  }) {
-    switch (type) {
-      case UpdateSearchHistoryType.add: // 添加
-        _searchHistory.remove(text);
-        _searchHistory.insert(0, text);
-        searchHistory = _searchHistory;
-        break;
-      case UpdateSearchHistoryType.remove: // 删除单个
-        _searchHistory.remove(text);
-        searchHistory = _searchHistory;
-        break;
-      case UpdateSearchHistoryType.clean: // 清除所有
-        searchHistory = [];
-        break;
-      default:
-    }
-    update();
-  }
-
   int get mirrorIndex {
     return localStorage.read(ConstDart.ls_mirrorIndex) ?? 0;
   }
@@ -161,7 +126,6 @@ class HomeController extends GetxController {
   void onInit() {
     super.onInit();
     updateNsfwSetting();
-    updateSearchHistory();
     updateHomeData(isFirst: true);
   }
 
@@ -170,11 +134,6 @@ class HomeController extends GetxController {
     update();
   }
 
-  updateSearchHistory() {
-    _searchHistory =
-        List<String>.from(localStorage.read(ConstDart.search_history) ?? []);
-    update();
-  }
 
   Future<List<MirrorOnceItemSerialize>> updateSearchData(String keyword) async {
     var resp = await currentMirrorItem.getSearch(keyword: keyword);

@@ -133,6 +133,15 @@ class IndexHomeView extends GetView {
                                     homeview.updateHomeData(isFirst: true);
                                   },
                                 ),
+                                Builder(builder: (context) {
+                                  var msg =
+                                      homeview.indexHomeLoadDataErrorMessage;
+                                  if (msg == "") return SizedBox.shrink();
+                                  return Padding(
+                                    padding: EdgeInsets.all(Get.width * .05),
+                                    child: Text(msg, style: TextStyle(fontSize: 12,fontWeight: FontWeight.w400),),
+                                  );
+                                }),
                               ],
                             ),
                           ),

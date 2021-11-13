@@ -116,15 +116,23 @@ class HomeController extends GetxController {
   }
 
   void refreshOnLoading() async {
-    page++;
-    update();
-    await updateHomeData();
-    refreshController.loadComplete();
+    try {
+      page++;
+      update();
+      await updateHomeData();
+      refreshController.loadComplete();
+    } catch (e) {
+      refreshController.loadFailed();
+    }
   }
 
   void refreshOnRefresh() async {
-    await updateHomeData(isFirst: true, missIsLoading: true);
-    refreshController.refreshCompleted();
+    try {
+      await updateHomeData(isFirst: true, missIsLoading: true);
+      refreshController.refreshCompleted();
+    } catch (e) {
+      refreshController.refreshFailed();
+    }
   }
 
   @override
@@ -133,6 +141,8 @@ class HomeController extends GetxController {
     updateNsfwSetting();
     updateHomeData(isFirst: true);
   }
+
+  String indexHomeLoadDataErrorMessage = "";
 
   updateNsfwSetting() {
     _isNsfw = localStorage.read(ConstDart.is_nsfw) ?? false;
@@ -147,23 +157,30 @@ class HomeController extends GetxController {
   /// [isFirst] 初始化加载数据需要将 [isLoading] => true
   /// [missIsLoading] 某些特殊情况下不需要设置 [isLoading] => true
   updateHomeData({bool isFirst = false, missIsLoading = false}) async {
-    if (isFirst) {
-      isLoading = !missIsLoading;
-      page = 1;
+    try {
+      if (isFirst) {
+        isLoading = !missIsLoading;
+        page = 1;
+        update();
+      }
+      debugPrint("handle axaj get page: $page, $limit");
+      List<MirrorOnceItemSerialize> data = await currentMirrorItem.getHome(
+        page: page,
+        limit: limit,
+      );
+      if (isFirst) {
+        homedata = data;
+      } else {
+        homedata.addAll(data);
+      }
+      isLoading = false;
+      update();
+    } catch (e) {
+      indexHomeLoadDataErrorMessage = e.toString();
+      isLoading = false;
+      homedata = [];
       update();
     }
-    print("handle axaj get page: $page, $limit");
-    List<MirrorOnceItemSerialize> data = await currentMirrorItem.getHome(
-      page: page,
-      limit: limit,
-    );
-    if (isFirst) {
-      homedata = data;
-    } else {
-      homedata.addAll(data);
-    }
-    isLoading = false;
-    update();
   }
 
   @override

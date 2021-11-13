@@ -82,7 +82,7 @@ class PlayController extends GetxController {
         () => WebviewView(),
         arguments: url,
       );
-    } else if (e.type == MirrorSerializeVideoType.m3u8) {
+    } else if (e.type == MirrorSerializeVideoType.m3u8 || e.type == MirrorSerializeVideoType.mp4) {
       Get.to(
         () => ChewieView(),
         arguments: {

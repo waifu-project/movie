@@ -46,3 +46,5 @@ class ConstDart {
     return false;
   }
 }
+
+const GITHUB_OPEN = "https://github.com/waifu-project/movie";

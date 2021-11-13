@@ -480,7 +480,7 @@ class _SettingsViewState extends State<SettingsView> {
             cursor: SystemMouseCursors.click,
             child: GestureDetector(
               onTap: () {
-                // TODO
+                LaunchURL(GITHUB_OPEN);
               },
               child: Padding(
                 padding: EdgeInsets.all(12),

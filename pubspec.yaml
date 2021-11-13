@@ -32,6 +32,7 @@ dependencies:
   auto_orientation: ^2.1.0
   desktop_webview_window: ^0.0.5
   bitsdojo_window: ^0.1.1+1
+  url_launcher: ^6.0.12
   
   flutter: 
     sdk: flutter

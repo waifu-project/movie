@@ -20,6 +20,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 RegExp _ipv4Maybe =
     new RegExp(r'^(\d?\d?\d)\.(\d?\d?\d)\.(\d?\d?\d)\.(\d?\d?\d)$');
@@ -245,3 +246,6 @@ class MyCustomScrollBehavior extends MaterialScrollBehavior {
     // etc.
   };
 }
+
+void LaunchURL(String _url) async =>
+    await canLaunch(_url) ? await launch(_url) : throw 'Could not launch $_url';

@@ -104,6 +104,7 @@ class _SettingsViewState extends State<SettingsView> {
       _autoDarkMode = home.localStorage.read(ConstDart.auto_dark) ?? false;
     });
     loadSourceHelp();
+    addMirrorMangerTextareaLister();
     super.initState();
   }
 
@@ -111,6 +112,16 @@ class _SettingsViewState extends State<SettingsView> {
   void dispose() {
     _editingController.dispose();
     super.dispose();
+  }
+
+  addMirrorMangerTextareaLister() {
+    editingControllerValue = home.localStorage.read<String>(ConstDart.mirror_textArea) ?? "";
+    _editingController.addListener(() {
+      home.localStorage.write(
+        ConstDart.mirror_textArea,
+        editingControllerValue,
+      );
+    });
   }
 
   loadSourceHelp() async {

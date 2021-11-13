@@ -33,6 +33,9 @@ class ConstDart {
   /// 镜像列表
   static final String mirror_list = "mirrorList";
 
+  /// 视频源输入框
+  static final String mirror_textArea = "mirror_textarea";
+
   /// 显示播放提示
   /// **免责提示**
   static final String showPlayTips = "showPlayTips";

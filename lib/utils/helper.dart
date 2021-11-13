@@ -16,6 +16,7 @@
 // copy https://github.com/dart-league/validators/blob/master/lib/validators.dart
 
 import 'dart:io';
+import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -234,4 +235,13 @@ Brightness getWindowsThemeMode() {
     {"k": "0x0", "v": Brightness.dark},
   ].firstWhere((element) => io2.contains(element["k"] as String))["v"]
       as Brightness;
+}
+
+class MyCustomScrollBehavior extends MaterialScrollBehavior {
+  @override
+  Set<PointerDeviceKind> get dragDevices => {
+    PointerDeviceKind.touch,
+    PointerDeviceKind.mouse,
+    // etc.
+  };
 }

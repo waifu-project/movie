@@ -122,6 +122,11 @@ class HomeController extends GetxController {
     refreshController.loadComplete();
   }
 
+  void refreshOnRefresh() async {
+    await updateHomeData(isFirst: true, missIsLoading: true);
+    refreshController.refreshCompleted();
+  }
+
   @override
   void onInit() {
     super.onInit();
@@ -134,16 +139,16 @@ class HomeController extends GetxController {
     update();
   }
 
-
   Future<List<MirrorOnceItemSerialize>> updateSearchData(String keyword) async {
     var resp = await currentMirrorItem.getSearch(keyword: keyword);
     return resp;
   }
 
   /// [isFirst] 初始化加载数据需要将 [isLoading] => true
-  updateHomeData({bool isFirst = false}) async {
+  /// [missIsLoading] 某些特殊情况下不需要设置 [isLoading] => true
+  updateHomeData({bool isFirst = false, missIsLoading = false}) async {
     if (isFirst) {
-      isLoading = true;
+      isLoading = !missIsLoading;
       page = 1;
       update();
     }

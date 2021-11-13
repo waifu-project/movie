@@ -37,7 +37,9 @@ enum UpdateSearchHistoryType {
   clean
 }
 
-class HomeController extends GetxController {
+class HomeController extends GetxController with WidgetsBindingObserver {
+  late Size windowLastSize;
+
   var currentBarIndex = 0;
 
   PageController currentBarController = PageController(
@@ -138,8 +140,15 @@ class HomeController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    updateWindowLastSize();
+    WidgetsBinding.instance!.addObserver(this);
     updateNsfwSetting();
     updateHomeData(isFirst: true);
+  }
+
+  updateWindowLastSize() {
+    windowLastSize = WidgetsBinding.instance!.window.physicalSize;
+    update();
   }
 
   String indexHomeLoadDataErrorMessage = "";
@@ -190,7 +199,15 @@ class HomeController extends GetxController {
   }
 
   @override
-  void onClose() {}
+  void onClose() {
+    WidgetsBinding.instance!.removeObserver(this);
+  }
+
+  @override
+  void didChangeMetrics() {
+    updateWindowLastSize();
+  }
+
   void changeCurrentBarIndex(int i) {
     if (currentBarIndex == i) return;
     int absVal = currentBarIndex - i;

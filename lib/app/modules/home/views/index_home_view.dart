@@ -26,6 +26,19 @@ import 'package:movie/app/widget/window_appbar.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class IndexHomeView extends GetView {
+  final HomeController home = Get.find();
+
+  int get cardCount {
+    var w = home.windowLastSize.width;
+    if (w >= 1000) return 5;
+    return 3;
+  }
+
+  double get childAspectRatio {
+    return home.windowLastSize.aspectRatio;
+    // return (Get.width / cardCount) / (Get.height / cardCount);
+  }
+
   @override
   Widget build(BuildContext context) {
     return GetBuilder<HomeController>(
@@ -139,7 +152,13 @@ class IndexHomeView extends GetView {
                                   if (msg == "") return SizedBox.shrink();
                                   return Padding(
                                     padding: EdgeInsets.all(Get.width * .05),
-                                    child: Text(msg, style: TextStyle(fontSize: 12,fontWeight: FontWeight.w400),),
+                                    child: Text(
+                                      msg,
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w400,
+                                      ),
+                                    ),
                                   );
                                 }),
                               ],
@@ -156,12 +175,10 @@ class IndexHomeView extends GetView {
                             controller: new ScrollController(
                               keepScrollOffset: false,
                             ),
-                            crossAxisCount: 3,
+                            crossAxisCount: cardCount,
                             crossAxisSpacing: 6,
                             mainAxisSpacing: 12,
-                            childAspectRatio:
-                                (MediaQuery.of(context).size.width / 3) /
-                                    (MediaQuery.of(context).size.height / 4),
+                            childAspectRatio: childAspectRatio,
                             padding: EdgeInsets.symmetric(
                               vertical: 0,
                               horizontal: 12,

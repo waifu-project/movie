@@ -95,6 +95,15 @@ class _SearchViewState extends State<SearchView> {
     searchHistory = oldData;
   }
 
+  int page = 1;
+  int limit = 20;
+
+  int cacheDataLength = 10;
+
+  bool isTriggerSearch = false;
+
+  String cacheSearchText = "";
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -109,6 +118,77 @@ class _SearchViewState extends State<SearchView> {
             color: Get.isDarkMode ? Colors.white : Colors.black,
           ),
           searchBarController: _searchBarController,
+          header: Builder(builder: (context) {
+            if (!canShowPagingView) return SizedBox.shrink();
+            return DecoratedBox(
+              decoration: BoxDecoration(
+                color: Colors.black.withOpacity(.1),
+              ),
+              child: Row(
+                children: <Widget>[
+                  SizedBox(
+                    width: 12,
+                  ),
+                  isPrevPage
+                      ? Expanded(
+                          child: GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                page--;
+                              });
+                              _searchBarController.injectSearch(
+                                          cacheSearchText,
+                                          handleSearch,
+                                        );
+                            },
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  CupertinoIcons.left_chevron,
+                                ),
+                                Text("上一页")
+                              ],
+                            ),
+                          ),
+                          flex: 2,
+                        )
+                      : SizedBox.shrink(),
+                  SizedBox(
+                    width: 24,
+                  ),
+                  isNextPage
+                      ? Expanded(
+                          child: GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                page++;
+                              });
+                              _searchBarController.injectSearch(
+                                          cacheSearchText,
+                                          handleSearch,
+                                        );
+                            },
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text("下一页"),
+                                Icon(
+                                  CupertinoIcons.right_chevron,
+                                )
+                              ],
+                            ),
+                          ),
+                          flex: 2,
+                        )
+                      : SizedBox.shrink(),
+                  SizedBox(
+                    width: 12,
+                  ),
+                ],
+              ),
+            );
+          }),
           onItemFound: (item, int index) {
             return GestureDetector(
               onTap: () async {
@@ -215,6 +295,11 @@ class _SearchViewState extends State<SearchView> {
             );
           },
           cancellationWidget: Text("取消"),
+          onCancelled: () {
+            setState(() {
+              isTriggerSearch = false;
+            });
+          },
           searchBarPadding: EdgeInsets.symmetric(
             horizontal: 12,
             vertical: 0,
@@ -318,13 +403,35 @@ class _SearchViewState extends State<SearchView> {
     );
   }
 
+  /// 由于 [MovieImpl] 接口类返回的数据是一个 [List<MirrorOnceItemSerialize>]
+  /// 所以无法获取到是否还有下一页, 只有通过判断其是否是整数
+  /// [ 10, 20 ] (此处传递的 [limit] 参数无效)
+  bool get isNextPage {
+    return [10, 20].any((element) => element == cacheDataLength);
+  }
+
+  bool get isPrevPage {
+    return page >= 2;
+  }
+
+  bool get canShowPagingView {
+    return (isNextPage || isPrevPage) && isTriggerSearch;
+  }
+
   Future<List<MirrorOnceItemSerialize>> handleSearch(String? text) async {
     if (text == null) return [];
+    setState(() {
+      isTriggerSearch = true;
+      cacheSearchText = text;
+    });
     handleUpdateSearchHistory(
       text,
       type: UpdateSearchHistoryType.add,
     );
-    var data = await home.updateSearchData(text);
+    var data = await home.updateSearchData(text, page: page, limit: limit);
+    setState(() {
+      cacheDataLength = data.length;
+    });
     return data;
   }
 }

@@ -158,8 +158,8 @@ class HomeController extends GetxController with WidgetsBindingObserver {
     update();
   }
 
-  Future<List<MirrorOnceItemSerialize>> updateSearchData(String keyword) async {
-    var resp = await currentMirrorItem.getSearch(keyword: keyword);
+  Future<List<MirrorOnceItemSerialize>> updateSearchData(String keyword, { page = 1, limit = 10, }) async {
+    var resp = await currentMirrorItem.getSearch(keyword: keyword, page: page, limit: limit);
     return resp;
   }
 

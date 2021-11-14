@@ -129,49 +129,52 @@ class WindowAppBar extends StatelessWidget implements PreferredSizeWidget {
               )
             : SizedBox.shrink(),
       );
-    return CustomMoveWindow(
-      child: PreferredSize(
-        child: Container(
-          color: Theme.of(context).primaryColor,
-          width: double.infinity,
-          padding: EdgeInsets.only(
-            top: _top,
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: childrens,
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      child: CustomMoveWindow(
+        child: PreferredSize(
+          child: Container(
+            color: Theme.of(context).primaryColor,
+            width: double.infinity,
+            padding: EdgeInsets.only(
+              top: _top,
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: childrens,
+                  ),
                 ),
-              ),
-              GetPlatform.isDesktop
-                  ? Macwindowctl(
-                      buttonSize: 12,
-                      blurSize: 24,
-                      focused: true,
-                      buttonReverse: true,
-                      onClick: (action) {
-                        switch (action) {
-                          case MacwindowctlAction.close:
-                            appWindow.close();
-                            break;
-                          case MacwindowctlAction.maximize:
-                            appWindow.maximizeOrRestore();
-                            break;
-                          case MacwindowctlAction.minimize:
-                            appWindow.minimize();
-                            break;
-                          default:
-                        }
-                      },
-                    )
-                  : SizedBox.shrink(),
-            ],
+                GetPlatform.isDesktop
+                    ? Macwindowctl(
+                        buttonSize: 12,
+                        blurSize: 24,
+                        focused: true,
+                        buttonReverse: true,
+                        onClick: (action) {
+                          switch (action) {
+                            case MacwindowctlAction.close:
+                              appWindow.close();
+                              break;
+                            case MacwindowctlAction.maximize:
+                              appWindow.maximizeOrRestore();
+                              break;
+                            case MacwindowctlAction.minimize:
+                              appWindow.minimize();
+                              break;
+                            default:
+                          }
+                        },
+                      )
+                    : SizedBox.shrink(),
+              ],
+            ),
           ),
+          preferredSize: preferredSize,
         ),
-        preferredSize: preferredSize,
       ),
     );
   }

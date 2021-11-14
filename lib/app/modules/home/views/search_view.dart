@@ -13,6 +13,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import 'package:dio/dio.dart';
 import 'package:flappy_search_bar_ns/flappy_search_bar_ns.dart';
 import 'package:flappy_search_bar_ns/search_bar_style.dart';
 import 'package:flutter/cupertino.dart';
@@ -137,9 +138,9 @@ class _SearchViewState extends State<SearchView> {
                                 page--;
                               });
                               _searchBarController.injectSearch(
-                                          cacheSearchText,
-                                          handleSearch,
-                                        );
+                                cacheSearchText,
+                                handleSearch,
+                              );
                             },
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -165,9 +166,9 @@ class _SearchViewState extends State<SearchView> {
                                 page++;
                               });
                               _searchBarController.injectSearch(
-                                          cacheSearchText,
-                                          handleSearch,
-                                        );
+                                cacheSearchText,
+                                handleSearch,
+                              );
                             },
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -419,19 +420,26 @@ class _SearchViewState extends State<SearchView> {
   }
 
   Future<List<MirrorOnceItemSerialize>> handleSearch(String? text) async {
-    if (text == null) return [];
-    setState(() {
-      isTriggerSearch = true;
-      cacheSearchText = text;
-    });
-    handleUpdateSearchHistory(
-      text,
-      type: UpdateSearchHistoryType.add,
-    );
-    var data = await home.updateSearchData(text, page: page, limit: limit);
-    setState(() {
-      cacheDataLength = data.length;
-    });
-    return data;
+    try {
+      if (text == null) return [];
+      setState(() {
+        isTriggerSearch = true;
+        cacheSearchText = text;
+      });
+      handleUpdateSearchHistory(
+        text,
+        type: UpdateSearchHistoryType.add,
+      );
+      var data = await home.updateSearchData(text, page: page, limit: limit);
+      setState(() {
+        cacheDataLength = data.length;
+      });
+      return data;
+    } on DioError catch (dioError) {
+      setState(() {
+        isTriggerSearch = false;
+      });
+      return dioError.error;
+    }
   }
 }

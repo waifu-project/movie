@@ -166,6 +166,11 @@ class HomeController extends GetxController with WidgetsBindingObserver {
   /// [isFirst] 初始化加载数据需要将 [isLoading] => true
   /// [missIsLoading] 某些特殊情况下不需要设置 [isLoading] => true
   updateHomeData({bool isFirst = false, missIsLoading = false}) async {
+
+    /// 如果 [indexHomeLoadDataErrorMessage] 错误栈有内容的话
+    /// 并且 [isFirst] 不是初始化数据的话, 就不允许加载更多
+    if (indexHomeLoadDataErrorMessage != "" && !isFirst) return;
+    
     try {
       if (isFirst) {
         isLoading = !missIsLoading;
@@ -183,6 +188,7 @@ class HomeController extends GetxController with WidgetsBindingObserver {
         homedata.addAll(data);
       }
       isLoading = false;
+      indexHomeLoadDataErrorMessage = "";
       update();
     } catch (e) {
       indexHomeLoadDataErrorMessage = e.toString();

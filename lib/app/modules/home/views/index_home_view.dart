@@ -131,7 +131,7 @@ class IndexHomeView extends GetView {
                     builder: (context) {
                       if (homeview.homedata.isEmpty)
                         return Container(
-                          height: Get.height - Get.height * .2,
+                          // height: Get.height - Get.height * .2,
                           child: Center(
                             child: Column(
                               children: [
@@ -139,7 +139,9 @@ class IndexHomeView extends GetView {
                                   "assets/images/empty.png",
                                   fit: BoxFit.cover,
                                   width: Get.width * .8,
+                                  height: Get.height * .4,
                                 ),
+                                SizedBox(height: 12,),
                                 CupertinoButton.filled(
                                   child: Text("重新加载"),
                                   onPressed: () {

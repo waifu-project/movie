@@ -137,6 +137,13 @@ class HomeController extends GetxController with WidgetsBindingObserver {
     }
   }
 
+  double cacheMirrorTableScrollControllerOffset = 0;
+
+  updateCacheMirrorTableScrollControllerOffset(double newVal) {
+    cacheMirrorTableScrollControllerOffset = newVal;
+    update();
+  }
+
   @override
   void onInit() {
     super.onInit();
@@ -158,19 +165,26 @@ class HomeController extends GetxController with WidgetsBindingObserver {
     update();
   }
 
-  Future<List<MirrorOnceItemSerialize>> updateSearchData(String keyword, { page = 1, limit = 10, }) async {
-    var resp = await currentMirrorItem.getSearch(keyword: keyword, page: page, limit: limit);
+  Future<List<MirrorOnceItemSerialize>> updateSearchData(
+    String keyword, {
+    page = 1,
+    limit = 10,
+  }) async {
+    var resp = await currentMirrorItem.getSearch(
+      keyword: keyword,
+      page: page,
+      limit: limit,
+    );
     return resp;
   }
 
   /// [isFirst] 初始化加载数据需要将 [isLoading] => true
   /// [missIsLoading] 某些特殊情况下不需要设置 [isLoading] => true
   updateHomeData({bool isFirst = false, missIsLoading = false}) async {
-
     /// 如果 [indexHomeLoadDataErrorMessage] 错误栈有内容的话
     /// 并且 [isFirst] 不是初始化数据的话, 就不允许加载更多
     if (indexHomeLoadDataErrorMessage != "" && !isFirst) return;
-    
+
     try {
       if (isFirst) {
         isLoading = !missIsLoading;

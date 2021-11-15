@@ -36,20 +36,63 @@ class _MirrorTableViewState extends State<MirrorTableView> {
     return home.mirrorList;
   }
 
+  ScrollController scrollController = ScrollController(
+    initialScrollOffset: 0,
+    keepScrollOffset: true,
+  );
+
+  double get cacheMirrorTableScrollControllerOffset {
+    return home.cacheMirrorTableScrollControllerOffset;
+  }
+
+  updateCacheMirrorTableScrollControllerOffset() {
+    Future.delayed(Duration(milliseconds: 200), () {
+      if (scrollController.hasClients) {
+        scrollController.jumpTo(
+          cacheMirrorTableScrollControllerOffset,
+        );
+        // scrollController.animateTo(
+        //   cacheMirrorTableScrollControllerOffset,
+        //   duration: Duration(milliseconds: 360),
+        //   curve: Curves.ease,
+        // );
+      }
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    scrollController.addListener(() {
+      double offset = scrollController.offset;
+      home.updateCacheMirrorTableScrollControllerOffset(offset);
+    });
+    updateCacheMirrorTableScrollControllerOffset();
+  }
+
+  @override
+  void dispose() {
+    scrollController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
       navigationBar: CupertinoNavigationBar(
         backgroundColor: Get.isDarkMode ? Colors.black12 : Colors.white,
-        leading: GetPlatform.isDesktop ? CupertinoNavigationBarBackButton() : Container(),
+        leading: GetPlatform.isDesktop
+            ? CupertinoNavigationBarBackButton()
+            : Container(),
         middle: Text(
           '视频源',
           style: TextStyle(color: Get.isDarkMode ? Colors.white : Colors.black),
         ),
       ),
       child: SafeArea(
-        child: CupertinoScrollbar(
+        child: Scrollbar(
           child: ListView(
+            controller: scrollController,
             children: mirrorList
                 .map(
                   (e) => CupertinoListTile(
@@ -65,20 +108,34 @@ class _MirrorTableViewState extends State<MirrorTableView> {
                     title: Text(
                       e.meta.name,
                       style: TextStyle(
-                        color: home.currentMirrorItem == e ? Colors.blue : e.isNsfw
-                            ? Colors.red
-                            : (Get.isDarkMode ? Colors.white : Colors.black),
+                        color: home.currentMirrorItem == e
+                            ? Colors.blue
+                            : e.isNsfw
+                                ? Colors.red
+                                : (Get.isDarkMode ? Colors.white : Colors.black),
                       ),
                     ),
                     subtitle: Text(
                       e.meta.desc,
                       style: TextStyle(
-                        color: home.currentMirrorItem == e ? Colors.blue : Get.isDarkMode ? Colors.white : Colors.black,
+                        color: home.currentMirrorItem == e
+                            ? Colors.blue
+                            : Get.isDarkMode
+                                ? Colors.white
+                                : Colors.black,
                       ),
                     ),
                     border: Border(
-                      bottom:  BorderSide(
-                        color: (home.currentMirrorItem == e || mirrorList[(home.mirrorIndex - 1 <= 1 ? 0 : (home.mirrorIndex - 1))] == e) ? Colors.blue : Get.isDarkMode ? Colors.white10 : Colors.black12,
+                      bottom: BorderSide(
+                        color: (home.currentMirrorItem == e ||
+                                mirrorList[(home.mirrorIndex - 1 <= 1
+                                        ? 0
+                                        : (home.mirrorIndex - 1))] ==
+                                    e)
+                            ? Colors.blue
+                            : Get.isDarkMode
+                                ? Colors.white10
+                                : Colors.black12,
                         width: 3.0,
                       ),
                     ),
@@ -96,7 +153,12 @@ class _MirrorTableViewState extends State<MirrorTableView> {
                         placeholder: (context, url) => Center(
                           child: CircularProgressIndicator(),
                         ),
-                        errorWidget: (context, url, error,) => KCoverImage,
+                        errorWidget: (
+                          context,
+                          url,
+                          error,
+                        ) =>
+                            KCoverImage,
                       );
                     }),
                   ),

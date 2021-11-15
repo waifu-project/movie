@@ -29,7 +29,20 @@ class SourceHelpTable extends StatefulWidget {
 }
 
 class _SourceHelpTableState extends State<SourceHelpTable> {
-  int tabIndex = 0;
+  int _tabIndex = 0;
+
+  int get tabIndex => _tabIndex;
+
+  set tabIndex(int newVal) {
+    setState(() {
+      _tabIndex = newVal;
+    });
+    pageController.animateToPage(
+      newVal,
+      duration: Duration(milliseconds: 420),
+      curve: Curves.ease,
+    );
+  }
 
   loadMirrorListApi() async {
     try {
@@ -49,6 +62,32 @@ class _SourceHelpTableState extends State<SourceHelpTable> {
   void initState() {
     super.initState();
     loadMirrorListApi();
+  }
+
+  PageController pageController = PageController();
+
+  handleCopyText({
+    String? item,
+    bool canCopyAll = false,
+  }) {
+    String result = item ?? "";
+    if (canCopyAll) {
+      result = "";
+      mirrors.forEach((element) {
+        result += '$element\n';
+      });
+    }
+    if (result.isEmpty) return;
+    FlutterClipboard.copy(result).then(
+      (value) {
+        Get.showSnackbar(
+          GetBar(
+            message: "已复制到剪贴板!",
+            duration: Duration(seconds: 1),
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -91,41 +130,63 @@ class _SourceHelpTableState extends State<SourceHelpTable> {
                   ),
                 ),
                 Expanded(
-                  child: IndexedStack(
-                    index: tabIndex,
+                  child: PageView(
+                    controller: pageController,
                     children: [
-                      CupertinoScrollbar(
-                        child: mirrors.isEmpty ? Center(child: Text("啥也没有"),) : ListView(
-                          children: [
-                            ...mirrors.map((item) {
-                              return CupertinoListTile(
-                                title: Text(
-                                  item,
-                                  style: TextStyle(
-                                    color: Get.isDarkMode
-                                        ? Colors.white54
-                                        : Colors.black54,
-                                  ),
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                                onTap: () {
-                                  FlutterClipboard.copy(item)
-                                      .then(
-                                    (value) {
-                                      Get.showSnackbar(
-                                        GetBar(
-                                          message: "已复制到剪贴板!",
-                                          duration: Duration(seconds: 1),
-                                        ),
-                                      );
-                                    },
+                      Column(
+                        children: [
+                          Expanded(
+                            child: CupertinoScrollbar(
+                              child: Builder(
+                                builder: (context) {
+                                  if (mirrors.isEmpty)
+                                    return Center(
+                                      child: Text("啥也没有"),
+                                    );
+                                  return ListView(
+                                    children: [
+                                      ...mirrors.map((item) {
+                                        return CupertinoListTile(
+                                          title: Text(
+                                            item,
+                                            style: TextStyle(
+                                              color: Get.isDarkMode
+                                                  ? Colors.white54
+                                                  : Colors.black54,
+                                            ),
+                                            maxLines: 2,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                          onTap: () {
+                                            handleCopyText(item: item);
+                                          },
+                                        );
+                                      }).toList(),
+                                    ],
                                   );
                                 },
+                              ),
+                            ),
+                          ),
+                          Builder(
+                            builder: (context) {
+                              if (mirrors.isEmpty) return SizedBox.shrink();
+                              return Container(
+                                margin: EdgeInsets.symmetric(
+                                  horizontal: 0,
+                                  vertical: 12,
+                                ),
+                                child: CupertinoButton.filled(
+                                  borderRadius: BorderRadius.circular(24),
+                                  child: Text("一键复制到剪贴板"),
+                                  onPressed: () {
+                                    handleCopyText(canCopyAll: true);
+                                  },
+                                ),
                               );
-                            }).toList(),
-                          ],
-                        ),
+                            },
+                          )
+                        ],
                       ),
                       Center(
                         child: Text("(;｀O´)o"),

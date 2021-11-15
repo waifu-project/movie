@@ -12,6 +12,8 @@
 
 官方源: https://github.com/d1y/assets/blob/master/yy.json
 
+[制作源教程](docs/源制作.md)
+
 ## 截图
 
 **首页**

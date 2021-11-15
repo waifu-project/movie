@@ -16,6 +16,8 @@
 import 'package:cupertino_list_tile/cupertino_list_tile.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:get/get.dart';
 import 'package:movie/app/modules/home/views/home_config.dart';
 import 'package:movie/utils/http.dart';
@@ -61,6 +63,7 @@ class _SourceHelpTableState extends State<SourceHelpTable> {
   @override
   void initState() {
     super.initState();
+    loadSourceCreateData();
     loadMirrorListApi();
   }
 
@@ -89,6 +92,15 @@ class _SourceHelpTableState extends State<SourceHelpTable> {
       },
     );
   }
+
+  loadSourceCreateData() async {
+    var data = await rootBundle.loadString("assets/data/source_create.html");
+    setState(() {
+      sourceCreateData = data;
+    });
+  }
+
+  String sourceCreateData = "";
 
   @override
   Widget build(BuildContext context) {
@@ -188,8 +200,22 @@ class _SourceHelpTableState extends State<SourceHelpTable> {
                           )
                         ],
                       ),
-                      Center(
-                        child: Text("(;｀O´)o"),
+                      Expanded(
+                        child: Builder(
+                          builder: (context) {
+                            if (sourceCreateData.isEmpty)
+                              return Center(
+                                child: Text("(;｀O´)o"),
+                              );
+                            return ListView(
+                              children: [
+                                Html(
+                                  data: sourceCreateData,
+                                ),
+                              ],
+                            );
+                          },
+                        ),
                       ),
                     ],
                   ),

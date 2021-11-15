@@ -67,6 +67,9 @@ flutter:
     - assets/images/empty.png
     - assets/images/github_logo.png
 
+    # before use node script/gen_source_create.js
+    - assets/data/source_create.html
+
 # flutter pub run flutter_launcher_icons:main
 flutter_icons:
   android: "launcher_icon"

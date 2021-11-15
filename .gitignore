@@ -48,3 +48,7 @@ app.*.map.json
 cache/
 
 json/
+
+node_modules/
+
+assets/data/source_create.html

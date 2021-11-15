@@ -26,6 +26,31 @@ import 'package:movie/app/modules/play/views/webview_view.dart';
 import 'package:movie/config.dart';
 import 'package:movie/mirror/mirror_serialize.dart';
 
+/// 尽可能的拿到正确`url`
+/// [str] 数据模板
+///  => https://xx.com/1.m3u8$sdf
+///  => https://xx.com/sdfsdf&sdf
+String getPlayUrl(String str) {
+  /// 标识符
+  List<String> sybs = ["\$", "&"];
+
+  /// 此处标识符是比对 `sdf` 的值, 如果值中有这些内容的话还是返回原值
+  /// (因为有些源比较伤脑筋)
+  /// (如果某个源在这种情况下还是返回了一个 `/` 那我就真无语了。。)
+  List<String> idents = [".m3u8", "/"];
+
+  for (var i = 0; i < sybs.length; i++) {
+    String current = sybs[i];
+    var tagOfIndex = str.lastIndexOf(current);
+    if (tagOfIndex > -1) {
+      var vData = str.substring(tagOfIndex, str.length);
+      bool checkDataFake = idents.any((element) => vData.contains(element));
+      if (!checkDataFake) return str.substring(0, tagOfIndex);
+    }
+  }
+  return str;
+}
+
 class PlayController extends GetxController {
   MirrorOnceItemSerialize movieItem = Get.arguments;
 
@@ -60,6 +85,7 @@ class PlayController extends GetxController {
 
   handleTapPlayerButtom(MirrorSerializeVideoInfo e) async {
     var url = e.url;
+    url = getPlayUrl(url);
     debugPrint("play url: [$url]");
 
     /// https://github.com/MixinNetwork/flutter-plugins/tree/main/packages/desktop_webview_window
@@ -77,12 +103,17 @@ class PlayController extends GetxController {
 
       return;
     }
+
+    /// (`m3u8` | `mp4`) 资源
+    var canUseChewieView = e.type == MirrorSerializeVideoType.m3u8 ||
+        e.type == MirrorSerializeVideoType.mp4;
+        
     if (e.type == MirrorSerializeVideoType.iframe) {
       Get.to(
         () => WebviewView(),
         arguments: url,
       );
-    } else if (e.type == MirrorSerializeVideoType.m3u8 || e.type == MirrorSerializeVideoType.mp4) {
+    } else if (canUseChewieView) {
       Get.to(
         () => ChewieView(),
         arguments: {

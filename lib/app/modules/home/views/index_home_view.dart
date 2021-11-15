@@ -29,6 +29,8 @@ class IndexHomeView extends GetView {
   final HomeController home = Get.find();
 
   int get cardCount {
+    bool isLandscape = Get.context!.isLandscape;
+    if (GetPlatform.isMobile && !isLandscape) return 3;
     var w = home.windowLastSize.width;
     if (w >= 1000) return 5;
     return 3;
@@ -141,7 +143,9 @@ class IndexHomeView extends GetView {
                                   width: Get.width * .8,
                                   height: Get.height * .4,
                                 ),
-                                SizedBox(height: 12,),
+                                SizedBox(
+                                  height: 12,
+                                ),
                                 CupertinoButton.filled(
                                   child: Text("重新加载"),
                                   onPressed: () {

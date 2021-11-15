@@ -20,6 +20,7 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: '14'
+      - run: npm install markdown-it
       - run: node script/gen_source_create.js
       - run: flutter pub get
       - run: flutter pub deps

@@ -25,6 +25,10 @@ jobs:
       - run: flutter pub get
       - run: flutter pub deps
       - run: flutter build apk --target-platform android-arm,android-arm64,android-x64 --split-per-abi
+
+      # build all arch
+      - run: flutter build apk --release
+      
       - uses: softprops/action-gh-release@v1
         with:
           files: build/app/outputs/apk/release/*.apk

@@ -23,6 +23,7 @@ import 'package:get/get.dart';
 import 'package:movie/app/modules/home/controllers/home_controller.dart';
 import 'package:movie/app/routes/app_pages.dart';
 import 'package:movie/app/widget/helper.dart';
+import 'package:movie/app/widget/k_pagination.dart';
 import 'package:movie/app/widget/k_tag.dart';
 import 'package:movie/app/widget/window_appbar.dart';
 import 'package:movie/config.dart';
@@ -96,7 +97,18 @@ class _SearchViewState extends State<SearchView> {
     searchHistory = oldData;
   }
 
-  int page = 1;
+  int _page = 1;
+
+  int get page => _page;
+
+  set page(int newVal) {
+    setState(() {
+      _page = newVal;
+    });
+    if (newVal == textEditingControllerIntValue) return;
+    changeTextEditingController(newVal);
+  }
+
   int limit = 20;
 
   int cacheDataLength = 10;
@@ -104,6 +116,16 @@ class _SearchViewState extends State<SearchView> {
   bool isTriggerSearch = false;
 
   String cacheSearchText = "";
+
+  TextEditingController textEditingController =
+      TextEditingController(text: "1");
+
+  changeTextEditingController(int text) {
+    textEditingController.text = text.toString();
+  }
+
+  int get textEditingControllerIntValue =>
+      int.parse(textEditingController.text);
 
   @override
   Widget build(BuildContext context) {
@@ -121,73 +143,33 @@ class _SearchViewState extends State<SearchView> {
           searchBarController: _searchBarController,
           header: Builder(builder: (context) {
             if (!canShowPagingView) return SizedBox.shrink();
-            return DecoratedBox(
-              decoration: BoxDecoration(
-                color: Colors.black.withOpacity(.1),
-              ),
-              child: Row(
-                children: <Widget>[
-                  SizedBox(
-                    width: 12,
-                  ),
-                  isPrevPage
-                      ? Expanded(
-                          child: GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                page--;
-                              });
-                              _searchBarController.injectSearch(
-                                cacheSearchText,
-                                handleSearch,
-                              );
-                            },
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  CupertinoIcons.left_chevron,
-                                ),
-                                Text("上一页")
-                              ],
-                            ),
-                          ),
-                          flex: 2,
-                        )
-                      : SizedBox.shrink(),
-                  SizedBox(
-                    width: 24,
-                  ),
-                  isNextPage
-                      ? Expanded(
-                          child: GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                page++;
-                              });
-                              _searchBarController.injectSearch(
-                                cacheSearchText,
-                                handleSearch,
-                              );
-                            },
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text("下一页"),
-                                Icon(
-                                  CupertinoIcons.right_chevron,
-                                )
-                              ],
-                            ),
-                          ),
-                          flex: 2,
-                        )
-                      : SizedBox.shrink(),
-                  SizedBox(
-                    width: 12,
-                  ),
-                ],
-              ),
+            return KPagination(
+              turnL: isPrevPage,
+              turnR: isNextPage,
+              textEditingController: textEditingController,
+              onActionTap: (KPaginationActionButtonDirection type) {
+                setState(() {
+                  switch (type) {
+                    case KPaginationActionButtonDirection.l:
+                      page--;
+                      break;
+                    case KPaginationActionButtonDirection.r:
+                      page++;
+                      break;
+                    default:
+                  }
+                });
+                handleStandSearch(
+                  isInit: false,
+                );
+              },
+              onJumpTap: () {
+                if (page == textEditingControllerIntValue) return;
+                setState(() {
+                  page = textEditingControllerIntValue;
+                });
+                handleStandSearch();
+              },
             );
           }),
           onItemFound: (item, int index) {
@@ -286,7 +268,12 @@ class _SearchViewState extends State<SearchView> {
           debounceDuration: Duration(
             seconds: 2,
           ),
-          onSearch: handleSearch,
+          onSearch: (String? text) {
+            setState(() {
+              page = 1;
+            });
+            return handleSearch(text);
+          },
           emptyWidget: Center(
             child: Text("搜索内容为空"),
           ),
@@ -377,10 +364,7 @@ class _SearchViewState extends State<SearchView> {
                                           e,
                                           type: UpdateSearchHistoryType.add,
                                         );
-                                        _searchBarController.injectSearch(
-                                          e,
-                                          handleSearch,
-                                        );
+                                        handleStandSearch(title: e);
                                         break;
                                       case KTagTapEventType.action: // action
                                         handleUpdateSearchHistory(
@@ -404,6 +388,26 @@ class _SearchViewState extends State<SearchView> {
     );
   }
 
+  /// [isInit] 是否是初始化, 将 [page] => 1
+  ///
+  /// [title] 如果未设置内容默认走缓存 [cacheSearchText]
+  handleStandSearch({
+    String? title,
+    bool isInit = true,
+  }) {
+    if (isInit) {
+      setState(() {
+        page = 1;
+      });
+    }
+    var outputTitle = cacheSearchText;
+    if (title != null) outputTitle = title;
+    return _searchBarController.injectSearch(
+      outputTitle,
+      handleSearch,
+    );
+  }
+
   /// 由于 [MovieImpl] 接口类返回的数据是一个 [List<MirrorOnceItemSerialize>]
   /// 所以无法获取到是否还有下一页, 只有通过判断其是否是整数
   /// [ 10, 20 ] (此处传递的 [limit] 参数无效)
@@ -419,6 +423,8 @@ class _SearchViewState extends State<SearchView> {
     return (isNextPage || isPrevPage) && isTriggerSearch;
   }
 
+  /// 默认就初始化为 [page]
+  /// [isInitPage]
   Future<List<MirrorOnceItemSerialize>> handleSearch(String? text) async {
     try {
       if (text == null) return [];

@@ -7,7 +7,7 @@ on:
 jobs:
   release-to-gitHub:
     name: release
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     steps:
       - uses: actions/checkout@v1
       - uses: actions/setup-java@v1
@@ -28,9 +28,20 @@ jobs:
 
       # build all arch
       - run: flutter build apk --release
+
+      - run: |
+          flutter build ios --release --no-codesign
+          cd build/ios/iphoneos
+          mkdir Payload
+          cd Payload
+          ln -s ../Runner.app
+          cd ..
+          zip -r app.ipa Payload
       
       - uses: softprops/action-gh-release@v1
         with:
-          files: build/app/outputs/flutter-apk/*.apk
+          files: |
+            build/app/outputs/flutter-apk/*.apk
+            build/ios/iphoneos/app.ipa
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

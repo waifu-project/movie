@@ -95,77 +95,151 @@ class _MirrorTableViewState extends State<MirrorTableView> {
             controller: scrollController,
             children: mirrorList
                 .map(
-                  (e) => CupertinoListTile(
-                    contentPadding: EdgeInsets.symmetric(horizontal: 12),
-                    pressColor: Colors.pink,
-                    focusColor: Colors.red,
-                    selected: home.currentMirrorItem == e,
+                  (e) => mirrorCard(
+                    item: e,
+                    current: home.currentMirrorItem == e,
                     onTap: () {
                       var index = mirrorList.indexOf(e);
                       home.updateMirrorIndex(index);
                       Get.back();
-                    },
-                    title: Text(
-                      e.meta.name,
-                      style: TextStyle(
-                        color: home.currentMirrorItem == e
-                            ? Colors.blue
-                            : e.isNsfw
-                                ? Colors.red
-                                : (Get.isDarkMode ? Colors.white : Colors.black),
-                      ),
-                    ),
-                    subtitle: Text(
-                      e.meta.desc,
-                      style: TextStyle(
-                        color: home.currentMirrorItem == e
-                            ? Colors.blue
-                            : Get.isDarkMode
-                                ? Colors.white
-                                : Colors.black,
-                      ),
-                    ),
-                    border: Border(
-                      bottom: BorderSide(
-                        color: (home.currentMirrorItem == e ||
-                                mirrorList[(home.mirrorIndex - 1 <= 1
-                                        ? 0
-                                        : (home.mirrorIndex - 1))] ==
-                                    e)
-                            ? Colors.blue
-                            : Get.isDarkMode
-                                ? Colors.white10
-                                : Colors.black12,
-                        width: 3.0,
-                      ),
-                    ),
-                    trailing: Icon(CupertinoIcons.right_chevron),
-                    leading: Builder(builder: (_) {
-                      if (e.meta.logo.isEmpty) {
-                        return Image.asset(
-                          "assets/images/fishtank.png",
-                          width: 80,
-                        );
-                      }
-                      return CachedNetworkImage(
-                        width: 80,
-                        imageUrl: e.meta.logo,
-                        placeholder: (context, url) => Center(
-                          child: CircularProgressIndicator(),
-                        ),
-                        errorWidget: (
-                          context,
-                          url,
-                          error,
-                        ) =>
-                            KCoverImage,
-                      );
-                    }),
+                    }
                   ),
                 )
                 .toList(),
           ),
         ),
+      ),
+    );
+  }
+}
+
+class mirrorCard extends StatelessWidget {
+  const mirrorCard({
+    Key? key,
+    required this.item,
+    this.current = false,
+    required this.onTap,
+  }) : super(key: key);
+
+  final MovieImpl item;
+
+  final bool current;
+
+  final VoidCallback onTap;
+
+  String get _logo => item.meta.logo;
+
+  String get _title => item.meta.name;
+
+  String get _desc => item.meta.desc;
+
+  /// 如果是 [MovieImpl.isNsfw] => [Colors.red]
+  /// 如果是 [current] => [Colors.blue] (优先级高一点)
+  Color get _color {
+    if (current) return Colors.blue;
+    return item.isNsfw
+        ? Colors.red
+        : (Get.isDarkMode ? Colors.white : Colors.black45);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        decoration: BoxDecoration(
+          border: Border(
+              bottom: BorderSide(
+                  color: Get.isDarkMode
+                      ? Colors.white.withOpacity(.1)
+                      : Colors.black.withOpacity(.1))),
+        ),
+        padding: EdgeInsets.symmetric(
+          vertical: 6,
+        ),
+        child: Row(children: [
+          Container(
+            width: 92,
+            margin: EdgeInsets.symmetric(
+              vertical: 6,
+              horizontal: 2,
+            ),
+            child: Builder(builder: (_) {
+              if (_logo.isEmpty) {
+                return Image.asset(
+                  "assets/images/fishtank.png",
+                  width: 60,
+                  height: 42,
+                );
+              }
+              return Card(
+                shadowColor: Colors.black.withOpacity(.1),
+                child: Container(
+                  width: 60,
+                  height: 42,
+                  child: CachedNetworkImage(
+                    imageUrl: _logo,
+                    fit: BoxFit.fitWidth,
+                    placeholder: (context, url) => Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                    errorWidget: (
+                      context,
+                      url,
+                      error,
+                    ) =>
+                        Image.asset(
+                      K_DEFAULT_IMAGE,
+                      width: 80,
+                      height: 42,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+              );
+            }),
+          ),
+          Expanded(
+            child: Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        _title,
+                        style: TextStyle(
+                          color: _color,
+                          fontSize: 14,
+                          decoration: TextDecoration.none,
+                          fontWeight: FontWeight.w300,
+                        ),
+                      ),
+                      SizedBox(
+                        height: _desc.isEmpty ? 0 : 3,
+                      ),
+                      _desc.isEmpty ? SizedBox.shrink() : Text(
+                        _desc,
+                        style: TextStyle(
+                          color: _color,
+                          fontSize: 9,
+                          decoration: TextDecoration.none,
+                          fontWeight: FontWeight.w300,
+                        ),
+                        maxLines: 2,
+                      ),
+                    ],
+                  ),
+                ),
+                Icon(
+                  current ? Icons.done : CupertinoIcons.right_chevron,
+                  color: _color,
+                ),
+              ],
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            ),
+          ),
+        ]),
       ),
     );
   }

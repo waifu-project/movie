@@ -13,6 +13,8 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import 'dart:async';
+
 import 'package:cupertino_list_tile/cupertino_list_tile.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -22,6 +24,32 @@ import 'package:get/get.dart';
 import 'package:movie/app/modules/home/views/home_config.dart';
 import 'package:movie/utils/http.dart';
 import 'package:clipboard/clipboard.dart';
+
+class SourceItemJSONData {
+  String? title;
+  String? url;
+  String? msg;
+
+  SourceItemJSONData({
+    this.title,
+    this.url,
+    this.msg,
+  });
+
+  SourceItemJSONData.fromJson(Map<String, dynamic> json) {
+    title = json['title'];
+    url = json['url'];
+    msg = json['msg'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['title'] = this.title;
+    data['url'] = this.url;
+    data['msg'] = this.msg;
+    return data;
+  }
+}
 
 class SourceHelpTable extends StatefulWidget {
   const SourceHelpTable({Key? key}) : super(key: key);
@@ -49,7 +77,9 @@ class _SourceHelpTableState extends State<SourceHelpTable> {
   loadMirrorListApi() async {
     try {
       var resp = await XHttp.dio.get(FetchMirrorAPI);
-      List<String> data = List<String>.from(resp.data);
+      List<SourceItemJSONData> data = List.from(resp.data)
+          .map((e) => SourceItemJSONData.fromJson(e as Map<String, dynamic>))
+          .toList();
       setState(() {
         mirrors = data;
       });
@@ -58,7 +88,7 @@ class _SourceHelpTableState extends State<SourceHelpTable> {
     }
   }
 
-  List<String> mirrors = [];
+  List<SourceItemJSONData> mirrors = [];
 
   @override
   void initState() {
@@ -70,14 +100,50 @@ class _SourceHelpTableState extends State<SourceHelpTable> {
   PageController pageController = PageController();
 
   handleCopyText({
-    String? item,
+    SourceItemJSONData? item,
     bool canCopyAll = false,
-  }) {
-    String result = item ?? "";
+  }) async {
+    List<SourceItemJSONData> actions = mirrors;
+    if (!canCopyAll && item != null) actions = [item];
+    var ctx = Get.context;
+    if (ctx == null) return;
+    await Future.forEach(actions, (SourceItemJSONData element) {
+      var msg = element.msg ?? "";
+      Completer completer = Completer();
+      if (msg.isEmpty) {
+        completer.complete();
+        return completer.future;
+      }
+      showCupertinoDialog(
+        builder: (BuildContext context) => CupertinoAlertDialog(
+          title: Text(element.title ?? ""),
+          content: Html(data: element.msg ?? ""),
+          actions: <CupertinoDialogAction>[
+            CupertinoDialogAction(
+              child: const Text(
+                '我知道了',
+                style: TextStyle(
+                  color: Colors.red,
+                ),
+              ),
+              onPressed: () {
+                Get.back();
+                completer.complete();
+              },
+            ),
+          ],
+        ),
+        context: ctx,
+      );
+      return completer.future;
+    });
+
+    String result = actions[0].url ?? "";
+
     if (canCopyAll) {
       result = "";
-      mirrors.forEach((element) {
-        result += '$element\n';
+      actions.forEach((element) {
+        result += '${element.url}\n';
       });
     }
     if (result.isEmpty) return;
@@ -160,7 +226,7 @@ class _SourceHelpTableState extends State<SourceHelpTable> {
                                       ...mirrors.map((item) {
                                         return CupertinoListTile(
                                           title: Text(
-                                            item,
+                                            item.title ?? "",
                                             style: TextStyle(
                                               color: Get.isDarkMode
                                                   ? Colors.white54

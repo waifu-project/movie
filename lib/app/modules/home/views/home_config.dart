@@ -22,3 +22,5 @@ const kBarHeightWidget = SizedBox(
 );
 
 const FetchMirrorAPI = "https://cdn.jsdelivr.net/gh/waifu-project/assets@latest/s.json";
+
+const FeatchTvAPI = "https://cdn.jsdelivr.net/gh/waifu-project/assets@latest/tv.json";

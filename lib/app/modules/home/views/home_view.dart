@@ -26,12 +26,14 @@ import 'package:movie/app/modules/home/views/settings_view.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 
 import '../controllers/home_controller.dart';
+import 'tv_view.dart';
 
 class HomeView extends GetView<HomeController> {
   bool get isDark => Get.isDarkMode;
 
   final List<Widget> views = [
     IndexHomeView(),
+    TvPageView(),
     SearchView(),
     SettingsView(),
   ];
@@ -63,7 +65,7 @@ class HomeView extends GetView<HomeController> {
                 child: SalomonBottomBar(
                   itemPadding: EdgeInsets.symmetric(
                     vertical: 9,
-                    horizontal: 32,
+                    horizontal: 18,
                   ),
                   currentIndex: homeview.currentBarIndex,
                   onTap: (int i) {
@@ -74,6 +76,11 @@ class HomeView extends GetView<HomeController> {
                       icon: Icon(CupertinoIcons.home),
                       title: Text("首页"),
                       selectedColor: Colors.blue,
+                    ),
+                    SalomonBottomBarItem(
+                      icon: Icon(Icons.live_tv),
+                      title: Text("直播"),
+                      selectedColor: Colors.brown,
                     ),
                     SalomonBottomBarItem(
                       icon: Icon(CupertinoIcons.search),

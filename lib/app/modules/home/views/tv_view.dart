@@ -257,7 +257,7 @@ class tvCard extends StatelessWidget {
   }
 
   Color get _color {
-    return !isCurrent ? Colors.black : Colors.blue;
+    return !isCurrent ? (Get.isDarkMode ? Colors.white : Colors.black) : Colors.blue;
   }
 
   @override
@@ -265,7 +265,7 @@ class tvCard extends StatelessWidget {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Get.isDarkMode ? Colors.white24 : Colors.white,
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(

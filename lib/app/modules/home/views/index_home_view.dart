@@ -25,7 +25,25 @@ import 'package:movie/app/widget/movie_card_item.dart';
 import 'package:movie/app/widget/window_appbar.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
-class IndexHomeView extends GetView {
+class IndexHomeView extends StatefulWidget {
+  const IndexHomeView({Key? key}) : super(key: key);
+
+  @override
+  _IndexHomeViewState createState() => _IndexHomeViewState();
+}
+
+class _IndexHomeViewState extends State<IndexHomeView> with AutomaticKeepAliveClientMixin {
+  @override
+  Widget build(BuildContext context) {
+    super.build(context);
+    return IndexHomeViewPage();
+  }
+
+  @override
+  bool get wantKeepAlive => true;
+}
+
+class IndexHomeViewPage extends GetView {
   final HomeController home = Get.find();
 
   int get cardCount {

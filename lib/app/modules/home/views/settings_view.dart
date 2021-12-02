@@ -466,6 +466,19 @@ class _SettingsViewState extends State<SettingsView> {
               ),
             ),
           ),
+          CSButton(
+            CSButtonType.DEFAULT,
+            "Licenses",
+            () {
+              showLicensePage(
+                context: context,
+                applicationIcon: Image.asset(
+                  "assets/images/fishtank.png",
+                  width: Get.width * .25,
+                ),
+              );
+            },
+          ),
           SizedBox(
             height: 24,
           ),

@@ -59,6 +59,34 @@ class MirrorManage {
     extend = result;
   }
 
+  /// 删除单个源
+  static removeItem(MovieImpl item) {
+    print("删除该源: $item");
+    extend.remove(item);
+    saveToCache(extend);
+  }
+
+  /// 保存缓存
+  /// [该方法只可用来保存第三方源]
+  /// 只适用于 [KBaseMirrorMovie]
+  static saveToCache(List<MovieImpl> saves) {
+    List<SourceJsonData> _to = saves
+        .map(
+          (e) => SourceJsonData(
+            name: e.meta.name,
+            logo: e.meta.logo,
+            desc: e.meta.desc,
+            nsfw: e.isNsfw,
+            api: Api(
+              root: e.meta.domain,
+              path: (e as KBaseMirrorMovie).api_path,
+            ),
+          ),
+        )
+        .toList();
+    mergeMirror(_to);
+  }
+
   static mergeMirror(List<SourceJsonData> data) async {
     await local.write(ConstDart.mirror_list, data);
   }

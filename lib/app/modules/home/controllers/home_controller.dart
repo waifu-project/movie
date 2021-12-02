@@ -64,7 +64,9 @@ class HomeController extends GetxController with WidgetsBindingObserver {
   }
 
   int get mirrorIndex {
-    return localStorage.read(ConstDart.ls_mirrorIndex) ?? 0;
+    if (_cacheMirrorIndex == -1)
+      return localStorage.read(ConstDart.ls_mirrorIndex) ?? 0;
+    return _cacheMirrorIndex;
   }
 
   set mirrorIndex(int newVal) {
@@ -73,10 +75,32 @@ class HomeController extends GetxController with WidgetsBindingObserver {
 
   set _mirrorIndex(int newVal) {
     mirrorIndex = newVal;
+    _cacheMirrorIndex = newVal;
     update();
     updateHomeData(
       isFirst: true,
     );
+  }
+
+  /// -1 = 未初始化
+  /// >= 0 = 初始化好的值
+  int _cacheMirrorIndex = -1;
+
+  /// 删除单个源之后需要手动的设置 [mirrorIndex]
+  ///
+  /// 如果是在源之前的, 则 [index] = [mirrorIndex] - 1
+  ///
+  /// 如果是在源之后, 则 [index] = [mirrorIndex]
+  removeMirrorItemSync(MovieImpl item) {
+    var _index = mirrorList.indexOf(item);
+    if (_index == -1) return;
+    var _oldIndex = mirrorIndex;
+    var _afterIndex = _oldIndex;
+    if (_index < _oldIndex) {
+      _afterIndex = _oldIndex - 1;
+    }
+    _cacheMirrorIndex = _afterIndex;
+    update();
   }
 
   updateMirrorIndex(int index) {

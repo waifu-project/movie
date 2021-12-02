@@ -211,4 +211,12 @@ class KBaseMirrorMovie extends MovieImpl {
         desc: desc,
         domain: root_url,
       );
+
+  @override
+  String toString() {
+    var output = "\n";
+    output += "name: $name\n";
+    output += " url: $root_url$api_path";
+    return output;
+  }
 }

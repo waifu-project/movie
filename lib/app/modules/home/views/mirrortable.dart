@@ -16,10 +16,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
 import 'package:movie/app/modules/home/controllers/home_controller.dart';
 import 'package:movie/app/widget/helper.dart';
 import 'package:movie/impl/movie.dart';
+import 'package:movie/mirror/mirror.dart';
 
 class MirrorTableView extends StatefulWidget {
   const MirrorTableView({Key? key}) : super(key: key);
@@ -31,9 +33,11 @@ class MirrorTableView extends StatefulWidget {
 class _MirrorTableViewState extends State<MirrorTableView> {
   final HomeController home = Get.find<HomeController>();
 
-  List<MovieImpl> get mirrorList {
+  List<MovieImpl> get _mirrorList {
     return home.mirrorList;
   }
+
+  List<MovieImpl> mirrorList = [];
 
   ScrollController scrollController = ScrollController(
     initialScrollOffset: 0,
@@ -62,6 +66,9 @@ class _MirrorTableViewState extends State<MirrorTableView> {
       home.updateCacheMirrorTableScrollControllerOffset(offset);
     });
     updateCacheMirrorTableScrollControllerOffset();
+    setState(() {
+      mirrorList = _mirrorList;
+    });
   }
 
   @override
@@ -97,6 +104,43 @@ class _MirrorTableViewState extends State<MirrorTableView> {
                       home.updateMirrorIndex(index);
                       Get.back();
                     },
+                    onDel: (context) {
+                      showCupertinoDialog(
+                        builder: (context) => CupertinoAlertDialog(
+                          content: Text("是否删除该镜像源?"),
+                          actions: [
+                            CupertinoDialogAction(
+                              child: const Text(
+                                '我想想',
+                                style: TextStyle(
+                                  color: Colors.blue,
+                                ),
+                              ),
+                              onPressed: () {
+                                Get.back();
+                              },
+                            ),
+                            CupertinoDialogAction(
+                              child: const Text(
+                                '删除',
+                                style: TextStyle(
+                                  color: Colors.red,
+                                ),
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  mirrorList.remove(e);
+                                });
+                                home.removeMirrorItemSync(e);
+                                MirrorManage.removeItem(e);
+                                Get.back();
+                              },
+                            ),
+                          ],
+                        ),
+                        context: context,
+                      );
+                    },
                   ),
                 )
                 .toList(),
@@ -113,11 +157,14 @@ class mirrorCard extends StatelessWidget {
     required this.item,
     this.current = false,
     required this.onTap,
+    this.onDel,
   }) : super(key: key);
 
   final MovieImpl item;
 
   final bool current;
+
+  final SlidableActionCallback? onDel;
 
   final VoidCallback onTap;
 
@@ -126,6 +173,13 @@ class mirrorCard extends StatelessWidget {
   String get _title => item.meta.name;
 
   String get _desc => item.meta.desc;
+
+  /// [current] 当前的不能删除
+  /// [MirrorManage.builtin] 内建的源不可删除
+  bool get enabled {
+    bool isBuiltin = MirrorManage.builtin.any((element) => element == item);
+    return !current && !isBuiltin;
+  }
 
   /// 如果是 [MovieImpl.isNsfw] => [Colors.red]
   /// 如果是 [current] => [Colors.blue] (优先级高一点)
@@ -138,104 +192,130 @@ class mirrorCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        decoration: BoxDecoration(
-          border: Border(
-              bottom: BorderSide(
-                  color: Get.isDarkMode
-                      ? Colors.white.withOpacity(.1)
-                      : Colors.black.withOpacity(.1))),
-        ),
-        padding: EdgeInsets.symmetric(
-          vertical: 6,
-        ),
-        child: Row(children: [
-          Container(
-            width: 92,
-            margin: EdgeInsets.symmetric(
-              vertical: 6,
-              horizontal: 2,
+    return Material(
+      child: Slidable(
+        enabled: enabled,
+        key: ObjectKey(item),
+        endActionPane: ActionPane(
+          motion: const ScrollMotion(),
+          // TODO
+          // 滑动可关闭
+          // dismissible: DismissiblePane(
+          //   confirmDismiss: () async {
+          //     return false;
+          //   },
+          //   onDismissed: () {},
+          // ),
+          children: [
+            SlidableAction(
+              onPressed: onDel,
+              backgroundColor: Color(0xFFFE4A49),
+              foregroundColor: Colors.white,
+              icon: CupertinoIcons.delete,
+              label: '删除',
             ),
-            child: Builder(builder: (_) {
-              if (_logo.isEmpty) {
-                return Image.asset(
-                  "assets/images/fishtank.png",
-                  width: 60,
-                  height: 42,
-                );
-              }
-              return Card(
-                shadowColor: Colors.black.withOpacity(.1),
-                child: Container(
-                  width: 60,
-                  height: 42,
-                  child: CachedNetworkImage(
-                    imageUrl: _logo,
-                    fit: BoxFit.fitWidth,
-                    placeholder: (context, url) => Center(
-                      child: CircularProgressIndicator(),
-                    ),
-                    errorWidget: (
-                      context,
-                      url,
-                      error,
-                    ) =>
-                        Image.asset(
-                      K_DEFAULT_IMAGE,
-                      width: 80,
-                      height: 42,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
+          ],
+        ),
+        child: GestureDetector(
+          onTap: onTap,
+          child: Container(
+            decoration: BoxDecoration(
+              border: Border(
+                  bottom: BorderSide(
+                      color: Get.isDarkMode
+                          ? Colors.white.withOpacity(.1)
+                          : Colors.black.withOpacity(.1))),
+            ),
+            padding: EdgeInsets.symmetric(
+              vertical: 6,
+            ),
+            child: Row(children: [
+              Container(
+                width: 92,
+                margin: EdgeInsets.symmetric(
+                  vertical: 6,
+                  horizontal: 2,
                 ),
-              );
-            }),
-          ),
-          Expanded(
-            child: Row(
-              children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        _title,
-                        style: TextStyle(
-                          color: _color,
-                          fontSize: 14,
-                          decoration: TextDecoration.none,
-                          fontWeight: FontWeight.w300,
+                child: Builder(builder: (_) {
+                  if (_logo.isEmpty) {
+                    return Image.asset(
+                      "assets/images/fishtank.png",
+                      width: 60,
+                      height: 42,
+                    );
+                  }
+                  return Card(
+                    shadowColor: Colors.black.withOpacity(.1),
+                    child: Container(
+                      width: 60,
+                      height: 42,
+                      child: CachedNetworkImage(
+                        imageUrl: _logo,
+                        fit: BoxFit.fitWidth,
+                        placeholder: (context, url) => Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                        errorWidget: (
+                          context,
+                          url,
+                          error,
+                        ) =>
+                            Image.asset(
+                          K_DEFAULT_IMAGE,
+                          width: 80,
+                          height: 42,
+                          fit: BoxFit.cover,
                         ),
                       ),
-                      SizedBox(
-                        height: _desc.isEmpty ? 0 : 3,
-                      ),
-                      _desc.isEmpty
-                          ? SizedBox.shrink()
-                          : Text(
-                              _desc,
-                              style: TextStyle(
-                                color: _color,
-                                fontSize: 9,
-                                decoration: TextDecoration.none,
-                                fontWeight: FontWeight.w300,
-                              ),
-                              maxLines: 2,
+                    ),
+                  );
+                }),
+              ),
+              Expanded(
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            _title,
+                            style: TextStyle(
+                              color: _color,
+                              fontSize: 14,
+                              decoration: TextDecoration.none,
+                              fontWeight: FontWeight.w300,
                             ),
-                    ],
-                  ),
+                          ),
+                          SizedBox(
+                            height: _desc.isEmpty ? 0 : 3,
+                          ),
+                          _desc.isEmpty
+                              ? SizedBox.shrink()
+                              : Text(
+                                  _desc,
+                                  style: TextStyle(
+                                    color: _color,
+                                    fontSize: 9,
+                                    decoration: TextDecoration.none,
+                                    fontWeight: FontWeight.w300,
+                                  ),
+                                  maxLines: 2,
+                                ),
+                        ],
+                      ),
+                    ),
+                    Icon(
+                      current ? Icons.done : CupertinoIcons.right_chevron,
+                      color: _color,
+                    ),
+                  ],
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 ),
-                Icon(
-                  current ? Icons.done : CupertinoIcons.right_chevron,
-                  color: _color,
-                ),
-              ],
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            ),
+              ),
+            ]),
           ),
-        ]),
+        ),
       ),
     );
   }

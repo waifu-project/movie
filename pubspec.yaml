@@ -33,6 +33,7 @@ dependencies:
   desktop_webview_window: ^0.0.5
   bitsdojo_window: ^0.1.1+1
   url_launcher: ^6.0.12
+  flutter_slidable: ^1.1.0
   
   flutter: 
     sdk: flutter

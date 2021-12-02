@@ -57,8 +57,8 @@ class HomeController extends GetxController with WidgetsBindingObserver {
   }
 
   set isNsfw(newVal) {
-    _mirrorIndex = 0;
     _isNsfw = newVal;
+    _mirrorIndex = 0;
     update();
     localStorage.write(ConstDart.is_nsfw, newVal);
   }

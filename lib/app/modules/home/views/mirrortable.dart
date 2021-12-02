@@ -14,7 +14,6 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:cupertino_list_tile/cupertino_list_tile.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -51,11 +50,6 @@ class _MirrorTableViewState extends State<MirrorTableView> {
         scrollController.jumpTo(
           cacheMirrorTableScrollControllerOffset,
         );
-        // scrollController.animateTo(
-        //   cacheMirrorTableScrollControllerOffset,
-        //   duration: Duration(milliseconds: 360),
-        //   curve: Curves.ease,
-        // );
       }
     });
   }
@@ -102,7 +96,7 @@ class _MirrorTableViewState extends State<MirrorTableView> {
                       var index = mirrorList.indexOf(e);
                       home.updateMirrorIndex(index);
                       Get.back();
-                    }
+                    },
                   ),
                 )
                 .toList(),
@@ -218,16 +212,18 @@ class mirrorCard extends StatelessWidget {
                       SizedBox(
                         height: _desc.isEmpty ? 0 : 3,
                       ),
-                      _desc.isEmpty ? SizedBox.shrink() : Text(
-                        _desc,
-                        style: TextStyle(
-                          color: _color,
-                          fontSize: 9,
-                          decoration: TextDecoration.none,
-                          fontWeight: FontWeight.w300,
-                        ),
-                        maxLines: 2,
-                      ),
+                      _desc.isEmpty
+                          ? SizedBox.shrink()
+                          : Text(
+                              _desc,
+                              style: TextStyle(
+                                color: _color,
+                                fontSize: 9,
+                                decoration: TextDecoration.none,
+                                fontWeight: FontWeight.w300,
+                              ),
+                              maxLines: 2,
+                            ),
                     ],
                   ),
                 ),

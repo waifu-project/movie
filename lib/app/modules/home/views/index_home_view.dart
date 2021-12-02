@@ -170,17 +170,20 @@ class IndexHomeViewPage extends GetView {
                                     homeview.updateHomeData(isFirst: true);
                                   },
                                 ),
+                                SizedBox(height: 12,),
                                 Builder(builder: (context) {
                                   var msg =
                                       homeview.indexHomeLoadDataErrorMessage;
                                   if (msg == "") return SizedBox.shrink();
-                                  return Padding(
-                                    padding: EdgeInsets.all(Get.width * .05),
-                                    child: Text(
-                                      msg,
-                                      style: TextStyle(
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w400,
+                                  return Card(
+                                    child: Padding(
+                                      padding: EdgeInsets.all(Get.width * .05),
+                                      child: Text(
+                                        msg,
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w400,
+                                        ),
                                       ),
                                     ),
                                   );

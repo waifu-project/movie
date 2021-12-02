@@ -16,13 +16,16 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-typedef MacwindowctlHoverEvent = void Function(MacwindowctlAction);
-typedef MacwindowctlExitEvent = void Function(MacwindowctlAction);
-typedef MacwindowctlClickEvent = void Function(MacwindowctlAction);
-
+typedef MacwindowctlEvent = void Function(MacwindowctlAction);
 enum MacwindowctlAction {
+
+  /// 关闭
   close,
+
+  /// 最小化
   minimize,
+
+  /// 最大化
   maximize,
 }
 
@@ -33,11 +36,11 @@ class Macwindowctl extends StatefulWidget {
 
   final double? blurSize;
 
-  final MacwindowctlHoverEvent? onHover;
+  final MacwindowctlEvent? onHover;
 
-  final MacwindowctlExitEvent? onExit;
+  final MacwindowctlEvent? onExit;
 
-  final MacwindowctlClickEvent? onClick;
+  final MacwindowctlEvent? onClick;
 
   final bool? buttonReverse;
 

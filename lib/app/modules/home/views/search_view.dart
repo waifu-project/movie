@@ -36,7 +36,7 @@ class SearchView extends StatefulWidget {
   _SearchViewState createState() => _SearchViewState();
 }
 
-class _SearchViewState extends State<SearchView> {
+class _SearchViewState extends State<SearchView> with AutomaticKeepAliveClientMixin {
   final HomeController home = Get.find<HomeController>();
 
   final SearchBarController _searchBarController =
@@ -129,6 +129,7 @@ class _SearchViewState extends State<SearchView> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Scaffold(
       appBar: GetPlatform.isDesktop
           ? WindowAppBar(
@@ -448,4 +449,7 @@ class _SearchViewState extends State<SearchView> {
       return dioError.error;
     }
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

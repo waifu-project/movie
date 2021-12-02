@@ -10,32 +10,32 @@
 
 软件内建了两个源, 你也可以自行添加源
 
-官方源: https://github.com/d1y/assets/blob/master/yy.json
+官方源: https://github.com/waifu-project/assets/blob/master/yy.json
 
 [制作源教程](docs/源制作.md)
 
 ## 截图
 
 **首页**
-![](https://cdn.jsdelivr.net/gh/d1y/assets/screenshots/首页.png)
+![](https://cdn.jsdelivr.net/gh/waifu-project/assets/screenshots/首页.png)
 
 **切换源**
-![](https://cdn.jsdelivr.net/gh/d1y/assets/screenshots/切换源.png)
+![](https://cdn.jsdelivr.net/gh/waifu-project/assets/screenshots/切换源.png)
 
 **详情**
-![](https://cdn.jsdelivr.net/gh/d1y/assets/screenshots/详情.png)
+![](https://cdn.jsdelivr.net/gh/waifu-project/assets/screenshots/详情.png)
 
 **播放**
-![](https://cdn.jsdelivr.net/gh/d1y/assets/screenshots/播放.png)
+![](https://cdn.jsdelivr.net/gh/waifu-project/assets/screenshots/播放.png)
 
 **设置**
-![](https://cdn.jsdelivr.net/gh/d1y/assets/screenshots/设置.png)
+![](https://cdn.jsdelivr.net/gh/waifu-project/assets/screenshots/设置.png)
 
 **换源**
-![](https://cdn.jsdelivr.net/gh/d1y/assets/screenshots/换源.png)
+![](https://cdn.jsdelivr.net/gh/waifu-project/assets/screenshots/换源.png)
 
 **搜索**
-![](https://cdn.jsdelivr.net/gh/d1y/assets/screenshots/搜索.png)
+![](https://cdn.jsdelivr.net/gh/waifu-project/assets/screenshots/搜索.png)
 
 
 ## NSFW
@@ -50,13 +50,7 @@ const result = decodeURI(char)
 console.log(result)
 ```
 
-![](https://cdn.jsdelivr.net/gh/d1y/assets/screenshots/open_nsfw.gif)
-
-### 吹水啦
-
-如果有♂好♂的资源网站, 可加群一起吹水交流, ♂泄♂泄Thanks♪(･ω･)ﾉ
-
-![](https://cdn.jsdelivr.net/gh/d1y/assets/screenshots/wechat_group.jpg)
+![](https://cdn.jsdelivr.net/gh/waifu-project/assets/screenshots/open_nsfw.gif)
 
 图片素材来自:
 

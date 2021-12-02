@@ -79,7 +79,7 @@ class HomeView extends GetView<HomeController> {
                     ),
                     SalomonBottomBarItem(
                       icon: Icon(Icons.live_tv),
-                      title: Text("直播"),
+                      title: Text("电视"),
                       selectedColor: Colors.brown,
                     ),
                     SalomonBottomBarItem(

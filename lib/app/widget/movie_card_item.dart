@@ -37,6 +37,9 @@ class MovieCardItem extends StatefulWidget {
 }
 
 class _MovieCardItemState extends State<MovieCardItem> {
+
+  double _radiusSize = 8.0;
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -44,6 +47,10 @@ class _MovieCardItemState extends State<MovieCardItem> {
       child: Container(
         width: double.infinity,
         height: 420,
+        padding: EdgeInsets.symmetric(
+          horizontal: 6,
+          vertical: 3,
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -54,16 +61,29 @@ class _MovieCardItemState extends State<MovieCardItem> {
                 fit: BoxFit.cover,
                 loadingBuilder: (context, child, loadingProgress) {
                   if (loadingProgress == null)
-                    return ClipRRect(
-                      borderRadius: BorderRadius.circular(8.0),
-                      child: child,
+                    return DecoratedBox(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(_radiusSize),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Theme.of(context).primaryColor.withOpacity(.2),
+                            offset: Offset(1, 1),
+                            blurRadius: 2,
+                            spreadRadius: 2,
+                          ),
+                        ],
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(_radiusSize),
+                        child: child,
+                      ),
                     );
                   return Center(
                     child: CircularProgressIndicator(),
                   );
                 },
                 errorBuilder: (context, error, stackTrace) => ClipRRect(
-                  borderRadius: BorderRadius.circular(8.0),
+                  borderRadius: BorderRadius.circular(_radiusSize),
                   child: KCoverImage,
                 ),
               ),

@@ -99,6 +99,7 @@ class HomeController extends GetxController with WidgetsBindingObserver {
     if (_index < _oldIndex) {
       _afterIndex = _oldIndex - 1;
     }
+    mirrorIndex = _afterIndex;
     _cacheMirrorIndex = _afterIndex;
     update();
   }

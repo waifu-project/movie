@@ -14,6 +14,8 @@
 
 [制作源教程](docs/源制作.md)
 
+> `iOS` 下载 `ipa` 之后, 请使用 [sideloadly](https://sideloadly.io/) 签名安装
+
 ## 截图
 
 **首页**

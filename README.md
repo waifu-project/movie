@@ -1,4 +1,5 @@
-![](./design/logo.svg)
+<img src="design/logo.png" align="right" width="210">
+
 
 ## YY播放器
 

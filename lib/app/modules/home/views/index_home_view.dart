@@ -32,7 +32,8 @@ class IndexHomeView extends StatefulWidget {
   _IndexHomeViewState createState() => _IndexHomeViewState();
 }
 
-class _IndexHomeViewState extends State<IndexHomeView> with AutomaticKeepAliveClientMixin {
+class _IndexHomeViewState extends State<IndexHomeView>
+    with AutomaticKeepAliveClientMixin {
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -55,8 +56,9 @@ class IndexHomeViewPage extends GetView {
   }
 
   double get childAspectRatio {
-    return home.windowLastSize.aspectRatio;
-    // return (Get.width / cardCount) / (Get.height / cardCount);
+    var val = home.windowLastSize.aspectRatio;
+    if (GetPlatform.isDesktop) return val;
+    return val * 1.2;
   }
 
   @override

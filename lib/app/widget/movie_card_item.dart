@@ -37,7 +37,6 @@ class MovieCardItem extends StatefulWidget {
 }
 
 class _MovieCardItemState extends State<MovieCardItem> {
-
   double _radiusSize = 8.0;
 
   @override
@@ -46,7 +45,8 @@ class _MovieCardItemState extends State<MovieCardItem> {
       onTap: widget.onTap,
       child: Container(
         width: double.infinity,
-        height: 420,
+        // tip: 不设置高度
+        // height: 120,
         padding: EdgeInsets.symmetric(
           horizontal: 6,
           vertical: 3,
@@ -66,7 +66,9 @@ class _MovieCardItemState extends State<MovieCardItem> {
                         borderRadius: BorderRadius.circular(_radiusSize),
                         boxShadow: [
                           BoxShadow(
-                            color: Theme.of(context).primaryColor.withOpacity(.2),
+                            color: Theme.of(
+                              context,
+                            ).primaryColor.withOpacity(.2),
                             offset: Offset(1, 1),
                             blurRadius: 2,
                             spreadRadius: 2,
@@ -95,6 +97,9 @@ class _MovieCardItemState extends State<MovieCardItem> {
               child: Text(
                 widget.title,
                 maxLines: 1,
+                style: TextStyle(
+                  fontSize: 12,
+                ),
                 overflow: TextOverflow.ellipsis,
               ),
             ),

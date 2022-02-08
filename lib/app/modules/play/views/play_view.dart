@@ -119,6 +119,7 @@ class PlayView extends GetView<PlayController> {
                       sigmaY: 6,
                     ),
                     child: Stack(
+                      clipBehavior: Clip.none,
                       children: [
                         Image.network(
                           play.movieItem.smallCoverImage,
@@ -144,7 +145,9 @@ class PlayView extends GetView<PlayController> {
                                     child: Text(
                                       play.movieItem.title,
                                       style:
-                                          Theme.of(context).textTheme.headline4,
+                                          Theme.of(context).textTheme.headline6,
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 4,
                                     ),
                                   ),
                                 ],

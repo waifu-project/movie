@@ -14,6 +14,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
@@ -49,6 +50,26 @@ class HomeController extends GetxController with WidgetsBindingObserver {
   );
 
   final localStorage = GetStorage();
+
+  /// `ios` 播放视频是否使用默认的系统浏览器
+  /// 1. 浏览器默认支持: `m3u8` | `mp4`
+  /// 2. 网页可以直接跳转给浏览器用
+  /// (所以`ios`默认直接走浏览器岂不美哉?)
+  bool _iosCanBeUseSystemBrowser = true;
+
+  bool get iosCanBeUseSystemBrowser =>
+      _iosCanBeUseSystemBrowser && GetPlatform.isIOS;
+
+  set iosCanBeUseSystemBrowser(bool newVal) {
+    _iosCanBeUseSystemBrowser = newVal;
+    update();
+    localStorage.write(ConstDart.iosVideoSystemBrowser, newVal);
+  }
+
+  updateIOSCanBeUseSystemBrowser() {
+    iosCanBeUseSystemBrowser =
+        localStorage.read<bool>(ConstDart.iosVideoSystemBrowser) ?? true;
+  }
 
   bool _isNsfw = false;
 
@@ -176,6 +197,7 @@ class HomeController extends GetxController with WidgetsBindingObserver {
     updateWindowLastSize();
     WidgetsBinding.instance!.addObserver(this);
     updateNsfwSetting();
+    updateIOSCanBeUseSystemBrowser();
     updateHomeData(isFirst: true);
   }
 

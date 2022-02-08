@@ -40,6 +40,9 @@ class ConstDart {
   /// **免责提示**
   static final String showPlayTips = "showPlayTips";
 
+  /// iOS使用浏览器播放
+  static final String iosVideoSystemBrowser = "iosVideoSystemBrowser";
+
   /// 是否为开发模式
   /// TODDO
   static bool get isDev {

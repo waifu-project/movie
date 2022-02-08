@@ -25,6 +25,7 @@ import 'package:movie/app/modules/play/views/chewie_view.dart';
 import 'package:movie/app/modules/play/views/webview_view.dart';
 import 'package:movie/config.dart';
 import 'package:movie/mirror/mirror_serialize.dart';
+import 'package:movie/utils/helper.dart';
 
 /// 尽可能的拿到正确`url`
 /// [str] 数据模板
@@ -107,7 +108,13 @@ class PlayController extends GetxController {
     /// (`m3u8` | `mp4`) 资源
     var canUseChewieView = e.type == MirrorSerializeVideoType.m3u8 ||
         e.type == MirrorSerializeVideoType.mp4;
-        
+
+    /// iOS
+    if (home.iosCanBeUseSystemBrowser) {
+      LaunchURL(url);
+      return;
+    }
+
     if (e.type == MirrorSerializeVideoType.iframe) {
       Get.to(
         () => WebviewView(),

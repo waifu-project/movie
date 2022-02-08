@@ -14,6 +14,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_cupertino_settings/flutter_cupertino_settings.dart';
@@ -260,6 +261,11 @@ class _SettingsViewState extends State<SettingsView> {
     }
   }
 
+  /// 是否显示`ios`默认浏览器设置
+  bool canBeShowIosBrowserSettings = GetPlatform.isIOS || kDebugMode;
+
+  bool _canBeShowIosBrowser = true;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -360,6 +366,25 @@ class _SettingsViewState extends State<SettingsView> {
               );
             },
           ),
+          canBeShowIosBrowserSettings
+              ? CSControl(
+                  nameWidget: Text('iOS播放使用内置浏览器'),
+                  contentWidget: CupertinoSwitch(
+                    value: _canBeShowIosBrowser,
+                    onChanged: (bool value) async {
+                      setState(() {
+                        _canBeShowIosBrowser = value;
+                      });
+                      home.iosCanBeUseSystemBrowser = value;
+                    },
+                  ),
+                  style: const CSWidgetStyle(
+                    icon: const Icon(
+                      Icons.airplay_rounded,
+                    ),
+                  ),
+                )
+              : SizedBox.shrink(),
           showNSFW
               ? CSControl(
                   nameWidget: Text('NSFW'),

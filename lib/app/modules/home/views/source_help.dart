@@ -15,7 +15,6 @@
 
 import 'dart:async';
 
-import 'package:cupertino_list_tile/cupertino_list_tile.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -24,6 +23,8 @@ import 'package:get/get.dart';
 import 'package:movie/app/modules/home/views/home_config.dart';
 import 'package:movie/utils/http.dart';
 import 'package:clipboard/clipboard.dart';
+
+import 'package:movie/widget/list_tile.dart';
 
 class SourceItemJSONData {
   String? title;

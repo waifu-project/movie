@@ -20,7 +20,7 @@ dependencies:
   xml2json: ^5.3.1
   modal_bottom_sheet: ^2.0.0
   pull_to_refresh: ^2.0.0
-  cupertino_list_tile: ^0.2.0
+  # cupertino_list_tile: ^0.2.0
   cached_network_image: ^3.1.0
   chewie: ^1.2.2
   video_player: ^2.2.5

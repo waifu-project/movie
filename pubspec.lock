@@ -169,13 +169,6 @@ packages:
       url: "https://mirrors.tuna.tsinghua.edu.cn/dart-pub/"
     source: hosted
     version: "1.0.3"
-  cupertino_list_tile:
-    dependency: "direct main"
-    description:
-      name: cupertino_list_tile
-      url: "https://mirrors.tuna.tsinghua.edu.cn/dart-pub/"
-    source: hosted
-    version: "0.2.0"
   desktop_webview_window:
     dependency: "direct main"
     description:
@@ -657,14 +650,14 @@ packages:
       name: url_launcher_android
       url: "https://mirrors.tuna.tsinghua.edu.cn/dart-pub/"
     source: hosted
-    version: "6.0.15"
+    version: "6.0.14"
   url_launcher_ios:
     dependency: transitive
     description:
       name: url_launcher_ios
       url: "https://mirrors.tuna.tsinghua.edu.cn/dart-pub/"
     source: hosted
-    version: "6.0.15"
+    version: "6.0.14"
   url_launcher_linux:
     dependency: transitive
     description:
@@ -692,7 +685,7 @@ packages:
       name: url_launcher_web
       url: "https://mirrors.tuna.tsinghua.edu.cn/dart-pub/"
     source: hosted
-    version: "2.0.8"
+    version: "2.0.7"
   url_launcher_windows:
     dependency: transitive
     description:

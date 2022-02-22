@@ -46,7 +46,7 @@ void main() async {
   }
   runApp(
     GetMaterialApp(
-      title: "YY播放器",
+      title: APP_TITLE,
       scrollBehavior: MyCustomScrollBehavior(),
       initialRoute: AppPages.INITIAL,
       getPages: AppPages.routes,

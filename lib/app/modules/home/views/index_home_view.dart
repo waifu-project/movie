@@ -23,6 +23,7 @@ import 'package:movie/app/routes/app_pages.dart';
 import 'package:movie/app/widget/k_body.dart';
 import 'package:movie/app/widget/movie_card_item.dart';
 import 'package:movie/app/widget/window_appbar.dart';
+import 'package:movie/config.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class IndexHomeView extends StatefulWidget {
@@ -72,7 +73,7 @@ class IndexHomeViewPage extends GetView {
               horizontal: 9,
             ),
             child: Text(
-              "YY播放器",
+              APP_TITLE,
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 18,
@@ -172,7 +173,9 @@ class IndexHomeViewPage extends GetView {
                                     homeview.updateHomeData(isFirst: true);
                                   },
                                 ),
-                                SizedBox(height: 12,),
+                                SizedBox(
+                                  height: 12,
+                                ),
                                 Builder(builder: (context) {
                                   var msg =
                                       homeview.indexHomeLoadDataErrorMessage;

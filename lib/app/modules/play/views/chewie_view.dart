@@ -101,6 +101,5 @@ class _ChewieViewState extends State<ChewieView> {
         ),
       ),
     );
-    ;
   }
 }

@@ -94,9 +94,10 @@ class NfmovieMirror extends MovieImpl {
     var coverImage =
         infoEle!.querySelector("img")?.attributes['data-original'] ?? "";
     var title = infoEle.attributes['title'] ?? "";
+    var image = createURL(path: coverImage);
     return MirrorOnceItemSerialize(
       id: movie_id,
-      smallCoverImage: coverImage,
+      smallCoverImage: image,
       title: title,
       videos: data,
     );

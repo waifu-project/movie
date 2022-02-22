@@ -62,6 +62,12 @@ class IndexHomeViewPage extends GetView {
     return val * 1.2;
   }
 
+  /// 错误日志
+  String get errorMsg => home.indexHomeLoadDataErrorMessage;
+
+  /// 错误日志最大展示行数
+  int get errorMsgMaxLines => 12;
+
   @override
   Widget build(BuildContext context) {
     return GetBuilder<HomeController>(
@@ -177,17 +183,20 @@ class IndexHomeViewPage extends GetView {
                                   height: 12,
                                 ),
                                 Builder(builder: (context) {
-                                  var msg =
-                                      homeview.indexHomeLoadDataErrorMessage;
-                                  if (msg == "") return SizedBox.shrink();
+                                  if (errorMsg == "") return SizedBox.shrink();
                                   return Card(
+                                    color: Colors.transparent,
+                                    shadowColor: Colors.transparent,
                                     child: Padding(
                                       padding: EdgeInsets.all(Get.width * .05),
                                       child: Text(
-                                        msg,
+                                        errorMsg,
+                                        maxLines: errorMsgMaxLines,
+                                        overflow: TextOverflow.ellipsis,
                                         style: TextStyle(
                                           fontSize: 12,
                                           fontWeight: FontWeight.w400,
+                                          color: Colors.grey,
                                         ),
                                       ),
                                     ),

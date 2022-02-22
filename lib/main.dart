@@ -25,7 +25,8 @@ import 'package:movie/utils/helper.dart';
 import 'app/routes/app_pages.dart';
 import 'utils/http.dart';
 
-void main() async {
+/// 运行之前
+Future<Brightness> runBefore() async {
   WidgetsFlutterBinding.ensureInitialized();
   await XHttp.init();
   await GetStorage.init();
@@ -44,6 +45,26 @@ void main() async {
       wrapperIfDark = windowMode;
     }
   }
+
+  return wrapperIfDark;
+}
+
+/// 运行之后
+void runAfter() {
+  if (GetPlatform.isDesktop) {
+    doWhenWindowReady(() {
+      final initialSize = Size(990, 720);
+      appWindow.minSize = initialSize;
+      appWindow.size = initialSize;
+      appWindow.alignment = Alignment.center;
+      appWindow.show();
+    });
+  }
+}
+
+void main() async {
+  Brightness wrapperIfDark = await runBefore();
+
   runApp(
     GetMaterialApp(
       title: APP_TITLE,
@@ -57,13 +78,5 @@ void main() async {
     ),
   );
 
-  if (GetPlatform.isDesktop) {
-    doWhenWindowReady(() {
-      final initialSize = Size(990, 720);
-      appWindow.minSize = initialSize;
-      appWindow.size = initialSize;
-      appWindow.alignment = Alignment.center;
-      appWindow.show();
-    });
-  }
+  runAfter();
 }

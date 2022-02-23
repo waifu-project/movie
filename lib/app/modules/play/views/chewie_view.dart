@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:get/get.dart';
+import 'package:movie/utils/screen_helper.dart';
 import 'package:video_player/video_player.dart';
 
 class ChewieView extends StatefulWidget {
@@ -22,6 +23,7 @@ class _ChewieViewState extends State<ChewieView> {
   @override
   void initState() {
     super.initState();
+    execScreenDirction(ScreenDirction.x);
     initializePlayer();
   }
 
@@ -29,6 +31,7 @@ class _ChewieViewState extends State<ChewieView> {
   void dispose() {
     videoPlayerController.dispose();
     chewieController.dispose();
+    execScreenDirction(ScreenDirction.y);
     super.dispose();
   }
 

@@ -1,12 +1,10 @@
-import 'dart:async';
 import 'dart:io';
 
-import 'package:auto_orientation/auto_orientation.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 import 'package:get/get.dart';
+import 'package:movie/utils/screen_helper.dart';
 import 'package:wakelock/wakelock.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -25,10 +23,7 @@ class _WebviewViewState extends State<WebviewView> {
   @override
   void initState() {
     Wakelock.enable();
-    AutoOrientation.landscapeAutoMode();
-    SystemUiOverlayStyle systemUiOverlayStyle =
-        SystemUiOverlayStyle(statusBarColor: Colors.transparent,);
-    SystemChrome.setSystemUIOverlayStyle(systemUiOverlayStyle);
+    execScreenDirction(ScreenDirction.x);
     super.initState();
   }
 
@@ -36,9 +31,7 @@ class _WebviewViewState extends State<WebviewView> {
   void dispose() {
     super.dispose();
     Wakelock.disable();
-    Timer(Duration(milliseconds: 400), () {
-      AutoOrientation.portraitAutoMode();
-    });
+    execScreenDirction(ScreenDirction.y);
   }
 
   // bool showBackButton = true;

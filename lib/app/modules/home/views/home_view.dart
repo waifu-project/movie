@@ -30,11 +30,33 @@ import '../controllers/home_controller.dart';
 class HomeView extends GetView<HomeController> {
   bool get isDark => Get.isDarkMode;
 
-  final List<Widget> views = [
+  final List<Widget> _views = [
     IndexHomeView(),
     SearchView(),
     SettingsView(),
   ];
+
+  final List<Map<String, dynamic>> _tabs = [
+    {
+      "icon": CupertinoIcons.home,
+      "title": "首页",
+      "color": Colors.blue,
+    },
+    {
+      "icon": CupertinoIcons.search,
+      "title": "搜索",
+      "color": Colors.orange,
+    },
+    {
+      "icon": CupertinoIcons.settings,
+      "title": "设置",
+      "color": Colors.pink,
+    },
+  ];
+
+  Color get _color => isDark
+      ? Color.fromRGBO(0, 0, 0, .63)
+      : Color.fromRGBO(255, 255, 255, .63);
 
   @override
   Widget build(BuildContext context) {
@@ -43,18 +65,16 @@ class HomeView extends GetView<HomeController> {
         body: PageView.builder(
           controller: homeview.currentBarController,
           itemBuilder: (context, index) {
-            return views[index];
+            return _views[index];
           },
-          itemCount: views.length,
+          itemCount: _views.length,
           onPageChanged: (index) {
             homeview.changeCurrentBarIndex(index);
           },
         ),
         bottomNavigationBar: BottomAppBar(
           elevation: 0,
-          color: isDark
-              ? Color.fromRGBO(0, 0, 0, .63)
-              : Color.fromRGBO(255, 255, 255, .63),
+          color: _color,
           child: SizedBox(
             height: kBarHeight,
             child: ClipRect(
@@ -69,23 +89,15 @@ class HomeView extends GetView<HomeController> {
                   onTap: (int i) {
                     homeview.changeCurrentBarIndex(i);
                   },
-                  items: [
-                    SalomonBottomBarItem(
-                      icon: Icon(CupertinoIcons.home),
-                      title: Text("首页"),
-                      selectedColor: Colors.blue,
-                    ),
-                    SalomonBottomBarItem(
-                      icon: Icon(CupertinoIcons.search),
-                      title: Text("搜索"),
-                      selectedColor: Colors.orange,
-                    ),
-                    SalomonBottomBarItem(
-                      icon: Icon(CupertinoIcons.settings),
-                      title: Text("设置"),
-                      selectedColor: Colors.pink,
-                    ),
-                  ],
+                  items: _tabs
+                      .map(
+                        (e) => SalomonBottomBarItem(
+                          icon: Icon(e['icon']),
+                          title: Text(e['title']),
+                          selectedColor: e['color'],
+                        ),
+                      )
+                      .toList(),
                 ),
               ),
             ),

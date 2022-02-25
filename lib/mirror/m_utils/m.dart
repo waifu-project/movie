@@ -111,9 +111,10 @@ class KBaseMirrorMovie extends MovieImpl {
             type: easyGetVideoType(item.cData),
           );
         }).toList();
+        var pic = normalizeCoverImage(e.pic);
         return MirrorOnceItemSerialize(
           id: e.id,
-          smallCoverImage: e.pic,
+          smallCoverImage: pic,
           title: e.name,
           videos: videos,
           desc: e.des,
@@ -155,9 +156,10 @@ class KBaseMirrorMovie extends MovieImpl {
             type: easyGetVideoType(item.cData),
           );
         }).toList();
+        var pic = normalizeCoverImage(e.pic);
         return MirrorOnceItemSerialize(
           id: e.id,
-          smallCoverImage: e.pic,
+          smallCoverImage: pic,
           title: e.name,
           videos: videos,
           desc: e.des,
@@ -165,6 +167,16 @@ class KBaseMirrorMovie extends MovieImpl {
       },
     ).toList();
     return cards;
+  }
+
+  /// 匹配的规则:
+  ///   https://www.88zy.net/upload/vod/2020-10-26/202010261603727118.jpg\r\\n
+  String normalizeCoverImage(String rawString) {
+    String syb = r'\r\\n';
+    var index = rawString.lastIndexOf(syb);
+    var _offset = rawString.length - syb.length;
+    if (index == _offset) return rawString.substring(0, index);
+    return rawString;
   }
 
   @override

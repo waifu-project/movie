@@ -21,6 +21,7 @@ import 'package:movie/app/modules/home/controllers/home_controller.dart';
 import 'package:movie/app/modules/home/views/home_config.dart';
 import 'package:movie/app/routes/app_pages.dart';
 import 'package:movie/app/widget/k_body.dart';
+import 'package:movie/app/widget/k_error_stack.dart';
 import 'package:movie/app/widget/movie_card_item.dart';
 import 'package:movie/app/widget/window_appbar.dart';
 import 'package:movie/config.dart';
@@ -182,26 +183,9 @@ class IndexHomeViewPage extends GetView {
                                 SizedBox(
                                   height: 12,
                                 ),
-                                Builder(builder: (context) {
-                                  if (errorMsg == "") return SizedBox.shrink();
-                                  return Card(
-                                    color: Colors.transparent,
-                                    shadowColor: Colors.transparent,
-                                    child: Padding(
-                                      padding: EdgeInsets.all(Get.width * .05),
-                                      child: Text(
-                                        errorMsg,
-                                        maxLines: errorMsgMaxLines,
-                                        overflow: TextOverflow.ellipsis,
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w400,
-                                          color: Colors.grey,
-                                        ),
-                                      ),
-                                    ),
-                                  );
-                                }),
+                                KErrorStack(
+                                  msg: errorMsg,
+                                ),
                               ],
                             ),
                           ),

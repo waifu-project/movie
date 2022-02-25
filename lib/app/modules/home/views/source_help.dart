@@ -16,11 +16,13 @@
 import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:get/get.dart';
 import 'package:movie/app/modules/home/views/home_config.dart';
+import 'package:movie/app/widget/k_error_stack.dart';
 import 'package:movie/utils/http.dart';
 import 'package:clipboard/clipboard.dart';
 
@@ -76,18 +78,32 @@ class _SourceHelpTableState extends State<SourceHelpTable> {
   }
 
   loadMirrorListApi() async {
+    setState(() {
+      _isLoadingFromAJAX = true;
+    });
     try {
+      // if (kDebugMode) await Future.delayed(Duration(seconds: 2));
       var resp = await XHttp.dio.get(FetchMirrorAPI);
       List<SourceItemJSONData> data = List.from(resp.data)
           .map((e) => SourceItemJSONData.fromJson(e as Map<String, dynamic>))
           .toList();
       setState(() {
         mirrors = data;
+        _isLoadingFromAJAX = false;
+        _loadingErrorStack = "";
       });
     } catch (e) {
       print(e);
+      setState(() {
+        _isLoadingFromAJAX = false;
+        _loadingErrorStack = e.toString();
+      });
     }
   }
+
+  bool _isLoadingFromAJAX = false;
+
+  String _loadingErrorStack = "";
 
   List<SourceItemJSONData> mirrors = [];
 
@@ -169,6 +185,16 @@ class _SourceHelpTableState extends State<SourceHelpTable> {
 
   String sourceCreateData = "";
 
+  String get _wrapperLable {
+    if (!_isLoadingFromAJAX) return "啥也没有";
+    return "加载网络资源中";
+  }
+
+  /// 判断加载失败
+  bool get _canLoadFail {
+    return _loadingErrorStack.isNotEmpty && !_isLoadingFromAJAX;
+  }
+
   @override
   Widget build(BuildContext context) {
     return DefaultTextStyle(
@@ -218,10 +244,16 @@ class _SourceHelpTableState extends State<SourceHelpTable> {
                             child: CupertinoScrollbar(
                               child: Builder(
                                 builder: (context) {
-                                  if (mirrors.isEmpty)
+                                  if (mirrors.isEmpty) {
+                                    Widget _child = Text(_wrapperLable);
+                                    if (_canLoadFail)
+                                      _child = KErrorStack(
+                                        msg: _loadingErrorStack,
+                                      );
                                     return Center(
-                                      child: Text("啥也没有"),
+                                      child: _child,
                                     );
+                                  }
                                   return ListView(
                                     children: [
                                       ...mirrors.map((item) {
@@ -249,7 +281,22 @@ class _SourceHelpTableState extends State<SourceHelpTable> {
                           ),
                           Builder(
                             builder: (context) {
-                              if (mirrors.isEmpty) return SizedBox.shrink();
+                              if (mirrors.isEmpty) {
+                                if (_canLoadFail)
+                                  return Padding(
+                                    padding: EdgeInsets.only(
+                                      bottom: 24,
+                                    ),
+                                    child: CupertinoButton.filled(
+                                      padding: EdgeInsets.all(12),
+                                      child: Text("重新加载"),
+                                      onPressed: () {
+                                        loadMirrorListApi();
+                                      },
+                                    ),
+                                  );
+                                return SizedBox.shrink();
+                              }
                               return Container(
                                 margin: EdgeInsets.symmetric(
                                   horizontal: 0,

@@ -13,6 +13,8 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -25,7 +27,9 @@ import 'package:movie/app/widget/k_error_stack.dart';
 import 'package:movie/app/widget/movie_card_item.dart';
 import 'package:movie/app/widget/window_appbar.dart';
 import 'package:movie/config.dart';
+import 'package:movie/mirror/mirror_serialize.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:waterfall_flow/waterfall_flow.dart';
 
 class IndexHomeView extends StatefulWidget {
   const IndexHomeView({Key? key}) : super(key: key);
@@ -57,17 +61,37 @@ class IndexHomeViewPage extends GetView {
     return 3;
   }
 
-  double get childAspectRatio {
-    var val = home.windowLastSize.aspectRatio;
-    if (GetPlatform.isDesktop) return val;
-    return val * 1.2;
-  }
+  // double get childAspectRatio {
+  //   var val = home.windowLastSize.aspectRatio;
+  //   if (GetPlatform.isDesktop) return val;
+  //   return val * 1.2;
+  // }
 
   /// 错误日志
   String get errorMsg => home.indexHomeLoadDataErrorMessage;
 
   /// 错误日志最大展示行数
   int get errorMsgMaxLines => 12;
+
+  handleClickItem(MirrorOnceItemSerialize subItem) async {
+    var data = subItem;
+    if (subItem.videos.isEmpty) {
+      var id = subItem.id;
+      Get.dialog(
+        Center(
+          child: CupertinoActivityIndicator(),
+        ),
+      );
+      data = await home.currentMirrorItem.getDetail(
+        id,
+      );
+      Get.back();
+    }
+    Get.toNamed(
+      Routes.PLAY,
+      arguments: data,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -153,97 +177,67 @@ class IndexHomeViewPage extends GetView {
             child: Builder(
               builder: (_) {
                 if (homeview.isLoading) {
-                  return Center(child: CupertinoActivityIndicator());
+                  return Center(
+                    child: CupertinoActivityIndicator(),
+                  );
                 }
-                return SingleChildScrollView(
-                  physics: NeverScrollableScrollPhysics(),
-                  child: Builder(
-                    builder: (context) {
-                      if (homeview.homedata.isEmpty)
-                        return Container(
-                          // height: Get.height - Get.height * .2,
-                          child: Center(
-                            child: Column(
-                              children: [
-                                Image.asset(
-                                  "assets/images/empty.png",
-                                  fit: BoxFit.cover,
-                                  width: Get.width * .8,
-                                  height: Get.height * .4,
-                                ),
-                                SizedBox(
-                                  height: 12,
-                                ),
-                                CupertinoButton.filled(
-                                  child: Text("重新加载"),
-                                  onPressed: () {
-                                    homeview.updateHomeData(isFirst: true);
-                                  },
-                                ),
-                                SizedBox(
-                                  height: 12,
-                                ),
-                                KErrorStack(
-                                  msg: errorMsg,
-                                ),
-                              ],
-                            ),
-                          ),
-                        );
-                      return Column(
+
+                if (homeview.homedata.isEmpty) {
+                  return Container(
+                    child: Center(
+                      child: Column(
                         children: [
+                          Image.asset(
+                            "assets/images/empty.png",
+                            fit: BoxFit.cover,
+                            width: Get.width * .8,
+                            height: Get.height * .4,
+                          ),
                           SizedBox(
-                            height: 24,
+                            height: 12,
                           ),
-                          GridView.count(
-                            shrinkWrap: true,
-                            controller: new ScrollController(
-                              keepScrollOffset: false,
-                            ),
-                            crossAxisCount: cardCount,
-                            crossAxisSpacing: 6,
-                            mainAxisSpacing: 12,
-                            childAspectRatio: childAspectRatio,
-                            padding: EdgeInsets.symmetric(
-                              vertical: 0,
-                              horizontal: 12,
-                            ),
-                            children: [
-                              ...homeview.homedata
-                                  .map(
-                                    (subItem) => MovieCardItem(
-                                      imageUrl: subItem.smallCoverImage,
-                                      title: subItem.title,
-                                      onTap: () async {
-                                        var data = subItem;
-                                        if (subItem.videos.isEmpty) {
-                                          var id = subItem.id;
-                                          Get.dialog(
-                                            Center(
-                                              child:
-                                                  CupertinoActivityIndicator(),
-                                            ),
-                                          );
-                                          data = await homeview
-                                              .currentMirrorItem
-                                              .getDetail(id);
-                                          Get.back();
-                                        }
-                                        Get.toNamed(
-                                          Routes.PLAY,
-                                          arguments: data,
-                                        );
-                                      },
-                                    ),
-                                  )
-                                  .toList(),
-                            ],
+                          CupertinoButton.filled(
+                            child: Text("重新加载"),
+                            onPressed: () {
+                              homeview.updateHomeData(isFirst: true);
+                            },
                           ),
-                          kBarHeightWidget,
+                          SizedBox(
+                            height: 12,
+                          ),
+                          KErrorStack(
+                            msg: errorMsg,
+                          ),
                         ],
-                      );
-                    },
+                      ),
+                    ),
+                  );
+                }
+
+                return WaterfallFlow.builder(
+                  physics: NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  gridDelegate:
+                      SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: cardCount,
+                    crossAxisSpacing: 5.0,
+                    mainAxisSpacing: 5.0,
                   ),
+                  itemCount: homeview.homedata.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    var subItem = homeview.homedata[index];
+                    return Container(
+                      width: 420,
+                      height: index % 2 == 0 ? 210 : 280,
+                      child: MovieCardItem(
+                        imageUrl: subItem.smallCoverImage,
+                        title: subItem.title,
+                        onTap: () {
+                          handleClickItem(subItem);
+                        },
+                      ),
+                    );
+                  },
                 );
               },
             ),

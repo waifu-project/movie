@@ -34,6 +34,8 @@ dependencies:
   bitsdojo_window: ^0.1.1+1
   url_launcher: ^6.0.12
   flutter_slidable: ^1.1.0
+
+  waterfall_flow: ^3.0.2
   
   flutter: 
     sdk: flutter

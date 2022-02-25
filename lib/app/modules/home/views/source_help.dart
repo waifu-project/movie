@@ -185,7 +185,7 @@ class _SourceHelpTableState extends State<SourceHelpTable> {
 
   String sourceCreateData = "";
 
-  String get _wrapperLable {
+  String get _wrapperAjaxStatusLable {
     if (!_isLoadingFromAJAX) return "啥也没有";
     return "加载网络资源中";
   }
@@ -245,7 +245,8 @@ class _SourceHelpTableState extends State<SourceHelpTable> {
                               child: Builder(
                                 builder: (context) {
                                   if (mirrors.isEmpty) {
-                                    Widget _child = Text(_wrapperLable);
+                                    Widget _child =
+                                        Text(_wrapperAjaxStatusLable);
                                     if (_canLoadFail)
                                       _child = KErrorStack(
                                         msg: _loadingErrorStack,

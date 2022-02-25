@@ -236,6 +236,11 @@ class _SourceHelpTableState extends State<SourceHelpTable> {
                 ),
                 Expanded(
                   child: PageView(
+                    onPageChanged: (index) {
+                      setState(() {
+                        tabIndex = index;
+                      });
+                    },
                     controller: pageController,
                     children: [
                       Column(

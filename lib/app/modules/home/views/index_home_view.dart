@@ -185,30 +185,32 @@ class IndexHomeViewPage extends GetView {
                 if (homeview.homedata.isEmpty) {
                   return Container(
                     child: Center(
-                      child: Column(
-                        children: [
-                          Image.asset(
-                            "assets/images/empty.png",
-                            fit: BoxFit.cover,
-                            width: Get.width * .8,
-                            height: Get.height * .4,
-                          ),
-                          SizedBox(
-                            height: 12,
-                          ),
-                          CupertinoButton.filled(
-                            child: Text("重新加载"),
-                            onPressed: () {
-                              homeview.updateHomeData(isFirst: true);
-                            },
-                          ),
-                          SizedBox(
-                            height: 12,
-                          ),
-                          KErrorStack(
-                            msg: errorMsg,
-                          ),
-                        ],
+                      child: SingleChildScrollView(
+                        child: Column(
+                          children: [
+                            Image.asset(
+                              "assets/images/empty.png",
+                              fit: BoxFit.cover,
+                              width: Get.width * .8,
+                              height: Get.height * .4,
+                            ),
+                            SizedBox(
+                              height: 12,
+                            ),
+                            CupertinoButton.filled(
+                              child: Text("重新加载"),
+                              onPressed: () {
+                                homeview.updateHomeData(isFirst: true);
+                              },
+                            ),
+                            SizedBox(
+                              height: 12,
+                            ),
+                            KErrorStack(
+                              msg: errorMsg,
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   );

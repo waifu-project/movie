@@ -90,6 +90,15 @@ class IndexHomeViewPage extends GetView {
     );
   }
 
+  /// 每个卡片的高度
+  /// 用设备高度 * 0.33
+  /// 横屏情况下 * 0.42
+  double get _cardOnceHeight {
+    double scan = .27;
+    if (cardCount >= 5) scan = .42;
+    return Get.height * scan;
+  }
+
   @override
   Widget build(BuildContext context) {
     return GetBuilder<HomeController>(
@@ -225,9 +234,11 @@ class IndexHomeViewPage extends GetView {
                   itemCount: homeview.homedata.length,
                   itemBuilder: (BuildContext context, int index) {
                     var subItem = homeview.homedata[index];
+                    var _h = index % 2 == 0
+                        ? _cardOnceHeight
+                        : (_cardOnceHeight * .8);
                     return Container(
-                      width: 420,
-                      height: index % 2 == 0 ? 210 : 280,
+                      height: _h,
                       child: MovieCardItem(
                         imageUrl: subItem.smallCoverImage,
                         title: subItem.title,

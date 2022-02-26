@@ -13,14 +13,11 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import 'dart:async';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 import 'package:movie/app/modules/home/controllers/home_controller.dart';
-import 'package:movie/app/modules/home/views/home_config.dart';
 import 'package:movie/app/routes/app_pages.dart';
 import 'package:movie/app/widget/k_body.dart';
 import 'package:movie/app/widget/k_error_stack.dart';

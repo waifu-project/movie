@@ -48,7 +48,8 @@ class _MirrorTableViewState extends State<MirrorTableView> {
     return home.cacheMirrorTableScrollControllerOffset;
   }
 
-  updateCacheMirrorTableScrollControllerOffset() {
+  updateCacheMirrorTableScrollControllerOffset([bool isFirst = true]) {
+    if (isFirst && cacheMirrorTableScrollControllerOffset <= 0) return;
     Future.delayed(Duration(milliseconds: 200), () {
       if (scrollController.hasClients) {
         scrollController.jumpTo(
@@ -65,7 +66,7 @@ class _MirrorTableViewState extends State<MirrorTableView> {
       double offset = scrollController.offset;
       home.updateCacheMirrorTableScrollControllerOffset(offset);
     });
-    updateCacheMirrorTableScrollControllerOffset();
+    updateCacheMirrorTableScrollControllerOffset(true);
     setState(() {
       mirrorList = _mirrorList;
     });
@@ -77,16 +78,20 @@ class _MirrorTableViewState extends State<MirrorTableView> {
     super.dispose();
   }
 
+  /// 标题
+  String get _title {
+    var count = mirrorList.length;
+    return "视频源管理(${count})";
+  }
+
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
       navigationBar: CupertinoNavigationBar(
         backgroundColor: Get.isDarkMode ? Colors.black12 : Colors.white,
-        leading: GetPlatform.isDesktop
-            ? CupertinoNavigationBarBackButton()
-            : Container(),
+        leading: CupertinoNavigationBarBackButton(),
         middle: Text(
-          '视频源',
+          _title,
           style: TextStyle(color: Get.isDarkMode ? Colors.white : Colors.black),
         ),
       ),
@@ -158,7 +163,13 @@ class mirrorCard extends StatelessWidget {
     this.current = false,
     required this.onTap,
     this.onDel,
+    this.minHeight = 42.0,
+    this.maxHeight = 69.0,
   }) : super(key: key);
+
+  final double minHeight;
+
+  final double maxHeight;
 
   final MovieImpl item;
 
@@ -192,128 +203,136 @@ class mirrorCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      child: Slidable(
-        enabled: enabled,
-        key: ObjectKey(item),
-        endActionPane: ActionPane(
-          motion: const ScrollMotion(),
-          // TODO
-          // 滑动可关闭
-          // dismissible: DismissiblePane(
-          //   confirmDismiss: () async {
-          //     return false;
-          //   },
-          //   onDismissed: () {},
-          // ),
-          children: [
-            SlidableAction(
-              onPressed: onDel,
-              backgroundColor: Color(0xFFFE4A49),
-              foregroundColor: Colors.white,
-              icon: CupertinoIcons.delete,
-              label: '删除',
-            ),
-          ],
-        ),
-        child: GestureDetector(
-          onTap: onTap,
-          child: Container(
-            decoration: BoxDecoration(
-              border: Border(
-                  bottom: BorderSide(
-                      color: Get.isDarkMode
-                          ? Colors.white.withOpacity(.1)
-                          : Colors.black.withOpacity(.1))),
-            ),
-            padding: EdgeInsets.symmetric(
-              vertical: 6,
-            ),
-            child: Row(children: [
-              Container(
-                width: 92,
-                margin: EdgeInsets.symmetric(
-                  vertical: 6,
-                  horizontal: 2,
-                ),
-                child: Builder(builder: (_) {
-                  if (_logo.isEmpty) {
-                    return Image.asset(
-                      "assets/images/fishtank.png",
-                      width: 60,
-                      height: 42,
+    return ConstrainedBox(
+      constraints: new BoxConstraints(
+        minHeight: minHeight,
+        maxHeight: maxHeight,
+      ),
+      child: Material(
+        child: Slidable(
+          enabled: enabled,
+          key: ObjectKey(item),
+          endActionPane: ActionPane(
+            motion: const ScrollMotion(),
+            // TODO
+            // 滑动可关闭
+            // dismissible: DismissiblePane(
+            //   confirmDismiss: () async {
+            //     return false;
+            //   },
+            //   onDismissed: () {},
+            // ),
+            children: [
+              SlidableAction(
+                onPressed: onDel,
+                backgroundColor: Color(0xFFFE4A49),
+                foregroundColor: Colors.white,
+                icon: CupertinoIcons.delete,
+                label: '删除',
+              ),
+            ],
+          ),
+          child: GestureDetector(
+            onTap: onTap,
+            child: Container(
+              decoration: BoxDecoration(
+                border: Border(
+                    bottom: BorderSide(
+                        color: Get.isDarkMode
+                            ? Colors.white.withOpacity(.1)
+                            : Colors.black.withOpacity(.1))),
+              ),
+              padding: EdgeInsets.symmetric(
+                vertical: 6,
+              ),
+              child: Row(children: [
+                Container(
+                  width: 92,
+                  margin: EdgeInsets.symmetric(
+                    vertical: 6,
+                    horizontal: 2,
+                  ),
+                  child: Builder(builder: (_) {
+                    if (_logo.isEmpty) {
+                      return Image.asset(
+                        "assets/images/fishtank.png",
+                        width: 60,
+                        height: 42,
+                      );
+                    }
+                    return Card(
+                      shadowColor: Colors.black.withOpacity(.1),
+                      child: Container(
+                        width: 60,
+                        height: 42,
+                        child: CachedNetworkImage(
+                          imageUrl: _logo,
+                          fit: BoxFit.fitWidth,
+                          placeholder: (context, url) => Center(
+                            child: CircularProgressIndicator(),
+                          ),
+                          errorWidget: (
+                            context,
+                            url,
+                            error,
+                          ) =>
+                              Image.asset(
+                            K_DEFAULT_IMAGE,
+                            width: 80,
+                            height: 42,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ),
                     );
-                  }
-                  return Card(
-                    shadowColor: Colors.black.withOpacity(.1),
-                    child: Container(
-                      width: 60,
-                      height: 42,
-                      child: CachedNetworkImage(
-                        imageUrl: _logo,
-                        fit: BoxFit.fitWidth,
-                        placeholder: (context, url) => Center(
-                          child: CircularProgressIndicator(),
-                        ),
-                        errorWidget: (
-                          context,
-                          url,
-                          error,
-                        ) =>
-                            Image.asset(
-                          K_DEFAULT_IMAGE,
-                          width: 80,
-                          height: 42,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    ),
-                  );
-                }),
-              ),
-              Expanded(
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            _title,
-                            style: TextStyle(
-                              color: _color,
-                              fontSize: 14,
-                              decoration: TextDecoration.none,
-                              fontWeight: FontWeight.w300,
-                            ),
-                          ),
-                          SizedBox(
-                            height: _desc.isEmpty ? 0 : 3,
-                          ),
-                          _desc.isEmpty
-                              ? SizedBox.shrink()
-                              : Text(
-                                  _desc,
-                                  style: TextStyle(
-                                    color: _color,
-                                    fontSize: 9,
-                                    decoration: TextDecoration.none,
-                                    fontWeight: FontWeight.w300,
-                                  ),
-                                  maxLines: 2,
-                                ),
-                        ],
-                      ),
-                    ),
-                    Icon(
-                      current ? Icons.done : CupertinoIcons.right_chevron,
-                      color: _color,
-                    ),
-                  ],
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  }),
                 ),
-              ),
-            ]),
+                Expanded(
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              _title,
+                              style: TextStyle(
+                                color: _color,
+                                fontSize: 14,
+                                decoration: TextDecoration.none,
+                                fontWeight: FontWeight.w300,
+                              ),
+                            ),
+                            SizedBox(
+                              height: _desc.isEmpty ? 0 : 3,
+                            ),
+                            _desc.isEmpty
+                                ? SizedBox.shrink()
+                                : Text(
+                                    _desc,
+                                    style: TextStyle(
+                                      color: _color,
+                                      fontSize: 9,
+                                      decoration: TextDecoration.none,
+                                      fontWeight: FontWeight.w300,
+                                    ),
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                          ],
+                        ),
+                      ),
+                      Icon(
+                        current ? Icons.done : CupertinoIcons.right_chevron,
+                        color: _color,
+                      ),
+                    ],
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  ),
+                ),
+              ]),
+            ),
           ),
         ),
       ),

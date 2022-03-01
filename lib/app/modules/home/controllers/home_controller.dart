@@ -157,10 +157,14 @@ class HomeController extends GetxController with WidgetsBindingObserver {
   );
 
   showMirrorModel(BuildContext context) {
-    showCupertinoModalBottomSheet(
-      context: context,
-      builder: (context) => MirrorTableView(),
-    );
+    Get.to(() => MirrorTableView(),
+        duration: Duration(
+          microseconds: 420,
+        ));
+    // showCupertinoModalBottomSheet(
+    //   context: context,
+    //   builder: (context) => MirrorTableView(),
+    // );
   }
 
   void refreshOnLoading() async {
@@ -190,6 +194,36 @@ class HomeController extends GetxController with WidgetsBindingObserver {
     update();
   }
 
+  /// 初始化滚动条坐标值
+  ///
+  /// 判断条件
+  ///
+  /// ```js
+  /// (屏幕高度 - kToolbarHeight) < (_offset * 69)
+  /// // - 源数量必须 >= 10
+  /// // - 当前正在使用的源 >= 10
+  /// ```
+  ///
+  /// 高度计算
+  ///
+  /// ```
+  /// // 每个卡片 69 * index
+  /// ```
+  initCacheMirrorTableScrollControllerOffset() {
+    double _h = Get.height - kToolbarHeight;
+
+    double _offset = mirrorIndex * 69.0;
+
+    bool _screenCheckFlag = _offset > _h;
+
+    // bool _lengthCheckFlag = mirrorList.length <= 9 || mirrorIndex <= 9;
+    // if (_lengthCheckFlag) return;
+
+    if (_screenCheckFlag) {
+      updateCacheMirrorTableScrollControllerOffset(_offset);
+    }
+  }
+
   @override
   void onInit() {
     super.onInit();
@@ -198,6 +232,7 @@ class HomeController extends GetxController with WidgetsBindingObserver {
     updateNsfwSetting();
     updateIOSCanBeUseSystemBrowser();
     updateHomeData(isFirst: true);
+    initCacheMirrorTableScrollControllerOffset();
   }
 
   updateWindowLastSize() {
@@ -293,5 +328,4 @@ class HomeController extends GetxController with WidgetsBindingObserver {
     }
     update();
   }
-  
 }

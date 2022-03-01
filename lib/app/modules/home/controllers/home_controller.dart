@@ -157,14 +157,13 @@ class HomeController extends GetxController with WidgetsBindingObserver {
   );
 
   showMirrorModel(BuildContext context) {
-    Get.to(() => MirrorTableView(),
-        duration: Duration(
-          microseconds: 420,
-        ));
-    // showCupertinoModalBottomSheet(
-    //   context: context,
-    //   builder: (context) => MirrorTableView(),
-    // );
+    Get.to(
+      () => MirrorTableView(),
+      duration: Duration(
+        milliseconds: 240,
+      ),
+      transition: Transition.cupertino,
+    );
   }
 
   void refreshOnLoading() async {

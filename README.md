@@ -19,27 +19,10 @@
 
 ## 截图
 
-**首页**
-![](https://cdn.jsdelivr.net/gh/waifu-project/assets/screenshots/首页.png)
-
-**切换源**
-![](https://cdn.jsdelivr.net/gh/waifu-project/assets/screenshots/切换源.png)
-
-**详情**
-![](https://cdn.jsdelivr.net/gh/waifu-project/assets/screenshots/详情.png)
-
-**播放**
-![](https://cdn.jsdelivr.net/gh/waifu-project/assets/screenshots/播放.png)
-
-**设置**
-![](https://cdn.jsdelivr.net/gh/waifu-project/assets/screenshots/设置.png)
-
-**换源**
-![](https://cdn.jsdelivr.net/gh/waifu-project/assets/screenshots/换源.png)
-
-**搜索**
-![](https://cdn.jsdelivr.net/gh/waifu-project/assets/screenshots/搜索.png)
-
+![IMG_4238.PNG](https://s2.loli.net/2022/03/01/zj3GFRc8xOQqEKt.png)
+![IMG_4240.PNG](https://s2.loli.net/2022/03/01/HhQDaNyOAm42e9x.png)
+![IMG_4241.PNG](https://s2.loli.net/2022/03/01/Sytfxuc9gTN4Bjb.png)
+![IMG_4239.PNG](https://s2.loli.net/2022/03/01/f7wMCXJnOArqBuy.png)
 
 ## NSFW
 

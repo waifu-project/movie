@@ -103,6 +103,7 @@ class _SettingsViewState extends State<SettingsView> {
     setState(() {
       _isDark = home.localStorage.read(ConstDart.ls_isDark) ?? false;
       _autoDarkMode = home.localStorage.read(ConstDart.auto_dark) ?? false;
+      _canBeShowIosBrowser = home.iosCanBeUseSystemBrowser;
     });
     loadSourceHelp();
     addMirrorMangerTextareaLister();

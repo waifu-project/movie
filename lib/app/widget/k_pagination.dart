@@ -99,7 +99,7 @@ class KPaginationActionButton extends StatelessWidget {
             ),
             padding: EdgeInsets.symmetric(
               horizontal: 12,
-              vertical: 6,
+              vertical: 3,
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -162,75 +162,86 @@ class _KPaginationState extends State<KPagination> {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        KPaginationActionButton(
-          disable: !widget.turnL,
-          onTap: () {
-            if (widget.turnL)
-              widget.onActionTap(KPaginationActionButtonDirection.l);
-          },
-        ),
-        SizedBox(
-          width: 6,
-        ),
-        KPaginationActionButton(
-          disable: !widget.turnR,
-          direction: KPaginationActionButtonDirection.r,
-          onTap: () {
-            if (widget.turnR)
-              widget.onActionTap(KPaginationActionButtonDirection.r);
-          },
-        ),
-        SizedBox(
-          width: 12,
-        ),
-        Row(
-          children: [
-            SizedBox(
-              child: CupertinoTextField(
-                controller: textEditingController,
-                textAlign: TextAlign.center,
-
-                /// 怕不是要上天, 一个分页给爷整个几千页?
-                /// 给爷稳一点
-                /// @龙馨竹
-                maxLength: 4,
-
-                /// The content entered must be a number!!
-                /// link: https://stackoverflow.com/a/49578197
-                inputFormatters: [
-                  FilteringTextInputFormatter.digitsOnly,
-                ],
-                keyboardType: TextInputType.number,
-
-                padding: EdgeInsets.zero,
-                strutStyle: StrutStyle(
-                  forceStrutHeight: true,
-                ),
-              ),
-              width: 66,
-            ),
-            SizedBox(
-              width: 6,
-            ),
-            MouseRegion(
-              cursor: SystemMouseCursors.click,
-              child: GestureDetector(
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+        horizontal: 12,
+        vertical: 6,
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
+            children: [
+              KPaginationActionButton(
+                disable: !widget.turnL,
                 onTap: () {
-                  widget.onJumpTap();
+                  if (widget.turnL)
+                    widget.onActionTap(KPaginationActionButtonDirection.l);
                 },
-                child: Text(
-                  "点击跳转",
+              ),
+              SizedBox(
+                width: 6,
+              ),
+              KPaginationActionButton(
+                disable: !widget.turnR,
+                direction: KPaginationActionButtonDirection.r,
+                onTap: () {
+                  if (widget.turnR)
+                    widget.onActionTap(KPaginationActionButtonDirection.r);
+                },
+              ),
+            ],
+          ),
+          Row(
+            children: [
+              SizedBox(
+                child: CupertinoTextField(
+                  controller: textEditingController,
+                  textAlign: TextAlign.center,
+
+                  /// 怕不是要上天, 一个分页给爷整个几千页?
+                  /// 给爷稳一点
+                  /// @龙馨竹
+                  maxLength: 4,
+
+                  /// The content entered must be a number!!
+                  /// link: https://stackoverflow.com/a/49578197
+                  inputFormatters: [
+                    FilteringTextInputFormatter.digitsOnly,
+                  ],
+                  keyboardType: TextInputType.number,
+
+                  padding: EdgeInsets.zero,
+                  strutStyle: StrutStyle(
+                    forceStrutHeight: true,
+                  ),
                   style: TextStyle(
-                    fontSize: 12,
+                    color: Get.isDarkMode ? Colors.white : Colors.black,
                   ),
                 ),
+                width: 66,
               ),
-            )
-          ],
-        ),
-      ],
+              SizedBox(
+                width: 6,
+              ),
+              MouseRegion(
+                cursor: SystemMouseCursors.click,
+                child: GestureDetector(
+                  onTap: () {
+                    widget.onJumpTap();
+                  },
+                  child: Text(
+                    "点击跳转",
+                    style: TextStyle(
+                      fontSize: 12,
+                    ),
+                  ),
+                ),
+              )
+            ],
+          ),
+        ],
+      ),
     );
   }
 }

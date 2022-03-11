@@ -17,6 +17,7 @@ import 'package:dio/dio.dart';
 import 'package:flappy_search_bar_ns/flappy_search_bar_ns.dart';
 import 'package:flappy_search_bar_ns/search_bar_style.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
@@ -36,7 +37,8 @@ class SearchView extends StatefulWidget {
   _SearchViewState createState() => _SearchViewState();
 }
 
-class _SearchViewState extends State<SearchView> with AutomaticKeepAliveClientMixin {
+class _SearchViewState extends State<SearchView>
+    with AutomaticKeepAliveClientMixin {
   final HomeController home = Get.find<HomeController>();
 
   final SearchBarController _searchBarController =
@@ -127,6 +129,9 @@ class _SearchViewState extends State<SearchView> with AutomaticKeepAliveClientMi
   int get textEditingControllerIntValue =>
       int.parse(textEditingController.text);
 
+  /// 默认 `logo`
+  String get _defaultLogo => home.currentMirrorItem.meta.logo;
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -174,6 +179,47 @@ class _SearchViewState extends State<SearchView> with AutomaticKeepAliveClientMi
             );
           }),
           onItemFound: (item, int index) {
+            String? _targetImage = item?.smallCoverImage;
+
+            /// 比对 [item?.smallCoverImage] 和 [_defaultLogo] 是否相等来确认是否有封面图
+            bool canNotFindCover = _targetImage == _defaultLogo;
+
+            double w = 90;
+
+            double h = 100;
+
+            Widget coverWidget = Image.network(
+              _targetImage ?? _defaultLogo,
+              width: w,
+              height: h,
+              fit: BoxFit.cover,
+              loadingBuilder: (context, child, loadingProgress) {
+                if (loadingProgress == null) {
+                  return ClipRRect(
+                    borderRadius: BorderRadius.circular(8.0),
+                    child: child,
+                  );
+                }
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+              },
+              errorBuilder: (context, error, stackTrace) => ClipRRect(
+                borderRadius: BorderRadius.circular(8.0),
+                child: Image.asset(
+                  K_DEFAULT_IMAGE,
+                  fit: BoxFit.cover,
+                  width: 80,
+                ),
+              ),
+            );
+
+            // EdgeInsets _sharkPadding = EdgeInsets.all(canNotFindCover ? 10 : 0);
+
+            if (canNotFindCover) {
+              coverWidget = SizedBox.shrink();
+            }
+
             return GestureDetector(
               onTap: () async {
                 var data = item;
@@ -194,7 +240,7 @@ class _SearchViewState extends State<SearchView> with AutomaticKeepAliveClientMi
               },
               child: Container(
                 padding: EdgeInsets.symmetric(
-                  vertical: 6,
+                  vertical: 24,
                   horizontal: 12,
                 ),
                 decoration: BoxDecoration(
@@ -205,51 +251,24 @@ class _SearchViewState extends State<SearchView> with AutomaticKeepAliveClientMi
                     ),
                   ),
                 ),
-                margin: EdgeInsets.symmetric(
-                  vertical: 6,
-                ),
                 child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Image.network(
-                      item?.smallCoverImage ?? home.currentMirrorItem.meta.logo,
-                      width: 80,
-                      height: 160,
-                      fit: BoxFit.cover,
-                      loadingBuilder: (context, child, loadingProgress) {
-                        if (loadingProgress == null)
-                          return ClipRRect(
-                            borderRadius: BorderRadius.circular(8.0),
-                            child: child,
-                          );
-                        return Center(
-                          child: CircularProgressIndicator(),
-                        );
-                      },
-                      errorBuilder: (context, error, stackTrace) => ClipRRect(
-                        borderRadius: BorderRadius.circular(8.0),
-                        child: Image.asset(
-                          K_DEFAULT_IMAGE,
-                          fit: BoxFit.cover,
-                          width: 80,
-                        ),
-                      ),
-                    ),
+                    coverWidget,
                     SizedBox(
                       width: 12,
                     ),
                     Expanded(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            item?.title ?? "",
-                            style: TextStyle(
-                              fontSize: 18,
-                            ),
+                      child: Container(
+                        width: double.infinity,
+                        child: Text(
+                          item?.title ?? "",
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 2,
+                          style: TextStyle(
+                            fontSize: 18,
                           ),
-                        ],
+                        ),
                       ),
                     ),
                   ],

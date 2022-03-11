@@ -27,6 +27,15 @@ import 'package:movie/utils/http.dart';
 import 'package:xml2json/xml2json.dart';
 import 'package:path/path.dart' as path;
 
+/// 请求返回的内容
+enum ResponseCustomType {
+  xml,
+
+  json,
+
+  unknow
+}
+
 class KBaseMirrorMovie extends MovieImpl {
   final bool nsfw;
   final String name;
@@ -177,6 +186,35 @@ class KBaseMirrorMovie extends MovieImpl {
     var _offset = rawString.length - syb.length;
     if (index == _offset) return rawString.substring(0, index);
     return rawString;
+  }
+
+  /// 简单判断内容
+  /// return [ResponseCustomType]
+  ///
+  /// 通过判断内容的首部分字符
+  ///
+  /// `json` 参考:
+  /// ```markdown
+  ///   `{"`
+  /// ```
+  ///
+  /// `xml` 参考:
+  /// ```makrdown
+  ///   `<?xml`
+  /// ```
+  ResponseCustomType checkStringIsXML(String checkText) {
+    String attrText = checkText.substring(0, 2);
+    String jsonSyb = "{\"";
+
+    // String xmlSyb = "<?xml";
+    // String attrText = checkText.substring(0, 5);
+
+    if (attrText == jsonSyb) {
+      return ResponseCustomType.json;
+    }
+
+    /// 不考虑未知情况下。。。
+    return ResponseCustomType.xml;
   }
 
   @override

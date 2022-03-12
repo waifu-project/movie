@@ -15,6 +15,7 @@
 
 // https://github.com/cuiocean/ZY-Player-APP/blob/main/utils/request.js
 
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
@@ -33,6 +34,7 @@ enum ResponseCustomType {
 
   json,
 
+  /// 未知
   unknow
 }
 
@@ -94,6 +96,22 @@ class KBaseMirrorMovie extends MovieImpl {
     return "";
   }
 
+  String get _responseParseFail => "接口返回值解析错误 :(";
+
+  /// 检测一下请求之后返回的内容
+  ///
+  /// 如果是内容为 [ResponseCustomType.unknow] 则抛出异常
+  void beforeTestResponseData(dynamic data) {
+    ResponseCustomType _type = getResponseType(data);
+    if (_type == ResponseCustomType.unknow) {
+      throw AsyncError(
+        _responseParseFail,
+        StackTrace.fromString(_responseParseFail),
+      );
+      // return Future.error('解析失败');
+    }
+  }
+
   @override
   Future<MirrorOnceItemSerialize> getDetail(String movie_id) async {
     var resp = await XHttp.dio.post(
@@ -150,8 +168,10 @@ class KBaseMirrorMovie extends MovieImpl {
       },
       options: ops,
     );
+    dynamic data = resp.data;
+    beforeTestResponseData(data);
     var x2j = Xml2Json();
-    x2j.parse(resp.data);
+    x2j.parse(data);
     var _json = x2j.toBadgerfish();
     var _ = json.decode(_json);
     KBaseMovieXmlData xml = KBaseMovieXmlData.fromJson(_);
@@ -188,7 +208,13 @@ class KBaseMirrorMovie extends MovieImpl {
     return rawString;
   }
 
-  /// 简单判断内容
+  ///   返回值比对 [kv]
+  Map<String, ResponseCustomType> _RespCheckkv = {
+      "{\"": ResponseCustomType.json,
+      "<?xml": ResponseCustomType.xml,
+    };
+
+  /// 获取返回内容的类型
   /// return [ResponseCustomType]
   ///
   /// 通过判断内容的首部分字符
@@ -202,19 +228,29 @@ class KBaseMirrorMovie extends MovieImpl {
   /// ```makrdown
   ///   `<?xml`
   /// ```
-  ResponseCustomType checkStringIsXML(String checkText) {
-    String attrText = checkText.substring(0, 2);
-    String jsonSyb = "{\"";
+  ResponseCustomType getResponseType(String checkText) {
 
-    // String xmlSyb = "<?xml";
-    // String attrText = checkText.substring(0, 5);
+    var _k = _RespCheckkv.keys.where((_key) {
+      int _len = _key.length;
+      var _sub = checkText.substring(0, _len);
+      bool _if = _sub.contains(_key, 0);
+      return _if;
+    }).toList();
 
-    if (attrText == jsonSyb) {
-      return ResponseCustomType.json;
+    if (_k.isNotEmpty) {
+      return _RespCheckkv[_k[0]] as ResponseCustomType;
     }
 
-    /// 不考虑未知情况下。。。
-    return ResponseCustomType.xml;
+    return ResponseCustomType.unknow;
+
+    // String attrText = checkText.substring(0, 2);
+    // String jsonSyb = "{\"";
+    // String xmlSyb = "<?xml";
+    // String attrText = checkText.substring(0, 5);
+    // if (attrText == jsonSyb) {
+    //   return ResponseCustomType.json;
+    // }
+    // return ResponseCustomType.xml;
   }
 
   @override
@@ -233,8 +269,10 @@ class KBaseMirrorMovie extends MovieImpl {
       },
       options: ops,
     );
+    dynamic data = resp.data;
+    beforeTestResponseData(data);
     var x2j = Xml2Json();
-    x2j.parse(resp.data);
+    x2j.parse(data);
     var _json = x2j.toBadgerfish();
     KBaseMovieSearchXmlData searchData = kBaseMovieSearchXmlDataFromJson(_json);
     var defaultCoverImage = meta.logo;

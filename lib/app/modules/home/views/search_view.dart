@@ -13,6 +13,8 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import 'dart:async';
+
 import 'package:dio/dio.dart';
 import 'package:flappy_search_bar_ns/flappy_search_bar_ns.dart';
 import 'package:flappy_search_bar_ns/search_bar_style.dart';
@@ -24,6 +26,7 @@ import 'package:get/get.dart';
 import 'package:movie/app/modules/home/controllers/home_controller.dart';
 import 'package:movie/app/routes/app_pages.dart';
 import 'package:movie/app/widget/helper.dart';
+import 'package:movie/app/widget/k_error_stack.dart';
 import 'package:movie/app/widget/k_pagination.dart';
 import 'package:movie/app/widget/k_tag.dart';
 import 'package:movie/app/widget/window_appbar.dart';
@@ -298,9 +301,7 @@ class _SearchViewState extends State<SearchView>
             child: Text("搜索内容为空"),
           ),
           onError: (error) {
-            return Center(
-              child: Text(error.toString()),
-            );
+            return KErrorStack(msg: error.toString(),);
           },
           cancellationWidget: Text("取消"),
           onCancelled: () {
@@ -465,7 +466,7 @@ class _SearchViewState extends State<SearchView>
       setState(() {
         isTriggerSearch = false;
       });
-      return dioError.error;
+      throw AsyncError(dioError, StackTrace.fromString(dioError.error));
     }
   }
 

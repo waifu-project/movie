@@ -68,6 +68,14 @@ class HomeView extends GetView<HomeController> {
             return _views[index];
           },
           itemCount: _views.length,
+
+          // NOTE:
+          // => 2022年/05月/14日 14:51
+          // => 滑动的实在太生硬了
+          // => 而且在桌面端会和窗口拖动冲突
+          // => 所以放弃了滚动
+          physics: NeverScrollableScrollPhysics(),
+          
           onPageChanged: (index) {
             homeview.changeCurrentBarIndex(index);
           },

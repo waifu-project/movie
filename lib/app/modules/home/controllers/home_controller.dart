@@ -310,21 +310,36 @@ class HomeController extends GetxController with WidgetsBindingObserver {
   }
 
   void changeCurrentBarIndex(int i) {
+
+    // debugPrint("next index: $i, current index: $currentBarIndex");
+    
     if (currentBarIndex == i) return;
-    int absVal = currentBarIndex - i;
+
+    // NOTE:
+    // => 之前为了实现所谓的动画
+    // => 如果 currentBarIndex - i 绝对值不是 1 的话, 就不会有动画
+    // => 但是这动画看起来真的太生硬了
+    // => 2022年/05月/14日 14:51
+    // int absVal = currentBarIndex - i;
+    // currentBarIndex = i;
+    // var val = absVal.abs();
+    // if (val >= 2) {
+    //   currentBarController.jumpToPage(
+    //     i,
+    //   );
+    // } else {
+    //   currentBarController.animateToPage(
+    //     i,
+    //     curve: Curves.ease,
+    //     duration: Duration(milliseconds: 500),
+    //   );
+    // }
+
     currentBarIndex = i;
-    var val = absVal.abs();
-    if (val >= 2) {
-      currentBarController.jumpToPage(
-        i,
-      );
-    } else {
-      currentBarController.animateToPage(
-        i,
-        curve: Curves.ease,
-        duration: Duration(milliseconds: 500),
-      );
-    }
+    currentBarController.jumpToPage(
+      i,
+    );
+
     update();
   }
 }

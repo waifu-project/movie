@@ -39,6 +39,7 @@ jobs:
           zip -r app.ipa Payload
       
       - run: |
+          flutter config --enable-macos-desktop
           flutter build macos --release
           cd build/macos/Build/Products/Release
           zip -r movie.mac.zip movie.app/*

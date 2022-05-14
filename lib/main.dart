@@ -26,7 +26,7 @@ import 'app/routes/app_pages.dart';
 import 'utils/http.dart';
 
 /// 运行之前
-Future<Brightness> runBefore() async {
+Future<List<dynamic>> runBefore() async {
   WidgetsFlutterBinding.ensureInitialized();
   await XHttp.init();
   await GetStorage.init();
@@ -45,8 +45,14 @@ Future<Brightness> runBefore() async {
       wrapperIfDark = windowMode;
     }
   }
+  
+  // {
+  //   if (GetPlatform.isMacOS && systemBrightnessFlag) {
+  //     wrapperIfDark = Get.isPlatformDarkMode ? Brightness.dark : Brightness.light;
+  //   }
+  // }
 
-  return wrapperIfDark;
+  return [wrapperIfDark, systemBrightnessFlag];
 }
 
 /// 运行之后
@@ -63,7 +69,9 @@ void runAfter() {
 }
 
 void main() async {
-  Brightness wrapperIfDark = await runBefore();
+  List<dynamic> _futureStatus = await runBefore();
+  Brightness wrapperIfDark = _futureStatus[0];
+  bool systemBrightnessFlag = _futureStatus[1];
 
   runApp(
     GetMaterialApp(
@@ -72,9 +80,9 @@ void main() async {
       initialRoute: AppPages.INITIAL,
       getPages: AppPages.routes,
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        brightness: wrapperIfDark,
-      ),
+      themeMode: systemBrightnessFlag ? ThemeMode.system : wrapperIfDark == Brightness.dark ? ThemeMode.dark : ThemeMode.light,
+      theme: ThemeData.light(),
+      darkTheme: ThemeData.dark(),
     ),
   );
 

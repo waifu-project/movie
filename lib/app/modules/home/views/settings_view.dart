@@ -73,7 +73,7 @@ class _SettingsViewState extends State<SettingsView> {
     setState(() {
       _isDark = newVal;
     });
-    Get.changeTheme(!newVal ? ThemeData.light() : ThemeData.dark());
+    Get.changeThemeMode(newVal ? ThemeMode.dark : ThemeMode.light);
   }
 
   bool _autoDarkMode = false;
@@ -84,7 +84,8 @@ class _SettingsViewState extends State<SettingsView> {
       _autoDarkMode = newVal;
     });
     if (!newVal) {
-      Get.changeTheme(!_isDark ? ThemeData.light() : ThemeData.dark());
+      _isDark = Get.isPlatformDarkMode;
+      Get.changeThemeMode(!_isDark ? ThemeMode.light : ThemeMode.dark);
       return;
     }
     if (GetPlatform.isWindows) {

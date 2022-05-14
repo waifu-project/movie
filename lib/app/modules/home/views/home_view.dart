@@ -75,7 +75,7 @@ class HomeView extends GetView<HomeController> {
           // => 而且在桌面端会和窗口拖动冲突
           // => 所以放弃了滚动
           physics: NeverScrollableScrollPhysics(),
-          
+
           onPageChanged: (index) {
             homeview.changeCurrentBarIndex(index);
           },
@@ -88,24 +88,31 @@ class HomeView extends GetView<HomeController> {
             child: ClipRect(
               child: BackdropFilter(
                 filter: ImageFilter.blur(sigmaX: 40, sigmaY: 40),
-                child: SalomonBottomBar(
-                  itemPadding: EdgeInsets.symmetric(
-                    vertical: 9,
-                    horizontal: 18,
+                child: Center(
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(
+                      maxWidth: 360,
+                    ),
+                    child: SalomonBottomBar(
+                      itemPadding: EdgeInsets.symmetric(
+                        vertical: 9,
+                        horizontal: 18,
+                      ),
+                      currentIndex: homeview.currentBarIndex,
+                      onTap: (int i) {
+                        homeview.changeCurrentBarIndex(i);
+                      },
+                      items: _tabs
+                          .map(
+                            (e) => SalomonBottomBarItem(
+                              icon: Icon(e['icon']),
+                              title: Text(e['title']),
+                              selectedColor: e['color'],
+                            ),
+                          )
+                          .toList(),
+                    ),
                   ),
-                  currentIndex: homeview.currentBarIndex,
-                  onTap: (int i) {
-                    homeview.changeCurrentBarIndex(i);
-                  },
-                  items: _tabs
-                      .map(
-                        (e) => SalomonBottomBarItem(
-                          icon: Icon(e['icon']),
-                          title: Text(e['title']),
-                          selectedColor: e['color'],
-                        ),
-                      )
-                      .toList(),
                 ),
               ),
             ),

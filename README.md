@@ -1,13 +1,11 @@
-<img src="design/logo.png" align="right" width="210">
+<img src="design/logo_round.png" align="right" width="180">
 
 
 ## YY播放器
 
-使用 `Flutter` 构建, 支持 `android` | `windows`
+使用 `Flutter` 构建, 支持 `android` | `windows` | `macos`
 
-特性
-
-1. 支持自定义源
+支持自定义源
 
 软件内建了两个源, 你也可以自行添加源
 

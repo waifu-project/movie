@@ -38,6 +38,11 @@ jobs:
           cd ..
           zip -r app.ipa Payload
       
+      - run: |
+          flutter build macos --release
+          cd build/macos/Build/Products/Release
+          zip -r movie.mac.zip movie.app/*
+
       - uses: softprops/action-gh-release@v1
         with:
           files: |

@@ -20,6 +20,8 @@ import 'package:get/get.dart';
 
 import 'mac.dart';
 
+double kMacPaddingTop = 16;
+
 class _MoveWindow extends StatelessWidget {
   _MoveWindow({Key? key, this.child}) : super(key: key);
   final Widget? child;
@@ -78,10 +80,14 @@ class WindowAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   final List<Widget> actions;
 
+  double get _macosPaddingHeight {
+    return GetPlatform.isMacOS ? kMacPaddingTop : 0;
+  }
+
   /// [bar] 的高度
   double get barHeigth {
     if (toolBarHeigth != null) return toolBarHeigth as double;
-    return kToolbarHeight;
+    return kToolbarHeight + _macosPaddingHeight;
   }
 
   Color get purueColor {
@@ -148,28 +154,31 @@ class WindowAppBar extends StatelessWidget implements PreferredSizeWidget {
                     children: childrens,
                   ),
                 ),
-                GetPlatform.isDesktop
-                    ? Macwindowctl(
-                        buttonSize: 12,
-                        blurSize: 24,
-                        focused: true,
-                        buttonReverse: true,
-                        onClick: (action) {
-                          switch (action) {
-                            case MacwindowctlAction.close:
-                              appWindow.close();
-                              break;
-                            case MacwindowctlAction.maximize:
-                              appWindow.maximizeOrRestore();
-                              break;
-                            case MacwindowctlAction.minimize:
-                              appWindow.minimize();
-                              break;
-                            default:
-                          }
-                        },
-                      )
-                    : SizedBox.shrink(),
+                Builder(builder: (context) {
+                  if (GetPlatform.isDesktop && !GetPlatform.isMacOS) {
+                    return Macwindowctl(
+                      buttonSize: 12,
+                      blurSize: 24,
+                      focused: true,
+                      buttonReverse: true,
+                      onClick: (action) {
+                        switch (action) {
+                          case MacwindowctlAction.close:
+                            appWindow.close();
+                            break;
+                          case MacwindowctlAction.maximize:
+                            appWindow.maximizeOrRestore();
+                            break;
+                          case MacwindowctlAction.minimize:
+                            appWindow.minimize();
+                            break;
+                          default:
+                        }
+                      },
+                    );
+                  }
+                  return SizedBox.shrink();
+                }),
               ],
             ),
           ),
@@ -181,7 +190,7 @@ class WindowAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   double get _top {
     var _h = MediaQuery.of(Get.context!).padding.top;
-    return _h;
+    return _h + _macosPaddingHeight;
   }
 
   @override

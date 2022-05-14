@@ -57,6 +57,11 @@ class CustomMoveWindow extends StatelessWidget {
   }
 }
 
+// FIXME
+// class CupertinoAppBar extends StatelessElement implements ObstructingPreferredSizeWidget {
+  
+// }
+
 class WindowAppBar extends StatelessWidget implements PreferredSizeWidget {
   WindowAppBar({
     this.toolBarHeigth,

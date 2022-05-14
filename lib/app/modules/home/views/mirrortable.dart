@@ -20,6 +20,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
 import 'package:movie/app/modules/home/controllers/home_controller.dart';
 import 'package:movie/app/widget/helper.dart';
+import 'package:movie/app/widget/window_appbar.dart';
 import 'package:movie/impl/movie.dart';
 import 'package:movie/mirror/mirror.dart';
 
@@ -89,7 +90,12 @@ class _MirrorTableViewState extends State<MirrorTableView> {
     return CupertinoPageScaffold(
       navigationBar: CupertinoNavigationBar(
         backgroundColor: Get.isDarkMode ? Colors.black12 : Colors.white,
-        leading: CupertinoNavigationBarBackButton(),
+        leading: Padding(
+          padding: EdgeInsets.only(
+            left: GetPlatform.isMacOS ? 42 : 0,
+          ),
+          child: CupertinoNavigationBarBackButton(),
+        ),
         middle: Text(
           _title,
           style: TextStyle(color: Get.isDarkMode ? Colors.white : Colors.black),

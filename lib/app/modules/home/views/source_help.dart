@@ -202,10 +202,15 @@ class _SourceHelpTableState extends State<SourceHelpTable> {
       child: CupertinoPageScaffold(
         navigationBar: CupertinoNavigationBar(
           backgroundColor: Get.isDarkMode ? Colors.black : Colors.white,
+          leading: Padding(
+          padding: EdgeInsets.only(
+            left: GetPlatform.isMacOS ? 42 : 0,
+          ),
+          child: CupertinoNavigationBarBackButton(),
+        ),
           middle: Text(
             "o(-`д´- ｡)",
-            style:
-                TextStyle(color: Get.isDarkMode ? Colors.white : Colors.black),
+            style: TextStyle(color: Get.isDarkMode ? Colors.white : Colors.black),
           ),
         ),
         child: SafeArea(

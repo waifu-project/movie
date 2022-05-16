@@ -49,5 +49,6 @@ jobs:
           files: |
             build/app/outputs/flutter-apk/*.apk
             build/ios/iphoneos/app.ipa
+            build/macos/Build/Products/Release/movie.mac.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

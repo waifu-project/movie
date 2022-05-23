@@ -89,7 +89,7 @@ class _MirrorTableViewState extends State<MirrorTableView> {
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
       navigationBar: CupertinoNavigationBar(
-        backgroundColor: Get.isDarkMode ? Colors.black12 : Colors.white,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         leading: Padding(
           padding: EdgeInsets.only(
             left: GetPlatform.isMacOS ? 42 : 0,

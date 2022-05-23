@@ -88,17 +88,23 @@ class _MirrorTableViewState extends State<MirrorTableView> {
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
-      navigationBar: CupertinoNavigationBar(
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        leading: Padding(
-          padding: EdgeInsets.only(
-            left: GetPlatform.isMacOS ? 42 : 0,
-          ),
-          child: CupertinoNavigationBarBackButton(),
-        ),
-        middle: Text(
-          _title,
-          style: TextStyle(color: Get.isDarkMode ? Colors.white : Colors.black),
+      navigationBar: CupertinoEasyAppBar(
+        child: Column(
+          children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                CupertinoNavigationBarBackButton(),
+                Text(
+                  _title,
+                  style: Theme.of(context).textTheme.headline6,
+                ),
+                Text(''),
+              ],
+            ),
+            Divider()
+          ],
         ),
       ),
       child: SafeArea(

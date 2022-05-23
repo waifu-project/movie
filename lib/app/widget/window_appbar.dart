@@ -1,4 +1,4 @@
-// Copyright (C) 2021 d1y <chenhonzhou@gmail.com>
+// Copyright (C) 2022 d1y <chenhonzhou@gmail.com>
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License as
@@ -28,38 +28,148 @@ class _MoveWindow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-        behavior: HitTestBehavior.translucent,
-        onPanStart: (details) {
-          if (GetPlatform.isDesktop) {
-            appWindow.startDragging();
-          }
-        },
-        onDoubleTap: () {
-          if (GetPlatform.isDesktop) {
-            appWindow.maximizeOrRestore();
-          }
-        },
-        child: this.child ?? Container());
+      behavior: HitTestBehavior.translucent,
+      onPanStart: (details) {
+        if (GetPlatform.isDesktop) {
+          appWindow.startDragging();
+        }
+      },
+      onDoubleTap: () {
+        if (GetPlatform.isDesktop) {
+          appWindow.maximizeOrRestore();
+        }
+      },
+      child: this.child ?? Container(),
+    );
   }
 }
 
 class CustomMoveWindow extends StatelessWidget {
   final Widget? child;
-  CustomMoveWindow({Key? key, this.child}) : super(key: key);
+  CustomMoveWindow({
+    Key? key,
+    this.child,
+  }) : super(key: key);
   @override
   Widget build(BuildContext context) {
     if (child == null) return _MoveWindow();
     return _MoveWindow(
       child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [Expanded(child: this.child!)]),
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            child: this.child!,
+          ),
+        ],
+      ),
     );
   }
 }
 
 // FIXME
-// class CupertinoAppBar extends StatelessElement implements ObstructingPreferredSizeWidget {
-  
+class CupertinoEasyAppBar extends StatefulWidget
+    implements ObstructingPreferredSizeWidget {
+  const CupertinoEasyAppBar({
+    Key? key,
+    this.backgroundColor,
+    this.child,
+  }) : super(key: key);
+
+  final Color? backgroundColor;
+  final Widget? child;
+
+  @override
+  bool shouldFullyObstruct(BuildContext context) {
+    Color? easy = CupertinoDynamicColor.maybeResolve(
+      this.backgroundColor,
+      context,
+    );
+    Color? themeOf = CupertinoTheme.of(context).barBackgroundColor;
+    final Color backgroundColor = easy ?? themeOf;
+    return backgroundColor.alpha == 0xFF;
+  }
+
+  @override
+  Size get preferredSize {
+    double _calc = kToolbarHeight;
+    if (GetPlatform.isMacOS) {
+      _calc += kMacPaddingTop;
+    }
+    return Size.fromHeight(_calc);
+  }
+
+  @override
+  State<CupertinoEasyAppBar> createState() => _CupertinoEasyAppBarState();
+}
+
+class _CupertinoEasyAppBarState extends State<CupertinoEasyAppBar> {
+  Widget get _child {
+    Widget? child = widget.child;
+
+    /// FIXME: 若child为空
+    /// FIXME: 多平台下
+    if (child == null) return SizedBox.shrink();
+    Widget target = child;
+    if (GetPlatform.isMacOS) {
+      target = Padding(
+        padding: EdgeInsets.only(
+          top: kMacPaddingTop,
+        ),
+        child: child,
+      );
+    }
+    if (GetPlatform.isMobile) {
+      target = Padding(
+        padding: EdgeInsets.only(
+          top: MediaQuery.of(context).padding.top,
+        ),
+        child: target,
+      );
+    }
+    return _MoveWindow(
+      child: target,
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    /// FIXME: material widget wrapper??
+    return Material(child: _child);
+  }
+}
+
+// class CupertinoDefaultAppBar extends CupertinoEasyAppBar {
+//   const CupertinoDefaultAppBar({
+//     Key? key,
+//     this.leading,
+//     this.middle,
+//     this.trailing,
+//     this.isBack = true,
+//   }) : super(key: key);
+
+//   final Widget? leading;
+//   final Widget? middle;
+//   final Widget? trailing;
+//   final bool isBack;
+
+//   Widget _easyWrapper(Widget? child) {
+//     if (child == null) return SizedBox.shrink();
+//     return child;
+//   }
+
+//   Widget get _leading {
+//     if (leading != null) return leading as Widget;
+//     if (isBack) return CupertinoNavigationBarBackButton();
+//     return SizedBox.shrink();
+//   }
+
+//   Widget get _trailing => _easyWrapper(trailing);
+
+//   Widget get _middle => _easyWrapper(middle);
+
+//   Widget build(BuildContext context) {
+//     return Row(children: [Text('Fix Me???'),]);
+//   }
 // }
 
 class WindowAppBar extends StatelessWidget implements PreferredSizeWidget {

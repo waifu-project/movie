@@ -23,6 +23,7 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:get/get.dart';
 import 'package:movie/app/modules/home/views/home_config.dart';
 import 'package:movie/app/widget/k_error_stack.dart';
+import 'package:movie/app/widget/window_appbar.dart';
 import 'package:movie/utils/http.dart';
 import 'package:clipboard/clipboard.dart';
 
@@ -200,19 +201,25 @@ class _SourceHelpTableState extends State<SourceHelpTable> {
     return DefaultTextStyle(
       style: TextStyle(color: Get.isDarkMode ? Colors.white : Colors.black),
       child: CupertinoPageScaffold(
-        navigationBar: CupertinoNavigationBar(
-          backgroundColor: Get.isDarkMode ? Colors.black : Colors.white,
-          leading: Padding(
-          padding: EdgeInsets.only(
-            left: GetPlatform.isMacOS ? 42 : 0,
-          ),
-          child: CupertinoNavigationBarBackButton(),
+        navigationBar: CupertinoEasyAppBar(
+        child: Column(
+          children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                CupertinoNavigationBarBackButton(),
+                Text(
+                  "o(-`д´- ｡)",
+                  style: Theme.of(context).textTheme.headline6,
+                ),
+                Text(''),
+              ],
+            ),
+            Divider()
+          ],
         ),
-          middle: Text(
-            "o(-`д´- ｡)",
-            style: TextStyle(color: Get.isDarkMode ? Colors.white : Colors.black),
-          ),
-        ),
+      ),
         child: SafeArea(
           child: Container(
             child: Column(

@@ -16,7 +16,6 @@
 import 'package:get_storage/get_storage.dart';
 import 'package:movie/config.dart';
 import 'package:movie/impl/movie.dart';
-import 'package:movie/mirror/mlist/nfmovie.dart';
 import 'package:movie/mirror/mlist/theporn.dart';
 
 import 'm_utils/m.dart';
@@ -33,7 +32,6 @@ class MirrorManage {
   /// 内建支持的源
   /// 一般是需要自己去实现的源
   static List<MovieImpl> builtin = [
-    NfmovieMirror(),
     ThePornMirror(),
   ];
 

@@ -125,7 +125,7 @@ class IndexHomeViewPage extends GetView {
             ),
           ),
           actions: [
-            MouseRegion(
+            if (!home.mirrorListIsEmpty) MouseRegion(
               cursor: SystemMouseCursors.click,
               child: CupertinoButton(
                 child: Icon(

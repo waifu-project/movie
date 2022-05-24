@@ -7,7 +7,7 @@
 
 支持自定义源
 
-软件内建了两个源, 你也可以自行添加源
+内建了两个源, 你也可以自行添加源
 
 官方源: https://github.com/waifu-project/assets/blob/master/yy.json
 
@@ -17,24 +17,9 @@
 
 ## 截图
 
-![IMG_4238.PNG](https://s2.loli.net/2022/03/01/zj3GFRc8xOQqEKt.png)
-![IMG_4240.PNG](https://s2.loli.net/2022/03/01/HhQDaNyOAm42e9x.png)
-![IMG_4241.PNG](https://s2.loli.net/2022/03/01/Sytfxuc9gTN4Bjb.png)
-![IMG_4239.PNG](https://s2.loli.net/2022/03/01/f7wMCXJnOArqBuy.png)
-
-## NSFW
-
-```js
-const b64 = `JUU4JUFFJUJFJUU3JUJEJUFFJUU5JTg3JThDJUU3JTgyJUI5JUU1JTg3JUJCQCVFOSU5OSU4OCVFNSVBNCVBNyVFNSVBNCVBNyVFNSU5MyVBNiVFNCVCQSU4NiVFNSU4RCU4MSVFNiVBQyVBMSwlRTclODQlQjYlRTUlOTAlOEUlRTclQUQlOTQlRTklQTIlOTglRTQlQjklOEIlRTUlOTAlOEUlRTUlQjAlQjElRTUlOEYlQUYlRTUlQkMlODAlRTUlOTAlQUY=`
-
-const char = atob(b64)
-
-const result = decodeURI(char)
-
-console.log(result)
-```
-
-![](https://cdn.jsdelivr.net/gh/waifu-project/assets/screenshots/open_nsfw.gif)
+| ![IMG_4238.PNG](https://s2.loli.net/2022/03/01/zj3GFRc8xOQqEKt.png) | ![IMG_4240.PNG](https://s2.loli.net/2022/03/01/HhQDaNyOAm42e9x.png) |
+|---------------------------------------------------------------------|---------------------------------------------------------------------|
+| ![IMG_4239.PNG](https://s2.loli.net/2022/03/01/f7wMCXJnOArqBuy.png) | ![IMG_4241.PNG](https://s2.loli.net/2022/03/01/Sytfxuc9gTN4Bjb.png) | 
 
 图片素材来自:
 

@@ -72,6 +72,18 @@ class HomeController extends GetxController with WidgetsBindingObserver {
 
   bool _isNsfw = false;
 
+  bool _macosPlayUseIINA = false;
+
+  bool get macosPlayUseIINA {
+    return _macosPlayUseIINA;
+  }
+
+  set macosPlayUseIINA(bool newVal) {
+    _macosPlayUseIINA = newVal;
+    update();
+    localStorage.write(ConstDart.macosPlayUseIINA, newVal);
+  }
+
   bool get isNsfw {
     return _isNsfw;
   }
@@ -230,12 +242,18 @@ class HomeController extends GetxController with WidgetsBindingObserver {
     WidgetsBinding.instance!.addObserver(this);
     updateNsfwSetting();
     updateIOSCanBeUseSystemBrowser();
+    updateMacosPlayUseIINAState();
     updateHomeData(isFirst: true);
     initCacheMirrorTableScrollControllerOffset();
   }
 
   updateWindowLastSize() {
     windowLastSize = WidgetsBinding.instance!.window.physicalSize;
+    update();
+  }
+
+  updateMacosPlayUseIINAState() {
+    _macosPlayUseIINA = localStorage.read(ConstDart.macosPlayUseIINA) ?? false;
     update();
   }
 
@@ -310,9 +328,8 @@ class HomeController extends GetxController with WidgetsBindingObserver {
   }
 
   void changeCurrentBarIndex(int i) {
-
     // debugPrint("next index: $i, current index: $currentBarIndex");
-    
+
     if (currentBarIndex == i) return;
 
     // NOTE:

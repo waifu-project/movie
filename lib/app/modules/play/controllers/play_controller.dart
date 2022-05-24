@@ -92,8 +92,15 @@ class PlayController extends GetxController {
     /// https://github.com/MixinNetwork/flutter-plugins/tree/main/packages/desktop_webview_window
     /// 该插件支持 `windows` | `linux`(<然而[webview.launch]方法不支持:(>) | `macos`
     if (GetPlatform.isWindows || GetPlatform.isMacOS) {
+      final bool typeIsM3u8 = e.type == MirrorSerializeVideoType.m3u8;
+
+      if (GetPlatform.isMacOS && home.macosPlayUseIINA) {
+        easyPlayToIINA(url);
+        return;
+      }
+
       /// `MP4` 理论上来说不需要操作就可以直接喂给浏览器?
-      if (e.type == MirrorSerializeVideoType.m3u8) url = m3u82Iframe(url);
+      if (typeIsM3u8) url = m3u82Iframe(url);
       Webview webview = await WebviewWindow.create();
 
       /// 白嫖的第三方资源会自动跳转广告网站, 这个方法将延迟删除广告

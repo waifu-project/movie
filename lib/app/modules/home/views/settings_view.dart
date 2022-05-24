@@ -105,6 +105,7 @@ class _SettingsViewState extends State<SettingsView> {
       _isDark = home.localStorage.read(ConstDart.ls_isDark) ?? false;
       _autoDarkMode = home.localStorage.read(ConstDart.auto_dark) ?? false;
       _canBeShowIosBrowser = home.iosCanBeUseSystemBrowser;
+      _macosPlayUseIINA = home.macosPlayUseIINA;
     });
     loadSourceHelp();
     addMirrorMangerTextareaLister();
@@ -268,6 +269,18 @@ class _SettingsViewState extends State<SettingsView> {
 
   bool _canBeShowIosBrowser = true;
 
+  bool _macosPlayUseIINA = false;
+
+  bool get macosPlayUseIINA {
+    return _macosPlayUseIINA;
+  }
+
+  set macosPlayUseIINA(newVal) {
+    _macosPlayUseIINA = newVal;
+    setState(() {});
+    home.macosPlayUseIINA = newVal;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -394,8 +407,9 @@ class _SettingsViewState extends State<SettingsView> {
                     value: home.isNsfw,
                     onChanged: (bool value) async {
                       if (value) {
-                        GetBackResultType result =
-                            await Get.to(() => NsfwTableView());
+                        GetBackResultType result = await Get.to(
+                          () => NsfwTableView(),
+                        );
                         if (result == GetBackResultType.success) {
                           home.isNsfw = true;
                           showNSFW = true;
@@ -415,6 +429,34 @@ class _SettingsViewState extends State<SettingsView> {
                   ),
                 )
               : SizedBox.shrink(),
+          if (GetPlatform.isMacOS)
+            CSControl(
+              nameWidget: Text('播放使用IINA(默认内置播放器)'),
+              contentWidget: CupertinoSwitch(
+                value: macosPlayUseIINA,
+                onChanged: (bool value) async {
+                  if (value) {
+                    final bool isInstall = checkInstalledIINA();
+                    if (!isInstall) {
+                      Get.showSnackbar(
+                        GetBar(
+                          message: "未安装IINA, 请先安装!",
+                          duration: Duration(seconds: 3),
+                          overlayBlur: 3,
+                        ),
+                      );
+                      return;
+                    }
+                  }
+                  macosPlayUseIINA = value;
+                },
+              ),
+              style: const CSWidgetStyle(
+                icon: const Icon(
+                  CupertinoIcons.play_rectangle,
+                ),
+              ),
+            ),
           const CSHeader('其他设置'),
           GestureDetector(
             onTap: () {

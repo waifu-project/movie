@@ -45,6 +45,9 @@ class ConstDart {
   /// iOS使用浏览器播放
   static final String iosVideoSystemBrowser = "iosVideoSystemBrowser";
 
+  /// macOS是否使用iina播放
+  static final String macosPlayUseIINA = "macosPlayUseIINA";
+
   /// 是否为开发模式
   /// TODDO
   static bool get isDev {

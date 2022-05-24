@@ -18,9 +18,11 @@
 import 'dart:io';
 import 'dart:ui';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 RegExp _ipv4Maybe =
     new RegExp(r'^(\d?\d?\d)\.(\d?\d?\d)\.(\d?\d?\d)\.(\d?\d?\d)$');
@@ -213,7 +215,7 @@ bool isURL(String? str,
 ///   => https://github.com/albertosottile/darkdetect/blob/master/darkdetect/_windows_detect.py
 Brightness getWindowsThemeMode() {
   if (!GetPlatform.isWindows) return Brightness.light;
-  
+
   // PS C:\Users\PureBoy> reg query HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize /v AppsUseLightTheme /z /t REG_DWORD
   // HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize
   //     AppsUseLightTheme    REG_DWORD (4)    0x1
@@ -241,11 +243,24 @@ Brightness getWindowsThemeMode() {
 class MyCustomScrollBehavior extends MaterialScrollBehavior {
   @override
   Set<PointerDeviceKind> get dragDevices => {
-    PointerDeviceKind.touch,
-    PointerDeviceKind.mouse,
-    // etc.
-  };
+        PointerDeviceKind.touch,
+        PointerDeviceKind.mouse,
+        // etc.
+      };
 }
 
 void LaunchURL(String _url) async =>
-    await canLaunch(_url) ? await launch(_url) : throw 'Could not launch $_url';
+    await canLaunchUrlString(_url) ? await launchUrlString(_url) : throw 'Could not launch $_url';
+
+/// 调用 `iina` 播放
+/// 用户需自行安装 :)
+easyPlayToIINA(String url) {
+  return LaunchURL('iina://weblink?url=$url&new_window=1');
+}
+
+/// 判断 `iina` 是否安装
+bool checkInstalledIINA() {
+  final iinaAPP = '/Applications/IINA.app';
+  // if (kDebugMode) return false;
+  return Directory(iinaAPP).existsSync();
+}

@@ -79,6 +79,7 @@ flutter:
     - assets/data/play_tips.txt
     - assets/images/empty.png
     - assets/images/github_logo.png
+    - assets/images/error.png
 
     # before use node script/gen_source_create.js
     - assets/data/source_create.html

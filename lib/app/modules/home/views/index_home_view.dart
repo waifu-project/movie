@@ -99,6 +99,13 @@ class IndexHomeViewPage extends GetView {
     return Get.height * scan;
   }
 
+  double get _calcImageWidth {
+    var width = home.windowLastSize.width;
+    // 桌面平台
+    if (width >= 500) return 120;
+    return width * .6;
+  }
+
   @override
   Widget build(BuildContext context) {
     return GetBuilder<HomeController>(
@@ -133,125 +140,154 @@ class IndexHomeViewPage extends GetView {
           ],
         ),
         body: KBody(
-          child: SmartRefresher(
-            enablePullDown: true,
-            enablePullUp: true,
-            header: WaterDropHeader(
-              refresh: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  CupertinoActivityIndicator(),
-                  SizedBox(
-                    width: 12,
-                  ),
-                  Text("加载中"),
-                ],
+          child: Builder(builder: (context) {
+            if (home.mirrorListIsEmpty) {
+              return Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Image.asset(
+                      "assets/images/error.png",
+                      fit: BoxFit.cover,
+                      width: _calcImageWidth,
+                      // height: Get.height * .4,
+                    ),
+                    SizedBox(
+                      height: 12,
+                    ),
+                    Text('无数据源 :('),
+                    SizedBox(height: 12,),
+                    Text(
+                      "设置 -> 视频源帮助",
+                      style: Theme.of(context).textTheme.headline6!.copyWith(
+                            color: Theme.of(context).indicatorColor
+                          ),
+                    ),
+                  ],
+                ),
+              );
+            }
+            return SmartRefresher(
+              enablePullDown: true,
+              enablePullUp: true,
+              header: WaterDropHeader(
+                refresh: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    CupertinoActivityIndicator(),
+                    SizedBox(
+                      width: 12,
+                    ),
+                    Text("加载中"),
+                  ],
+                ),
+                complete: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(CupertinoIcons.smiley),
+                    SizedBox(
+                      width: 12,
+                    ),
+                    Text("加载完成"),
+                  ],
+                ),
               ),
-              complete: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(CupertinoIcons.smiley),
-                  SizedBox(
-                    width: 12,
-                  ),
-                  Text("加载完成"),
-                ],
-              ),
-            ),
-            footer: CustomFooter(
-              builder: (BuildContext context, LoadStatus? mode) {
-                Widget body;
-                if (mode == LoadStatus.idle) {
-                  body = Text("上划加载更多");
-                } else if (mode == LoadStatus.loading) {
-                  body = CupertinoActivityIndicator();
-                } else if (mode == LoadStatus.failed) {
-                  body = Text("加载失败, 请重试");
-                } else if (mode == LoadStatus.canLoading) {
-                  body = Text("释放以加载更多");
-                } else {
-                  body = Text("没有更多数据");
-                }
-                return Center(
-                  child: body,
-                );
-              },
-            ),
-            controller: homeview.refreshController,
-            onLoading: homeview.refreshOnLoading,
-            onRefresh: homeview.refreshOnRefresh,
-            child: Builder(
-              builder: (_) {
-                if (homeview.isLoading) {
+              footer: CustomFooter(
+                builder: (BuildContext context, LoadStatus? mode) {
+                  Widget body;
+                  if (mode == LoadStatus.idle) {
+                    body = Text("上划加载更多");
+                  } else if (mode == LoadStatus.loading) {
+                    body = CupertinoActivityIndicator();
+                  } else if (mode == LoadStatus.failed) {
+                    body = Text("加载失败, 请重试");
+                  } else if (mode == LoadStatus.canLoading) {
+                    body = Text("释放以加载更多");
+                  } else {
+                    body = Text("没有更多数据");
+                  }
                   return Center(
-                    child: CupertinoActivityIndicator(),
+                    child: body,
                   );
-                }
+                },
+              ),
+              controller: homeview.refreshController,
+              onLoading: homeview.refreshOnLoading,
+              onRefresh: homeview.refreshOnRefresh,
+              child: Builder(
+                builder: (_) {
+                  if (homeview.isLoading) {
+                    return Center(
+                      child: CupertinoActivityIndicator(),
+                    );
+                  }
 
-                if (homeview.homedata.isEmpty) {
-                  return Container(
-                    child: Center(
-                      child: SingleChildScrollView(
-                        child: Column(
-                          children: [
-                            Image.asset(
-                              "assets/images/empty.png",
-                              fit: BoxFit.cover,
-                              width: Get.width * .8,
-                              height: Get.height * .4,
-                            ),
-                            SizedBox(
-                              height: 12,
-                            ),
-                            CupertinoButton.filled(
-                              child: Text("重新加载"),
-                              onPressed: () {
-                                homeview.updateHomeData(isFirst: true);
-                              },
-                            ),
-                            SizedBox(
-                              height: 12,
-                            ),
-                            KErrorStack(
-                              msg: errorMsg,
-                            ),
-                          ],
+                  if (homeview.homedata.isEmpty) {
+                    return Container(
+                      child: Center(
+                        child: SingleChildScrollView(
+                          child: Column(
+                            children: [
+                              Image.asset(
+                                "assets/images/empty.png",
+                                fit: BoxFit.cover,
+                                width: Get.width * .8,
+                                height: Get.height * .4,
+                              ),
+                              SizedBox(
+                                height: 12,
+                              ),
+                              CupertinoButton.filled(
+                                child: Text("重新加载"),
+                                onPressed: () {
+                                  homeview.updateHomeData(isFirst: true);
+                                },
+                              ),
+                              SizedBox(
+                                height: 12,
+                              ),
+                              KErrorStack(
+                                msg: errorMsg,
+                              ),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                  );
-                }
-
-                return WaterfallFlow.builder(
-                  physics: NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  gridDelegate:
-                      SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: cardCount,
-                    crossAxisSpacing: 5.0,
-                    mainAxisSpacing: 5.0,
-                  ),
-                  itemCount: homeview.homedata.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    var subItem = homeview.homedata[index];
-                    var _h = index % 2 == 0
-                        ? _cardOnceHeight
-                        : (_cardOnceHeight * .8);
-                    return Container(
-                      height: _h,
-                      child: MovieCardItem(
-                        imageUrl: subItem.smallCoverImage,
-                        title: subItem.title,
-                        onTap: () {
-                          handleClickItem(subItem);
-                        },
-                      ),
                     );
-                  },
-                );
-              },
-            ),
-          ),
+                  }
+
+                  return WaterfallFlow.builder(
+                    physics: NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    gridDelegate:
+                        SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: cardCount,
+                      crossAxisSpacing: 5.0,
+                      mainAxisSpacing: 5.0,
+                    ),
+                    itemCount: homeview.homedata.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      var subItem = homeview.homedata[index];
+                      var _h = index % 2 == 0
+                          ? _cardOnceHeight
+                          : (_cardOnceHeight * .8);
+                      return Container(
+                        height: _h,
+                        child: MovieCardItem(
+                          imageUrl: subItem.smallCoverImage,
+                          title: subItem.title,
+                          onTap: () {
+                            handleClickItem(subItem);
+                          },
+                        ),
+                      );
+                    },
+                  );
+                },
+              ),
+            );
+          }),
         ),
       ),
     );

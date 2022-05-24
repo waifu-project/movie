@@ -144,6 +144,10 @@ class HomeController extends GetxController with WidgetsBindingObserver {
     return mirrorList[mirrorIndex];
   }
 
+  bool get mirrorListIsEmpty {
+    return mirrorList.isEmpty;
+  }
+
   List<MovieImpl> get mirrorList {
     if (isNsfw) return MirrorManage.data;
     return MirrorManage.data.where((e) => !e.isNsfw).toList();
@@ -280,6 +284,11 @@ class HomeController extends GetxController with WidgetsBindingObserver {
   /// [isFirst] 初始化加载数据需要将 [isLoading] => true
   /// [missIsLoading] 某些特殊情况下不需要设置 [isLoading] => true
   updateHomeData({bool isFirst = false, missIsLoading = false}) async {
+
+    /// 如果都没有源, 则不需要加载数据
+    /// => +_+ 还玩个球啊
+    if (mirrorListIsEmpty) return;
+
     /// 如果 [indexHomeLoadDataErrorMessage] 错误栈有内容的话
     /// 并且 [isFirst] 不是初始化数据的话, 就不允许加载更多
     if (indexHomeLoadDataErrorMessage != "" && !isFirst) return;

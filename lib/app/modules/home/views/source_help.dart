@@ -208,7 +208,6 @@ class _SourceHelpTableState extends State<SourceHelpTable> {
   handleImportFiles() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
       allowMultiple: true, type: FileType.custom,
-      // TODO support `.txt`
       allowedExtensions: [
         'json',
         'txt',

@@ -244,11 +244,7 @@ class WindowAppBar extends StatelessWidget implements PreferredSizeWidget {
     if (centerTitle)
       childrens.insert(
         0,
-        centerTitle
-            ? Container(
-                width: GetPlatform.isDesktop ? 82 : 0,
-              )
-            : SizedBox.shrink(),
+        Text(''),
       );
     return GestureDetector(
       behavior: HitTestBehavior.opaque,

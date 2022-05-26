@@ -125,6 +125,10 @@ class _SourceHelpTableState extends State<SourceHelpTable> {
 
   PageController pageController = PageController();
 
+  String get playfulConfirmText {
+    return "我知道了";
+  }
+
   handleCopyText({
     SourceItemJSONData? item,
     bool canCopyAll = false,
@@ -140,26 +144,15 @@ class _SourceHelpTableState extends State<SourceHelpTable> {
         completer.complete();
         return completer.future;
       }
-      showCupertinoDialog(
-        builder: (BuildContext context) => CupertinoAlertDialog(
-          title: Text(element.title ?? ""),
-          content: Html(data: element.msg ?? ""),
-          actions: <CupertinoDialogAction>[
-            CupertinoDialogAction(
-              child: const Text(
-                '我知道了',
-                style: TextStyle(
-                  color: Colors.red,
-                ),
-              ),
-              onPressed: () {
-                Get.back();
-                completer.complete();
-              },
-            ),
-          ],
-        ),
+      showEasyCupertinoDialog(
         context: ctx,
+        content: Html(data: element.msg ?? ""),
+        title: element.title,
+        confirmText: playfulConfirmText,
+        onDone: () {
+          Get.back();
+          completer.complete();
+        },
       );
       return completer.future;
     });
@@ -173,16 +166,8 @@ class _SourceHelpTableState extends State<SourceHelpTable> {
       });
     }
     if (result.isEmpty) return;
-    FlutterClipboard.copy(result).then(
-      (value) {
-        Get.showSnackbar(
-          GetBar(
-            message: "已复制到剪贴板!",
-            duration: Duration(seconds: 1),
-          ),
-        );
-      },
-    );
+    await FlutterClipboard.copy(result);
+    showEasyCupertinoDialog(content: '已复制到剪贴板!');
   }
 
   loadSourceCreateData() async {
@@ -207,7 +192,8 @@ class _SourceHelpTableState extends State<SourceHelpTable> {
   /// 导入文件
   handleImportFiles() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
-      allowMultiple: true, type: FileType.custom,
+      allowMultiple: true,
+      type: FileType.custom,
       allowedExtensions: [
         'json',
         'txt',
@@ -215,24 +201,9 @@ class _SourceHelpTableState extends State<SourceHelpTable> {
     );
 
     if (result == null) {
-      showCupertinoDialog(
-        builder: (context) => CupertinoAlertDialog(
-          content: Text("未选择文件 :("),
-          actions: [
-            CupertinoDialogAction(
-              child: const Text(
-                '我知道了',
-                style: TextStyle(
-                  color: Colors.red,
-                ),
-              ),
-              onPressed: () {
-                Get.back();
-              },
-            ),
-          ],
-        ),
-        context: context,
+      showEasyCupertinoDialog(
+        content: "未选择文件 :(",
+        confirmText: playfulConfirmText,
       );
       return;
     }
@@ -257,24 +228,9 @@ class _SourceHelpTableState extends State<SourceHelpTable> {
         .where((e) => verifyStringIsJSON(e[SOURCE_KEY] as String))
         .toList();
     if (data.isEmpty) {
-      showCupertinoDialog(
-        builder: (context) => CupertinoAlertDialog(
-          content: Text("导入的文件格式错误 :("),
-          actions: [
-            CupertinoDialogAction(
-              child: const Text(
-                '我知道了',
-                style: TextStyle(
-                  color: Colors.red,
-                ),
-              ),
-              onPressed: () {
-                Get.back();
-              },
-            ),
-          ],
-        ),
-        context: context,
+      showEasyCupertinoDialog(
+        content: "导入的文件格式错误 :(",
+        confirmText: playfulConfirmText,
       );
       return;
     }
@@ -308,59 +264,29 @@ class _SourceHelpTableState extends State<SourceHelpTable> {
       }
     });
     if (stack.isEmpty) {
-      showCupertinoDialog(
-        builder: (context) => CupertinoAlertDialog(
-          content: Text("未导入源, 可能是JSON文件格式不对? :("),
-          actions: [
-            CupertinoDialogAction(
-              child: const Text(
-                '我知道了',
-                style: TextStyle(
-                  color: Colors.red,
-                ),
-              ),
-              onPressed: () {
-                Get.back();
-              },
-            ),
-          ],
-        ),
-        context: context,
+      showEasyCupertinoDialog(
+        content: "未导入源, 可能是JSON文件格式不对? :(",
+        confirmText: playfulConfirmText,
       );
       return;
     } else {
       var newListData = SourceUtils.mergeMirror(stack);
       await MirrorManage.mergeMirror(newListData);
-      showCupertinoDialog(
-        builder: (context) => CupertinoAlertDialog(
-          content: Column(
-            children: [
-              Icon(
-                CupertinoIcons.hand_thumbsup,
-                size: 51,
-                color: CupertinoColors.systemBlue,
-              ),
-              SizedBox(
-                height: 24,
-              ),
-              Text(easyMessage),
-            ],
-          ),
-          actions: [
-            CupertinoDialogAction(
-              child: const Text(
-                '好耶ヾ(✿ﾟ▽ﾟ)ノ',
-                style: TextStyle(
-                  color: CupertinoColors.systemBlue,
-                ),
-              ),
-              onPressed: () {
-                Get.back();
-              },
+      showEasyCupertinoDialog(
+        content: Column(
+          children: [
+            Icon(
+              CupertinoIcons.hand_thumbsup,
+              size: 51,
+              color: CupertinoColors.systemBlue,
             ),
+            SizedBox(
+              height: 24,
+            ),
+            Text(easyMessage),
           ],
         ),
-        context: context,
+        confirmText: "好耶ヾ(✿ﾟ▽ﾟ)ノ",
       );
     }
   }
@@ -556,6 +482,80 @@ class _SourceHelpTableState extends State<SourceHelpTable> {
           ),
         ),
       ),
+    );
+  }
+}
+
+showEasyCupertinoDialog({
+  String? title,
+  dynamic content,
+  VoidCallback? onDone,
+  BuildContext? context,
+  String? confirmText,
+}) {
+  Widget child = SizedBox.shrink();
+  String outputTitle = title ?? "提示";
+  String outputConfrimText = confirmText ?? "确定";
+  if (content is Widget) {
+    child = content;
+  } else if (content is String) {
+    child = Text(content);
+  }
+  var ctx = Get.context as BuildContext;
+  if (context != null) ctx = context;
+  showCupertinoDialog(
+    builder: (BuildContext context) => easyShowModalWidget(
+      content: child,
+      title: outputTitle,
+      onDone: onDone,
+      confirmText: outputConfrimText,
+    ),
+    context: ctx,
+  );
+}
+
+class easyShowModalWidget extends StatelessWidget {
+  const easyShowModalWidget({
+    Key? key,
+    this.onDone,
+    required this.content,
+    this.title = "提示",
+    this.confirmText = "确定",
+    this.confirmTextColor = Colors.red,
+  }) : super(key: key);
+
+  final VoidCallback? onDone;
+  final String title;
+  final Widget content;
+  final String confirmText;
+  final Color confirmTextColor;
+
+  @override
+  Widget build(BuildContext context) {
+    return CupertinoAlertDialog(
+      title: Column(
+        children: [
+          Text(title),
+        ],
+      ),
+      content: content,
+      actions: <CupertinoDialogAction>[
+        CupertinoDialogAction(
+          child: Text(
+            confirmText,
+            style: TextStyle(
+              color: confirmTextColor,
+            ),
+          ),
+          onPressed: () {
+            if (onDone != null) {
+              onDone!();
+            } else {
+              Get.back();
+            }
+          },
+        ),
+      ],
     );
   }
 }

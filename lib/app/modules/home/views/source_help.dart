@@ -209,7 +209,10 @@ class _SourceHelpTableState extends State<SourceHelpTable> {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
       allowMultiple: true, type: FileType.custom,
       // TODO support `.txt`
-      allowedExtensions: ['json'],
+      allowedExtensions: [
+        'json',
+        'txt',
+      ],
     );
 
     if (result == null) {

@@ -30,6 +30,7 @@ import 'package:movie/app/widget/window_appbar.dart';
 import 'package:movie/mirror/m_utils/m.dart';
 import 'package:movie/mirror/m_utils/source_utils.dart';
 import 'package:movie/mirror/mirror.dart';
+import 'package:movie/utils/helper.dart';
 import 'package:movie/utils/http.dart';
 import 'package:clipboard/clipboard.dart';
 import 'package:movie/utils/json.dart';
@@ -241,8 +242,8 @@ class _SourceHelpTableState extends State<SourceHelpTable> {
     // ==========================
 
     var data = files
-
-        /// FIXME: 检测是否是二进制文件
+        .where((e) => !isBinaryAsFile(e))
+        .toList()
         .map<Map<String, dynamic>>((item) {
           String filename = item.uri.pathSegments.last;
           return {

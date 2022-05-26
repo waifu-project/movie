@@ -16,12 +16,11 @@
 // copy https://github.com/dart-league/validators/blob/master/lib/validators.dart
 
 import 'dart:io';
+import 'dart:typed_data';
 import 'dart:ui';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 RegExp _ipv4Maybe =
@@ -249,8 +248,9 @@ class MyCustomScrollBehavior extends MaterialScrollBehavior {
       };
 }
 
-void LaunchURL(String _url) async =>
-    await canLaunchUrlString(_url) ? await launchUrlString(_url) : throw 'Could not launch $_url';
+void LaunchURL(String _url) async => await canLaunchUrlString(_url)
+    ? await launchUrlString(_url)
+    : throw 'Could not launch $_url';
 
 /// 调用 `iina` 播放
 /// 用户需自行安装 :)
@@ -263,4 +263,25 @@ bool checkInstalledIINA() {
   final iinaAPP = '/Applications/IINA.app';
   // if (kDebugMode) return false;
   return Directory(iinaAPP).existsSync();
+}
+
+/// check file is `binary`
+///
+/// see: https://stackoverflow.com/a/66670519/10272586
+bool isBinaryAsFile(File file) {
+  RandomAccessFile raf = file.openSync(mode: FileMode.read);
+  Uint8List data = raf.readSync(124);
+  for (final b in data) {
+    if (b >= 0x00 && b <= 0x08) {
+      raf.close();
+      return true;
+    }
+  }
+  raf.close();
+  return false;
+}
+
+bool isBinaryAsPath(String path) {
+  final file = File(path);
+  return isBinaryAsFile(file);
 }

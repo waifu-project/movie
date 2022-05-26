@@ -96,9 +96,11 @@ class _MirrorTableViewState extends State<MirrorTableView> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 CupertinoNavigationBarBackButton(),
-                Text(
-                  _title,
-                  style: Theme.of(context).textTheme.headline6,
+                Expanded(
+                  child: Text(
+                    _title,
+                    style: Theme.of(context).textTheme.headline6,
+                  ),
                 ),
                 Text(''),
               ],

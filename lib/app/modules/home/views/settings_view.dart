@@ -27,6 +27,7 @@ import 'package:movie/config.dart';
 import 'package:movie/mirror/m_utils/source_utils.dart';
 import 'package:movie/mirror/mirror.dart';
 import 'package:movie/utils/helper.dart';
+import 'package:movie/app/modules/home/views/cupertino_license.dart';
 
 import 'nsfwtable.dart';
 
@@ -539,13 +540,14 @@ class _SettingsViewState extends State<SettingsView> {
             CSButtonType.DEFAULT,
             "Licenses",
             () {
-              showLicensePage(
-                context: context,
-                applicationIcon: Image.asset(
-                  "assets/images/fishtank.png",
-                  width: Get.width * .25,
-                ),
-              );
+              Get.to(() => cupertinoLicensePage);
+              // showLicensePage(
+              //   context: context,
+              //   applicationIcon: Image.asset(
+              //     "assets/images/fishtank.png",
+              //     width: Get.width * .25,
+              //   ),
+              // );
             },
           ),
           SizedBox(

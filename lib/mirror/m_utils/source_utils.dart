@@ -50,6 +50,19 @@ class SourceUtils {
     return "";
   }
 
+  static KBaseMirrorMovie parse(Map<String, dynamic> rawData) {
+    SourceJsonData data = SourceJsonData.fromJson(rawData);
+    var obj = KBaseMirrorMovie(
+      logo: data.logo ?? "",
+      name: data.name ?? "",
+      desc: data.desc ?? "",
+      api_path: data.api!.path ?? "",
+      root_url: data.api!.root ?? "",
+      nsfw: data.nsfw ?? false,
+    );
+    return obj;
+  }
+
   /// 加载网络源
   static Future<List<KBaseMirrorMovie>> runTaks(List<String> sources) async {
     List<KBaseMirrorMovie> result = [];
@@ -65,17 +78,8 @@ class SourceUtils {
         );
         List<dynamic> _data = resp.data;
         _data.map((ele) {
-          SourceJsonData data = SourceJsonData.fromJson(ele);
-          var rootUrl = data.api!.root ?? "";
-          result.removeWhere((item) => item.root_url == rootUrl);
-          var obj = KBaseMirrorMovie(
-            logo: data.logo ?? "",
-            name: data.name ?? "",
-            desc: data.desc ?? "",
-            api_path: data.api!.path ?? "",
-            root_url: data.api!.root ?? "",
-            nsfw: data.nsfw ?? false,
-          );
+          var obj = parse(ele);
+          result.removeWhere((element) => element.root_url == obj.root_url);
           result.add(obj);
         }).toList();
       } catch (e) {
@@ -88,11 +92,14 @@ class SourceUtils {
 
   /// [runTaks] 获取到网络资源之后
   /// 和 [MirrorList] 合并
-  static List<SourceJsonData> mergeMirror(List<KBaseMirrorMovie> newSourceData) {
+  static List<SourceJsonData> mergeMirror(
+    List<KBaseMirrorMovie> newSourceData,
+  ) {
     newSourceData.forEach((element) {
       var newDataDomain = element.meta.domain;
-      MirrorManage.extend
-          .removeWhere((element) => element.meta.domain == newDataDomain);
+      MirrorManage.extend.removeWhere(
+        (element) => element.meta.domain == newDataDomain,
+      );
     });
 
     MirrorManage.extend.addAll(newSourceData);

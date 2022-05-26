@@ -14,7 +14,10 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
 
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -24,8 +27,12 @@ import 'package:get/get.dart';
 import 'package:movie/app/modules/home/views/home_config.dart';
 import 'package:movie/app/widget/k_error_stack.dart';
 import 'package:movie/app/widget/window_appbar.dart';
+import 'package:movie/mirror/m_utils/m.dart';
+import 'package:movie/mirror/m_utils/source_utils.dart';
+import 'package:movie/mirror/mirror.dart';
 import 'package:movie/utils/http.dart';
 import 'package:clipboard/clipboard.dart';
+import 'package:movie/utils/json.dart';
 
 import 'package:movie/widget/list_tile.dart';
 
@@ -196,30 +203,219 @@ class _SourceHelpTableState extends State<SourceHelpTable> {
     return _loadingErrorStack.isNotEmpty && !_isLoadingFromAJAX;
   }
 
+  /// 导入文件
+  handleImportFiles() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      allowMultiple: true, type: FileType.custom,
+      // TODO support `.txt`
+      allowedExtensions: ['json'],
+    );
+
+    if (result == null) {
+      showCupertinoDialog(
+        builder: (context) => CupertinoAlertDialog(
+          content: Text("未选择文件 :("),
+          actions: [
+            CupertinoDialogAction(
+              child: const Text(
+                '我知道了',
+                style: TextStyle(
+                  color: Colors.red,
+                ),
+              ),
+              onPressed: () {
+                Get.back();
+              },
+            ),
+          ],
+        ),
+        context: context,
+      );
+      return;
+    }
+    List<File> files = result.paths.map((path) => File(path!)).toList();
+
+    // ==========================
+    var SOURCE_KEY = "source";
+    var FILENAME_KEY = "filename";
+    // ==========================
+
+    var data = files
+
+        /// FIXME: 检测是否是二进制文件
+        .map<Map<String, dynamic>>((item) {
+          String filename = item.uri.pathSegments.last;
+          return {
+            SOURCE_KEY: item.readAsStringSync(),
+            FILENAME_KEY: filename,
+          };
+        })
+        .toList()
+        .where((e) => verifyStringIsJSON(e[SOURCE_KEY] as String))
+        .toList();
+    if (data.isEmpty) {
+      showCupertinoDialog(
+        builder: (context) => CupertinoAlertDialog(
+          content: Text("导入的文件格式错误 :("),
+          actions: [
+            CupertinoDialogAction(
+              child: const Text(
+                '我知道了',
+                style: TextStyle(
+                  color: Colors.red,
+                ),
+              ),
+              onPressed: () {
+                Get.back();
+              },
+            ),
+          ],
+        ),
+        context: context,
+      );
+      return;
+    }
+    var _collData = new Map<String, List<KBaseMirrorMovie>>();
+    data.forEach((item) {
+      String source = item[SOURCE_KEY] as String;
+      String filename = item[FILENAME_KEY] as String;
+      var typeAs = getJSONBodyType(source);
+      if (typeAs == null) return;
+      List<Map<String, dynamic>> pending = [];
+      if (typeAs == JSONBodyType.array) {
+        List<dynamic> cache = jsonDecode(source) as List<dynamic>;
+        var cacheAsMap = cache.map((item) {
+          return item as Map<String, dynamic>;
+        }).toList();
+        pending.addAll(cacheAsMap);
+      } else {
+        pending.add(jsonDecode(source));
+      }
+      var result = pending.map((e) => SourceUtils.parse(e)).toList();
+      _collData[filename] = result;
+    });
+
+    String easyMessage = "";
+    List<KBaseMirrorMovie> stack = [];
+    _collData.forEach((k, v) async {
+      int len = v.length;
+      if (v.isNotEmpty) {
+        stack.addAll(v);
+        easyMessage += "从$k中导入了$len个源\n";
+      }
+    });
+    if (stack.isEmpty) {
+      showCupertinoDialog(
+        builder: (context) => CupertinoAlertDialog(
+          content: Text("未导入源, 可能是JSON文件格式不对? :("),
+          actions: [
+            CupertinoDialogAction(
+              child: const Text(
+                '我知道了',
+                style: TextStyle(
+                  color: Colors.red,
+                ),
+              ),
+              onPressed: () {
+                Get.back();
+              },
+            ),
+          ],
+        ),
+        context: context,
+      );
+      return;
+    } else {
+      var newListData = SourceUtils.mergeMirror(stack);
+      await MirrorManage.mergeMirror(newListData);
+      showCupertinoDialog(
+        builder: (context) => CupertinoAlertDialog(
+          content: Column(
+            children: [
+              Icon(
+                CupertinoIcons.hand_thumbsup,
+                size: 51,
+                color: CupertinoColors.systemBlue,
+              ),
+              SizedBox(
+                height: 24,
+              ),
+              Text(easyMessage),
+            ],
+          ),
+          actions: [
+            CupertinoDialogAction(
+              child: const Text(
+                '好耶ヾ(✿ﾟ▽ﾟ)ノ',
+                style: TextStyle(
+                  color: CupertinoColors.systemBlue,
+                ),
+              ),
+              onPressed: () {
+                Get.back();
+              },
+            ),
+          ],
+        ),
+        context: context,
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return DefaultTextStyle(
       style: TextStyle(color: Get.isDarkMode ? Colors.white : Colors.black),
       child: CupertinoPageScaffold(
         navigationBar: CupertinoEasyAppBar(
-        child: Column(
-          children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                CupertinoNavigationBarBackButton(),
-                Text(
-                  "o(-`д´- ｡)",
-                  style: Theme.of(context).textTheme.headline6,
-                ),
-                Text(''),
-              ],
-            ),
-            Divider()
-          ],
+          child: Column(
+            children: [
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  CupertinoNavigationBarBackButton(),
+                  Text(
+                    "o(-`д´- ｡)",
+                    style: Theme.of(context).textTheme.headline6,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      right: 12,
+                    ),
+                    child: CupertinoButton.filled(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 6,
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(
+                            CupertinoIcons.arrow_down_square_fill,
+                            color: CupertinoColors.white,
+                          ),
+                          SizedBox(
+                            width: 3,
+                          ),
+                          Text(
+                            "导入文件",
+                            style: Theme.of(
+                              context,
+                            ).textTheme.bodyText1!.copyWith(
+                                  color: CupertinoColors.white,
+                                ),
+                          ),
+                        ],
+                      ),
+                      onPressed: handleImportFiles,
+                    ),
+                  ),
+                ],
+              ),
+              Divider()
+            ],
+          ),
         ),
-      ),
         child: SafeArea(
           child: Container(
             child: Column(

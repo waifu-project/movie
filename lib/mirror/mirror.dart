@@ -85,7 +85,7 @@ class MirrorManage {
     mergeMirror(_to);
   }
 
-  static mergeMirror(List<SourceJsonData> data) async {
+  static Future<void> mergeMirror(List<SourceJsonData> data) async {
     await local.write(ConstDart.mirror_list, data);
   }
 }

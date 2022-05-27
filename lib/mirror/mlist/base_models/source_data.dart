@@ -49,6 +49,8 @@ class SourceJsonData {
   final bool? nsfw;
   final Api? api;
 
+  /// [SourceUtils.tryParseData]
+  @Deprecated('不推荐使用, 推荐使用 SourceUtils.tryParseData()')
   factory SourceJsonData.fromJson(Map<String, dynamic> json) {
 
     /// note:
@@ -72,7 +74,7 @@ class SourceJsonData {
       // }
       String apiFull = json['api'];
 
-      // TODO 容错处理
+      /// [SourceUtils.tryParseData]
       var url = Uri.parse(apiFull);
       
       return SourceJsonData(

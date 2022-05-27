@@ -250,7 +250,17 @@ class _SourceHelpTableState extends State<SourceHelpTable> {
       } else {
         pending.add(jsonDecode(source));
       }
-      var result = pending.map((e) => SourceUtils.parse(e)).toList();
+      var result = pending
+          .map((e) {
+            return SourceUtils.parse(e);
+          })
+          .toList()
+          .where((element) {
+            return element != null;
+          })
+          .toList()
+          .map((e) => e as KBaseMirrorMovie)
+          .toList();
       _collData[filename] = result;
     });
 

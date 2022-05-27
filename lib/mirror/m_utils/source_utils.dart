@@ -50,17 +50,81 @@ class SourceUtils {
     return "";
   }
 
-  static KBaseMirrorMovie parse(Map<String, dynamic> rawData) {
-    SourceJsonData data = SourceJsonData.fromJson(rawData);
-    var obj = KBaseMirrorMovie(
-      logo: data.logo ?? "",
-      name: data.name ?? "",
-      desc: data.desc ?? "",
-      api_path: data.api!.path ?? "",
-      root_url: data.api!.root ?? "",
-      nsfw: data.nsfw ?? false,
+  static KBaseMirrorMovie? parse(Map<String, dynamic> rawData) {
+    List<dynamic> tryData = tryParseData(rawData);
+    bool status = tryData[0];
+    if (status) {
+      var data = tryData[1] as SourceJsonData;
+      return KBaseMirrorMovie(
+        logo: data.logo ?? "",
+        name: data.name ?? "",
+        desc: data.desc ?? "",
+        api_path: data.api!.path ?? "",
+        root_url: data.api!.root ?? "",
+        nsfw: data.nsfw ?? false,
+      );
+    } else {
+      return null;
+    }
+  }
+
+  /// 校验数据处理边界情况
+  ///
+  /// ```markdown
+  /// 1. 必须存在 `name`
+  /// 2. 必须有 `api` => `root` + `path`
+  /// ```
+  ///
+  /// 返回一个数组
+  ///
+  /// ```js
+  /// [
+  ///   status: bool,
+  ///   data: SourceJsonData
+  /// ]
+  /// ```
+  static List<dynamic> tryParseData(Map<String, dynamic> rawData) {
+    String? name = rawData['name'];
+    bool hasName = name != null;
+    var api = rawData['api'];
+    var id = rawData['id'];
+
+    /// => zy-player 源
+    if (id != null) {
+      var url = Uri.tryParse(api);
+      if (url == null) return [false, null];
+
+      /// FIXME: 不严谨的判断条件
+      var ifNext = hasName && (url.path.isNotEmpty && url.origin.isNotEmpty);
+
+      if (ifNext) {
+        bool isNsfw = (rawData['group'] ?? "") == "18禁";
+        var data = SourceJsonData(
+          name: name,
+          logo: "",
+          desc: "",
+          nsfw: isNsfw,
+          api: Api(
+            path: url.path,
+            root: url.origin,
+          ),
+        );
+        return [true, data];
+      }
+      return [false, null];
+    }
+    if (api == null) return [false, null];
+    var apiStru = Api.fromJson(api);
+    var root = apiStru.root;
+    if (!isURL(root)) return [false, null];
+    var normalizedData = SourceJsonData(
+      name: name,
+      logo: rawData["logo"],
+      desc: rawData["desc"],
+      nsfw: rawData["nsfw"],
+      api: apiStru,
     );
-    return obj;
+    return [true, normalizedData];
   }
 
   /// 加载网络源
@@ -77,11 +141,20 @@ class SourceUtils {
           ),
         );
         List<dynamic> _data = resp.data;
-        _data.map((ele) {
-          var obj = parse(ele);
-          result.removeWhere((element) => element.root_url == obj.root_url);
-          result.add(obj);
-        }).toList();
+        _data
+            .map((ele) {
+              var obj = parse(ele);
+              if (obj == null) return null;
+              result.removeWhere((element) {
+                return element.root_url == obj.root_url;
+              });
+              result.add(obj);
+            })
+            .toList()
+            .where((element) {
+              return element != null;
+            })
+            .toList();
       } catch (e) {
         print("获取网络源失败: $e");
         return null;

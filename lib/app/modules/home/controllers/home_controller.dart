@@ -18,7 +18,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:movie/app/modules/home/views/mirrortable.dart';
 import 'package:movie/config.dart';
 import 'package:movie/impl/movie.dart';

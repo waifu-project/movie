@@ -36,6 +36,8 @@ dependencies:
   flutter_slidable: ^1.1.0
 
   waterfall_flow: ^3.0.2
+
+  file_picker: ^4.2.4
   
   flutter: 
     sdk: flutter

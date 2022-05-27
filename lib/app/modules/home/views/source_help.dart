@@ -14,7 +14,10 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
 
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -24,8 +27,13 @@ import 'package:get/get.dart';
 import 'package:movie/app/modules/home/views/home_config.dart';
 import 'package:movie/app/widget/k_error_stack.dart';
 import 'package:movie/app/widget/window_appbar.dart';
+import 'package:movie/mirror/m_utils/m.dart';
+import 'package:movie/mirror/m_utils/source_utils.dart';
+import 'package:movie/mirror/mirror.dart';
+import 'package:movie/utils/helper.dart';
 import 'package:movie/utils/http.dart';
 import 'package:clipboard/clipboard.dart';
+import 'package:movie/utils/json.dart';
 
 import 'package:movie/widget/list_tile.dart';
 
@@ -117,6 +125,10 @@ class _SourceHelpTableState extends State<SourceHelpTable> {
 
   PageController pageController = PageController();
 
+  String get playfulConfirmText {
+    return "我知道了";
+  }
+
   handleCopyText({
     SourceItemJSONData? item,
     bool canCopyAll = false,
@@ -132,26 +144,15 @@ class _SourceHelpTableState extends State<SourceHelpTable> {
         completer.complete();
         return completer.future;
       }
-      showCupertinoDialog(
-        builder: (BuildContext context) => CupertinoAlertDialog(
-          title: Text(element.title ?? ""),
-          content: Html(data: element.msg ?? ""),
-          actions: <CupertinoDialogAction>[
-            CupertinoDialogAction(
-              child: const Text(
-                '我知道了',
-                style: TextStyle(
-                  color: Colors.red,
-                ),
-              ),
-              onPressed: () {
-                Get.back();
-                completer.complete();
-              },
-            ),
-          ],
-        ),
+      showEasyCupertinoDialog(
         context: ctx,
+        content: Html(data: element.msg ?? ""),
+        title: element.title,
+        confirmText: playfulConfirmText,
+        onDone: () {
+          Get.back();
+          completer.complete();
+        },
       );
       return completer.future;
     });
@@ -165,16 +166,8 @@ class _SourceHelpTableState extends State<SourceHelpTable> {
       });
     }
     if (result.isEmpty) return;
-    FlutterClipboard.copy(result).then(
-      (value) {
-        Get.showSnackbar(
-          GetBar(
-            message: "已复制到剪贴板!",
-            duration: Duration(seconds: 1),
-          ),
-        );
-      },
-    );
+    await FlutterClipboard.copy(result);
+    showEasyCupertinoDialog(content: '已复制到剪贴板!');
   }
 
   loadSourceCreateData() async {
@@ -196,30 +189,199 @@ class _SourceHelpTableState extends State<SourceHelpTable> {
     return _loadingErrorStack.isNotEmpty && !_isLoadingFromAJAX;
   }
 
+  /// 导入文件
+  handleImportFiles() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      allowMultiple: true,
+      type: FileType.custom,
+      allowedExtensions: [
+        'json',
+        'txt',
+      ],
+    );
+
+    if (result == null) {
+      showEasyCupertinoDialog(
+        content: "未选择文件 :(",
+        confirmText: playfulConfirmText,
+      );
+      return;
+    }
+    List<File> files = result.paths.map((path) => File(path!)).toList();
+
+    // ==========================
+    var SOURCE_KEY = "source";
+    var FILENAME_KEY = "filename";
+    // ==========================
+
+    var data = files
+        .where((e) => !isBinaryAsFile(e))
+        .toList()
+        .map<Map<String, dynamic>>((item) {
+          String filename = item.uri.pathSegments.last;
+          return {
+            SOURCE_KEY: item.readAsStringSync(),
+            FILENAME_KEY: filename,
+          };
+        })
+        .toList()
+        .where((e) => verifyStringIsJSON(e[SOURCE_KEY] as String))
+        .toList();
+    if (data.isEmpty) {
+      showEasyCupertinoDialog(
+        content: "导入的文件格式错误 :(",
+        confirmText: playfulConfirmText,
+      );
+      return;
+    }
+    var _collData = new Map<String, List<KBaseMirrorMovie>>();
+    data.forEach((item) {
+      String source = item[SOURCE_KEY] as String;
+      String filename = item[FILENAME_KEY] as String;
+      var typeAs = getJSONBodyType(source);
+      if (typeAs == null) return;
+      List<Map<String, dynamic>> pending = [];
+      dynamic jsonData = jsonDecode(source);
+      if (typeAs == JSONBodyType.array) {
+        List<dynamic> cache = jsonData as List<dynamic>;
+        var cacheAsMap = cache.map((item) {
+          return item as Map<String, dynamic>;
+        }).toList();
+        pending.addAll(cacheAsMap);
+      } else {
+        /// 兼容 https://github.com/waifu-project/assets/blob/master/db.json
+        ///
+        /// ```json
+        /// {
+        ///   "mirrors": []
+        /// }
+        /// ```
+        var BIND_KEY = 'mirrors';
+        var jsonDataAsMap = jsonData as Map<String, dynamic>;
+        if (jsonDataAsMap.containsKey(BIND_KEY)) {
+          var cache = jsonDataAsMap[BIND_KEY];
+          if (cache is List) {
+            List<Map<String, dynamic>> cacheAsMapList = cache
+                .map((item) {
+                  if (item is Map<String, dynamic>) return item;
+                  return null;
+                })
+                .toList()
+                .where((element) => element != null)
+                .toList()
+                .map((e) => e as Map<String, dynamic>)
+                .toList();
+            pending.addAll(cacheAsMapList);
+          }
+        }
+
+        pending.add(jsonDataAsMap);
+      }
+      var result = pending
+          .map((e) {
+            return SourceUtils.parse(e);
+          })
+          .toList()
+          .where((element) {
+            return element != null;
+          })
+          .toList()
+          .map((e) => e as KBaseMirrorMovie)
+          .toList();
+      _collData[filename] = result;
+    });
+
+    String easyMessage = "";
+    List<KBaseMirrorMovie> stack = [];
+    _collData.forEach((k, v) async {
+      int len = v.length;
+      if (v.isNotEmpty) {
+        stack.addAll(v);
+        easyMessage += "从$k中导入了$len个源\n";
+      }
+    });
+    if (stack.isEmpty) {
+      showEasyCupertinoDialog(
+        content: "未导入源, 可能是JSON文件格式不对? :(",
+        confirmText: playfulConfirmText,
+      );
+      return;
+    } else {
+      var newListData = SourceUtils.mergeMirror(stack);
+      await MirrorManage.mergeMirror(newListData);
+      showEasyCupertinoDialog(
+        content: Column(
+          children: [
+            Icon(
+              CupertinoIcons.hand_thumbsup,
+              size: 51,
+              color: CupertinoColors.systemBlue,
+            ),
+            SizedBox(
+              height: 24,
+            ),
+            Text(easyMessage),
+          ],
+        ),
+        confirmText: "好耶ヾ(✿ﾟ▽ﾟ)ノ",
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return DefaultTextStyle(
       style: TextStyle(color: Get.isDarkMode ? Colors.white : Colors.black),
       child: CupertinoPageScaffold(
         navigationBar: CupertinoEasyAppBar(
-        child: Column(
-          children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                CupertinoNavigationBarBackButton(),
-                Text(
-                  "o(-`д´- ｡)",
-                  style: Theme.of(context).textTheme.headline6,
-                ),
-                Text(''),
-              ],
-            ),
-            Divider()
-          ],
+          child: Column(
+            children: [
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  CupertinoNavigationBarBackButton(),
+                  Text(
+                    "o(-`д´- ｡)",
+                    style: Theme.of(context).textTheme.headline6,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      right: 12,
+                    ),
+                    child: CupertinoButton.filled(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 6,
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(
+                            CupertinoIcons.arrow_down_square_fill,
+                            color: CupertinoColors.white,
+                          ),
+                          SizedBox(
+                            width: 3,
+                          ),
+                          Text(
+                            "导入文件",
+                            style: Theme.of(
+                              context,
+                            ).textTheme.bodyText1!.copyWith(
+                                  color: CupertinoColors.white,
+                                ),
+                          ),
+                        ],
+                      ),
+                      onPressed: handleImportFiles,
+                    ),
+                  ),
+                ],
+              ),
+              Divider()
+            ],
+          ),
         ),
-      ),
         child: SafeArea(
           child: Container(
             child: Column(
@@ -357,6 +519,80 @@ class _SourceHelpTableState extends State<SourceHelpTable> {
           ),
         ),
       ),
+    );
+  }
+}
+
+showEasyCupertinoDialog({
+  String? title,
+  dynamic content,
+  VoidCallback? onDone,
+  BuildContext? context,
+  String? confirmText,
+}) {
+  Widget child = SizedBox.shrink();
+  String outputTitle = title ?? "提示";
+  String outputConfrimText = confirmText ?? "确定";
+  if (content is Widget) {
+    child = content;
+  } else if (content is String) {
+    child = Text(content);
+  }
+  var ctx = Get.context as BuildContext;
+  if (context != null) ctx = context;
+  showCupertinoDialog(
+    builder: (BuildContext context) => easyShowModalWidget(
+      content: child,
+      title: outputTitle,
+      onDone: onDone,
+      confirmText: outputConfrimText,
+    ),
+    context: ctx,
+  );
+}
+
+class easyShowModalWidget extends StatelessWidget {
+  const easyShowModalWidget({
+    Key? key,
+    this.onDone,
+    required this.content,
+    this.title = "提示",
+    this.confirmText = "确定",
+    this.confirmTextColor = Colors.red,
+  }) : super(key: key);
+
+  final VoidCallback? onDone;
+  final String title;
+  final Widget content;
+  final String confirmText;
+  final Color confirmTextColor;
+
+  @override
+  Widget build(BuildContext context) {
+    return CupertinoAlertDialog(
+      title: Column(
+        children: [
+          Text(title),
+        ],
+      ),
+      content: content,
+      actions: <CupertinoDialogAction>[
+        CupertinoDialogAction(
+          child: Text(
+            confirmText,
+            style: TextStyle(
+              color: confirmTextColor,
+            ),
+          ),
+          onPressed: () {
+            if (onDone != null) {
+              onDone!();
+            } else {
+              Get.back();
+            }
+          },
+        ),
+      ],
     );
   }
 }

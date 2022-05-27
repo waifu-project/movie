@@ -74,10 +74,25 @@ class IndexHomeViewPage extends GetView {
     var data = subItem;
     if (subItem.videos.isEmpty) {
       var id = subItem.id;
+      var _textStyle = Theme.of(Get.context as BuildContext).textTheme.bodyText2;
       Get.dialog(
         Center(
-          child: CupertinoActivityIndicator(),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              CircularProgressIndicator(
+                color: CupertinoColors.systemBlue,
+              ),
+              SizedBox(height: 12,),
+              Text(
+                "加载中",
+                style: _textStyle,
+              ),
+            ],
+          ),
         ),
+        barrierColor: CupertinoColors.inactiveGray.withOpacity(.9),
       );
       data = await home.currentMirrorItem.getDetail(
         id,
@@ -125,18 +140,19 @@ class IndexHomeViewPage extends GetView {
             ),
           ),
           actions: [
-            if (!home.mirrorListIsEmpty) MouseRegion(
-              cursor: SystemMouseCursors.click,
-              child: CupertinoButton(
-                child: Icon(
-                  Icons.movie,
-                  color: Colors.white,
+            if (!home.mirrorListIsEmpty)
+              MouseRegion(
+                cursor: SystemMouseCursors.click,
+                child: CupertinoButton(
+                  child: Icon(
+                    Icons.movie,
+                    color: Colors.white,
+                  ),
+                  onPressed: () {
+                    homeview.showMirrorModel(context);
+                  },
                 ),
-                onPressed: () {
-                  homeview.showMirrorModel(context);
-                },
               ),
-            ),
           ],
         ),
         body: KBody(
@@ -157,12 +173,15 @@ class IndexHomeViewPage extends GetView {
                       height: 12,
                     ),
                     Text('无数据源 :('),
-                    SizedBox(height: 12,),
+                    SizedBox(
+                      height: 12,
+                    ),
                     Text(
                       "设置 -> 视频源帮助",
-                      style: Theme.of(context).textTheme.headline6!.copyWith(
-                            color: Theme.of(context).indicatorColor
-                          ),
+                      style: Theme.of(context)
+                          .textTheme
+                          .headline6!
+                          .copyWith(color: Theme.of(context).indicatorColor),
                     ),
                   ],
                 ),

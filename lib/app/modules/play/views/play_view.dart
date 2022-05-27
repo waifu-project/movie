@@ -180,6 +180,7 @@ class PlayView extends GetView<PlayController> {
                     ),
                   ),
                 ),
+                Divider(),
                 Container(
                   width: double.infinity,
                   height: canRenderIosStyle ? 32 + 12 : null,
@@ -266,9 +267,29 @@ class PlayView extends GetView<PlayController> {
                 ),
                 Padding(
                   padding: EdgeInsets.all(offsetSize),
-                  child: Wrap(
-                    children: [
-                      ...playlist[play.tabIndex]
+                  child: Builder(builder: (context) {
+                    if (playlist.isEmpty) {
+                      return Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Icon(
+                              CupertinoIcons.tornado,
+                              size: 42,
+                              color: CupertinoColors.systemBlue,
+                            ),
+                            SizedBox(height: 12,),
+                            Text(
+                              "暂无播放链接",
+                              style: Theme.of(context).textTheme.caption,
+                            ),
+                          ],
+                        ),
+                      );
+                    }
+                    return Wrap(
+                      children: playlist[play.tabIndex]
                           .datas
                           .map(
                             (e) => Container(
@@ -291,8 +312,8 @@ class PlayView extends GetView<PlayController> {
                             ),
                           )
                           .toList(),
-                    ],
-                  ),
+                    );
+                  }),
                 ),
               ],
             ),

@@ -74,7 +74,9 @@ class IndexHomeViewPage extends GetView {
     var data = subItem;
     if (subItem.videos.isEmpty) {
       var id = subItem.id;
-      var _textStyle = Theme.of(Get.context as BuildContext).textTheme.bodyText2;
+      var _textStyle = Theme.of(Get.context as BuildContext).textTheme.bodyText2!.copyWith(
+        color: CupertinoColors.systemBlue,
+      );
       Get.dialog(
         Center(
           child: Column(

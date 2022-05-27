@@ -77,6 +77,11 @@ class HomeView extends GetView<HomeController> {
           physics: NeverScrollableScrollPhysics(),
 
           onPageChanged: (index) {
+
+            // fix ios keyboard auto up
+            var currentFocus = FocusScope.of(context);
+            currentFocus.unfocus();
+
             homeview.changeCurrentBarIndex(index);
           },
         ),

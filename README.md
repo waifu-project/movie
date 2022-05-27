@@ -3,11 +3,9 @@
 
 ## YY播放器
 
-使用 `Flutter` 构建, 支持 `android` | `windows` | `macos`
+使用 `Flutter` 构建, 支持 `Android` | `Windows` | `Macos`
 
-支持自定义源
-
-内建了两个源, 你也可以自行添加源
+支持自定义源, 可自行添加源
 
 官方源: https://github.com/waifu-project/assets/blob/master/yy.json
 
@@ -15,7 +13,7 @@
 
 ![free-man](https://user-images.githubusercontent.com/45585937/170281238-573f18c6-944f-4c74-81c4-c363a00ecfd8.gif)
 
-[制作源教程](docs/源制作.md)
+[Re: 从零开始的开发日志](docs/dev.md)
 
 > `iOS` 下载 `ipa` 之后, 请使用 [sideloadly](https://sideloadly.io/) 签名安装
 

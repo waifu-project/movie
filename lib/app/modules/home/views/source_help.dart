@@ -241,14 +241,41 @@ class _SourceHelpTableState extends State<SourceHelpTable> {
       var typeAs = getJSONBodyType(source);
       if (typeAs == null) return;
       List<Map<String, dynamic>> pending = [];
+      dynamic jsonData = jsonDecode(source);
       if (typeAs == JSONBodyType.array) {
-        List<dynamic> cache = jsonDecode(source) as List<dynamic>;
+        List<dynamic> cache = jsonData as List<dynamic>;
         var cacheAsMap = cache.map((item) {
           return item as Map<String, dynamic>;
         }).toList();
         pending.addAll(cacheAsMap);
       } else {
-        pending.add(jsonDecode(source));
+        /// 兼容 https://github.com/waifu-project/assets/blob/master/db.json
+        ///
+        /// ```json
+        /// {
+        ///   "mirrors": []
+        /// }
+        /// ```
+        var BIND_KEY = 'mirrors';
+        var jsonDataAsMap = jsonData as Map<String, dynamic>;
+        if (jsonDataAsMap.containsKey(BIND_KEY)) {
+          var cache = jsonDataAsMap[BIND_KEY];
+          if (cache is List) {
+            List<Map<String, dynamic>> cacheAsMapList = cache
+                .map((item) {
+                  if (item is Map<String, dynamic>) return item;
+                  return null;
+                })
+                .toList()
+                .where((element) => element != null)
+                .toList()
+                .map((e) => e as Map<String, dynamic>)
+                .toList();
+            pending.addAll(cacheAsMapList);
+          }
+        }
+
+        pending.add(jsonDataAsMap);
       }
       var result = pending
           .map((e) {

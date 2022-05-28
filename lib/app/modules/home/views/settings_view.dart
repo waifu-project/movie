@@ -211,6 +211,15 @@ class _SettingsViewState extends State<SettingsView> {
           return;
         }
         var target = SourceUtils.getSources(editingControllerValue);
+        if (target.isEmpty) {
+          Get.showSnackbar(
+            GetBar(
+              message: "没有找到匹配的源!",
+              duration: Duration(seconds: 1),
+            ),
+          );
+          return;
+        }
         Get.dialog(
           GestureDetector(
             behavior: HitTestBehavior.opaque,

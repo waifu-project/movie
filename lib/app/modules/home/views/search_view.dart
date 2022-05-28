@@ -26,6 +26,7 @@ import 'package:get/get.dart';
 import 'package:movie/app/modules/home/controllers/home_controller.dart';
 import 'package:movie/app/routes/app_pages.dart';
 import 'package:movie/app/widget/helper.dart';
+import 'package:movie/app/widget/k_empty_mirror.dart';
 import 'package:movie/app/widget/k_error_stack.dart';
 import 'package:movie/app/widget/k_pagination.dart';
 import 'package:movie/app/widget/k_tag.dart';
@@ -135,277 +136,317 @@ class _SearchViewState extends State<SearchView>
   /// 默认 `logo`
   String get _defaultLogo => home.currentMirrorItem.meta.logo;
 
+  bool get showEmptyStack {
+    return home.mirrorListIsEmpty;
+  }
+
+  PreferredSizeWidget? get _appBar {
+    bool isDesktop = GetPlatform.isDesktop;
+    if (isDesktop) {
+      return WindowAppBar(
+        centerTitle: showEmptyStack,
+        title: Builder(builder: (context) {
+          if (showEmptyStack)
+            return Text(
+              "搜索",
+              style: TextStyle(
+                fontSize: 18,
+              ),
+            );
+          return SizedBox.shrink();
+        }),
+      );
+    }
+    return null;
+  }
+
+  double get _kEmptyMirrorWidth {
+    var width = home.windowLastSize.width;
+    if (width >= 500) return 120;
+    return width * .6;
+  }
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return Scaffold(
-      appBar: GetPlatform.isDesktop
-          ? WindowAppBar(
-              title: SizedBox.shrink(),
-            )
-          : null,
-      body: SafeArea(
-        child: SearchBar<MirrorOnceItemSerialize>(
-          textStyle: TextStyle(
-            color: Get.isDarkMode ? Colors.white : Colors.black,
-          ),
-          searchBarController: _searchBarController,
-          header: Builder(builder: (context) {
-            if (!canShowPagingView) return SizedBox.shrink();
-            return KPagination(
-              turnL: isPrevPage,
-              turnR: isNextPage,
-              textEditingController: textEditingController,
-              onActionTap: (KPaginationActionButtonDirection type) {
-                setState(() {
-                  switch (type) {
-                    case KPaginationActionButtonDirection.l:
-                      page--;
-                      break;
-                    case KPaginationActionButtonDirection.r:
-                      page++;
-                      break;
-                    default:
+    return GetBuilder<HomeController>(
+      builder: (home) {
+        return Scaffold(
+          appBar: _appBar,
+          body: SafeArea(
+            child: Builder(builder: (context) {
+              if (showEmptyStack) {
+                return KEmptyMirror(
+                  width: _kEmptyMirrorWidth,
+                );
+              }
+              return SearchBar<MirrorOnceItemSerialize>(
+                textStyle: TextStyle(
+                  color: Get.isDarkMode ? Colors.white : Colors.black,
+                ),
+                searchBarController: _searchBarController,
+                header: Builder(builder: (context) {
+                  if (!canShowPagingView) return SizedBox.shrink();
+                  return KPagination(
+                    turnL: isPrevPage,
+                    turnR: isNextPage,
+                    textEditingController: textEditingController,
+                    onActionTap: (KPaginationActionButtonDirection type) {
+                      setState(() {
+                        switch (type) {
+                          case KPaginationActionButtonDirection.l:
+                            page--;
+                            break;
+                          case KPaginationActionButtonDirection.r:
+                            page++;
+                            break;
+                          default:
+                        }
+                      });
+                      handleStandSearch(
+                        isInit: false,
+                      );
+                    },
+                    onJumpTap: () {
+                      if (page == textEditingControllerIntValue) return;
+                      setState(() {
+                        page = textEditingControllerIntValue;
+                      });
+                      handleStandSearch();
+                    },
+                  );
+                }),
+                onItemFound: (item, int index) {
+                  String? _targetImage = item?.smallCoverImage;
+
+                  /// 比对 [item?.smallCoverImage] 和 [_defaultLogo] 是否相等来确认是否有封面图
+                  bool canNotFindCover = _targetImage == _defaultLogo;
+
+                  double w = 90;
+
+                  double h = 100;
+
+                  Widget coverWidget = Image.network(
+                    _targetImage ?? _defaultLogo,
+                    width: w,
+                    height: h,
+                    fit: BoxFit.cover,
+                    loadingBuilder: (context, child, loadingProgress) {
+                      if (loadingProgress == null) {
+                        return ClipRRect(
+                          borderRadius: BorderRadius.circular(8.0),
+                          child: child,
+                        );
+                      }
+                      return Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    },
+                    errorBuilder: (context, error, stackTrace) => ClipRRect(
+                      borderRadius: BorderRadius.circular(8.0),
+                      child: Image.asset(
+                        K_DEFAULT_IMAGE,
+                        fit: BoxFit.cover,
+                        width: 80,
+                      ),
+                    ),
+                  );
+
+                  // EdgeInsets _sharkPadding = EdgeInsets.all(canNotFindCover ? 10 : 0);
+
+                  if (canNotFindCover) {
+                    coverWidget = SizedBox.shrink();
                   }
-                });
-                handleStandSearch(
-                  isInit: false,
-                );
-              },
-              onJumpTap: () {
-                if (page == textEditingControllerIntValue) return;
-                setState(() {
-                  page = textEditingControllerIntValue;
-                });
-                handleStandSearch();
-              },
-            );
-          }),
-          onItemFound: (item, int index) {
-            String? _targetImage = item?.smallCoverImage;
 
-            /// 比对 [item?.smallCoverImage] 和 [_defaultLogo] 是否相等来确认是否有封面图
-            bool canNotFindCover = _targetImage == _defaultLogo;
-
-            double w = 90;
-
-            double h = 100;
-
-            Widget coverWidget = Image.network(
-              _targetImage ?? _defaultLogo,
-              width: w,
-              height: h,
-              fit: BoxFit.cover,
-              loadingBuilder: (context, child, loadingProgress) {
-                if (loadingProgress == null) {
-                  return ClipRRect(
-                    borderRadius: BorderRadius.circular(8.0),
-                    child: child,
-                  );
-                }
-                return Center(
-                  child: CircularProgressIndicator(),
-                );
-              },
-              errorBuilder: (context, error, stackTrace) => ClipRRect(
-                borderRadius: BorderRadius.circular(8.0),
-                child: Image.asset(
-                  K_DEFAULT_IMAGE,
-                  fit: BoxFit.cover,
-                  width: 80,
-                ),
-              ),
-            );
-
-            // EdgeInsets _sharkPadding = EdgeInsets.all(canNotFindCover ? 10 : 0);
-
-            if (canNotFindCover) {
-              coverWidget = SizedBox.shrink();
-            }
-
-            return GestureDetector(
-              onTap: () async {
-                var data = item;
-                if (item!.videos.isEmpty) {
-                  String id = item.id;
-                  Get.dialog(
-                    Center(
-                      child: CupertinoActivityIndicator(),
-                    ),
-                  );
-                  data = await home.currentMirrorItem.getDetail(id);
-                  Get.back();
-                }
-                Get.toNamed(
-                  Routes.PLAY,
-                  arguments: data,
-                );
-              },
-              child: Container(
-                padding: EdgeInsets.symmetric(
-                  vertical: 24,
-                  horizontal: 12,
-                ),
-                decoration: BoxDecoration(
-                  border: Border(
-                    bottom: BorderSide(
-                      width: 1.2,
-                      color: Theme.of(context).primaryColor,
-                    ),
-                  ),
-                ),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    coverWidget,
-                    SizedBox(
-                      width: 12,
-                    ),
-                    Expanded(
-                      child: Container(
-                        width: double.infinity,
-                        child: Text(
-                          item?.title ?? "",
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 2,
-                          style: TextStyle(
-                            fontSize: 18,
+                  return GestureDetector(
+                    onTap: () async {
+                      var data = item;
+                      if (item!.videos.isEmpty) {
+                        String id = item.id;
+                        Get.dialog(
+                          Center(
+                            child: CupertinoActivityIndicator(),
+                          ),
+                        );
+                        data = await home.currentMirrorItem.getDetail(id);
+                        Get.back();
+                      }
+                      Get.toNamed(
+                        Routes.PLAY,
+                        arguments: data,
+                      );
+                    },
+                    child: Container(
+                      padding: EdgeInsets.symmetric(
+                        vertical: 24,
+                        horizontal: 12,
+                      ),
+                      decoration: BoxDecoration(
+                        border: Border(
+                          bottom: BorderSide(
+                            width: 1.2,
+                            color: Theme.of(context).primaryColor,
                           ),
                         ),
                       ),
-                    ),
-                  ],
-                ),
-              ),
-            );
-          },
-          searchBarStyle: SearchBarStyle(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 12,
-            ),
-            borderRadius: const BorderRadius.all(
-              Radius.circular(24.0),
-            ),
-          ),
-          minimumChars: 2,
-          debounceDuration: Duration(
-            seconds: 2,
-          ),
-          onSearch: (String? text) {
-            setState(() {
-              page = 1;
-            });
-            return handleSearch(text);
-          },
-          emptyWidget: Center(
-            child: Text("搜索内容为空"),
-          ),
-          onError: (error) {
-            return KErrorStack(msg: error.toString(),);
-          },
-          cancellationWidget: Text("取消"),
-          onCancelled: () {
-            setState(() {
-              isTriggerSearch = false;
-            });
-          },
-          searchBarPadding: EdgeInsets.symmetric(
-            horizontal: 12,
-            vertical: 0,
-          ),
-          placeHolder: Padding(
-            padding: EdgeInsets.symmetric(
-              horizontal: 12,
-              vertical: 1,
-            ),
-            child: SingleChildScrollView(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Stack(
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Positioned(
-                            left: 12,
-                            bottom: -6,
-                            child: Container(
-                              width: 120,
-                              height: 12,
-                              color: Colors.red,
-                            ),
+                          coverWidget,
+                          SizedBox(
+                            width: 12,
                           ),
-                          Text(
-                            "搜索历史",
-                            style: Theme.of(context).textTheme.headline6,
+                          Expanded(
+                            child: Container(
+                              width: double.infinity,
+                              child: Text(
+                                item?.title ?? "",
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 2,
+                                style: TextStyle(
+                                  fontSize: 18,
+                                ),
+                              ),
+                            ),
                           ),
                         ],
                       ),
-                      IconButton(
-                        tooltip: "删除所有历史记录",
-                        padding: EdgeInsets.symmetric(
-                          vertical: 3,
-                          horizontal: 2,
-                        ),
-                        onPressed: () {
-                          handleUpdateSearchHistory(
-                            "",
-                            type: UpdateSearchHistoryType.clean,
-                          );
-                        },
-                        icon: Icon(CupertinoIcons.clear),
-                      ),
-                    ],
+                    ),
+                  );
+                },
+                searchBarStyle: SearchBarStyle(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
                   ),
-                  SizedBox(
-                    height: 12,
+                  borderRadius: const BorderRadius.all(
+                    Radius.circular(24.0),
                   ),
-                  searchHistory.isEmpty
-                      ? Text(
-                          "暂无历史记录",
-                          style: Theme.of(context).textTheme.subtitle2,
-                        )
-                      : Wrap(
-                          children: searchHistory
-                              .map(
-                                (e) => KTag(
-                                  child: Text(e),
-                                  backgroundColor:
-                                      Theme.of(context).brightness ==
-                                              Brightness.dark
-                                          ? Colors.black26
-                                          : Colors.black12,
-                                  onTap: (type) {
-                                    switch (type) {
-                                      case KTagTapEventType.content: // 内容
-                                        handleUpdateSearchHistory(
-                                          e,
-                                          type: UpdateSearchHistoryType.add,
-                                        );
-                                        handleStandSearch(title: e);
-                                        break;
-                                      case KTagTapEventType.action: // action
-                                        handleUpdateSearchHistory(
-                                          e,
-                                          type: UpdateSearchHistoryType.remove,
-                                        );
-                                        break;
-                                      default:
-                                    }
-                                  },
+                ),
+                minimumChars: 2,
+                debounceDuration: Duration(
+                  seconds: 2,
+                ),
+                onSearch: (String? text) {
+                  setState(() {
+                    page = 1;
+                  });
+                  return handleSearch(text);
+                },
+                emptyWidget: Center(
+                  child: Text("搜索内容为空"),
+                ),
+                onError: (error) {
+                  return KErrorStack(
+                    msg: error.toString(),
+                  );
+                },
+                cancellationWidget: Text("取消"),
+                onCancelled: () {
+                  setState(() {
+                    isTriggerSearch = false;
+                  });
+                },
+                searchBarPadding: EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 0,
+                ),
+                placeHolder: Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 1,
+                  ),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Stack(
+                              children: [
+                                Positioned(
+                                  left: 12,
+                                  bottom: -6,
+                                  child: Container(
+                                    width: 120,
+                                    height: 12,
+                                    color: Colors.red,
+                                  ),
                                 ),
+                                Text(
+                                  "搜索历史",
+                                  style: Theme.of(context).textTheme.headline6,
+                                ),
+                              ],
+                            ),
+                            IconButton(
+                              tooltip: "删除所有历史记录",
+                              padding: EdgeInsets.symmetric(
+                                vertical: 3,
+                                horizontal: 2,
+                              ),
+                              onPressed: () {
+                                handleUpdateSearchHistory(
+                                  "",
+                                  type: UpdateSearchHistoryType.clean,
+                                );
+                              },
+                              icon: Icon(CupertinoIcons.clear),
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                          height: 12,
+                        ),
+                        searchHistory.isEmpty
+                            ? Text(
+                                "暂无历史记录",
+                                style: Theme.of(context).textTheme.subtitle2,
                               )
-                              .toList(),
-                        )
-                ],
-              ),
-            ),
+                            : Wrap(
+                                children: searchHistory
+                                    .map(
+                                      (e) => KTag(
+                                        child: Text(e),
+                                        backgroundColor:
+                                            Theme.of(context).brightness ==
+                                                    Brightness.dark
+                                                ? Colors.black26
+                                                : Colors.black12,
+                                        onTap: (type) {
+                                          switch (type) {
+                                            case KTagTapEventType.content: // 内容
+                                              handleUpdateSearchHistory(
+                                                e,
+                                                type: UpdateSearchHistoryType.add,
+                                              );
+                                              handleStandSearch(title: e);
+                                              break;
+                                            case KTagTapEventType.action: // action
+                                              handleUpdateSearchHistory(
+                                                e,
+                                                type:
+                                                    UpdateSearchHistoryType.remove,
+                                              );
+                                              break;
+                                            default:
+                                          }
+                                        },
+                                      ),
+                                    )
+                                    .toList(),
+                              )
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            }),
           ),
-        ),
-      ),
+        );
+      }
     );
   }
 

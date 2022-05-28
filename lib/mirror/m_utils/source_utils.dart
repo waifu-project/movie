@@ -17,6 +17,7 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:movie/impl/movie.dart';
 import 'package:movie/mirror/mirror.dart';
 import 'package:movie/mirror/mlist/base_models/source_data.dart';
 import 'package:movie/utils/helper.dart';
@@ -238,13 +239,13 @@ class SourceUtils {
   }
 
   /// 合并资源
-  /// 
+  ///
   /// [List<SourceJsonData>]
-  /// 
+  ///
   /// [diff] 时返回
-  /// 
+  ///
   /// => [len, List<KBaseMirrorMovie>]
-  /// 
+  ///
   /// => [List<KBaseMirrorMovie>]
   static dynamic mergeMirror(
     List<KBaseMirrorMovie> newSourceData, {
@@ -263,7 +264,17 @@ class SourceUtils {
 
     int newLen = MirrorManage.extend.length;
 
-    var copyData = (MirrorManage.extend as List<KBaseMirrorMovie>)
+    /// 如果比对之后发现没有改变, 则返回 [0, []]
+    if (newLen <= 0 && diff) return [0, []];
+
+    var inputData = MirrorManage.extend;
+    if (inputData is List<MovieImpl>) {
+      inputData = inputData.map((e) {
+        return e as KBaseMirrorMovie;
+      }).toList();
+    }
+    // return [0, []];
+    var copyData = (inputData as List<KBaseMirrorMovie>)
         .map(
           (e) => SourceJsonData(
             name: e.meta.name,

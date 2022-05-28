@@ -113,6 +113,14 @@ class HomeController extends GetxController with WidgetsBindingObserver {
     );
   }
 
+  /// 清理缓存
+  /// 
+  /// 嗯哼??
+  easyCleanCacheHook() {
+    _isNsfw = false;
+    _cacheMirrorIndex = -1;
+  }
+
   /// -1 = 未初始化
   /// >= 0 = 初始化好的值
   int _cacheMirrorIndex = -1;

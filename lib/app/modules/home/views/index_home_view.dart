@@ -20,6 +20,7 @@ import 'package:get/get.dart';
 import 'package:movie/app/modules/home/controllers/home_controller.dart';
 import 'package:movie/app/routes/app_pages.dart';
 import 'package:movie/app/widget/k_body.dart';
+import 'package:movie/app/widget/k_empty_mirror.dart';
 import 'package:movie/app/widget/k_error_stack.dart';
 import 'package:movie/app/widget/movie_card_item.dart';
 import 'package:movie/app/widget/window_appbar.dart';
@@ -160,33 +161,8 @@ class IndexHomeViewPage extends GetView {
         body: KBody(
           child: Builder(builder: (context) {
             if (home.mirrorListIsEmpty) {
-              return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Image.asset(
-                      "assets/images/error.png",
-                      fit: BoxFit.cover,
-                      width: _calcImageWidth,
-                      // height: Get.height * .4,
-                    ),
-                    SizedBox(
-                      height: 12,
-                    ),
-                    Text('无数据源 :('),
-                    SizedBox(
-                      height: 12,
-                    ),
-                    Text(
-                      "设置 -> 视频源帮助",
-                      style: Theme.of(context)
-                          .textTheme
-                          .headline6!
-                          .copyWith(color: Theme.of(context).indicatorColor),
-                    ),
-                  ],
-                ),
+              return KEmptyMirror(
+                width: _calcImageWidth,
               );
             }
             return SmartRefresher(

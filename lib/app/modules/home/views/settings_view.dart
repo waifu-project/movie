@@ -212,34 +212,36 @@ class _SettingsViewState extends State<SettingsView> {
         }
         var target = SourceUtils.getSources(editingControllerValue);
         Get.dialog(
-          DecoratedBox(
-            decoration: BoxDecoration(
-              color: Colors.black.withOpacity(.6),
-            ),
-            child: GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              child: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    CircularProgressIndicator(
-                      valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
+          GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
+                  ),
+                  SizedBox(
+                    height: 42,
+                  ),
+                  CupertinoButton.filled(
+                    child: Text(
+                      "关闭",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                      ),
                     ),
-                    SizedBox(
-                      height: 42,
-                    ),
-                    CupertinoButton.filled(
-                      child: Text("关闭"),
-                      onPressed: () {
-                        Get.back();
-                      },
-                    ),
-                  ],
-                ),
+                    onPressed: () {
+                      Get.back();
+                    },
+                  ),
+                ],
               ),
             ),
           ),
+          barrierColor: CupertinoColors.black.withOpacity(.9),
         );
         var data = await SourceUtils.runTaks(target);
         Get.back();

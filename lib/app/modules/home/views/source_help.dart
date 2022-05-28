@@ -328,6 +328,50 @@ class _SourceHelpTableState extends State<SourceHelpTable> {
     }
   }
 
+  Widget get _errorWidget {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Text(
+            "// 需要科学上网",
+            style: TextStyle(
+              decoration: TextDecoration.lineThrough,
+              decorationColor: CupertinoColors.systemPink,
+              color: CupertinoColors.systemPink,
+              fontSize: 18,
+            ),
+          ),
+          KErrorStack(
+            msg: _loadingErrorStack,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget get _mirrorEmptyStateWidget {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Builder(builder: (context) {
+            if (_isLoadingFromAJAX) {
+              return CircularProgressIndicator();
+            }
+            return Icon(CupertinoIcons.zzz);
+          }),
+          SizedBox(height: 24,),
+          Text(
+            _wrapperAjaxStatusLable,
+          )
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return DefaultTextStyle(
@@ -424,36 +468,29 @@ class _SourceHelpTableState extends State<SourceHelpTable> {
                               child: Builder(
                                 builder: (context) {
                                   if (mirrors.isEmpty) {
-                                    Widget _child =
-                                        Text(_wrapperAjaxStatusLable);
-                                    if (_canLoadFail)
-                                      _child = KErrorStack(
-                                        msg: _loadingErrorStack,
-                                      );
-                                    return Center(
-                                      child: _child,
-                                    );
+                                    if (_canLoadFail) {
+                                      return _errorWidget;
+                                    }
+                                    return _mirrorEmptyStateWidget;
                                   }
                                   return ListView(
-                                    children: [
-                                      ...mirrors.map((item) {
-                                        return CupertinoListTile(
-                                          title: Text(
-                                            item.title ?? "",
-                                            style: TextStyle(
-                                              color: Get.isDarkMode
-                                                  ? Colors.white54
-                                                  : Colors.black54,
-                                            ),
-                                            maxLines: 2,
-                                            overflow: TextOverflow.ellipsis,
+                                    children: mirrors.map((item) {
+                                      return CupertinoListTile(
+                                        title: Text(
+                                          item.title ?? "",
+                                          style: TextStyle(
+                                            color: Get.isDarkMode
+                                                ? Colors.white54
+                                                : Colors.black54,
                                           ),
-                                          onTap: () {
-                                            handleCopyText(item: item);
-                                          },
-                                        );
-                                      }).toList(),
-                                    ],
+                                          maxLines: 2,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                        onTap: () {
+                                          handleCopyText(item: item);
+                                        },
+                                      );
+                                    }).toList(),
                                   );
                                 },
                               ),

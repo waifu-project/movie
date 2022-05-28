@@ -66,6 +66,16 @@ class MirrorManage {
     saveToCache(extend);
   }
 
+  /// 删除所有源
+  static cleanAll({
+    bool saveToCahe = false,
+  }) {
+    extend = [];
+    if (saveToCahe) {
+      mergeMirror([]);
+    }
+  }
+
   /// 保存缓存
   /// [该方法只可用来保存第三方源]
   /// 只适用于 [KBaseMirrorMovie]

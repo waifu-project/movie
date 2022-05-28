@@ -302,6 +302,34 @@ class _SettingsViewState extends State<SettingsView> {
     home.macosPlayUseIINA = newVal;
   }
 
+  handleCleanCache() async {
+    MirrorManage.cleanAll();
+    home.easyCleanCacheHook();
+    await home.localStorage.erase();
+    Get.back();
+    showCupertinoDialog(
+      builder: (context) => CupertinoAlertDialog(
+        
+        /// FIXME: 部分内容有主题设置, (设置页面小部分设置。)
+        content: Text("已删除缓存, 部分内容重启之后生效!"),
+        actions: [
+          CupertinoDialogAction(
+            child: const Text(
+              '我知道了',
+              style: TextStyle(
+                color: Colors.red,
+              ),
+            ),
+            onPressed: () {
+              Get.back();
+            },
+          ),
+        ],
+      ),
+      context: context,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -518,29 +546,7 @@ class _SettingsViewState extends State<SettingsView> {
                         style: TextStyle(color: Colors.blue),
                       ),
                       isDestructiveAction: true,
-                      onPressed: () async {
-                        await home.localStorage.erase();
-                        Get.back();
-                        showCupertinoDialog(
-                          builder: (context) => CupertinoAlertDialog(
-                            content: Text("已删除缓存, 重启之后生效!"),
-                            actions: [
-                              CupertinoDialogAction(
-                                child: const Text(
-                                  '我知道了',
-                                  style: TextStyle(
-                                    color: Colors.red,
-                                  ),
-                                ),
-                                onPressed: () {
-                                  Get.back();
-                                },
-                              ),
-                            ],
-                          ),
-                          context: context,
-                        );
-                      },
+                      onPressed: handleCleanCache,
                     )
                   ],
                 ),

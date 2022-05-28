@@ -14,7 +14,6 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
@@ -238,66 +237,33 @@ class _SourceHelpTableState extends State<SourceHelpTable> {
     data.forEach((item) {
       String source = item[SOURCE_KEY] as String;
       String filename = item[FILENAME_KEY] as String;
-      var typeAs = getJSONBodyType(source);
-      if (typeAs == null) return;
-      List<Map<String, dynamic>> pending = [];
-      dynamic jsonData = jsonDecode(source);
-      if (typeAs == JSONBodyType.array) {
-        List<dynamic> cache = jsonData as List<dynamic>;
-        var cacheAsMap = cache.map((item) {
-          return item as Map<String, dynamic>;
-        }).toList();
-        pending.addAll(cacheAsMap);
-      } else {
-        /// 兼容 https://github.com/waifu-project/assets/blob/master/db.json
-        ///
-        /// ```json
-        /// {
-        ///   "mirrors": []
-        /// }
-        /// ```
-        var BIND_KEY = 'mirrors';
-        var jsonDataAsMap = jsonData as Map<String, dynamic>;
-        if (jsonDataAsMap.containsKey(BIND_KEY)) {
-          var cache = jsonDataAsMap[BIND_KEY];
-          if (cache is List) {
-            List<Map<String, dynamic>> cacheAsMapList = cache
-                .map((item) {
-                  if (item is Map<String, dynamic>) return item;
-                  return null;
-                })
-                .toList()
-                .where((element) => element != null)
-                .toList()
-                .map((e) => e as Map<String, dynamic>)
-                .toList();
-            pending.addAll(cacheAsMapList);
-          }
-        }
-
-        pending.add(jsonDataAsMap);
+      var easyParseData = SourceUtils.tryParseDynamic(source);
+      if (easyParseData == null) return;
+      List<KBaseMirrorMovie> result = [];
+      if (easyParseData is KBaseMirrorMovie) {
+        result = [easyParseData];
+      } else if (easyParseData is List) {
+        var append = easyParseData
+            .where((element) {
+              return element != null;
+            })
+            .toList()
+            .map((ele) {
+              return ele as KBaseMirrorMovie;
+            });
+        result.addAll(append);
       }
-      var result = pending
-          .map((e) {
-            return SourceUtils.parse(e);
-          })
-          .toList()
-          .where((element) {
-            return element != null;
-          })
-          .toList()
-          .map((e) => e as KBaseMirrorMovie)
-          .toList();
       _collData[filename] = result;
     });
 
     String easyMessage = "";
     List<KBaseMirrorMovie> stack = [];
+
     _collData.forEach((k, v) async {
       int len = v.length;
       if (v.isNotEmpty) {
         stack.addAll(v);
-        easyMessage += "从$k中导入了$len个源\n";
+        easyMessage += "$k中有$len个源\n";
       }
     });
     if (stack.isEmpty) {
@@ -307,8 +273,18 @@ class _SourceHelpTableState extends State<SourceHelpTable> {
       );
       return;
     } else {
-      var newListData = SourceUtils.mergeMirror(stack);
+      var _easyData = SourceUtils.mergeMirror(
+        stack,
+        diff: true,
+      );
+      var _diff = _easyData[0] as int;
+      var newListData = _easyData[1] as dynamic;
       await MirrorManage.mergeMirror(newListData);
+      var diffMsg = "本次共合并$_diff个源!";
+      if (_diff <= 0) {
+        diffMsg = "本次未合并!没有新的源!";
+      }
+      easyMessage += '\n' + diffMsg;
       showEasyCupertinoDialog(
         content: Column(
           children: [
@@ -326,6 +302,52 @@ class _SourceHelpTableState extends State<SourceHelpTable> {
         confirmText: "好耶ヾ(✿ﾟ▽ﾟ)ノ",
       );
     }
+  }
+
+  Widget get _errorWidget {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Text(
+            "// 需要科学上网",
+            style: TextStyle(
+              decoration: TextDecoration.lineThrough,
+              decorationColor: CupertinoColors.systemPink,
+              color: CupertinoColors.systemPink,
+              fontSize: 18,
+            ),
+          ),
+          KErrorStack(
+            msg: _loadingErrorStack,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget get _mirrorEmptyStateWidget {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Builder(builder: (context) {
+            if (_isLoadingFromAJAX) {
+              return CircularProgressIndicator();
+            }
+            return Icon(CupertinoIcons.zzz);
+          }),
+          SizedBox(
+            height: 24,
+          ),
+          Text(
+            _wrapperAjaxStatusLable,
+          )
+        ],
+      ),
+    );
   }
 
   @override
@@ -424,36 +446,29 @@ class _SourceHelpTableState extends State<SourceHelpTable> {
                               child: Builder(
                                 builder: (context) {
                                   if (mirrors.isEmpty) {
-                                    Widget _child =
-                                        Text(_wrapperAjaxStatusLable);
-                                    if (_canLoadFail)
-                                      _child = KErrorStack(
-                                        msg: _loadingErrorStack,
-                                      );
-                                    return Center(
-                                      child: _child,
-                                    );
+                                    if (_canLoadFail) {
+                                      return _errorWidget;
+                                    }
+                                    return _mirrorEmptyStateWidget;
                                   }
                                   return ListView(
-                                    children: [
-                                      ...mirrors.map((item) {
-                                        return CupertinoListTile(
-                                          title: Text(
-                                            item.title ?? "",
-                                            style: TextStyle(
-                                              color: Get.isDarkMode
-                                                  ? Colors.white54
-                                                  : Colors.black54,
-                                            ),
-                                            maxLines: 2,
-                                            overflow: TextOverflow.ellipsis,
+                                    children: mirrors.map((item) {
+                                      return CupertinoListTile(
+                                        title: Text(
+                                          item.title ?? "",
+                                          style: TextStyle(
+                                            color: Get.isDarkMode
+                                                ? Colors.white54
+                                                : Colors.black54,
                                           ),
-                                          onTap: () {
-                                            handleCopyText(item: item);
-                                          },
-                                        );
-                                      }).toList(),
-                                    ],
+                                          maxLines: 2,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                        onTap: () {
+                                          handleCopyText(item: item);
+                                        },
+                                      );
+                                    }).toList(),
                                   );
                                 },
                               ),

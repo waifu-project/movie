@@ -211,35 +211,46 @@ class _SettingsViewState extends State<SettingsView> {
           return;
         }
         var target = SourceUtils.getSources(editingControllerValue);
-        Get.dialog(
-          DecoratedBox(
-            decoration: BoxDecoration(
-              color: Colors.black.withOpacity(.6),
+        if (target.isEmpty) {
+          Get.showSnackbar(
+            GetBar(
+              message: "没有找到匹配的源!",
+              duration: Duration(seconds: 1),
             ),
-            child: GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              child: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    CircularProgressIndicator(
-                      valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
+          );
+          return;
+        }
+        Get.dialog(
+          GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
+                  ),
+                  SizedBox(
+                    height: 42,
+                  ),
+                  CupertinoButton.filled(
+                    child: Text(
+                      "关闭",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                      ),
                     ),
-                    SizedBox(
-                      height: 42,
-                    ),
-                    CupertinoButton.filled(
-                      child: Text("关闭"),
-                      onPressed: () {
-                        Get.back();
-                      },
-                    ),
-                  ],
-                ),
+                    onPressed: () {
+                      Get.back();
+                    },
+                  ),
+                ],
               ),
             ),
           ),
+          barrierColor: CupertinoColors.black.withOpacity(.9),
         );
         var data = await SourceUtils.runTaks(target);
         Get.back();
@@ -252,11 +263,20 @@ class _SettingsViewState extends State<SettingsView> {
           );
           return;
         }
-        var listData = SourceUtils.mergeMirror(data);
+        var _easyData = SourceUtils.mergeMirror(
+          data,
+          diff: true,
+        );
+        var addLen = _easyData[0];
+        var listData = _easyData[1];
         MirrorManage.mergeMirror(listData);
+        var showMessage = "获取成功, 已合并$addLen个源!";
+        if (addLen <= 0) {
+          showMessage = "获取成功, 没有新的源!";
+        }
         Get.showSnackbar(
           GetBar(
-            message: "获取成功, 已合并资源",
+            message: showMessage,
             duration: Duration(seconds: 1),
           ),
         );

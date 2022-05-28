@@ -13,11 +13,15 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:movie/mirror/mirror.dart';
 import 'package:movie/mirror/mlist/base_models/source_data.dart';
 import 'package:movie/utils/helper.dart';
 import 'package:movie/utils/http.dart';
+import 'package:movie/utils/json.dart';
 
 import 'm.dart';
 
@@ -127,6 +131,74 @@ class SourceUtils {
     return [true, normalizedData];
   }
 
+  /// 解析数据
+  ///
+  /// [data] 为 [String] 转为
+  ///
+  /// [List<Map<String, dynamic>>] (并递归解析)
+  ///
+  /// [<Map<String, dynamic>>] (并递归解析)
+  ///
+  /// 返回值
+  ///
+  /// => [null]
+  ///
+  /// => [List<SourceJsonData>]
+  ///
+  /// => [KBaseMirrorMovie?]
+  static dynamic tryParseDynamic(dynamic data) {
+    if (data is String) {
+      bool isJSON = verifyStringIsJSON(data);
+      if (!isJSON) return null;
+      var typeAs = getJSONBodyType(data);
+      if (typeAs == null) return null;
+      dynamic jsonData = jsonDecode(data);
+      if (typeAs == JSONBodyType.array) {
+        List<dynamic> cache = jsonData as List<dynamic>;
+        List<Map<String, dynamic>> cacheAsMap = cache.map((item) {
+          return item as Map<String, dynamic>;
+        }).toList();
+        return tryParseDynamic(cacheAsMap);
+      } else {
+        var BIND_KEY = 'mirrors';
+        var jsonDataAsMap = jsonData as Map<String, dynamic>;
+        if (jsonDataAsMap.containsKey(BIND_KEY)) {
+          var cache = jsonDataAsMap[BIND_KEY];
+          if (cache is List) {
+            List<Map<String, dynamic>> cacheAsMapList = cache
+                .map((item) {
+                  if (item is Map<String, dynamic>) return item;
+                  return null;
+                })
+                .toList()
+                .where((element) {
+                  return element != null;
+                })
+                .toList()
+                .map((e) {
+                  return e as Map<String, dynamic>;
+                })
+                .toList();
+            return tryParseDynamic(cacheAsMapList);
+          }
+        }
+        return tryParseDynamic(jsonDataAsMap);
+      }
+    } else if (data is List<Map<String, dynamic>>) {
+      return data.map((item) {
+        return tryParseDynamic(item);
+      }).toList();
+    } else if (data is Map<String, dynamic>) {
+      var _tryData = parse(data);
+      return _tryData;
+    } else if (data is List) {
+      return tryParseDynamic(data.map((e) {
+        return e as Map<String, dynamic>;
+      }).toList());
+    }
+    return null;
+  }
+
   /// 加载网络源
   static Future<List<KBaseMirrorMovie>> runTaks(List<String> sources) async {
     List<KBaseMirrorMovie> result = [];
@@ -140,34 +212,46 @@ class SourceUtils {
             sendTimeout: 1000,
           ),
         );
-        List<dynamic> _data = resp.data;
-        _data
-            .map((ele) {
-              var obj = parse(ele);
-              if (obj == null) return null;
-              result.removeWhere((element) {
-                return element.root_url == obj.root_url;
-              });
-              result.add(obj);
-            })
-            .toList()
-            .where((element) {
-              return element != null;
-            })
-            .toList();
+        dynamic respData = resp.data;
+        var data = tryParseDynamic(respData);
+        if (data == null) return;
+        if (data is KBaseMirrorMovie) {
+          result.add(data);
+        } else if (data is List) {
+          var append = data
+              .where((element) {
+                return element != null;
+              })
+              .toList()
+              .map((ele) {
+                return ele as KBaseMirrorMovie;
+              })
+              .toList();
+          result.addAll(append);
+        }
       } catch (e) {
-        print("获取网络源失败: $e");
+        debugPrint("获取网络源失败: $e");
         return null;
       }
     });
     return result;
   }
 
-  /// [runTaks] 获取到网络资源之后
-  /// 和 [MirrorList] 合并
-  static List<SourceJsonData> mergeMirror(
-    List<KBaseMirrorMovie> newSourceData,
-  ) {
+  /// 合并资源
+  /// 
+  /// [List<SourceJsonData>]
+  /// 
+  /// [diff] 时返回
+  /// 
+  /// => [len, List<KBaseMirrorMovie>]
+  /// 
+  /// => [List<KBaseMirrorMovie>]
+  static dynamic mergeMirror(
+    List<KBaseMirrorMovie> newSourceData, {
+    bool diff = false,
+  }) {
+    int len = MirrorManage.extend.length;
+
     newSourceData.forEach((element) {
       var newDataDomain = element.meta.domain;
       MirrorManage.extend.removeWhere(
@@ -176,6 +260,8 @@ class SourceUtils {
     });
 
     MirrorManage.extend.addAll(newSourceData);
+
+    int newLen = MirrorManage.extend.length;
 
     var copyData = (MirrorManage.extend as List<KBaseMirrorMovie>)
         .map(
@@ -191,6 +277,9 @@ class SourceUtils {
           ),
         )
         .toList();
+    if (diff) {
+      return [newLen - len, copyData];
+    }
     return copyData;
   }
 }

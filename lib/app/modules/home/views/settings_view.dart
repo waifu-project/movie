@@ -307,11 +307,11 @@ class _SettingsViewState extends State<SettingsView> {
   handleCleanCache() async {
     MirrorManage.cleanAll();
     home.easyCleanCacheHook();
+    _editingController.text = "";
     await home.localStorage.erase();
     Get.back();
     showCupertinoDialog(
       builder: (context) => CupertinoAlertDialog(
-
         /// FIXME: 部分内容有主题设置, (设置页面小部分设置。)
         content: Text("已删除缓存, 部分内容重启之后生效!"),
         actions: [

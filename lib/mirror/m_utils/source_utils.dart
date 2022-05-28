@@ -238,13 +238,13 @@ class SourceUtils {
   }
 
   /// 合并资源
-  /// 
+  ///
   /// [List<SourceJsonData>]
-  /// 
+  ///
   /// [diff] 时返回
-  /// 
+  ///
   /// => [len, List<KBaseMirrorMovie>]
-  /// 
+  ///
   /// => [List<KBaseMirrorMovie>]
   static dynamic mergeMirror(
     List<KBaseMirrorMovie> newSourceData, {
@@ -262,6 +262,9 @@ class SourceUtils {
     MirrorManage.extend.addAll(newSourceData);
 
     int newLen = MirrorManage.extend.length;
+
+    /// 如果比对之后发现没有改变, 则返回 [0, []]
+    if (newLen <= 0) return [0, []];
 
     var copyData = (MirrorManage.extend as List<KBaseMirrorMovie>)
         .map(

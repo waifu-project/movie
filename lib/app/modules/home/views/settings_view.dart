@@ -268,8 +268,10 @@ class _SettingsViewState extends State<SettingsView> {
           diff: true,
         );
         var addLen = _easyData[0];
-        var listData = _easyData[1];
-        MirrorManage.mergeMirror(listData);
+        if (addLen > 0) {
+          var listData = _easyData[1];
+          MirrorManage.mergeMirror(listData);
+        }
         var showMessage = "获取成功, 已合并$addLen个源!";
         if (addLen <= 0) {
           showMessage = "获取成功, 没有新的源!";
@@ -309,7 +311,7 @@ class _SettingsViewState extends State<SettingsView> {
     Get.back();
     showCupertinoDialog(
       builder: (context) => CupertinoAlertDialog(
-        
+
         /// FIXME: 部分内容有主题设置, (设置页面小部分设置。)
         content: Text("已删除缓存, 部分内容重启之后生效!"),
         actions: [

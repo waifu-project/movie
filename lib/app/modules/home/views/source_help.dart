@@ -278,8 +278,10 @@ class _SourceHelpTableState extends State<SourceHelpTable> {
         diff: true,
       );
       var _diff = _easyData[0] as int;
-      var newListData = _easyData[1] as dynamic;
-      await MirrorManage.mergeMirror(newListData);
+      if (_diff > 0) {
+        var newListData = _easyData[1] as dynamic;
+        await MirrorManage.mergeMirror(newListData);
+      }
       var diffMsg = "本次共合并$_diff个源!";
       if (_diff <= 0) {
         diffMsg = "本次未合并!没有新的源!";

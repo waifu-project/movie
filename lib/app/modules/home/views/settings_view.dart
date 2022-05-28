@@ -263,11 +263,20 @@ class _SettingsViewState extends State<SettingsView> {
           );
           return;
         }
-        var listData = SourceUtils.mergeMirror(data);
+        var _easyData = SourceUtils.mergeMirror(
+          data,
+          diff: true,
+        );
+        var addLen = _easyData[0];
+        var listData = _easyData[1];
         MirrorManage.mergeMirror(listData);
+        var showMessage = "获取成功, 已合并$addLen个源!";
+        if (addLen <= 0) {
+          showMessage = "获取成功, 没有新的源!";
+        }
         Get.showSnackbar(
           GetBar(
-            message: "获取成功, 已合并资源",
+            message: showMessage,
             duration: Duration(seconds: 1),
           ),
         );

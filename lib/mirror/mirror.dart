@@ -54,6 +54,8 @@ class MirrorManage {
         api_path: data.api!.path ?? "",
         root_url: data.api!.root ?? "",
         nsfw: data.nsfw ?? false,
+        id: data.id ?? "",
+        status: data.status ?? true,
       );
     }).toList();
     extend = result;
@@ -91,6 +93,8 @@ class MirrorManage {
               root: e.meta.domain,
               path: (e as KBaseMirrorMovie).api_path,
             ),
+            id: e.id,
+            status: e.status,
           ),
         )
         .toList();

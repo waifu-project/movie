@@ -143,5 +143,7 @@ class ThePornMirror extends MovieImpl {
         logo: "https://theporn22.xyz/static/logo-tp.png",
         desc: "免费成人高清在线视频,日本AV,国产AV,欧美AV",
         domain: root_url,
+        id: 'theporn',
+        status: true,
       );
 }

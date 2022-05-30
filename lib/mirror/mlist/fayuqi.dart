@@ -328,5 +328,7 @@ class FayuQiMirror extends MovieImpl {
         name: '发育期',
         domain: root_url,
         logo: 'https://www.fayuqi2.xyz/favicon.ico',
+        id: 'fayuqi',
+        status: true,
       );
 }

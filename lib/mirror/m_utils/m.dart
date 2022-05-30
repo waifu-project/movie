@@ -45,11 +45,15 @@ class KBaseMirrorMovie extends MovieImpl {
   final String desc;
   final String root_url;
   final String api_path;
+  final String id;
+  final bool status;
   KBaseMirrorMovie({
     this.nsfw = false,
     this.name = "",
     this.logo = "",
     this.desc = "",
+    this.status = true,
+    required this.id,
     required this.root_url,
     required this.api_path,
   });
@@ -210,9 +214,9 @@ class KBaseMirrorMovie extends MovieImpl {
 
   ///   返回值比对 [kv]
   Map<String, ResponseCustomType> _RespCheckkv = {
-      "{\"": ResponseCustomType.json,
-      "<?xml": ResponseCustomType.xml,
-    };
+    "{\"": ResponseCustomType.json,
+    "<?xml": ResponseCustomType.xml,
+  };
 
   /// 获取返回内容的类型
   /// return [ResponseCustomType]
@@ -229,7 +233,6 @@ class KBaseMirrorMovie extends MovieImpl {
   ///   `<?xml`
   /// ```
   ResponseCustomType getResponseType(String checkText) {
-
     var _k = _RespCheckkv.keys.where((_key) {
       int _len = _key.length;
       var _sub = checkText.substring(0, _len);
@@ -298,6 +301,8 @@ class KBaseMirrorMovie extends MovieImpl {
         logo: logo,
         desc: desc,
         domain: root_url,
+        id: id,
+        status: status,
       );
 
   @override

@@ -19,10 +19,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
 import 'package:movie/app/modules/home/controllers/home_controller.dart';
+import 'package:movie/app/widget/wechat_popmenu.dart';
 import 'package:movie/app/widget/helper.dart';
 import 'package:movie/app/widget/window_appbar.dart';
 import 'package:movie/impl/movie.dart';
 import 'package:movie/mirror/mirror.dart';
+
+class ItemModel {
+  String title;
+  IconData icon;
+
+  ItemModel(this.title, this.icon);
+}
 
 class MirrorTableView extends StatefulWidget {
   const MirrorTableView({Key? key}) : super(key: key);
@@ -85,6 +93,14 @@ class _MirrorTableViewState extends State<MirrorTableView> {
     return "视频源管理(${count})";
   }
 
+  var menuItems = [
+    ItemModel('批量检测源', Icons.chat_bubble),
+    ItemModel('一键删除失效源', Icons.no_encryption),
+    ItemModel('导出源', Icons.settings_overscan),
+  ];
+
+  CustomPopupMenuController _controller = CustomPopupMenuController();
+
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
@@ -102,7 +118,72 @@ class _MirrorTableViewState extends State<MirrorTableView> {
                     style: Theme.of(context).textTheme.headline6,
                   ),
                 ),
-                Text(''),
+                CustomPopupMenu(
+                  child: Container(
+                    child: Icon(
+                      CupertinoIcons.command,
+                      size: 24,
+                    ),
+                    padding: EdgeInsets.all(12),
+                  ),
+                  menuBuilder: () => ClipRRect(
+                    borderRadius: BorderRadius.circular(5),
+                    child: Container(
+                      color: const Color(0xFF4C4C4C),
+                      child: IntrinsicWidth(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: menuItems
+                              .map(
+                                (item) => GestureDetector(
+                                  behavior: HitTestBehavior.translucent,
+                                  onTap: () {
+                                    // TODO
+                                    _controller.hideMenu();
+                                  },
+                                  child: Container(
+                                    height: 40,
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: 20,
+                                    ),
+                                    child: Row(
+                                      children: <Widget>[
+                                        Icon(
+                                          item.icon,
+                                          size: 15,
+                                          color: Colors.white,
+                                        ),
+                                        Expanded(
+                                          child: Container(
+                                            margin: EdgeInsets.only(
+                                              left: 10,
+                                            ),
+                                            padding: EdgeInsets.symmetric(
+                                              vertical: 10,
+                                            ),
+                                            child: Text(
+                                              item.title,
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 12,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              )
+                              .toList(),
+                        ),
+                      ),
+                    ),
+                  ),
+                  pressType: PressType.singleClick,
+                  verticalMargin: -10,
+                  controller: _controller,
+                ),
               ],
             ),
             Divider()

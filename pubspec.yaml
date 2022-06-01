@@ -38,6 +38,7 @@ dependencies:
   waterfall_flow: ^3.0.2
 
   file_picker: ^4.2.4
+  share_plus: ^4.0.5
   
   flutter: 
     sdk: flutter

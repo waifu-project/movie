@@ -14,6 +14,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import 'dart:async';
+import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
@@ -27,6 +28,8 @@ import 'package:movie/app/widget/wechat_popmenu.dart';
 import 'package:movie/app/widget/window_appbar.dart';
 import 'package:movie/impl/movie.dart';
 import 'package:movie/mirror/mirror.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:share_plus/share_plus.dart';
 
 enum MenuActionType {
   /// 检测源
@@ -169,7 +172,12 @@ class _MirrorTableViewState extends State<MirrorTableView> {
         });
         break;
       case MenuActionType.export:
-        // TODO
+        Directory directory = await getTemporaryDirectory();
+        String path = '${directory.path}/YY.json';
+        File file = File(path);
+        String result = MirrorManage.export();
+        await file.writeAsString(result);
+        Share.shareFilesWithResult([path]);
         break;
     }
   }

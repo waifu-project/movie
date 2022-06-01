@@ -13,6 +13,8 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import 'dart:convert';
+
 import 'package:get_storage/get_storage.dart';
 import 'package:movie/config.dart';
 import 'package:movie/impl/movie.dart';
@@ -72,6 +74,28 @@ class MirrorManage {
   static remoteItemFromIDS(List<String> id) {
     extend.removeWhere((e) => id.contains(e.meta.id));
     saveToCache(extend);
+  }
+
+  /// 导出文件
+  static String export() {
+    List<SourceJsonData> _to = extend
+        .map(
+          (e) => SourceJsonData(
+            name: e.meta.name,
+            logo: e.meta.logo,
+            desc: e.meta.desc,
+            nsfw: e.isNsfw,
+            api: Api(
+              root: e.meta.domain,
+              path: (e as KBaseMirrorMovie).api_path,
+            ),
+            id: e.id,
+            status: e.status,
+          ),
+        )
+        .toList();
+    String result = jsonEncode(_to);
+    return result;
   }
 
   /// 删除不可用源

@@ -310,7 +310,7 @@ class mirrorCard extends StatelessWidget {
     required this.onTap,
     this.onDel,
     this.minHeight = 42.0,
-    this.maxHeight = 69.0,
+    this.maxHeight = 81.0,
   }) : super(key: key);
 
   final double minHeight;
@@ -347,8 +347,20 @@ class mirrorCard extends StatelessWidget {
         : (Get.isDarkMode ? Colors.white : Colors.black45);
   }
 
+  Widget get _logoDefaultImageWidget {
+    return Image.asset(
+      "assets/images/movie_default.png",
+      width: 60,
+      height: 42,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    Color _borderColor = Get.isDarkMode
+        ? Colors.white.withOpacity(.1)
+        : Colors.black.withOpacity(.1);
+
     return ConstrainedBox(
       constraints: new BoxConstraints(
         minHeight: minHeight,
@@ -383,10 +395,10 @@ class mirrorCard extends StatelessWidget {
             child: Container(
               decoration: BoxDecoration(
                 border: Border(
-                    bottom: BorderSide(
-                        color: Get.isDarkMode
-                            ? Colors.white.withOpacity(.1)
-                            : Colors.black.withOpacity(.1))),
+                  bottom: BorderSide(
+                    color: _borderColor,
+                  ),
+                ),
               ),
               padding: EdgeInsets.symmetric(
                 vertical: 6,
@@ -400,36 +412,21 @@ class mirrorCard extends StatelessWidget {
                   ),
                   child: Builder(builder: (_) {
                     if (_logo.isEmpty) {
-                      return Image.asset(
-                        "assets/images/fishtank.png",
-                        width: 60,
-                        height: 42,
-                      );
+                      return _logoDefaultImageWidget;
                     }
-                    return Card(
-                      shadowColor: Colors.black.withOpacity(.1),
-                      child: Container(
-                        width: 60,
-                        height: 42,
-                        child: CachedNetworkImage(
-                          imageUrl: _logo,
-                          fit: BoxFit.fitWidth,
-                          placeholder: (context, url) => Center(
-                            child: CircularProgressIndicator(),
-                          ),
-                          errorWidget: (
-                            context,
-                            url,
-                            error,
-                          ) =>
-                              Image.asset(
-                            K_DEFAULT_IMAGE,
-                            width: 80,
-                            height: 42,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
+                    return CachedNetworkImage(
+                      imageUrl: _logo,
+                      fit: BoxFit.cover,
+                      width: 60,
+                      placeholder: (context, url) => Center(
+                        child: CircularProgressIndicator(),
                       ),
+                      errorWidget: (
+                        context,
+                        url,
+                        error,
+                      ) =>
+                          _logoDefaultImageWidget,
                     );
                   }),
                 ),

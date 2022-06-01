@@ -76,7 +76,7 @@ flutter:
   assets:
     - assets/data/nsfw.html
     - assets/data/source_help.txt
-    - assets/images/fishtank.png
+    - assets/images/movie_default.png
     - assets/images/image_faild.png
     - assets/data/play_tips.txt
     - assets/images/empty.png

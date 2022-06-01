@@ -22,7 +22,6 @@ import 'package:movie/app/modules/home/controllers/home_controller.dart';
 import 'package:movie/app/modules/home/views/mirror_check.dart';
 import 'package:movie/app/shared/mirror_status_stack.dart';
 import 'package:movie/app/widget/wechat_popmenu.dart';
-import 'package:movie/app/widget/helper.dart';
 import 'package:movie/app/widget/window_appbar.dart';
 import 'package:movie/impl/movie.dart';
 import 'package:movie/mirror/mirror.dart';
@@ -94,9 +93,15 @@ class _MirrorTableViewState extends State<MirrorTableView> {
       home.updateCacheMirrorTableScrollControllerOffset(offset);
     });
     updateCacheMirrorTableScrollControllerOffset(true);
+    updateMirrorStatusMap();
     setState(() {
       mirrorList = _mirrorList;
     });
+  }
+
+  updateMirrorStatusMap() {
+    __statusMap = MirrorStatusStack().getStacks;
+    setState(() {});
   }
 
   @override
@@ -131,10 +136,12 @@ class _MirrorTableViewState extends State<MirrorTableView> {
 
   CustomPopupMenuController _controller = CustomPopupMenuController();
 
-  handleClickSubMenu(MenuActionType action) {
+  Map<String, bool> __statusMap = {};
+
+  handleClickSubMenu(MenuActionType action) async {
     switch (action) {
       case MenuActionType.check:
-        showCupertinoDialog(
+        bool? checkCanDone = await showCupertinoDialog(
           barrierDismissible: false,
           context: context,
           builder: (BuildContext context) {
@@ -144,6 +151,10 @@ class _MirrorTableViewState extends State<MirrorTableView> {
             );
           },
         );
+        bool _checkCanDone = checkCanDone ?? false;
+        if (_checkCanDone) {
+          updateMirrorStatusMap();
+        }
         break;
       case MenuActionType.delete_unavailable:
         // TODO
@@ -256,6 +267,7 @@ class _MirrorTableViewState extends State<MirrorTableView> {
                     home.updateMirrorIndex(index);
                     Get.back();
                   },
+                  hashTable: __statusMap,
                   onDel: (context) {
                     showCupertinoDialog(
                       builder: (context) => CupertinoAlertDialog(
@@ -308,6 +320,7 @@ class mirrorCard extends StatelessWidget {
     required this.item,
     this.current = false,
     required this.onTap,
+    required this.hashTable,
     this.onDel,
     this.minHeight = 42.0,
     this.maxHeight = 81.0,
@@ -324,6 +337,8 @@ class mirrorCard extends StatelessWidget {
   final SlidableActionCallback? onDel;
 
   final VoidCallback onTap;
+
+  final Map<String, bool> hashTable;
 
   String get _logo => item.meta.logo;
 
@@ -468,6 +483,7 @@ class mirrorCard extends StatelessWidget {
                                   ? MovieStatusType.available
                                   : MovieStatusType.unavailable,
                               hash: item.meta.id,
+                              hashTable: hashTable,
                             ),
                           ],
                         ),
@@ -519,11 +535,16 @@ class movieStatusWidget extends StatelessWidget {
   const movieStatusWidget({
     Key? key,
     this.status = MovieStatusType.available,
+
+    /// FIXME: 离谱, 为什么不直接传递 `bool` => [hashTable[hash]]
+    /// 而是要整这种绝活??
+    required this.hashTable,
     required this.hash,
   }) : super(key: key);
 
   final MovieStatusType status;
   final String hash;
+  final Map<String, bool> hashTable;
 
   String get _text {
     return _type.text;
@@ -541,7 +562,7 @@ class movieStatusWidget extends StatelessWidget {
   }
 
   MovieStatusType get _type {
-    var cacheStatus = MirrorStatusStack().getStack(hash);
+    var cacheStatus = hashTable[hash];
     if (cacheStatus != null) {
       return cacheStatus
           ? MovieStatusType.available

@@ -124,11 +124,15 @@ class _MirrorCheckViewState extends State<MirrorCheckView> {
         // MirrorStatusStack().clean();
         debugPrint("已取消 >_<");
         setState(() {});
-        Get.back();
+        Get.back(
+          result: false,
+        );
         break;
       case mirrorTabButtonStatus.done:
         MirrorStatusStack().flash();
-        Get.back();
+        Get.back(
+          result: true,
+        );
         break;
     }
   }

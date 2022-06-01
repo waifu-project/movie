@@ -19,17 +19,35 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
 import 'package:movie/app/modules/home/controllers/home_controller.dart';
+import 'package:movie/app/modules/home/views/mirror_check.dart';
+import 'package:movie/app/shared/mirror_status_stack.dart';
 import 'package:movie/app/widget/wechat_popmenu.dart';
 import 'package:movie/app/widget/helper.dart';
 import 'package:movie/app/widget/window_appbar.dart';
 import 'package:movie/impl/movie.dart';
 import 'package:movie/mirror/mirror.dart';
 
+enum MenuActionType {
+  /// 检测源
+  check,
+
+  /// 删除不可用源
+  delete_unavailable,
+
+  /// 导出
+  export,
+}
+
 class ItemModel {
   String title;
   IconData icon;
+  MenuActionType action;
 
-  ItemModel(this.title, this.icon);
+  ItemModel(
+    this.title,
+    this.icon,
+    this.action,
+  );
 }
 
 class MirrorTableView extends StatefulWidget {
@@ -94,12 +112,47 @@ class _MirrorTableViewState extends State<MirrorTableView> {
   }
 
   var menuItems = [
-    ItemModel('批量检测源', Icons.chat_bubble),
-    ItemModel('一键删除失效源', Icons.no_encryption),
-    ItemModel('导出源', Icons.settings_overscan),
+    ItemModel(
+      '批量检测源',
+      Icons.chat_bubble,
+      MenuActionType.check,
+    ),
+    ItemModel(
+      '一键删除失效源',
+      Icons.no_encryption,
+      MenuActionType.delete_unavailable,
+    ),
+    ItemModel(
+      '导出源',
+      Icons.settings_overscan,
+      MenuActionType.export,
+    ),
   ];
 
   CustomPopupMenuController _controller = CustomPopupMenuController();
+
+  handleClickSubMenu(MenuActionType action) {
+    switch (action) {
+      case MenuActionType.check:
+        showCupertinoDialog(
+          barrierDismissible: false,
+          context: context,
+          builder: (BuildContext context) {
+            var refData = home.mirrorList;
+            return MirrorCheckView(
+              list: refData,
+            );
+          },
+        );
+        break;
+      case MenuActionType.delete_unavailable:
+        // TODO
+        break;
+      case MenuActionType.export:
+        // TODO
+        break;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -138,8 +191,8 @@ class _MirrorTableViewState extends State<MirrorTableView> {
                                 (item) => GestureDetector(
                                   behavior: HitTestBehavior.translucent,
                                   onTap: () {
-                                    // TODO
                                     _controller.hideMenu();
+                                    handleClickSubMenu(item.action);
                                   },
                                   child: Container(
                                     height: 40,
@@ -415,6 +468,10 @@ class mirrorCard extends StatelessWidget {
                                     maxLines: 2,
                                     overflow: TextOverflow.ellipsis,
                                   ),
+                            movieStatusWidget(
+                              status: item.meta.status ? MovieStatusType.available : MovieStatusType.unavailable,
+                              hash: item.meta.id,
+                            ),
                           ],
                         ),
                       ),
@@ -431,6 +488,96 @@ class mirrorCard extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+enum MovieStatusType {
+  /// 可用
+  available,
+
+  /// 不可用
+  unavailable,
+
+  /// 未知
+  unknown,
+}
+
+extension movieStatusTypeExtension on MovieStatusType {
+  String get text {
+    switch (this) {
+      case MovieStatusType.available:
+        return '可用';
+      case MovieStatusType.unavailable:
+        return '不可用';
+      case MovieStatusType.unknown:
+        return '未知';
+      default:
+        return '未知';
+    }
+  }
+}
+
+class movieStatusWidget extends StatelessWidget {
+  const movieStatusWidget({
+    Key? key,
+    this.status = MovieStatusType.available,
+    required this.hash,
+  }) : super(key: key);
+
+  final MovieStatusType status;
+  final String hash;
+
+  String get _text {
+    return _type.text;
+  }
+
+  Color get _color {
+    switch (_type) {
+      case MovieStatusType.available:
+        return Colors.pink;
+      case MovieStatusType.unavailable:
+        return Colors.grey;
+      default:
+        return Colors.blueGrey;
+    }
+  }
+
+  MovieStatusType get _type {
+    var cacheStatus = MirrorStatusStack().getStack(hash);
+    if (cacheStatus != null) {
+      return cacheStatus
+          ? MovieStatusType.available
+          : MovieStatusType.unavailable;
+    }
+    return status;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Container(
+          width: 8,
+          height: 8,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            color: _color,
+          ),
+        ),
+        SizedBox(
+          width: 6,
+        ),
+        Container(
+          child: Text(
+            _text,
+            style: TextStyle(
+              color: _color,
+              fontSize: 12,
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

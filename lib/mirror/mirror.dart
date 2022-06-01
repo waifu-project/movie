@@ -68,6 +68,49 @@ class MirrorManage {
     saveToCache(extend);
   }
 
+  /// 删除 [List<String> id] 中的源
+  static remoteItemFromIDS(List<String> id) {
+    extend.removeWhere((e) => id.contains(e.meta.id));
+    saveToCache(extend);
+  }
+
+  /// 删除不可用源
+  /// [kvHash] 映射的缓存
+  /// 返回被删除的 [List<String> ids]
+  static List<String> removeUnavailable(Map<String, bool> kvHash) {
+    List<String> result = [];
+    List<SourceJsonData> newData = extend
+        .map((e) {
+          String id = e.meta.id;
+          bool status = kvHash[id] ?? e.meta.status;
+          return SourceJsonData(
+            name: e.meta.name,
+            logo: e.meta.logo,
+            desc: e.meta.desc,
+            nsfw: e.isNsfw,
+            api: Api(
+              root: e.meta.domain,
+              path: (e as KBaseMirrorMovie).api_path,
+            ),
+            id: id,
+            status: status,
+          );
+        })
+        .toList()
+        .where((item) {
+          String id = item.id as String;
+          bool status = item.status ?? true;
+          if (!status) {
+            result.add(id);
+          }
+          return status;
+        })
+        .toList();
+    extend.removeWhere((e) => result.contains(e.meta.id));
+    mergeMirror(newData);
+    return result;
+  }
+
   /// 删除所有源
   static cleanAll({
     bool saveToCahe = false,

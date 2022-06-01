@@ -13,6 +13,8 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import 'dart:async';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -157,12 +159,58 @@ class _MirrorTableViewState extends State<MirrorTableView> {
         }
         break;
       case MenuActionType.delete_unavailable:
-        // TODO
+        bool status = await showDelUnavailableMirrorDialog();
+        if (!status) return;
+        List<String> result = MirrorManage.removeUnavailable(
+          __statusMap,
+        );
+        setState(() {
+          mirrorList.removeWhere((element) => result.contains(element.meta.id));
+        });
         break;
       case MenuActionType.export:
         // TODO
         break;
     }
+  }
+
+  showDelUnavailableMirrorDialog() async {
+    var completer = new Completer();
+    showCupertinoDialog(
+      builder: (BuildContext context) => CupertinoAlertDialog(
+        title: const Text('提示'),
+        content: Text('确定要删除所有失效源吗？'),
+        actions: <CupertinoDialogAction>[
+          CupertinoDialogAction(
+            child: const Text(
+              '取消',
+              style: TextStyle(
+                color: Colors.blue,
+              ),
+            ),
+            onPressed: () {
+              Get.back();
+              completer.complete(false);
+            },
+          ),
+          CupertinoDialogAction(
+            child: const Text(
+              '确定',
+              style: TextStyle(
+                color: Colors.red,
+              ),
+            ),
+            isDestructiveAction: true,
+            onPressed: () {
+              Get.back();
+              completer.complete(true);
+            },
+          )
+        ],
+      ),
+      context: Get.context as BuildContext,
+    );
+    return completer.future;
   }
 
   @override

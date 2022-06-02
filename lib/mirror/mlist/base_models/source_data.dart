@@ -19,6 +19,8 @@
 
 import 'dart:convert';
 
+import 'package:movie/utils/xid.dart';
+
 List<SourceJsonData> sourceJsonDataFromJson(String str) =>
     List<SourceJsonData>.from(
       json.decode(str).map(
@@ -41,6 +43,8 @@ class SourceJsonData {
     this.desc,
     this.nsfw,
     this.api,
+    this.id,
+    this.status,
   });
 
   final String? name;
@@ -48,54 +52,63 @@ class SourceJsonData {
   final String? desc;
   final bool? nsfw;
   final Api? api;
+  final String? id;
+  final bool? status;
 
   /// [SourceUtils.tryParseData]
   @Deprecated('不推荐使用, 推荐使用 SourceUtils.tryParseData()')
   factory SourceJsonData.fromJson(Map<String, dynamic> json) {
+    var name = json['name'];
+    var logo = json['logo'];
+    var desc = json['desc'];
+
+    /// FIXME: 兼容 `ZY-Player`
+    var status = json['status'] ?? true;
+
+    var oldID = json['id'];
+    var id = oldID ?? "";
+    if (id.isEmpty) {
+      var insID = Xid();
+      id = insID.toString();
+    }
+    late Api api;
+    late bool nsfw;
 
     /// note:
-    ///   => 尝试兼容 `ZY-Player` 的源
+    ///   => 兼容 `ZY-Player` 的源
     ///   => 通过判断其是否有 `id`
-    var id = json['id'];
-    if (id != null) {
 
-      // 匹配规则
-      // {
-      //   "key": "十点影视",
-      //   "id": 18,
-      //   "name": "十点影视(需解析)",
-      //   "api": "http://shidian.vip/api.php/provide/vod/at/xml",
-      //   "download": "",
-      //   "jiexiUrl": "",
-      //   "group": "需解析",
-      //   "isActive": true,
-      //   "status": "可用",
-      //   "reverseOrder": true
-      // }
-      String apiFull = json['api'];
+    bool? _nsfw = json['nsfw'];
 
-      /// [SourceUtils.tryParseData]
-      var url = Uri.parse(apiFull);
-      
-      return SourceJsonData(
-        name: json['name'],
-        logo: "",
-        desc: "",
-        nsfw: (json['group'] ?? "") == "18禁",
-        api: Api(
+    var _api = json['api'];
+
+    if (_api is Map<String, dynamic>) {
+      api = Api.fromJson(_api);
+    } else if (_api is String) {
+      var url = Uri.tryParse(_api);
+      if (url != null) {
+        api = Api(
           path: url.path,
           root: url.origin,
-        ),
-      );
+        );
+      }
+    }
 
+    if (_nsfw == null) {
+      bool flag = json['group'] ?? "" == "18禁";
+      nsfw = flag;
+    } else {
+      nsfw = _nsfw;
     }
 
     return SourceJsonData(
-      name: json["name"],
-      logo: json["logo"],
-      desc: json["desc"],
-      nsfw: json["nsfw"],
-      api: Api.fromJson(json["api"]),
+      name: name,
+      logo: logo,
+      desc: desc,
+      nsfw: nsfw,
+      api: api,
+      status: status,
+      id: id,
     );
   }
 
@@ -105,6 +118,8 @@ class SourceJsonData {
         "desc": desc,
         "nsfw": nsfw,
         "api": api?.toJson(),
+        'id': id,
+        'status': status,
       };
 }
 

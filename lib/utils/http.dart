@@ -19,6 +19,7 @@ import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
+import 'package:flutter/foundation.dart';
 import 'package:movie/utils/path.dart';
 
 class XHttp {
@@ -30,9 +31,16 @@ class XHttp {
     receiveTimeout: 13000,
   ));
 
+  static changeTimeout({
+    int connectTimeout = 15000,
+    int receiveTimeout = 13000,
+  }) {
+    dio.options.connectTimeout = connectTimeout;
+    dio.options.receiveTimeout = receiveTimeout;
+  }
+
   /// 初始化dio
   static Future<void> init() async {
-
     /// 初始化cookie
     var value = await PathUtils.getDocumentsDirPath();
     var cookieJar = PersistCookieJar(
@@ -62,11 +70,11 @@ class XHttp {
 
     // 证书啥的, 都是访问的盗版资源, 无所谓
     // @陈大大哦了 <2021/10/30>
-    //   ______          _    
-    //  |  ____|        | |   
+    //   ______          _
+    //  |  ____|        | |
     //  | |__ _   _  ___| | __
     //  |  __| | | |/ __| |/ /
-    //  | |  | |_| | (__|   < 
+    //  | |  | |_| | (__|   <
     //  |_|   \__,_|\___|_|\_\
     //
     (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate = (
@@ -80,29 +88,28 @@ class XHttp {
           true;
       return client;
     };
-
   }
 
   /// error统一处理
   static void handleError(DioError e) {
     switch (e.type) {
       case DioErrorType.connectTimeout:
-        print("连接超时");
+        debugPrint("连接超时");
         break;
       case DioErrorType.sendTimeout:
-        print("请求超时");
+        debugPrint("请求超时");
         break;
       case DioErrorType.receiveTimeout:
-        print("响应超时");
+        debugPrint("响应超时");
         break;
       case DioErrorType.response:
-        print("出现异常");
+        debugPrint("出现异常");
         break;
       case DioErrorType.cancel:
-        print("请求取消");
+        debugPrint("请求取消");
         break;
       default:
-        print("未知错误");
+        debugPrint("未知错误");
         break;
     }
   }

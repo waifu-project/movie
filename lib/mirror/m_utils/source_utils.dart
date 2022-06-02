@@ -23,6 +23,7 @@ import 'package:movie/mirror/mlist/base_models/source_data.dart';
 import 'package:movie/utils/helper.dart';
 import 'package:movie/utils/http.dart';
 import 'package:movie/utils/json.dart';
+import 'package:movie/utils/xid.dart';
 
 import 'm.dart';
 
@@ -60,6 +61,10 @@ class SourceUtils {
     bool status = tryData[0];
     if (status) {
       var data = tryData[1] as SourceJsonData;
+      var id = data.id;
+      if (id == null || id.isEmpty) {
+        id = Xid().toString();
+      }
       return KBaseMirrorMovie(
         logo: data.logo ?? "",
         name: data.name ?? "",
@@ -67,6 +72,8 @@ class SourceUtils {
         api_path: data.api!.path ?? "",
         root_url: data.api!.root ?? "",
         nsfw: data.nsfw ?? false,
+        id: id,
+        status: data.status ?? true,
       );
     } else {
       return null;
@@ -274,20 +281,24 @@ class SourceUtils {
       }).toList();
     }
     // return [0, []];
-    var copyData = (inputData as List<KBaseMirrorMovie>)
-        .map(
-          (e) => SourceJsonData(
-            name: e.meta.name,
-            logo: e.meta.logo,
-            desc: e.meta.desc,
-            nsfw: e.isNsfw,
-            api: Api(
-              root: e.meta.domain,
-              path: e.api_path,
-            ),
+    var copyData = (inputData as List<KBaseMirrorMovie>).map(
+      (e) {
+        var id = e.meta.id;
+        var status = e.meta.status;
+        return SourceJsonData(
+          name: e.meta.name,
+          logo: e.meta.logo,
+          desc: e.meta.desc,
+          nsfw: e.isNsfw,
+          api: Api(
+            root: e.meta.domain,
+            path: e.api_path,
           ),
-        )
-        .toList();
+          id: id,
+          status: status,
+        );
+      },
+    ).toList();
     if (diff) {
       return [newLen - len, copyData];
     }

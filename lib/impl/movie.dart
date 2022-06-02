@@ -35,11 +35,18 @@ class MovieMetaData {
   /// 介绍
   String desc;
 
+  String id;
+
+  /// 是否可用
+  bool status;
+
   MovieMetaData({
     this.logo = "",
     this.developer = "",
     this.developerMail = "",
     this.desc = "",
+    this.status = true,
+    required this.id,
     required this.name,
     required this.domain,
   });

@@ -37,7 +37,8 @@ dependencies:
 
   waterfall_flow: ^3.0.2
 
-  file_picker: ^4.2.4
+  file_picker: ^4.3.1
+  share_plus: ^4.0.5
   
   flutter: 
     sdk: flutter
@@ -76,7 +77,7 @@ flutter:
   assets:
     - assets/data/nsfw.html
     - assets/data/source_help.txt
-    - assets/images/fishtank.png
+    - assets/images/movie_default.png
     - assets/images/image_faild.png
     - assets/data/play_tips.txt
     - assets/images/empty.png

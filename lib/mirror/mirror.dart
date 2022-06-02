@@ -13,6 +13,8 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import 'dart:convert';
+
 import 'package:get_storage/get_storage.dart';
 import 'package:movie/config.dart';
 import 'package:movie/impl/movie.dart';
@@ -54,6 +56,8 @@ class MirrorManage {
         api_path: data.api!.path ?? "",
         root_url: data.api!.root ?? "",
         nsfw: data.nsfw ?? false,
+        id: data.id ?? "",
+        status: data.status ?? true,
       );
     }).toList();
     extend = result;
@@ -64,6 +68,81 @@ class MirrorManage {
     print("删除该源: $item");
     extend.remove(item);
     saveToCache(extend);
+  }
+
+  /// 删除 [List<String> id] 中的源
+  static remoteItemFromIDS(List<String> id) {
+    extend.removeWhere((e) => id.contains(e.meta.id));
+    saveToCache(extend);
+  }
+
+  /// 导出文件
+  /// 
+  /// [full] 是否全量导出(nsfw 是否导出)
+  static String export({
+    bool full = false,
+  }) {
+    // bool isNsfw = local.read(ConstDart.is_nsfw) ?? false;
+    List<SourceJsonData> _to = extend
+        .map(
+          (e) => SourceJsonData(
+            name: e.meta.name,
+            logo: e.meta.logo,
+            desc: e.meta.desc,
+            nsfw: e.isNsfw,
+            api: Api(
+              root: e.meta.domain,
+              path: (e as KBaseMirrorMovie).api_path,
+            ),
+            id: e.id,
+            status: e.status,
+          ),
+        )
+        .toList();
+    if (!full) {
+      _to = _to.where((element) {
+        return !(element.nsfw ?? false);
+      }).toList();
+    }
+    String result = jsonEncode(_to);
+    return result;
+  }
+
+  /// 删除不可用源
+  /// [kvHash] 映射的缓存
+  /// 返回被删除的 [List<String> ids]
+  static List<String> removeUnavailable(Map<String, bool> kvHash) {
+    List<String> result = [];
+    List<SourceJsonData> newData = extend
+        .map((e) {
+          String id = e.meta.id;
+          bool status = kvHash[id] ?? e.meta.status;
+          return SourceJsonData(
+            name: e.meta.name,
+            logo: e.meta.logo,
+            desc: e.meta.desc,
+            nsfw: e.isNsfw,
+            api: Api(
+              root: e.meta.domain,
+              path: (e as KBaseMirrorMovie).api_path,
+            ),
+            id: id,
+            status: status,
+          );
+        })
+        .toList()
+        .where((item) {
+          String id = item.id as String;
+          bool status = item.status ?? true;
+          if (!status) {
+            result.add(id);
+          }
+          return status;
+        })
+        .toList();
+    extend.removeWhere((e) => result.contains(e.meta.id));
+    mergeMirror(newData);
+    return result;
   }
 
   /// 删除所有源
@@ -91,6 +170,8 @@ class MirrorManage {
               root: e.meta.domain,
               path: (e as KBaseMirrorMovie).api_path,
             ),
+            id: e.id,
+            status: e.status,
           ),
         )
         .toList();

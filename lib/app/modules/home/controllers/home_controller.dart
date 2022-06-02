@@ -19,6 +19,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:movie/app/modules/home/views/mirrortable.dart';
+import 'package:movie/app/shared/mirror_status_stack.dart';
 import 'package:movie/config.dart';
 import 'package:movie/impl/movie.dart';
 import 'package:movie/mirror/mirror.dart';
@@ -114,7 +115,7 @@ class HomeController extends GetxController with WidgetsBindingObserver {
   }
 
   /// 清理缓存
-  /// 
+  ///
   /// 嗯哼??
   easyCleanCacheHook() {
     _isNsfw = false;
@@ -291,7 +292,6 @@ class HomeController extends GetxController with WidgetsBindingObserver {
   /// [isFirst] 初始化加载数据需要将 [isLoading] => true
   /// [missIsLoading] 某些特殊情况下不需要设置 [isLoading] => true
   updateHomeData({bool isFirst = false, missIsLoading = false}) async {
-
     /// 如果都没有源, 则不需要加载数据
     /// => +_+ 还玩个球啊
     if (mirrorListIsEmpty) return;
@@ -324,6 +324,24 @@ class HomeController extends GetxController with WidgetsBindingObserver {
       isLoading = false;
       homedata = [];
       update();
+    }
+
+    bool notError = indexHomeLoadDataErrorMessage == "";
+    bool dataIsEmpty = homedata.isNotEmpty;
+
+    if (notError && dataIsEmpty && isFirst) {
+      String id = currentMirrorItem.meta.id;
+      bool status = currentMirrorItem.meta.status;
+      if (!status) {
+        bool memStatus = MirrorStatusStack().getStack(id) ?? false;
+        if (!memStatus) {
+          MirrorStatusStack().pushStatus(
+            id,
+            true,
+            canSave: true,
+          );
+        }
+      }
     }
   }
 

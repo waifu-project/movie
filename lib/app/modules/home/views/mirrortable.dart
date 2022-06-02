@@ -274,59 +274,12 @@ class _MirrorTableViewState extends State<MirrorTableView> {
                     ),
                     padding: EdgeInsets.all(12),
                   ),
-                  menuBuilder: () => ClipRRect(
-                    borderRadius: BorderRadius.circular(5),
-                    child: Container(
-                      color: const Color(0xFF4C4C4C),
-                      child: IntrinsicWidth(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: menuItems
-                              .map(
-                                (item) => GestureDetector(
-                                  behavior: HitTestBehavior.translucent,
-                                  onTap: () {
-                                    _controller.hideMenu();
-                                    handleClickSubMenu(item.action);
-                                  },
-                                  child: Container(
-                                    height: 40,
-                                    padding: EdgeInsets.symmetric(
-                                      horizontal: 20,
-                                    ),
-                                    child: Row(
-                                      children: <Widget>[
-                                        Icon(
-                                          item.icon,
-                                          size: 15,
-                                          color: Colors.white,
-                                        ),
-                                        Expanded(
-                                          child: Container(
-                                            margin: EdgeInsets.only(
-                                              left: 10,
-                                            ),
-                                            padding: EdgeInsets.symmetric(
-                                              vertical: 10,
-                                            ),
-                                            child: Text(
-                                              item.title,
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 12,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              )
-                              .toList(),
-                        ),
-                      ),
-                    ),
+                  menuBuilder: () => popMenuBox(
+                    items: menuItems,
+                    onTap: (MenuActionType value) {
+                      _controller.hideMenu();
+                      handleClickSubMenu(value);
+                    },
                   ),
                   pressType: PressType.singleClick,
                   verticalMargin: -10,
@@ -683,6 +636,95 @@ class movieStatusWidget extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+class popMenuBox extends StatefulWidget {
+  const popMenuBox({
+    Key? key,
+    required this.items,
+    required this.onTap,
+  }) : super(key: key);
+
+  final List<ItemModel> items;
+
+  final ValueChanged<MenuActionType> onTap;
+
+  @override
+  State<popMenuBox> createState() => _popMenuBoxState();
+}
+
+class _popMenuBoxState extends State<popMenuBox> {
+  ItemModel? _hoverPopMenuItem;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: const Color(0xFF4C4C4C),
+      child: IntrinsicWidth(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: widget.items
+              .map(
+                (item) => InkWell(
+                  onTap: () {
+                    widget.onTap(item.action);
+                  },
+                  onHover: (isHover) {
+                    _hoverPopMenuItem = isHover ? item : null;
+                    setState(() {});
+                  },
+                  onTapDown: (_) {
+                    _hoverPopMenuItem = item;
+                    setState(() {});
+                  },
+                  onTapCancel: () {
+                    _hoverPopMenuItem = null;
+                    setState(() {});
+                  },
+                  child: Container(
+                    height: 40,
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 20,
+                    ),
+                    decoration: BoxDecoration(
+                      color: _hoverPopMenuItem?.title == item.title
+                          ? Colors.blue
+                          : Colors.transparent,
+                    ),
+                    child: Row(
+                      children: <Widget>[
+                        Icon(
+                          item.icon,
+                          size: 15,
+                          color: Colors.white,
+                        ),
+                        Expanded(
+                          child: Container(
+                            margin: EdgeInsets.only(
+                              left: 10,
+                            ),
+                            padding: EdgeInsets.symmetric(
+                              vertical: 10,
+                            ),
+                            child: Text(
+                              item.title,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 12,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              )
+              .toList(),
+        ),
+      ),
     );
   }
 }

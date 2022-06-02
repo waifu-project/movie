@@ -28,6 +28,7 @@ import 'package:movie/app/widget/wechat_popmenu.dart';
 import 'package:movie/app/widget/window_appbar.dart';
 import 'package:movie/impl/movie.dart';
 import 'package:movie/mirror/mirror.dart';
+import 'package:movie/utils/http.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
@@ -146,6 +147,7 @@ class _MirrorTableViewState extends State<MirrorTableView> {
   handleClickSubMenu(MenuActionType action) async {
     switch (action) {
       case MenuActionType.check:
+        XHttp.changeTimeout(connectTimeout: 1200, receiveTimeout: 1200);
         bool? checkCanDone = await showCupertinoDialog(
           barrierDismissible: false,
           context: context,
@@ -156,6 +158,7 @@ class _MirrorTableViewState extends State<MirrorTableView> {
             );
           },
         );
+        XHttp.changeTimeout();
         bool _checkCanDone = checkCanDone ?? false;
         if (_checkCanDone) {
           updateMirrorStatusMap();

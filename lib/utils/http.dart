@@ -30,9 +30,16 @@ class XHttp {
     receiveTimeout: 13000,
   ));
 
+  static changeTimeout({
+    int connectTimeout = 15000,
+    int receiveTimeout = 13000,
+  }) {
+    dio.options.connectTimeout = connectTimeout;
+    dio.options.receiveTimeout = receiveTimeout;
+  }
+
   /// 初始化dio
   static Future<void> init() async {
-
     /// 初始化cookie
     var value = await PathUtils.getDocumentsDirPath();
     var cookieJar = PersistCookieJar(
@@ -62,11 +69,11 @@ class XHttp {
 
     // 证书啥的, 都是访问的盗版资源, 无所谓
     // @陈大大哦了 <2021/10/30>
-    //   ______          _    
-    //  |  ____|        | |   
+    //   ______          _
+    //  |  ____|        | |
     //  | |__ _   _  ___| | __
     //  |  __| | | |/ __| |/ /
-    //  | |  | |_| | (__|   < 
+    //  | |  | |_| | (__|   <
     //  |_|   \__,_|\___|_|\_\
     //
     (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate = (
@@ -80,7 +87,6 @@ class XHttp {
           true;
       return client;
     };
-
   }
 
   /// error统一处理

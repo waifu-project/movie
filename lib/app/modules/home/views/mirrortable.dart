@@ -317,59 +317,62 @@ class _MirrorTableViewState extends State<MirrorTableView> {
         ),
       ),
       child: SafeArea(
-        child: ListView(
+        child: Scrollbar(
           controller: scrollController,
-          children: mirrorList
-              .map(
-                (e) => mirrorCard(
-                  item: e,
-                  current: home.currentMirrorItem == e,
-                  onTap: () {
-                    var index = mirrorList.indexOf(e);
-                    home.updateMirrorIndex(index);
-                    Get.back();
-                  },
-                  hashTable: __statusMap,
-                  onDel: (context) {
-                    showCupertinoDialog(
-                      builder: (context) => CupertinoAlertDialog(
-                        content: Text("是否删除该镜像源?"),
-                        actions: [
-                          CupertinoDialogAction(
-                            child: const Text(
-                              '我想想',
-                              style: TextStyle(
-                                color: Colors.blue,
+          child: ListView(
+            controller: scrollController,
+            children: mirrorList
+                .map(
+                  (e) => mirrorCard(
+                    item: e,
+                    current: home.currentMirrorItem == e,
+                    onTap: () {
+                      var index = mirrorList.indexOf(e);
+                      home.updateMirrorIndex(index);
+                      Get.back();
+                    },
+                    hashTable: __statusMap,
+                    onDel: (context) {
+                      showCupertinoDialog(
+                        builder: (context) => CupertinoAlertDialog(
+                          content: Text("是否删除该镜像源?"),
+                          actions: [
+                            CupertinoDialogAction(
+                              child: const Text(
+                                '我想想',
+                                style: TextStyle(
+                                  color: Colors.blue,
+                                ),
                               ),
+                              onPressed: () {
+                                Get.back();
+                              },
                             ),
-                            onPressed: () {
-                              Get.back();
-                            },
-                          ),
-                          CupertinoDialogAction(
-                            child: const Text(
-                              '删除',
-                              style: TextStyle(
-                                color: Colors.red,
+                            CupertinoDialogAction(
+                              child: const Text(
+                                '删除',
+                                style: TextStyle(
+                                  color: Colors.red,
+                                ),
                               ),
+                              onPressed: () {
+                                setState(() {
+                                  mirrorList.remove(e);
+                                });
+                                home.removeMirrorItemSync(e);
+                                MirrorManage.removeItem(e);
+                                Get.back();
+                              },
                             ),
-                            onPressed: () {
-                              setState(() {
-                                mirrorList.remove(e);
-                              });
-                              home.removeMirrorItemSync(e);
-                              MirrorManage.removeItem(e);
-                              Get.back();
-                            },
-                          ),
-                        ],
-                      ),
-                      context: context,
-                    );
-                  },
-                ),
-              )
-              .toList(),
+                          ],
+                        ),
+                        context: context,
+                      );
+                    },
+                  ),
+                )
+                .toList(),
+          ),
         ),
       ),
     );

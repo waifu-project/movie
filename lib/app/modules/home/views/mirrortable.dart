@@ -170,6 +170,9 @@ class _MirrorTableViewState extends State<MirrorTableView> {
         setState(() {
           mirrorList.removeWhere((element) => result.contains(element.meta.id));
         });
+        if (result.isNotEmpty) {
+          home.updateMirrorIndex(0);
+        }
         break;
       case MenuActionType.export:
         Directory directory = await getTemporaryDirectory();

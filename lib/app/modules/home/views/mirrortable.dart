@@ -17,6 +17,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -178,12 +179,33 @@ class _MirrorTableViewState extends State<MirrorTableView> {
         }
         break;
       case MenuActionType.export:
-        Directory directory = await getTemporaryDirectory();
-        String path = '${directory.path}/YY.json';
-        File file = File(path);
-        String result = MirrorManage.export();
-        await file.writeAsString(result);
-        Share.shareFilesWithResult([path]);
+        String append = MirrorManage.export(
+          full: home.isNsfw,
+        );
+
+        DateTime today = new DateTime.now();
+        String dateSlug =
+            "${today.year.toString()}${today.month.toString().padLeft(2, '0')}${today.day.toString().padLeft(2, '0')}";
+
+        String filename = "YY$dateSlug.json";
+        if (GetPlatform.isIOS) {
+          Directory directory = await getTemporaryDirectory();
+          String path = '${directory.path}/$filename';
+          File file = File(path);
+          await file.writeAsString(append);
+          Share.shareFilesWithResult([path]);
+        } else if (GetPlatform.isDesktop) {
+          Directory? directory = await getDownloadsDirectory();
+          if (directory == null) return;
+          String? path = await FilePicker.platform.saveFile(
+            initialDirectory: directory.path,
+            fileName: filename,
+          );
+          if (path == null) return;
+          File file = File(path);
+          file.existsSync();
+          file.writeAsStringSync(append);
+        }
         break;
     }
   }

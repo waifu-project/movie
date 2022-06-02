@@ -77,7 +77,12 @@ class MirrorManage {
   }
 
   /// 导出文件
-  static String export() {
+  /// 
+  /// [full] 是否全量导出(nsfw 是否导出)
+  static String export({
+    bool full = false,
+  }) {
+    // bool isNsfw = local.read(ConstDart.is_nsfw) ?? false;
     List<SourceJsonData> _to = extend
         .map(
           (e) => SourceJsonData(
@@ -94,6 +99,11 @@ class MirrorManage {
           ),
         )
         .toList();
+    if (!full) {
+      _to = _to.where((element) {
+        return !(element.nsfw ?? false);
+      }).toList();
+    }
     String result = jsonEncode(_to);
     return result;
   }

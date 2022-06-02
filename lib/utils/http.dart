@@ -19,6 +19,7 @@ import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
+import 'package:flutter/foundation.dart';
 import 'package:movie/utils/path.dart';
 
 class XHttp {
@@ -93,22 +94,22 @@ class XHttp {
   static void handleError(DioError e) {
     switch (e.type) {
       case DioErrorType.connectTimeout:
-        print("连接超时");
+        debugPrint("连接超时");
         break;
       case DioErrorType.sendTimeout:
-        print("请求超时");
+        debugPrint("请求超时");
         break;
       case DioErrorType.receiveTimeout:
-        print("响应超时");
+        debugPrint("响应超时");
         break;
       case DioErrorType.response:
-        print("出现异常");
+        debugPrint("出现异常");
         break;
       case DioErrorType.cancel:
-        print("请求取消");
+        debugPrint("请求取消");
         break;
       default:
-        print("未知错误");
+        debugPrint("未知错误");
         break;
     }
   }

@@ -13,6 +13,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import 'package:flappy_search_bar_ns/flappy_search_bar_ns.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -108,6 +109,7 @@ class HomeController extends GetxController with WidgetsBindingObserver {
   set _mirrorIndex(int newVal) {
     mirrorIndex = newVal;
     _cacheMirrorIndex = newVal;
+    searchBarController.clear();
     update();
     updateHomeData(
       isFirst: true,
@@ -393,4 +395,9 @@ class HomeController extends GetxController with WidgetsBindingObserver {
 
     update();
   }
+
+  final SearchBarController searchBarController =
+      SearchBarController<MirrorOnceItemSerialize>();
+
+  
 }

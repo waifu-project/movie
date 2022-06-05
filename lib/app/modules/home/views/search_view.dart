@@ -45,8 +45,7 @@ class _SearchViewState extends State<SearchView>
     with AutomaticKeepAliveClientMixin {
   final HomeController home = Get.find<HomeController>();
 
-  final SearchBarController _searchBarController =
-      SearchBarController<MirrorOnceItemSerialize>();
+  SearchBarController get _searchBarController => home.searchBarController;
 
   List<String> _searchHistory = [];
 

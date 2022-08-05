@@ -143,17 +143,13 @@ class _SearchViewState extends State<SearchView>
     bool isDesktop = GetPlatform.isDesktop;
     if (isDesktop) {
       return WindowAppBar(
-        centerTitle: showEmptyStack,
-        title: Builder(builder: (context) {
-          if (showEmptyStack)
-            return Text(
-              "搜索",
-              style: TextStyle(
-                fontSize: 18,
-              ),
-            );
-          return SizedBox.shrink();
-        }),
+        centerTitle: true,
+        title: Text(
+          "搜索",
+          style: TextStyle(
+            fontSize: 18,
+          ),
+        ),
       );
     }
     return null;

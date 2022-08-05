@@ -54,19 +54,11 @@ class CustomMoveWindow extends StatelessWidget {
   Widget build(BuildContext context) {
     if (child == null) return _MoveWindow();
     return _MoveWindow(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Expanded(
-            child: this.child!,
-          ),
-        ],
-      ),
+      child: this.child,
     );
   }
 }
 
-// FIXME
 class CupertinoEasyAppBar extends StatefulWidget
     implements ObstructingPreferredSizeWidget {
   const CupertinoEasyAppBar({
@@ -253,6 +245,7 @@ class WindowAppBar extends StatelessWidget implements PreferredSizeWidget {
           child: Container(
             color: Theme.of(context).primaryColor,
             width: double.infinity,
+            height: double.infinity,
             padding: EdgeInsets.only(
               top: _top,
             ),

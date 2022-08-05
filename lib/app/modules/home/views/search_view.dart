@@ -322,9 +322,10 @@ class _SearchViewState extends State<SearchView>
                   ),
                 ),
                 minimumChars: 2,
-                debounceDuration: Duration(
-                  seconds: 2,
-                ),
+                // 事实上不需要节流
+                // debounceDuration: Duration(
+                //   seconds: 1,
+                // ),
                 onSearch: (String? text) {
                   setState(() {
                     page = 1;
@@ -332,7 +333,26 @@ class _SearchViewState extends State<SearchView>
                   return handleSearch(text);
                 },
                 emptyWidget: Center(
-                  child: Text("搜索内容为空"),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Image.asset(
+                        "assets/images/error.png",
+                        fit: BoxFit.cover,
+                        width: _kEmptyMirrorWidth,
+                      ),
+                      SizedBox(
+                        height: 12,
+                      ),
+                      Text(
+                        '没有找到相关视频 :(',
+                        style: TextStyle(
+                          fontSize: 12,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
                 onError: (error) {
                   return KErrorStack(

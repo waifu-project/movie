@@ -23,9 +23,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:movie/app/modules/home/views/home_config.dart';
 import 'package:movie/app/widget/k_error_stack.dart';
 import 'package:movie/app/widget/window_appbar.dart';
+import 'package:movie/config.dart';
 import 'package:movie/mirror/m_utils/m.dart';
 import 'package:movie/mirror/m_utils/source_utils.dart';
 import 'package:movie/mirror/mirror.dart';
@@ -40,17 +42,20 @@ class SourceItemJSONData {
   String? title;
   String? url;
   String? msg;
+  bool? nsfw;
 
   SourceItemJSONData({
     this.title,
     this.url,
     this.msg,
+    this.nsfw,
   });
 
   SourceItemJSONData.fromJson(Map<String, dynamic> json) {
     title = json['title'];
     url = json['url'];
     msg = json['msg'];
+    nsfw = json['nsfw'];
   }
 
   Map<String, dynamic> toJson() {
@@ -58,6 +63,7 @@ class SourceItemJSONData {
     data['title'] = this.title;
     data['url'] = this.url;
     data['msg'] = this.msg;
+    data['nswf'] = this.nsfw;
     return data;
   }
 }
@@ -85,6 +91,10 @@ class _SourceHelpTableState extends State<SourceHelpTable> {
     );
   }
 
+  bool get showNSFW {
+    return GetStorage().read(ConstDart.is_nsfw) ?? false;
+  }
+
   loadMirrorListApi() async {
     setState(() {
       _isLoadingFromAJAX = true;
@@ -95,6 +105,11 @@ class _SourceHelpTableState extends State<SourceHelpTable> {
       List<SourceItemJSONData> data = List.from(resp.data)
           .map((e) => SourceItemJSONData.fromJson(e as Map<String, dynamic>))
           .toList();
+      if (!showNSFW) {
+        data = data.where((element) {
+          return element.nsfw ?? false;
+        }).toList();
+      }
       setState(() {
         mirrors = data;
         _isLoadingFromAJAX = false;

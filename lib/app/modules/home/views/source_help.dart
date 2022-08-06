@@ -107,7 +107,7 @@ class _SourceHelpTableState extends State<SourceHelpTable> {
           .toList();
       if (!showNSFW) {
         data = data.where((element) {
-          return element.nsfw ?? false;
+          return !(element.nsfw ?? true);
         }).toList();
       }
       setState(() {

@@ -75,9 +75,10 @@ class IndexHomeViewPage extends GetView {
     var data = subItem;
     if (subItem.videos.isEmpty) {
       var id = subItem.id;
-      var _textStyle = Theme.of(Get.context as BuildContext).textTheme.bodyText2!.copyWith(
-        color: CupertinoColors.systemBlue,
-      );
+      var _textStyle =
+          Theme.of(Get.context as BuildContext).textTheme.bodyText2!.copyWith(
+                color: CupertinoColors.systemBlue,
+              );
       Get.dialog(
         Center(
           child: Column(
@@ -87,7 +88,9 @@ class IndexHomeViewPage extends GetView {
               CircularProgressIndicator(
                 color: CupertinoColors.systemBlue,
               ),
-              SizedBox(height: 12,),
+              SizedBox(
+                height: 12,
+              ),
               Text(
                 "加载中",
                 style: _textStyle,
@@ -122,6 +125,14 @@ class IndexHomeViewPage extends GetView {
     // 桌面平台
     if (width >= 500) return 120;
     return width * .6;
+  }
+
+  bool get indexEnablePullDown {
+    return !home.isLoading;
+  }
+
+  bool get indexEnablePullUp {
+    return !home.isLoading && home.homedata.length >= 1;
   }
 
   @override
@@ -166,8 +177,8 @@ class IndexHomeViewPage extends GetView {
               );
             }
             return SmartRefresher(
-              enablePullDown: true,
-              enablePullUp: true,
+              enablePullDown: indexEnablePullDown,
+              enablePullUp: indexEnablePullUp,
               header: WaterDropHeader(
                 refresh: Row(
                   mainAxisAlignment: MainAxisAlignment.center,

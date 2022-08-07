@@ -275,9 +275,8 @@ class IndexHomeViewPage extends GetView {
                     itemCount: homeview.homedata.length,
                     itemBuilder: (BuildContext context, int index) {
                       var subItem = homeview.homedata[index];
-                      var _h = index % 2 == 0
-                          ? _cardOnceHeight
-                          : (_cardOnceHeight * .8);
+                      var _scale = index % 2 == 0 ? 1 : .8;
+                      var _h = _cardOnceHeight * _scale;
                       return Container(
                         height: _h,
                         child: MovieCardItem(

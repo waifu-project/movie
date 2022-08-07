@@ -19,7 +19,6 @@ import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:movie/app/modules/home/views/home_config.dart';
@@ -74,21 +73,6 @@ class SourceHelpTable extends StatefulWidget {
 }
 
 class _SourceHelpTableState extends State<SourceHelpTable> {
-  int _tabIndex = 0;
-
-  int get tabIndex => _tabIndex;
-
-  set tabIndex(int newVal) {
-    setState(() {
-      _tabIndex = newVal;
-    });
-    pageController.animateToPage(
-      newVal,
-      duration: Duration(milliseconds: 420),
-      curve: Curves.ease,
-    );
-  }
-
   bool get showNSFW {
     return GetStorage().read(ConstDart.is_nsfw) ?? false;
   }
@@ -131,11 +115,8 @@ class _SourceHelpTableState extends State<SourceHelpTable> {
   @override
   void initState() {
     super.initState();
-    loadSourceCreateData();
     loadMirrorListApi();
   }
-
-  PageController pageController = PageController();
 
   String get playfulConfirmText {
     return "我知道了";
@@ -181,15 +162,6 @@ class _SourceHelpTableState extends State<SourceHelpTable> {
     await FlutterClipboard.copy(result);
     showEasyCupertinoDialog(content: '已复制到剪贴板!');
   }
-
-  loadSourceCreateData() async {
-    var data = await rootBundle.loadString("assets/data/source_create.html");
-    setState(() {
-      sourceCreateData = data;
-    });
-  }
-
-  String sourceCreateData = "";
 
   String get _wrapperAjaxStatusLable {
     if (!_isLoadingFromAJAX) return "啥也没有";
@@ -406,6 +378,7 @@ class _SourceHelpTableState extends State<SourceHelpTable> {
                               context,
                             ).textTheme.bodyText1!.copyWith(
                                   color: CupertinoColors.white,
+                                  fontSize: 12,
                                 ),
                           ),
                         ],
@@ -423,125 +396,72 @@ class _SourceHelpTableState extends State<SourceHelpTable> {
           child: Container(
             child: Column(
               children: [
-                Container(
-                  margin: EdgeInsets.symmetric(
-                    vertical: 12,
-                    horizontal: 6,
-                  ),
-                  width: double.infinity,
-                  child: CupertinoSlidingSegmentedControl(
-                    backgroundColor: Colors.black26,
-                    thumbColor: Get.isDarkMode ? Colors.blue : Colors.white,
-                    onValueChanged: (value) {
-                      if (value == null) return;
-                      setState(() {
-                        tabIndex = value as int;
-                      });
-                    },
-                    groupValue: tabIndex,
-                    children: <int, Widget>{
-                      0: Text("推荐源"),
-                      1: Text("制作教程"),
-                    },
-                  ),
-                ),
                 Expanded(
-                  child: PageView(
-                    onPageChanged: (index) {
-                      setState(() {
-                        tabIndex = index;
-                      });
-                    },
-                    controller: pageController,
-                    children: [
-                      Column(
-                        children: [
-                          Expanded(
-                            child: CupertinoScrollbar(
-                              child: Builder(
-                                builder: (context) {
-                                  if (mirrors.isEmpty) {
-                                    if (_canLoadFail) {
-                                      return _errorWidget;
-                                    }
-                                    return _mirrorEmptyStateWidget;
-                                  }
-                                  return ListView(
-                                    children: mirrors.map((item) {
-                                      return CupertinoListTile(
-                                        title: Text(
-                                          item.title ?? "",
-                                          style: TextStyle(
-                                            color: Get.isDarkMode
-                                                ? Colors.white54
-                                                : Colors.black54,
-                                          ),
-                                          maxLines: 2,
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
-                                        onTap: () {
-                                          handleCopyText(item: item);
-                                        },
-                                      );
-                                    }).toList(),
-                                  );
-                                },
+                  child: CupertinoScrollbar(
+                    child: Builder(
+                      builder: (context) {
+                        if (mirrors.isEmpty) {
+                          if (_canLoadFail) {
+                            return _errorWidget;
+                          }
+                          return _mirrorEmptyStateWidget;
+                        }
+                        return ListView(
+                          children: mirrors.map((item) {
+                            return CupertinoListTile(
+                              title: Text(
+                                item.title ?? "",
+                                style: TextStyle(
+                                  color: Get.isDarkMode
+                                      ? Colors.white54
+                                      : Colors.black54,
+                                ),
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
                               ),
-                            ),
-                          ),
-                          Builder(
-                            builder: (context) {
-                              if (mirrors.isEmpty) {
-                                if (_canLoadFail)
-                                  return Padding(
-                                    padding: EdgeInsets.only(
-                                      bottom: 24,
-                                    ),
-                                    child: CupertinoButton.filled(
-                                      padding: EdgeInsets.all(12),
-                                      child: Text("重新加载"),
-                                      onPressed: () {
-                                        loadMirrorListApi();
-                                      },
-                                    ),
-                                  );
-                                return SizedBox.shrink();
-                              }
-                              return Container(
-                                margin: EdgeInsets.symmetric(
-                                  horizontal: 0,
-                                  vertical: 12,
-                                ),
-                                child: CupertinoButton.filled(
-                                  borderRadius: BorderRadius.circular(24),
-                                  child: Text("一键复制到剪贴板"),
-                                  onPressed: () {
-                                    handleCopyText(canCopyAll: true);
-                                  },
-                                ),
-                              );
-                            },
-                          )
-                        ],
-                      ),
-                      Expanded(
-                        child: Builder(
-                          builder: (context) {
-                            if (sourceCreateData.isEmpty)
-                              return Center(
-                                child: Text("(;｀O´)o"),
-                              );
-                            return ListView(
-                              children: [
-                                Text(sourceCreateData),
-                              ],
+                              onTap: () {
+                                handleCopyText(item: item);
+                              },
                             );
-                          },
-                        ),
-                      ),
-                    ],
+                          }).toList(),
+                        );
+                      },
+                    ),
                   ),
                 ),
+                Builder(
+                  builder: (context) {
+                    if (mirrors.isEmpty) {
+                      if (_canLoadFail)
+                        return Padding(
+                          padding: EdgeInsets.only(
+                            bottom: 24,
+                          ),
+                          child: CupertinoButton.filled(
+                            padding: EdgeInsets.all(12),
+                            child: Text("重新加载"),
+                            onPressed: () {
+                              loadMirrorListApi();
+                            },
+                          ),
+                        );
+                      return SizedBox.shrink();
+                    }
+                    return Container(
+                      margin: EdgeInsets.symmetric(
+                        horizontal: 0,
+                        vertical: 12,
+                      ),
+                      child: CupertinoButton.filled(
+                        borderRadius: BorderRadius.circular(24),
+                        child: Text("一键复制到剪贴板"),
+                        onPressed: () {
+                          handleCopyText(canCopyAll: true);
+                        },
+                      ),
+                    );
+                  },
+                )
               ],
             ),
           ),

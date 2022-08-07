@@ -11,8 +11,6 @@
 
 欢迎加入TG裙交♂流: https://t.me/+xub6INGSHqczN2Jl
 
-![free-man](https://user-images.githubusercontent.com/45585937/170281238-573f18c6-944f-4c74-81c4-c363a00ecfd8.gif)
-
 [Re: 从零开始的开发日志](docs/dev.md)
 
 > `iOS` 下载 `ipa` 之后, 请使用 [sideloadly](https://sideloadly.io/) 签名安装

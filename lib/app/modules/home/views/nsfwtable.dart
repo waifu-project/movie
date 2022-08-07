@@ -22,6 +22,7 @@ import 'dart:async' show Future;
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:get/get.dart';
 import 'package:movie/app/modules/home/controllers/home_controller.dart';
+import 'package:movie/app/widget/window_appbar.dart';
 
 import 'settings_view.dart';
 
@@ -80,10 +81,25 @@ class _NsfwTableViewState extends State<NsfwTableView> {
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
-      navigationBar: CupertinoNavigationBar(
-        backgroundColor: Get.isDarkMode ? Colors.black12 : Colors.white,
-        leading: CupertinoNavigationBarBackButton(),
-        middle: Text('开启NSFW', style: TextStyle(color: Get.isDarkMode ? Colors.white : Colors.black),),
+      navigationBar: CupertinoEasyAppBar(
+        child: Column(
+          children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                CupertinoNavigationBarBackButton(),
+                Expanded(
+                  child: Text(
+                    '开启NSFW',
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ],
+            ),
+            Divider(),
+          ],
+        ),
       ),
       child: SafeArea(
         child: SingleChildScrollView(

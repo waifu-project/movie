@@ -17,8 +17,6 @@ import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_html/flutter_html.dart';
-
 import 'package:get/get.dart';
 import 'package:movie/app/widget/window_appbar.dart';
 import 'package:movie/mirror/m_utils/m.dart';
@@ -164,9 +162,7 @@ class PlayView extends GetView<PlayController> {
                     horizontal: 12,
                     vertical: 9,
                   ),
-                  child: Html(
-                    data: play.movieItem.desc.replaceAll('\\\\n', '\n'),
-                  ),
+                  child: Text(play.movieItem.desc.replaceAll('\\\\n', '\n')),
                 ),
                 Container(
                   margin: EdgeInsets.symmetric(

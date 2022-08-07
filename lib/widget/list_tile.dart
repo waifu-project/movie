@@ -8,11 +8,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/rendering.dart';
 
 import 'package:flutter/material.dart'
-    show
-        ListTileTheme,
-        MaterialState,
-        MaterialStateMouseCursor,
-        MaterialStateProperty;
+    show ListTileTheme, ListTileThemeData, MaterialState, MaterialStateMouseCursor, MaterialStateProperty;
 export 'package:flutter/material.dart' show ListTileTheme;
 
 import 'package:flutter/gestures.dart';
@@ -483,7 +479,7 @@ class CupertinoListTile extends StatelessWidget {
   final bool autofocus;
 
   Color? _iconColor(
-      BuildContext context, CupertinoThemeData theme, ListTileTheme tileTheme) {
+      BuildContext context, CupertinoThemeData theme, ListTileThemeData tileTheme) {
     if (!enabled)
       return CupertinoDynamicColor.resolve(
           CupertinoColors.placeholderText, context);
@@ -499,7 +495,7 @@ class CupertinoListTile extends StatelessWidget {
   }
 
   Color? _textColor(BuildContext context, CupertinoThemeData theme,
-      ListTileTheme tileTheme, Color? defaultColor) {
+      ListTileThemeData tileTheme, Color? defaultColor) {
     if (!enabled)
       return CupertinoDynamicColor.resolve(
           CupertinoColors.placeholderText, context);
@@ -514,12 +510,12 @@ class CupertinoListTile extends StatelessWidget {
     return defaultColor;
   }
 
-  bool _isDenseLayout(ListTileTheme tileTheme) {
-    return dense ?? tileTheme.dense;
+  bool _isDenseLayout(ListTileThemeData tileTheme) {
+    return dense ?? tileTheme.dense ?? false;
   }
 
   TextStyle _titleTextStyle(
-      BuildContext context, CupertinoThemeData theme, ListTileTheme tileTheme) {
+      BuildContext context, CupertinoThemeData theme, ListTileThemeData tileTheme) {
     TextStyle style = theme.textTheme.textStyle;
     final Color? color = _textColor(context, theme, tileTheme, style.color);
     return _isDenseLayout(tileTheme)
@@ -528,7 +524,7 @@ class CupertinoListTile extends StatelessWidget {
   }
 
   TextStyle _subtitleTextStyle(
-      BuildContext context, CupertinoThemeData theme, ListTileTheme tileTheme) {
+      BuildContext context, CupertinoThemeData theme, ListTileThemeData tileTheme) {
     final TextStyle style = theme.textTheme.tabLabelTextStyle;
     final Color? color =
         _textColor(context, theme, tileTheme, theme.textTheme.textStyle.color);
@@ -540,7 +536,7 @@ class CupertinoListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final CupertinoThemeData theme = CupertinoTheme.of(context);
-    final ListTileTheme tileTheme = ListTileTheme.of(context);
+    final ListTileThemeData tileTheme = ListTileTheme.of(context);
 
     late IconThemeData iconThemeData;
     if (leading != null || trailing != null)

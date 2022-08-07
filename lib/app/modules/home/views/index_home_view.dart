@@ -26,7 +26,7 @@ import 'package:movie/app/widget/movie_card_item.dart';
 import 'package:movie/app/widget/window_appbar.dart';
 import 'package:movie/config.dart';
 import 'package:movie/mirror/mirror_serialize.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 import 'package:waterfall_flow/waterfall_flow.dart';
 
 class IndexHomeView extends StatefulWidget {

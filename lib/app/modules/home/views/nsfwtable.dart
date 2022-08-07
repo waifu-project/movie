@@ -17,7 +17,6 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_html/flutter_html.dart';
 import 'dart:async' show Future;
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:get/get.dart';
@@ -107,9 +106,7 @@ class _NsfwTableViewState extends State<NsfwTableView> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Html(
-                data: html,
-              ),
+              Text(html),
               Padding(
                 padding: EdgeInsets.all(12),
                 child: Column(

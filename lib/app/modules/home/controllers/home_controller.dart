@@ -14,8 +14,6 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import 'package:flappy_search_bar_ns/flappy_search_bar_ns.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
@@ -25,7 +23,7 @@ import 'package:movie/config.dart';
 import 'package:movie/impl/movie.dart';
 import 'package:movie/mirror/mirror.dart';
 import 'package:movie/mirror/mirror_serialize.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 
 /// 历史记录处理类型
 enum UpdateSearchHistoryType {
@@ -253,7 +251,7 @@ class HomeController extends GetxController with WidgetsBindingObserver {
   void onInit() {
     super.onInit();
     updateWindowLastSize();
-    WidgetsBinding.instance!.addObserver(this);
+    WidgetsBinding.instance.addObserver(this);
     updateNsfwSetting();
     updateIOSCanBeUseSystemBrowser();
     updateMacosPlayUseIINAState();
@@ -262,7 +260,7 @@ class HomeController extends GetxController with WidgetsBindingObserver {
   }
 
   updateWindowLastSize() {
-    windowLastSize = WidgetsBinding.instance!.window.physicalSize;
+    windowLastSize = WidgetsBinding.instance.window.physicalSize;
     update();
   }
 
@@ -355,7 +353,7 @@ class HomeController extends GetxController with WidgetsBindingObserver {
 
   @override
   void onClose() {
-    WidgetsBinding.instance!.removeObserver(this);
+    WidgetsBinding.instance.removeObserver(this);
   }
 
   @override

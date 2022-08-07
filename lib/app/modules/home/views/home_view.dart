@@ -88,34 +88,37 @@ class HomeView extends GetView<HomeController> {
         bottomNavigationBar: BottomAppBar(
           elevation: 0,
           color: _color,
-          child: SizedBox(
-            height: kBarHeight,
-            child: ClipRect(
-              child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 40, sigmaY: 40),
-                child: Center(
-                  child: ConstrainedBox(
-                    constraints: BoxConstraints(
-                      maxWidth: 360,
-                    ),
-                    child: SalomonBottomBar(
-                      itemPadding: EdgeInsets.symmetric(
-                        vertical: 9,
-                        horizontal: 18,
+          child: GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            child: SizedBox(
+              height: kBarHeight,
+              child: ClipRect(
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 40, sigmaY: 40),
+                  child: Center(
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(
+                        maxWidth: 360,
                       ),
-                      currentIndex: homeview.currentBarIndex,
-                      onTap: (int i) {
-                        homeview.changeCurrentBarIndex(i);
-                      },
-                      items: _tabs
-                          .map(
-                            (e) => SalomonBottomBarItem(
-                              icon: Icon(e['icon']),
-                              title: Text(e['title']),
-                              selectedColor: e['color'],
-                            ),
-                          )
-                          .toList(),
+                      child: SalomonBottomBar(
+                        itemPadding: EdgeInsets.symmetric(
+                          vertical: 9,
+                          horizontal: 18,
+                        ),
+                        currentIndex: homeview.currentBarIndex,
+                        onTap: (int i) {
+                          homeview.changeCurrentBarIndex(i);
+                        },
+                        items: _tabs
+                            .map(
+                              (e) => SalomonBottomBarItem(
+                                icon: Icon(e['icon']),
+                                title: Text(e['title']),
+                                selectedColor: e['color'],
+                              ),
+                            )
+                            .toList(),
+                      ),
                     ),
                   ),
                 ),

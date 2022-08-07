@@ -268,7 +268,7 @@ class PlayView extends GetView<PlayController> {
                 Padding(
                   padding: EdgeInsets.all(offsetSize),
                   child: Builder(builder: (context) {
-                    if (playlist.isEmpty) {
+                    if (playlist.isEmpty || (playlist.length == 1 && playlist[0].datas.isEmpty)) {
                       return Center(
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -279,7 +279,9 @@ class PlayView extends GetView<PlayController> {
                               size: 42,
                               color: CupertinoColors.systemBlue,
                             ),
-                            SizedBox(height: 12,),
+                            SizedBox(
+                              height: 12,
+                            ),
                             Text(
                               "暂无播放链接",
                               style: Theme.of(context).textTheme.caption,

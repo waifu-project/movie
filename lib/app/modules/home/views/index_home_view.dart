@@ -238,13 +238,11 @@ class IndexHomeViewPage extends GetView {
                           child: Column(
                             children: [
                               Image.asset(
-                                "assets/images/empty.png",
-                                fit: BoxFit.cover,
-                                width: Get.width * .8,
-                                height: Get.height * .4,
+                                "assets/images/error.png",
+                                width: Get.width * .33,
                               ),
                               SizedBox(
-                                height: 12,
+                                height: 24,
                               ),
                               CupertinoButton.filled(
                                 child: Text("重新加载"),

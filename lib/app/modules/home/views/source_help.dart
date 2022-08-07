@@ -18,10 +18,8 @@ import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_html/flutter_html.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:movie/app/modules/home/views/home_config.dart';
@@ -160,7 +158,7 @@ class _SourceHelpTableState extends State<SourceHelpTable> {
       }
       showEasyCupertinoDialog(
         context: ctx,
-        content: Html(data: element.msg ?? ""),
+        content: Text(element.msg ?? ""),
         title: element.title,
         confirmText: playfulConfirmText,
         onDone: () {
@@ -535,9 +533,7 @@ class _SourceHelpTableState extends State<SourceHelpTable> {
                               );
                             return ListView(
                               children: [
-                                Html(
-                                  data: sourceCreateData,
-                                ),
+                                Text(sourceCreateData),
                               ],
                             );
                           },

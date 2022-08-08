@@ -3,7 +3,7 @@
 
 ## YY播放器
 
-使用 `Flutter` 构建, 支持 `Android` | `Windows` | `Macos`
+使用 `Flutter` 构建, 支持 `Android` | `Windows` | `Macos` | `Linux`
 
 支持自定义源, 可自行添加源
 

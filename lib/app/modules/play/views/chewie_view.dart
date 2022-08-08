@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:get/get.dart';
+import 'package:movie/app/widget/window_appbar.dart';
 import 'package:movie/utils/screen_helper.dart';
 import 'package:video_player/video_player.dart';
 
@@ -59,8 +60,8 @@ class _ChewieViewState extends State<ChewieView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
+      appBar: WindowAppBar(
+        iosBackStyle: true,
       ),
       body: Chewie(
         controller: ChewieController(

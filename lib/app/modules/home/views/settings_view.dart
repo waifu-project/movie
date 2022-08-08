@@ -288,7 +288,9 @@ class _SettingsViewState extends State<SettingsView> {
   }
 
   /// 是否显示`ios`默认浏览器设置
-  bool canBeShowIosBrowserSettings = GetPlatform.isIOS || kDebugMode;
+  /// linux no support this options!!
+  bool canBeShowIosBrowserSettings =
+      !GetPlatform.isLinux && (GetPlatform.isIOS || kDebugMode);
 
   bool _canBeShowIosBrowser = true;
 

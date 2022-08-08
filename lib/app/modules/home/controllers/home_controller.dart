@@ -56,7 +56,7 @@ class HomeController extends GetxController with WidgetsBindingObserver {
   bool _iosCanBeUseSystemBrowser = true;
 
   bool get iosCanBeUseSystemBrowser =>
-      _iosCanBeUseSystemBrowser && GetPlatform.isIOS;
+      _iosCanBeUseSystemBrowser && GetPlatform.isIOS && !GetPlatform.isLinux;
 
   set iosCanBeUseSystemBrowser(bool newVal) {
     _iosCanBeUseSystemBrowser = newVal;
@@ -396,6 +396,4 @@ class HomeController extends GetxController with WidgetsBindingObserver {
 
   final SearchBarController searchBarController =
       SearchBarController<MirrorOnceItemSerialize>();
-
-  
 }

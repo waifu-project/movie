@@ -4,16 +4,128 @@ on:
     tags:
       - "release-v*"
 
+env:
+  FLUTTER_VERSION: 3.0.5
+  LINUX_DEPENDENCIES: git unzip zip xz-utils curl clang cmake ninja-build pkg-config libgtk-3-dev libblkid-dev liblzma-dev libjsoncpp-dev cmake-data libjsoncpp1 libsecret-1-dev libsecret-1-0 librhash0 libsqlite3-dev libappindicator3-dev gettext
+
 jobs:
-  release-to-gitHub:
+  build-linux-x86_64:
+    runs-on: ubuntu-latest
+
+    env:
+      TARBALL_NAME: yy-${{ github.event.release.tag_name }}-linux-x86_64.tar.gz
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+      - name: Disable Google Analytics
+        run: flutter config --no-analytics
+      - name: Install dependencies
+        run: flutter pub get
+      - name: Enable Linux support
+        run: flutter config --enable-linux-desktop
+      - name: Install dependencies
+        run: sudo apt update && sudo apt install ${{ env.LINUX_DEPENDENCIES }} -y
+      - name: Build
+        run: flutter build linux --release
+      - name: Create tarball
+        run: |
+          cd build/linux/x64/release/bundle
+          tar -czf ../${{ env.TARBALL_NAME }} *
+      - name: Upload assets
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: build/linux/x64/release/${{ env.TARBALL_NAME }}
+          asset_name: ${{ env.TARBALL_NAME }}
+          asset_content_type: application/gzip
+
+  build-linux-arm64:
+    runs-on: ubuntu-latest
+
+    env:
+      TARBALL_NAME: yy-${{ github.event.release.tag_name }}-linux-arm64.tar.gz
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: uraimo/run-on-arch-action@v2.1.1
+        name: Build
+        id: build
+        with:
+          arch: aarch64
+          distro: ubuntu20.04
+          githubToken: ${{ github.token }}
+          # Create an artifacts directory
+          setup: |
+            mkdir -p "${PWD}/artifacts"
+          # Mount the artifacts directory as /artifacts in the container
+          dockerRunArgs: |
+            --volume "${PWD}/artifacts:/artifacts"
+          install: |
+            apt update && apt install ${{ env.LINUX_DEPENDENCIES }} -y
+            git clone https://github.com/flutter/flutter.git -b ${{ env.FLUTTER_VERSION }} /flutter
+          run: |
+            export PATH="$PATH:/flutter/bin"
+            flutter config --no-analytics
+            flutter pub get
+            flutter config --enable-linux-desktop
+            flutter build linux --release
+            echo "::set-output name=assets-path::${PWD}/artifacts"
+            cd build/linux/arm64/release/bundle
+            tar -czf /artifacts/${{ env.TARBALL_NAME }} *
+      - name: Upload assets
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: ${{ steps.build.outputs.assets-path }}/${{ env.TARBALL_NAME }}
+          asset_name: ${{ env.TARBALL_NAME }}
+          asset_content_type: application/gzip
+
+  build-linux-snap:
+    runs-on: ubuntu-latest
+
+    env:
+      SNAP_NAME: yy_${{ github.event.release.tag_name }}_linux_unsigned_${{ matrix.platform }}.snap
+
+    strategy:
+      matrix:
+        platform:
+          - amd64
+          - arm64
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: docker/setup-qemu-action@v1
+      - uses: diddlesnaps/snapcraft-multiarch-action@v1
+        id: snapcraft
+        with:
+          architecture: ${{ matrix.platform }}
+      - uses: actions/upload-release-asset@v1
+        name: Upload assets
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: ${{ steps.snapcraft.outputs.snap }}
+          asset_name: ${{ env.SNAP_NAME }}
+          asset_content_type: application/octet-s
+
+
+  build-cross-platform:
     name: release
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-java@v2
         with:
-          distribution: 'zulu'
-          java-version: '11'
+          distribution: "zulu"
+          java-version: "11"
       - uses: subosito/flutter-action@v2
         with:
           flutter-version: "3.0.5"
@@ -33,7 +145,7 @@ jobs:
           ln -s ../Runner.app
           cd ..
           zip -r app.ipa Payload
-      
+
       - run: |
           flutter config --enable-macos-desktop
           flutter build macos --release

@@ -35,87 +35,10 @@ jobs:
           cd build/linux/x64/release/bundle
           tar -czf ../${{ env.TARBALL_NAME }} *
       - name: Upload assets
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: actions/upload-artifact@v3
         with:
-          upload_url: ${{ github.event.release.upload_url }}
-          asset_path: build/linux/x64/release/${{ env.TARBALL_NAME }}
-          asset_name: ${{ env.TARBALL_NAME }}
-          asset_content_type: application/gzip
-
-  build-linux-arm64:
-    runs-on: ubuntu-latest
-
-    env:
-      TARBALL_NAME: yy-${{ github.event.release.tag_name }}-linux-arm64.tar.gz
-
-    steps:
-      - uses: actions/checkout@v3
-      - uses: uraimo/run-on-arch-action@v2.1.1
-        name: Build
-        id: build
-        with:
-          arch: aarch64
-          distro: ubuntu20.04
-          githubToken: ${{ github.token }}
-          # Create an artifacts directory
-          setup: |
-            mkdir -p "${PWD}/artifacts"
-          # Mount the artifacts directory as /artifacts in the container
-          dockerRunArgs: |
-            --volume "${PWD}/artifacts:/artifacts"
-          install: |
-            apt update && apt install ${{ env.LINUX_DEPENDENCIES }} -y
-            git clone https://github.com/flutter/flutter.git -b ${{ env.FLUTTER_VERSION }} /flutter
-          run: |
-            export PATH="$PATH:/flutter/bin"
-            flutter config --no-analytics
-            flutter pub get
-            flutter config --enable-linux-desktop
-            flutter build linux --release
-            echo "::set-output name=assets-path::${PWD}/artifacts"
-            cd build/linux/arm64/release/bundle
-            tar -czf /artifacts/${{ env.TARBALL_NAME }} *
-      - name: Upload assets
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ github.event.release.upload_url }}
-          asset_path: ${{ steps.build.outputs.assets-path }}/${{ env.TARBALL_NAME }}
-          asset_name: ${{ env.TARBALL_NAME }}
-          asset_content_type: application/gzip
-
-  build-linux-snap:
-    runs-on: ubuntu-latest
-
-    env:
-      SNAP_NAME: yy_${{ github.event.release.tag_name }}_linux_unsigned_${{ matrix.platform }}.snap
-
-    strategy:
-      matrix:
-        platform:
-          - amd64
-          - arm64
-
-    steps:
-      - uses: actions/checkout@v3
-      - uses: docker/setup-qemu-action@v1
-      - uses: diddlesnaps/snapcraft-multiarch-action@v1
-        id: snapcraft
-        with:
-          architecture: ${{ matrix.platform }}
-      - uses: actions/upload-release-asset@v1
-        name: Upload assets
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ github.event.release.upload_url }}
-          asset_path: ${{ steps.snapcraft.outputs.snap }}
-          asset_name: ${{ env.SNAP_NAME }}
-          asset_content_type: application/octet-s
-
+          name: x86_64_linux
+          path: build/linux/x64/release/${{ env.TARBALL_NAME }}
 
   build-cross-platform:
     name: release
@@ -152,11 +75,17 @@ jobs:
           cd build/macos/Build/Products/Release
           zip -r movie.mac.zip movie.app/*
 
+      - uses: actions/download-artifact@v3
+        with:
+          name: x86_64_linux
+          path: build/linux/x64/release/yy-${{ github.event.release.tag_name }}-linux-x86_64.tar.gz
+
       - uses: softprops/action-gh-release@v1
         with:
           files: |
             build/app/outputs/flutter-apk/*.apk
             build/ios/iphoneos/app.ipa
             build/macos/Build/Products/Release/movie.mac.zip
+            build/linux/x64/release/yy-${{ github.event.release.tag_name }}-linux-x86_64.tar.gz
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

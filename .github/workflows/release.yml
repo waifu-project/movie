@@ -78,7 +78,6 @@ jobs:
       - uses: actions/download-artifact@v3
         with:
           name: x86_64_linux
-          path: build/linux/x64/release/yy-${{ github.event.release.tag_name }}-linux-x86_64.tar.gz
 
       - uses: softprops/action-gh-release@v1
         with:
@@ -86,6 +85,6 @@ jobs:
             build/app/outputs/flutter-apk/*.apk
             build/ios/iphoneos/app.ipa
             build/macos/Build/Products/Release/movie.mac.zip
-            build/linux/x64/release/yy-${{ github.event.release.tag_name }}-linux-x86_64.tar.gz
+            yy-${{ github.event.release.tag_name }}-linux-x86_64.tar.gz
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

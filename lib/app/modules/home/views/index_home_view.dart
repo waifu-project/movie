@@ -264,6 +264,7 @@ class IndexHomeViewPage extends GetView {
                   }
 
                   return WaterfallFlow.builder(
+                    controller: ScrollController(),
                     physics: NeverScrollableScrollPhysics(),
                     shrinkWrap: true,
                     gridDelegate:

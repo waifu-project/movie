@@ -111,50 +111,42 @@ class PlayView extends GetView<PlayController> {
                 Container(
                   width: double.infinity,
                   height: Get.height * .3,
-                  child: BackdropFilter(
-                    filter: ImageFilter.blur(
-                      sigmaX: 6,
-                      sigmaY: 6,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: NetworkImage(play.movieItem.smallCoverImage),
+                      fit: BoxFit.cover,
                     ),
-                    child: Stack(
-                      clipBehavior: Clip.none,
-                      children: [
-                        Image.network(
-                          play.movieItem.smallCoverImage,
-                          fit: BoxFit.cover,
-                          width: double.infinity,
-                          height: double.infinity,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(child: SizedBox.shrink()),
+                      Container(
+                        width: double.infinity,
+                        clipBehavior: Clip.antiAlias,
+                        decoration: BoxDecoration(
+                          color: Colors.black12,
                         ),
-                        Positioned.fill(
-                          child: BackdropFilter(
-                            filter: ImageFilter.blur(
-                              sigmaX: 15,
-                              sigmaY: 15,
+                        child: BackdropFilter(
+                          filter: ImageFilter.blur(
+                            sigmaX: 24,
+                            sigmaY: 24,
+                          ),
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(
+                              vertical: 12,
+                              horizontal: 24,
                             ),
-                            child: Container(
-                              color: Colors.white10,
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Expanded(child: SizedBox.shrink()),
-                                  Padding(
-                                    padding: EdgeInsets.all(24),
-                                    child: Text(
-                                      play.movieItem.title,
-                                      style:
-                                          Theme.of(context).textTheme.headline6,
-                                      overflow: TextOverflow.ellipsis,
-                                      maxLines: 4,
-                                    ),
-                                  ),
-                                ],
-                              ),
+                            child: Text(
+                              play.movieItem.title,
+                              style: Theme.of(context).textTheme.titleLarge,
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 4,
                             ),
                           ),
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
                 Container(
@@ -264,7 +256,8 @@ class PlayView extends GetView<PlayController> {
                 Padding(
                   padding: EdgeInsets.all(offsetSize),
                   child: Builder(builder: (context) {
-                    if (playlist.isEmpty || (playlist.length == 1 && playlist[0].datas.isEmpty)) {
+                    if (playlist.isEmpty ||
+                        (playlist.length == 1 && playlist[0].datas.isEmpty)) {
                       return Center(
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,

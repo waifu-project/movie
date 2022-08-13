@@ -36,7 +36,14 @@ class PlayListData {
   });
 }
 
-class PlayView extends GetView<PlayController> {
+class PlayView extends StatefulWidget {
+  const PlayView({Key? key}) : super(key: key);
+
+  @override
+  State<PlayView> createState() => _PlayViewState();
+}
+
+class _PlayViewState extends State<PlayView> {
   final PlayController play = Get.find<PlayController>();
 
   List<PlayListData> get playlist {
@@ -95,25 +102,66 @@ class PlayView extends GetView<PlayController> {
 
   final double offsetSize = 12;
 
+  double scrollOffset = 0;
+  final scrollController = ScrollController();
+  bool get showTitle {
+    bool show = scrollOffset >= Get.height * .3;
+    return show;
+  }
+
+  Matrix4 get _transform {
+    return Matrix4.translationValues(0, showTitle ? 0 : 24, 0);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    beforeHook();
+  }
+
+  beforeHook() {
+    scrollController.addListener(() {
+      var offset = scrollController.offset;
+      print(offset);
+      setState(() {
+        scrollOffset = offset;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return GetBuilder<PlayController>(
       builder: (play) => Scaffold(
-        appBar:CupertinoEasyAppBar(
-        child:Row(
-          children: [
-            CupertinoNavigationBarBackButton(),
-            Text(
-              play.movieItem.title,
-              style: TextStyle(
-                fontSize: 18,
+        appBar: CupertinoEasyAppBar(
+          child: Row(
+            children: [
+              CupertinoNavigationBarBackButton(),
+              AnimatedContainer(
+                transform: _transform,
+                duration: Duration(
+                  milliseconds: 120,
+                ),
+                curve: Curves.ease,
+                child: AnimatedOpacity(
+                  duration: Duration(
+                    milliseconds: 120,
+                  ), 
+                  opacity: showTitle ? 1 : 0,
+                  child: Text(
+                    play.movieItem.title,
+                    style: TextStyle(
+                      fontSize: 18,
+                    ),
+                  ),
+                ),
               ),
-            ),
-          ],
-        )
-      ),
+            ],
+          ),
+        ),
         body: SafeArea(
           child: SingleChildScrollView(
+            controller: scrollController,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -185,10 +233,11 @@ class PlayView extends GetView<PlayController> {
                   decoration: canRenderIosStyle
                       ? BoxDecoration(
                           border: Border(
-                              bottom: BorderSide(
-                            color: Colors.pink,
-                            width: 1,
-                          )),
+                            bottom: BorderSide(
+                              color: Colors.pink,
+                              width: 1,
+                            ),
+                          ),
                         )
                       : null,
                   padding: canRenderIosStyle

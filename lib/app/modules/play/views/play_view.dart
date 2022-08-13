@@ -99,9 +99,19 @@ class PlayView extends GetView<PlayController> {
   Widget build(BuildContext context) {
     return GetBuilder<PlayController>(
       builder: (play) => Scaffold(
-        appBar: WindowAppBar(
-          iosBackStyle: true,
-        ),
+        appBar:CupertinoEasyAppBar(
+        child:Row(
+          children: [
+            CupertinoNavigationBarBackButton(),
+            Text(
+              play.movieItem.title,
+              style: TextStyle(
+                fontSize: 18,
+              ),
+            ),
+          ],
+        )
+      ),
         body: SafeArea(
           child: SingleChildScrollView(
             child: Column(

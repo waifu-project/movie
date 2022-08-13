@@ -45,7 +45,7 @@ Future<List<dynamic>> runBefore() async {
       wrapperIfDark = windowMode;
     }
   }
-  
+
   // {
   //   if (GetPlatform.isMacOS && systemBrightnessFlag) {
   //     wrapperIfDark = Get.isPlatformDarkMode ? Brightness.dark : Brightness.light;
@@ -59,8 +59,9 @@ Future<List<dynamic>> runBefore() async {
 void runAfter() {
   if (GetPlatform.isDesktop) {
     doWhenWindowReady(() {
+      final minSize = Size(380, 420);
       final initialSize = Size(990, 720);
-      appWindow.minSize = initialSize;
+      appWindow.minSize = minSize;
       appWindow.size = initialSize;
       appWindow.alignment = Alignment.center;
       appWindow.show();
@@ -80,7 +81,11 @@ void main() async {
       initialRoute: AppPages.INITIAL,
       getPages: AppPages.routes,
       debugShowCheckedModeBanner: false,
-      themeMode: systemBrightnessFlag ? ThemeMode.system : wrapperIfDark == Brightness.dark ? ThemeMode.dark : ThemeMode.light,
+      themeMode: systemBrightnessFlag
+          ? ThemeMode.system
+          : wrapperIfDark == Brightness.dark
+              ? ThemeMode.dark
+              : ThemeMode.light,
       theme: ThemeData.light(),
       darkTheme: ThemeData.dark(),
     ),

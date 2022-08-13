@@ -122,7 +122,6 @@ class _PlayViewState extends State<PlayView> {
   beforeHook() {
     scrollController.addListener(() {
       var offset = scrollController.offset;
-      print(offset);
       setState(() {
         scrollOffset = offset;
       });

@@ -315,8 +315,9 @@ class _PlayViewState extends State<PlayView> {
                 Padding(
                   padding: EdgeInsets.all(offsetSize),
                   child: Builder(builder: (context) {
-                    if (playlist.isEmpty ||
-                        (playlist.length == 1 && playlist[0].datas.isEmpty)) {
+                    // NOTE: ↓ 若单个是否也为空
+                    bool oneIsEmpty = playlist.length == 1 && playlist[0].datas.isEmpty;
+                    if (playlist.isEmpty || oneIsEmpty) {
                       return Center(
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,

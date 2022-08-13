@@ -101,11 +101,11 @@ class _PlayViewState extends State<PlayView> {
   }
 
   final double offsetSize = 12;
-
+  final coverHeightScale = .3;
   double scrollOffset = 0;
   final scrollController = ScrollController();
   bool get showTitle {
-    bool show = scrollOffset >= Get.height * .3;
+    bool show = scrollOffset >= Get.height * coverHeightScale;
     return show;
   }
 
@@ -146,7 +146,7 @@ class _PlayViewState extends State<PlayView> {
                 child: AnimatedOpacity(
                   duration: Duration(
                     milliseconds: 120,
-                  ), 
+                  ),
                   opacity: showTitle ? 1 : 0,
                   child: Text(
                     play.movieItem.title,
@@ -168,7 +168,7 @@ class _PlayViewState extends State<PlayView> {
               children: [
                 Container(
                   width: double.infinity,
-                  height: Get.height * .3,
+                  height: Get.height * coverHeightScale,
                   decoration: BoxDecoration(
                     image: DecorationImage(
                       image: NetworkImage(play.movieItem.smallCoverImage),

@@ -255,23 +255,21 @@ class _PlayViewState extends State<PlayView> {
                         itemBuilder: (context, index) {
                           var isCurrentIndex = index == play.tabIndex;
                           var current = playlist[index];
+                          var currentBorderColor = isCurrentIndex
+                              ? Colors.pink
+                              : (Get.isDarkMode ? Colors.white : Colors.black);
                           return GestureDetector(
                             onTap: () {
                               play.changeTabIndex(index);
                             },
                             child: AnimatedContainer(
                               alignment: Alignment.center,
-                              // width: Get.width * .334,
                               height: 32,
                               duration: Duration(milliseconds: 300),
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(12),
                                 border: Border.all(
-                                  color: isCurrentIndex
-                                      ? Colors.pink
-                                      : (Get.isDarkMode
-                                          ? Colors.white
-                                          : Colors.black),
+                                  color: currentBorderColor,
                                 ),
                               ),
                               margin: EdgeInsets.only(
@@ -284,11 +282,7 @@ class _PlayViewState extends State<PlayView> {
                               child: Text(
                                 current.title,
                                 style: TextStyle(
-                                  color: isCurrentIndex
-                                      ? Colors.pink
-                                      : (Get.isDarkMode
-                                          ? Colors.white
-                                          : Colors.black),
+                                  color: currentBorderColor,
                                 ),
                                 textAlign: TextAlign.center,
                               ),

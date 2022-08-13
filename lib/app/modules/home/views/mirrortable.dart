@@ -528,9 +528,16 @@ class mirrorCard extends StatelessWidget {
                           ],
                         ),
                       ),
-                      Icon(
-                        current ? Icons.done : CupertinoIcons.right_chevron,
-                        color: _color,
+                      Row(
+                        children: [
+                          Icon(
+                            current ? Icons.done : CupertinoIcons.right_chevron,
+                            color: _color,
+                          ),
+                          SizedBox(
+                            width: 8,
+                          ),
+                        ],
                       ),
                     ],
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,

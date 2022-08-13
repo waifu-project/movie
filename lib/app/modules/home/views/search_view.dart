@@ -19,7 +19,6 @@ import 'package:dio/dio.dart';
 import 'package:flappy_search_bar_ns/flappy_search_bar_ns.dart';
 import 'package:flappy_search_bar_ns/search_bar_style.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';

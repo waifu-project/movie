@@ -41,6 +41,10 @@ class _ChewieViewState extends State<ChewieView> {
   bool initFetchUrl() {
     var _args = Get.arguments ?? {};
     String _url = _args['url'] ?? "";
+    // NOTE: 如果都没有播放地址就直接跳回到上一个页面
+    if (_url.isEmpty) {
+      Get.back();
+    }
     String _cover = _args['cover'] ?? "";
     if (_url.isEmpty) {
       return false;
@@ -57,7 +61,6 @@ class _ChewieViewState extends State<ChewieView> {
 
   init() {
     setState(() {
-      // FIXME: 若没有传入视频地址，则报错
       videoPlayerController = VideoPlayerController.network(
         playUrl,
       );

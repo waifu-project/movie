@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:chewie/chewie.dart';
+import 'package:clipboard/clipboard.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -24,6 +25,7 @@ class _ChewieViewState extends State<ChewieView> {
   @override
   void initState() {
     super.initState();
+    initFetchUrl();
     init();
   }
 
@@ -36,14 +38,29 @@ class _ChewieViewState extends State<ChewieView> {
     }
   }
 
-  Map<String, dynamic> get args {
-    return Get.arguments;
+  bool initFetchUrl() {
+    var _args = Get.arguments ?? {};
+    String _url = _args['url'] ?? "";
+    String _cover = _args['cover'] ?? "";
+    if (_url.isEmpty) {
+      return false;
+    }
+    setState(() {
+      playUrl = _url;
+      cover = _cover;
+    });
+    return true;
   }
+
+  String playUrl = "";
+  String cover = "";
 
   init() {
     setState(() {
       // FIXME: 若没有传入视频地址，则报错
-      videoPlayerController = VideoPlayerController.network(args["url"]);
+      videoPlayerController = VideoPlayerController.network(
+        playUrl,
+      );
     });
     var controller = ChewieController(
       optionsTranslation: OptionsTranslation(
@@ -70,6 +87,27 @@ class _ChewieViewState extends State<ChewieView> {
       ],
       errorBuilder: errorBuilder,
       placeholder: placeholderWidget,
+      additionalOptions: (_) => [
+        OptionItem(
+          onTap: () async {
+            Get.back();
+            if (playUrl.isEmpty) return;
+            await FlutterClipboard.copy(playUrl);
+            if (GetPlatform.isAndroid) {
+              Get.snackbar(
+                "提示",
+                "已复制到剪贴板",
+                snackPosition: SnackPosition.BOTTOM,
+                duration: Duration(
+                  milliseconds: 1200,
+                ),
+              );
+            }
+          },
+          iconData: CupertinoIcons.share,
+          title: "复制视频链接",
+        ),
+      ],
     );
 
     bool isInit = true;
@@ -184,12 +222,13 @@ class _ChewieViewState extends State<ChewieView> {
           ),
           child: Stack(
             children: [
-              Image.network(
-                args['cover'],
-                fit: BoxFit.cover,
-                width: double.infinity,
-                height: double.infinity,
-              ),
+              if (cover.isNotEmpty)
+                Image.network(
+                  cover,
+                  fit: BoxFit.cover,
+                  width: double.infinity,
+                  height: double.infinity,
+                ),
             ],
           ),
         ),

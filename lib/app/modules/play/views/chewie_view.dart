@@ -8,6 +8,8 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:video_player/video_player.dart';
 
+import 'custom_play.dart';
+
 class ChewieView extends StatefulWidget {
   const ChewieView({Key? key}) : super(key: key);
 
@@ -58,7 +60,7 @@ class _ChewieViewState extends State<ChewieView> {
       allowFullScreen: true,
       allowedScreenSleep: false,
       useRootNavigator: false,
-      customControls: CupertinoControls(
+      customControls: CustomCupertinoControls(
         backgroundColor: Colors.black38,
         iconColor: Colors.white,
       ),

@@ -113,43 +113,45 @@ class _ChewieViewState extends State<ChewieView> {
             color: Colors.black.withOpacity(.42),
           ),
           padding: EdgeInsets.symmetric(
-            horizontal: 12,
+            horizontal: 18,
             vertical: 24,
           ).copyWith(
             bottom: 12,
           ),
-          width: Get.width * .66,
-          height: Get.height * .28,
+          width: Get.width * .72,
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
             children: [
-              Expanded(
-                child: Column(
-                  children: [
-                    Icon(
-                      CupertinoIcons.bolt_slash_fill,
-                      size: 88,
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    CupertinoIcons.bolt_slash_fill,
+                    size: 88,
+                  ),
+                  SizedBox(
+                    height: 12,
+                  ),
+                  Text(
+                    "播放失败",
+                    style: TextStyle(
+                      fontSize: 24,
                     ),
-                    SizedBox(
-                      height: 12,
+                  ),
+                  Text(
+                    errorMessage,
+                    style: TextStyle(
+                      color: Colors.white.withOpacity(.72),
+                      fontSize: 10,
                     ),
-                    Text(
-                      "播放失败",
-                      style: TextStyle(
-                        fontSize: 24,
-                      ),
-                    ),
-                    SizedBox(
-                      height: 12,
-                    ),
-                    Text(
-                      errorMessage,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 10,
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
+              ),
+              SizedBox(
+                height: 12,
               ),
               CupertinoButton(
                 padding: EdgeInsets.symmetric(

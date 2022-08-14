@@ -672,6 +672,10 @@ class _CustomCupertinoControlsState extends State<CustomCupertinoControls>
   }
 
   void _onExpandCollapse() {
+    if (!controller.value.isInitialized) {
+      // debugPrint("初始化失败, 无法播放");
+      return;
+    }
     setState(() {
       notifier.hideStuff = true;
 

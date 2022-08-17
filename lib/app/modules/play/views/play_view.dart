@@ -102,31 +102,12 @@ class _PlayViewState extends State<PlayView> {
 
   final double offsetSize = 12;
   final coverHeightScale = .3;
-  double scrollOffset = 0;
-  final scrollController = ScrollController();
-  bool get showTitle {
-    bool show = scrollOffset >= Get.height * coverHeightScale;
-    return show;
-  }
-
-  Matrix4 get _transform {
-    return Matrix4.translationValues(0, showTitle ? 0 : 24, 0);
-  }
 
   @override
   void initState() {
     super.initState();
-    beforeHook();
   }
 
-  beforeHook() {
-    scrollController.addListener(() {
-      var offset = scrollController.offset;
-      setState(() {
-        scrollOffset = offset;
-      });
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -135,26 +116,7 @@ class _PlayViewState extends State<PlayView> {
         appBar: CupertinoEasyAppBar(
           child: Row(
             children: [
-              CupertinoNavigationBarBackButton(),
-              AnimatedContainer(
-                transform: _transform,
-                duration: Duration(
-                  milliseconds: 120,
-                ),
-                curve: Curves.ease,
-                child: AnimatedOpacity(
-                  duration: Duration(
-                    milliseconds: 120,
-                  ),
-                  opacity: showTitle ? 1 : 0,
-                  child: Text(
-                    play.movieItem.title,
-                    style: TextStyle(
-                      fontSize: 18,
-                    ),
-                  ),
-                ),
-              ),
+              const CupertinoNavigationBarBackButton(),
             ],
           ),
         ),

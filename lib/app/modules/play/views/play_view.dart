@@ -309,7 +309,15 @@ class _PlayViewState extends State<PlayView> {
 
   Widget get _buildWithDesc {
     var desc = play.movieItem.desc.replaceAll('\\\\n', '\n');
-    if (desc.isEmpty) desc = '暂无简介';
+    if (desc.isEmpty) {
+      return Container(
+        margin: EdgeInsets.symmetric(
+          horizontal: 12,
+          vertical: 9,
+        ),
+        child: Text('暂无简介~'),
+      );
+    }
     return ExpansionTile(
       initiallyExpanded: false,
       subtitle: Text(

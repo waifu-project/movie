@@ -321,7 +321,7 @@ class _PlayViewState extends State<PlayView> {
     return ExpansionTile(
       initiallyExpanded: false,
       subtitle: Text(
-        desc,
+        desc.trim(),
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
         style: TextStyle(

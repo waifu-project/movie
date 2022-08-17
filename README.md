@@ -7,9 +7,7 @@
 
 支持自定义源, 可自行添加源
 
-官方源: https://github.com/waifu-project/assets/blob/master/yy.json
-
-欢迎加入TG裙交♂流: https://t.me/+xub6INGSHqczN2Jl
+欢迎加入TG裙交♂流(有源分享): https://t.me/+xub6INGSHqczN2Jl
 
 [Re: 从零开始的开发日志](docs/dev.md)
 

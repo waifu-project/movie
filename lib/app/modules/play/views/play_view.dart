@@ -310,12 +310,31 @@ class _PlayViewState extends State<PlayView> {
   Widget get _buildWithDesc {
     var desc = play.movieItem.desc.replaceAll('\\\\n', '\n');
     if (desc.isEmpty) desc = '暂无简介';
-    return Container(
-      margin: EdgeInsets.symmetric(
-        horizontal: 12,
-        vertical: 9,
+    return ExpansionTile(
+      initiallyExpanded: false,
+      subtitle: Text(
+        desc,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+        style: TextStyle(
+          fontSize: 12,
+        ),
       ),
-      child: Text(desc),
+      title: Text(
+        '查看简介',
+        style: TextStyle(
+          fontSize: 18,
+        ),
+      ),
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: 12,
+            vertical: 8,
+          ),
+          child: Text(desc),
+        ),
+      ],
     );
   }
 

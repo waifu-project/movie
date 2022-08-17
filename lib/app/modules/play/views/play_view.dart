@@ -108,7 +108,6 @@ class _PlayViewState extends State<PlayView> {
     super.initState();
   }
 
-
   @override
   Widget build(BuildContext context) {
     return GetBuilder<PlayController>(
@@ -166,13 +165,7 @@ class _PlayViewState extends State<PlayView> {
                   ],
                 ),
               ),
-              Container(
-                margin: EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 9,
-                ),
-                child: Text(play.movieItem.desc.replaceAll('\\\\n', '\n')),
-              ),
+              _buildWithDesc,
               Container(
                 margin: EdgeInsets.symmetric(
                   horizontal: 12,
@@ -311,6 +304,18 @@ class _PlayViewState extends State<PlayView> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget get _buildWithDesc {
+    var desc = play.movieItem.desc.replaceAll('\\\\n', '\n');
+    if (desc.isEmpty) desc = '暂无简介';
+    return Container(
+      margin: EdgeInsets.symmetric(
+        horizontal: 12,
+        vertical: 9,
+      ),
+      child: Text(desc),
     );
   }
 

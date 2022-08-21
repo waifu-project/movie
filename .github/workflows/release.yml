@@ -19,8 +19,6 @@ jobs:
           flutter-version: ${{ env.FLUTTER_VERSION }}
       - name: Install project dependencies
         run: flutter pub get
-      - name: Generate intermediates
-        run: flutter pub run build_runner build --delete-conflicting-outputs
       - name: Enable windows build
         run: flutter config --enable-windows-desktop
       - name: Build artifacts

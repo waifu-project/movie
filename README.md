@@ -19,6 +19,20 @@
 |---------------------------------------------------------------------|---------------------------------------------------------------------|
 | ![IMG_4239.PNG](https://s2.loli.net/2022/03/01/f7wMCXJnOArqBuy.png) | ![IMG_4241.PNG](https://s2.loli.net/2022/03/01/Sytfxuc9gTN4Bjb.png) | 
 
+## 小提示🥳
+
+### 没有源怎么办?
+
+`yoyo` 是支持 `zy-player` 源的, 可去下载源之后导入到 `yoyo` 中
+
+### 怎么样获得最好的使用体验?
+
+`macOS` 推荐使用 `iina` 来播放视频
+
+`iOS` 推荐使用内置浏览器来播放视频
+
+![](https://files.catbox.moe/fzqpps.png)
+
 图片素材来自:
 
 - [花开荼靡心事未了](https://www.iconfont.cn/user/detail?spm=a313x.7781069.0.d214f71f6&uid=184365&nid=uWAFTqbAJ8hx)

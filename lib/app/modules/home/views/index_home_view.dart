@@ -220,6 +220,7 @@ class IndexHomeViewPage extends GetView {
                   );
                 },
               ),
+              scrollController: ScrollController(),
               controller: homeview.refreshController,
               onLoading: homeview.refreshOnLoading,
               onRefresh: homeview.refreshOnRefresh,

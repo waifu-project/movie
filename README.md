@@ -1,13 +1,13 @@
 <img src="design/logo_round.png" align="right" width="180">
 
 
-## YY播放器
+## yoyo
 
 使用 `Flutter` 构建, 支持 `Android` | `Windows` | `Macos` | `Linux`
 
 支持自定义源, 可自行添加源
 
-欢迎加入TG裙交♂流(有源分享): https://t.me/+xub6INGSHqczN2Jl
+欢迎加入TG裙交流(有源分享): https://t.me/+xub6INGSHqczN2Jl
 
 [Re: 从零开始的开发日志](docs/dev.md)
 

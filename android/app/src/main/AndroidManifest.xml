@@ -17,7 +17,7 @@
   </queries>
 
    <application
-        android:label="YY播放器"
+        android:label="yoyo"
         android:icon="@mipmap/launcher_icon"
         android:usesCleartextTraffic="true">
         <activity

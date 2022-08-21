@@ -65,7 +65,7 @@ dev_dependencies:
 
 # flutter pub run flutter_launcher_name:main
 flutter_launcher_name:
-  name: "YY播放器"
+  name: "yoyo"
 
 # flutter pub run flutter_native_splash:create
 flutter_native_splash:

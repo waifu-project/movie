@@ -67,7 +67,6 @@ jobs:
           path: build/linux/x64/release/${{ env.TARBALL_NAME }}
 
   build-cross-platform:
-    name: release
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v3

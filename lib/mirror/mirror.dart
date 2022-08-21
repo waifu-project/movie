@@ -18,8 +18,6 @@ import 'dart:convert';
 import 'package:get_storage/get_storage.dart';
 import 'package:movie/config.dart';
 import 'package:movie/impl/movie.dart';
-import 'package:movie/mirror/mlist/fayuqi.dart';
-import 'package:movie/mirror/mlist/theporn.dart';
 
 import 'm_utils/m.dart';
 import 'mlist/base_models/source_data.dart';
@@ -34,10 +32,7 @@ class MirrorManage {
 
   /// 内建支持的源
   /// 一般是需要自己去实现的源
-  static List<MovieImpl> builtin = [
-    FayuQiMirror(),
-    ThePornMirror(),
-  ];
+  static List<MovieImpl> builtin = [];
 
   /// 合并之后的数据
   static List<MovieImpl> get data {

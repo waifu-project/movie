@@ -16,11 +16,6 @@ export PUB_HOSTED_URL="https://mirrors.tuna.tsinghua.edu.cn/dart-pub"
 git clone https://github.com/waifu-project/movie
 cd movie
 flutter pub get .
-cd script
-# 自动生成 source_create.html
-npm i --save markdown-it
-node gen_source_create.js
-
 flutter run
 ```
 
@@ -33,8 +28,6 @@ flutter run
 建议在 [/lib/mirror/mlist](/lib/mirror/mlist) 目录中编写
 
 最后在 [/lib/mirror/mirror.dart](/lib/mirror/mirror.dart) 中的 `builtin` 添加即可
-
-具体可以参考 [ThePorn](/lib/mirror/mlist/theporn.dart) 的实现
 
 ```dart
 abstract class MovieImpl {

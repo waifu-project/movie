@@ -22,6 +22,7 @@ import 'package:movie/app/widget/window_appbar.dart';
 import 'package:movie/mirror/m_utils/m.dart';
 import 'package:movie/mirror/mirror_serialize.dart';
 import 'package:movie/utils/helper.dart';
+import 'package:movie/widget/simple_html/flutter_html.dart';
 
 import '../controllers/play_controller.dart';
 
@@ -307,6 +308,54 @@ class _PlayViewState extends State<PlayView> {
     );
   }
 
+  Style _textOncelineStyle = Style(
+    textOverflow: TextOverflow.ellipsis,
+    maxLines: 1,
+    fontSize: const FontSize(
+      12,
+    ),
+    height: 24,
+  );
+
+  List<String> _textIncludeTags = [
+    "p",
+    "span",
+    "h1",
+    "h2",
+    "h3",
+    "h4",
+    "h5",
+    "h6",
+    "pre",
+  ];
+
+  Map<String, Style> get _shortDescStyleWithHTML {
+    Map<String, Style> map = {};
+    _textIncludeTags.forEach((ele) {
+      map[ele] = _textOncelineStyle;
+    });
+    return map;
+  }
+
+  Widget _buildWithShortDesc(String desc) {
+    String humanDesc = desc.trim();
+    // NOTE: 不是标签,实际上不是很严谨!!
+    if (humanDesc[0] != '<') {
+      return Text(
+        humanDesc,
+        maxLines: 1,
+        style: TextStyle(
+          overflow: TextOverflow.ellipsis,
+          fontSize: 12,
+        ),
+      );
+    }
+    return Html(
+      data: humanDesc,
+      style: _shortDescStyleWithHTML,
+    );
+  }
+
   Widget get _buildWithDesc {
     var desc = play.movieItem.desc.replaceAll('\\\\n', '\n');
     if (desc.isEmpty) {
@@ -320,14 +369,7 @@ class _PlayViewState extends State<PlayView> {
     }
     return ExpansionTile(
       initiallyExpanded: false,
-      subtitle: Text(
-        desc.trim(),
-        maxLines: 1,
-        overflow: TextOverflow.ellipsis,
-        style: TextStyle(
-          fontSize: 12,
-        ),
-      ),
+      subtitle: _buildWithShortDesc(desc),
       title: Text(
         '查看简介',
         style: TextStyle(
@@ -340,7 +382,9 @@ class _PlayViewState extends State<PlayView> {
             horizontal: 12,
             vertical: 8,
           ),
-          child: Text(desc),
+          child: Html(
+            data: desc,
+          ),
         ),
       ],
     );

@@ -377,15 +377,21 @@ class _PlayViewState extends State<PlayView> {
         ),
       ),
       children: [
-        Padding(
+        ConstrainedBox(constraints: BoxConstraints(
+          maxHeight: Get.height * .33,
+        ),
+        child: Padding(
           padding: const EdgeInsets.symmetric(
             horizontal: 12,
             vertical: 8,
           ),
-          child: Html(
-            data: desc,
+          child: SingleChildScrollView(
+            controller: ScrollController(),
+            child: Html(
+              data: desc,
+            ),
           ),
-        ),
+        ),),
       ],
     );
   }

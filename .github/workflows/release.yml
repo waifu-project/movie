@@ -9,7 +9,8 @@ env:
   LINUX_DEPENDENCIES: git unzip zip xz-utils curl clang cmake ninja-build pkg-config libgtk-3-dev libblkid-dev liblzma-dev libjsoncpp-dev cmake-data libjsoncpp1 libsecret-1-dev libsecret-1-0 librhash0 libsqlite3-dev libappindicator3-dev gettext libwebkit2gtk-4.0-dev
 
 jobs:
-  build-and-release-windows:
+
+  build-with-windows:
     runs-on: windows-latest
 
     steps:
@@ -35,11 +36,11 @@ jobs:
           name: windows
           path: build/windows/runner/Release/yy-windows.zip
 
-  build-linux-x86_64:
+  build-with-linux-x86_64:
     runs-on: ubuntu-latest
 
     env:
-      TARBALL_NAME: yy-${{ github.event.release.tag_name }}-linux-x86_64.tar.gz
+      TARBALL_NAME: yy-linux-x86_64.tar.gz
 
     steps:
       - uses: actions/checkout@v3
@@ -66,7 +67,7 @@ jobs:
           name: x86_64_linux
           path: build/linux/x64/release/${{ env.TARBALL_NAME }}
 
-  build-cross-platform:
+  build-cross-platform-and-release:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v3
@@ -114,7 +115,7 @@ jobs:
             build/app/outputs/flutter-apk/*.apk
             build/ios/iphoneos/app.ipa
             build/macos/Build/Products/Release/movie.mac.zip
-            yy-${{ github.event.release.tag_name }}-linux-x86_64.tar.gz
+            yy-linux-x86_64.tar.gz
             yy-windows.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

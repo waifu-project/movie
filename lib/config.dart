@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-const String APP_TITLE = "YY播放器";
+const String APP_TITLE = "yoyo";
 
 /// 映射常量表
 class ConstDart {

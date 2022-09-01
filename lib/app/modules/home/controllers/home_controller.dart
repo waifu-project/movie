@@ -326,23 +326,16 @@ class HomeController extends GetxController with WidgetsBindingObserver {
       update();
     }
 
+    String id = currentMirrorItem.meta.id;
     bool notError = indexHomeLoadDataErrorMessage == "";
-    bool dataIsEmpty = homedata.isNotEmpty;
 
-    if (notError && dataIsEmpty && isFirst) {
-      String id = currentMirrorItem.meta.id;
-      bool status = currentMirrorItem.meta.status;
-      if (!status) {
-        bool memStatus = MirrorStatusStack().getStack(id) ?? false;
-        if (!memStatus) {
-          MirrorStatusStack().pushStatus(
-            id,
-            true,
-            canSave: true,
-          );
-        }
-      }
-    }
+    // NOTE: 只会在 [isFirst] 后存入持久化缓存
+    MirrorStatusStack().pushStatus(
+      id,
+      notError,
+      canSave: isFirst,
+    );
+
   }
 
   @override

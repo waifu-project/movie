@@ -569,7 +569,7 @@ extension movieStatusTypeExtension on MovieStatusType {
       case MovieStatusType.available:
         return '可用';
       case MovieStatusType.unavailable:
-        return '不可用';
+        return '上次不可用';
       case MovieStatusType.unknown:
         return '未知';
       default:

@@ -99,7 +99,7 @@ jobs:
           flutter config --enable-macos-desktop
           flutter build macos --release
           cd build/macos/Build/Products/Release
-          zip -r movie.mac.zip movie.app/*
+          zip -r yoyo.mac.zip yoyo.app/*
 
       - uses: actions/download-artifact@v3
         with:
@@ -114,7 +114,7 @@ jobs:
           files: |
             build/app/outputs/flutter-apk/*.apk
             build/ios/iphoneos/app.ipa
-            build/macos/Build/Products/Release/movie.mac.zip
+            build/macos/Build/Products/Release/yoyo.mac.zip
             yy-linux-x86_64.tar.gz
             yy-windows.zip
         env:

@@ -187,7 +187,7 @@ class _PlayViewState extends State<PlayView> {
                     ? BoxDecoration(
                         border: Border(
                           bottom: BorderSide(
-                            color: Colors.pink,
+                            color: Colors.grey.withOpacity(.2),
                             width: 1,
                           ),
                         ),
@@ -209,8 +209,8 @@ class _PlayViewState extends State<PlayView> {
                         var isCurrentIndex = index == play.tabIndex;
                         var current = playlist[index];
                         var currentBorderColor = isCurrentIndex
-                            ? Colors.pink
-                            : (Get.isDarkMode ? Colors.white : Colors.black);
+                            ? CupertinoTheme.of(context).primaryColor
+                            : (Get.isDarkMode ? Colors.white : Colors.black).withOpacity(.42);
                         return GestureDetector(
                           onTap: () {
                             play.changeTabIndex(index);

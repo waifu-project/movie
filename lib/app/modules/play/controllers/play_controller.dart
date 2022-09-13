@@ -27,6 +27,9 @@ import 'package:movie/config.dart';
 import 'package:movie/mirror/mirror_serialize.dart';
 import 'package:movie/utils/helper.dart';
 
+const _kWindowsWebviewRuntimeLink =
+    "https://developer.microsoft.com/en-us/microsoft-edge/webview2";
+
 /// 尽可能的拿到正确`url`
 /// [str] 数据模板
 ///  => https://xx.com/1.m3u8$sdf
@@ -89,14 +92,67 @@ class PlayController extends GetxController {
     url = getPlayUrl(url);
     debugPrint("play url: [$url]");
 
+    bool isWindows = GetPlatform.isWindows;
+    bool isMacos = GetPlatform.isMacOS;
+
     /// https://github.com/MixinNetwork/flutter-plugins/tree/main/packages/desktop_webview_window
     /// 该插件支持 `windows` | `linux`(<然而[webview.launch]方法不支持:(>) | `macos`
-    if (GetPlatform.isWindows || GetPlatform.isMacOS) {
+    if (isWindows || isMacos) {
       final bool typeIsM3u8 = e.type == MirrorSerializeVideoType.m3u8;
 
-      if (GetPlatform.isMacOS && home.macosPlayUseIINA) {
+      if (isMacos && home.macosPlayUseIINA) {
         easyPlayToIINA(url);
         return;
+      }
+
+      if (isWindows) {
+        bool bWebviewWindow = await WebviewWindow.isWebviewAvailable();
+        if (!bWebviewWindow) {
+          showCupertinoDialog(
+            builder: (BuildContext context) => CupertinoAlertDialog(
+              title: const Text('提示'),
+              content: Padding(
+                padding: const EdgeInsets.symmetric(
+                  vertical: 12.0,
+                ),
+                child: Text(
+                  '未安装 edge webview runtime, 无法播放 :(',
+                  style: TextStyle(
+                    fontSize: 18,
+                  ),
+                ),
+              ),
+              actions: <CupertinoDialogAction>[
+                CupertinoDialogAction(
+                  child: const Text(
+                    '我知道了',
+                    style: TextStyle(
+                      color: Colors.red,
+                    ),
+                  ),
+                  onPressed: () {
+                    Get.back();
+                  },
+                ),
+                CupertinoDialogAction(
+                  child: const Text(
+                    '去下载',
+                    style: TextStyle(
+                      color: Colors.blue,
+                    ),
+                  ),
+                  isDestructiveAction: true,
+                  onPressed: () {
+                    LaunchURL(_kWindowsWebviewRuntimeLink);
+                    Get.back();
+                  },
+                )
+              ],
+            ),
+            context: Get.context as BuildContext,
+          );
+          return;
+        }
       }
 
       /// `MP4` 理论上来说不需要操作就可以直接喂给浏览器?

@@ -30,6 +30,30 @@ import 'package:movie/utils/helper.dart';
 const _kWindowsWebviewRuntimeLink =
     "https://developer.microsoft.com/en-us/microsoft-edge/webview2";
 
+const _kNeedToParseDomains = [
+  "www.iqiyi.com",
+  "v.youku.com",
+  "v.qq.com",
+  "bilibili.com",
+  "www.mgtv.com",
+  "tv.sohu.com",
+  "www.bilibili.com",
+];
+
+/// 检测是否需要解析
+bool checkDomainIsParse(String raw) {
+  const _kPrefix = "http://";
+  const _kPrefixs = "https://";
+  for (var i = 0; i < _kNeedToParseDomains.length; i++) {
+    var curr = _kNeedToParseDomains[i];
+    var p1 = _kPrefix + curr;
+    var p2 = _kPrefixs + curr;
+    var check = raw.startsWith(p1) || raw.startsWith(p2);
+    if (check) return true;
+  }
+  return false;
+}
+
 /// 尽可能的拿到正确`url`
 /// [str] 数据模板
 ///  => https://xx.com/1.m3u8$sdf
@@ -90,6 +114,41 @@ class PlayController extends GetxController {
   handleTapPlayerButtom(MirrorSerializeVideoInfo e) async {
     var url = e.url;
     url = getPlayUrl(url);
+    bool needParse = checkDomainIsParse(url);
+    if (needParse) {
+      showCupertinoDialog(
+        builder: (BuildContext context) => CupertinoAlertDialog(
+          title: const Text('提示'),
+          content: Padding(
+            padding: const EdgeInsets.symmetric(
+              vertical: 12.0,
+            ),
+            child: Text(
+              '暂不支持需要解析的播放链接',
+              style: TextStyle(
+                fontSize: 18,
+              ),
+            ),
+          ),
+          actions: <CupertinoDialogAction>[
+            CupertinoDialogAction(
+              child: const Text(
+                '我知道了',
+                style: TextStyle(
+                  color: Colors.red,
+                ),
+              ),
+              onPressed: () {
+                Get.back();
+              },
+            ),
+          ],
+        ),
+        context: Get.context as BuildContext,
+      );
+      return;
+    }
+
     debugPrint("play url: [$url]");
 
     bool isWindows = GetPlatform.isWindows;

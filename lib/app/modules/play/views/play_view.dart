@@ -87,6 +87,9 @@ class _PlayViewState extends State<PlayView> {
         result.add(cache);
       }
     });
+    result = result.where((element) {
+      return element.datas.length >= 1;
+    }).toList();
     return result;
   }
 

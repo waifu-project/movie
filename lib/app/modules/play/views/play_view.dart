@@ -18,6 +18,7 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:movie/app/widget/helper.dart';
 import 'package:movie/app/widget/window_appbar.dart';
 import 'package:movie/mirror/m_utils/m.dart';
 import 'package:movie/mirror/mirror_serialize.dart';
@@ -129,39 +130,52 @@ class _PlayViewState extends State<PlayView> {
                 width: double.infinity,
                 height: Get.height * coverHeightScale,
                 decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: NetworkImage(play.movieItem.smallCoverImage),
-                    fit: BoxFit.cover,
-                  ),
+                  color: Color.fromRGBO(246, 246, 246, 1),
                 ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                child: Stack(
                   children: [
-                    Expanded(child: SizedBox.shrink()),
-                    Container(
-                      width: double.infinity,
-                      clipBehavior: Clip.antiAlias,
-                      decoration: BoxDecoration(
-                        color: Colors.black12,
+                    Positioned.fill(
+                      child: Image.network(
+                        play.movieItem.smallCoverImage,
+                        fit: BoxFit.cover,
+                        errorBuilder: (_, __, ___) {
+                          return Image.asset(
+                            K_DEFAULT_IMAGE,
+                            fit: BoxFit.cover,
+                          );
+                        },
                       ),
-                      child: BackdropFilter(
-                        filter: ImageFilter.blur(
-                          sigmaX: 24,
-                          sigmaY: 24,
-                        ),
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(
-                            vertical: 12,
-                            horizontal: 24,
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(child: SizedBox.shrink()),
+                        Container(
+                          width: double.infinity,
+                          clipBehavior: Clip.antiAlias,
+                          decoration: BoxDecoration(
+                            color: Colors.black12,
                           ),
-                          child: Text(
-                            play.movieItem.title,
-                            style: Theme.of(context).textTheme.titleLarge,
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: 4,
+                          child: BackdropFilter(
+                            filter: ImageFilter.blur(
+                              sigmaX: 24,
+                              sigmaY: 24,
+                            ),
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(
+                                vertical: 12,
+                                horizontal: 24,
+                              ),
+                              child: Text(
+                                play.movieItem.title,
+                                style: Theme.of(context).textTheme.titleLarge,
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 4,
+                              ),
+                            ),
                           ),
                         ),
-                      ),
+                      ],
                     ),
                   ],
                 ),
@@ -210,7 +224,8 @@ class _PlayViewState extends State<PlayView> {
                         var current = playlist[index];
                         var currentBorderColor = isCurrentIndex
                             ? CupertinoTheme.of(context).primaryColor
-                            : (Get.isDarkMode ? Colors.white : Colors.black).withOpacity(.42);
+                            : (Get.isDarkMode ? Colors.white : Colors.black)
+                                .withOpacity(.42);
                         return GestureDetector(
                           onTap: () {
                             play.changeTabIndex(index);
@@ -377,21 +392,23 @@ class _PlayViewState extends State<PlayView> {
         ),
       ),
       children: [
-        ConstrainedBox(constraints: BoxConstraints(
-          maxHeight: Get.height * .33,
-        ),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 12,
-            vertical: 8,
+        ConstrainedBox(
+          constraints: BoxConstraints(
+            maxHeight: Get.height * .33,
           ),
-          child: SingleChildScrollView(
-            controller: ScrollController(),
-            child: Html(
-              data: desc,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 12,
+              vertical: 8,
+            ),
+            child: SingleChildScrollView(
+              controller: ScrollController(),
+              child: Html(
+                data: desc,
+              ),
             ),
           ),
-        ),),
+        ),
       ],
     );
   }

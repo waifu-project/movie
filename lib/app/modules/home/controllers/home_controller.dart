@@ -23,6 +23,7 @@ import 'package:movie/config.dart';
 import 'package:movie/impl/movie.dart';
 import 'package:movie/mirror/mirror.dart';
 import 'package:movie/mirror/mirror_serialize.dart';
+import 'package:movie/models/movie_parse.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 
 /// 历史记录处理类型
@@ -46,6 +47,13 @@ class HomeController extends GetxController with WidgetsBindingObserver {
     initialPage: 0,
     keepPage: true,
   );
+
+  int _currentParseVipIndex = 0;
+  List<MovieParseModel> _parseVipList = [];
+  List<MovieParseModel> get parseVipList => _parseVipList;
+  MovieParseModel get currentParseVipModelData {
+    return _parseVipList[_currentParseVipIndex];
+  }
 
   final localStorage = GetStorage();
 
@@ -247,6 +255,13 @@ class HomeController extends GetxController with WidgetsBindingObserver {
     }
   }
 
+  initMovieParseVipList() {
+    String dataWithJson = localStorage.read(ConstDart.movieParseVip) ?? "[]";
+    var models = movieParseModelFromJson(dataWithJson);
+    _parseVipList = models;
+    update();
+  }
+
   @override
   void onInit() {
     super.onInit();
@@ -257,6 +272,7 @@ class HomeController extends GetxController with WidgetsBindingObserver {
     updateMacosPlayUseIINAState();
     updateHomeData(isFirst: true);
     initCacheMirrorTableScrollControllerOffset();
+    initMovieParseVipList();
   }
 
   updateWindowLastSize() {
@@ -335,7 +351,6 @@ class HomeController extends GetxController with WidgetsBindingObserver {
       notError,
       canSave: isFirst,
     );
-
   }
 
   @override

@@ -48,6 +48,8 @@ class ConstDart {
   /// macOS是否使用iina播放
   static final String macosPlayUseIINA = "macosPlayUseIINA";
 
+  static final String movieParseVip = "movieParseVip";
+
   /// 是否为开发模式
   /// TODDO
   static bool get isDev {

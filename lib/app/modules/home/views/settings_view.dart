@@ -21,6 +21,7 @@ import 'package:flutter_cupertino_settings/flutter_cupertino_settings.dart';
 
 import 'package:get/get.dart';
 import 'package:movie/app/modules/home/controllers/home_controller.dart';
+import 'package:movie/app/modules/home/views/parse_vip_manage.dart';
 import 'package:movie/app/modules/home/views/source_help.dart';
 import 'package:movie/app/widget/window_appbar.dart';
 import 'package:movie/config.dart';
@@ -372,6 +373,19 @@ class _SettingsViewState extends State<SettingsView> {
             style: const CSWidgetStyle(
               icon: const Icon(
                 CupertinoIcons.moon_stars_fill,
+              ),
+            ),
+          ),
+          GestureDetector(
+            onTap: () {
+              Get.to(() => ParseVipManagePageView());
+            },
+            child: CSControl(
+              nameWidget: Text('解析线路管理'),
+              style: const CSWidgetStyle(
+                icon: const Icon(
+                  Icons.add_box,
+                ),
               ),
             ),
           ),

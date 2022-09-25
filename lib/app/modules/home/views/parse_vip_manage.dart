@@ -5,6 +5,7 @@ import 'package:movie/app/widget/window_appbar.dart';
 import 'package:get/get.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:movie/models/movie_parse.dart';
+import 'package:movie/utils/helper.dart';
 
 import '../controllers/home_controller.dart';
 
@@ -17,11 +18,18 @@ class ParseVipManagePageView extends StatefulWidget {
 
 class _ParseVipManagePageViewState extends State<ParseVipManagePageView> {
   final HomeController home = Get.find<HomeController>();
-  List<MovieParseModel> get _parseList => home.parseVipList;
+  List<MovieParseModel> _parseList = [];
+  List<MovieParseModel> get parseList => _parseList;
+
+  beforeHook() {
+    _parseList = home.parseVipList;
+    setState(() {});
+  }
 
   @override
   initState() {
     super.initState();
+    beforeHook();
   }
 
   easyAddParseModel() async {
@@ -30,7 +38,8 @@ class _ParseVipManagePageViewState extends State<ParseVipManagePageView> {
       builder: (BuildContext context) => ParseVipAddDialog(),
     );
     if (futureWith == null) return;
-    // TODO: 添加解析源
+    _parseList.add(futureWith);
+    setState(() {});
   }
 
   easyShowHelp() {
@@ -117,7 +126,7 @@ class _ParseVipManagePageViewState extends State<ParseVipManagePageView> {
         ],
       ),
       body: Builder(builder: (context) {
-        if (_parseList.length <= 0) {
+        if (parseList.length <= 0) {
           return _buildWithEmptry();
         }
         return _buildWithListBody();
@@ -149,9 +158,9 @@ class _ParseVipManagePageViewState extends State<ParseVipManagePageView> {
   Widget _buildWithListBody() {
     return ListView.builder(
       controller: ScrollController(),
-      itemCount: _parseList.length,
+      itemCount: parseList.length,
       itemBuilder: (BuildContext context, int index) {
-        var curr = _parseList[index];
+        var curr = parseList[index];
         return Material(
           child: Slidable(
             endActionPane: ActionPane(
@@ -159,7 +168,7 @@ class _ParseVipManagePageViewState extends State<ParseVipManagePageView> {
               children: [
                 SlidableAction(
                   onPressed: (_) {
-                    debugPrint('curr: ' + curr.toString());
+                    debugPrint('set default curr: ' + curr.name);
                   },
                   backgroundColor: CupertinoColors.systemBlue,
                   foregroundColor: Colors.white,
@@ -169,7 +178,7 @@ class _ParseVipManagePageViewState extends State<ParseVipManagePageView> {
                 ),
                 SlidableAction(
                   onPressed: (_) {
-                    debugPrint('curr: ' + curr.toString());
+                    debugPrint('delete curr: ' + curr.name);
                   },
                   backgroundColor: Color(0xFFFE4A49),
                   foregroundColor: Colors.white,
@@ -257,6 +266,12 @@ class _ParseVipAddDialogState extends State<ParseVipAddDialog> {
         height: Get.height * .24,
         child: CupertinoPageScaffold(
           navigationBar: CupertinoNavigationBar(
+            border: Border(
+              bottom: BorderSide(
+                color: Theme.of(context).dividerColor,
+                width: 0.0, // 0.0 means one physical pixel
+              ),
+            ),
             backgroundColor: Theme.of(context).scaffoldBackgroundColor,
             leading: GestureDetector(
               onTap: () {
@@ -265,7 +280,7 @@ class _ParseVipAddDialogState extends State<ParseVipAddDialog> {
               child: Icon(
                 Icons.close,
                 size: 18,
-                color: Theme.of(context).buttonTheme.colorScheme?.onPrimary,
+                color: CupertinoColors.systemBlue,
               ),
             ),
           ),
@@ -281,9 +296,9 @@ class _ParseVipAddDialogState extends State<ParseVipAddDialog> {
                         fontSize: 14.0,
                       ),
                       decoration: InputDecoration(hintText: '输入名称'),
-                      onSaved: (value) {
-                        if (value == null) return;
+                      onChanged: (value) {
                         name = value;
+                        setState(() {});
                       },
                       validator: (value) {
                         var _b = value!.length >= 2;
@@ -296,15 +311,13 @@ class _ParseVipAddDialogState extends State<ParseVipAddDialog> {
                         fontSize: 14.0,
                       ),
                       decoration: InputDecoration(hintText: '输入URL'),
-                      onSaved: (value) {
-                        if (value == null) return;
+                      onChanged: (value) {
                         url = value;
+                        setState(() {});
                       },
                       validator: (value) {
-                        var len = 'http'.length;
-                        var _b = value!.length >= len;
-                        var msg = _b ? null : 'url最少6个字符';
-                        return msg;
+                        bool bindCheck = isURL(value);
+                        return !bindCheck ? '不是url' : null;
                       },
                     ),
                     SizedBox(

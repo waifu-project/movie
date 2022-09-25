@@ -262,6 +262,11 @@ class HomeController extends GetxController with WidgetsBindingObserver {
     update();
   }
 
+  addMovieParseVipOnce(MovieParseModel model) {
+    _parseVipList.insert(0, model);
+    update();
+  }
+
   @override
   void onInit() {
     super.onInit();

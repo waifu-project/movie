@@ -18,27 +18,31 @@ class ParseVipManagePageView extends StatefulWidget {
 
 class _ParseVipManagePageViewState extends State<ParseVipManagePageView> {
   final HomeController home = Get.find<HomeController>();
-  List<MovieParseModel> _parseList = [];
-  List<MovieParseModel> get parseList => _parseList;
-
-  beforeHook() {
-    _parseList = home.parseVipList;
-    setState(() {});
-  }
+  List<MovieParseModel> get parseList => home.parseVipList;
+  int get parseListCurrentIndex => home.currentParseVipIndex;
 
   @override
   initState() {
     super.initState();
-    beforeHook();
   }
 
-  easyAddParseModel() async {
+  easyAddVipParseModel() async {
     var futureWith = await showCupertinoModalBottomSheet<MovieParseModel>(
       context: context,
       builder: (BuildContext context) => ParseVipAddDialog(),
     );
     if (futureWith == null) return;
-    _parseList.add(futureWith);
+    home.addMovieParseVipOnce(futureWith);
+    setState(() {});
+  }
+
+  easyRemoveOnceVipParseModel(int index) {
+    home.removeMovieParseVipOnce(index);
+    setState(() {});
+  }
+
+  easySetDefaultOnceVipParseModal(int index) {
+    home.setDefaultMovieParseVipIndex(index);
     setState(() {});
   }
 
@@ -86,9 +90,13 @@ class _ParseVipManagePageViewState extends State<ParseVipManagePageView> {
               width: 6.0,
             ),
             GestureDetector(
-              child: Icon(
-                CupertinoIcons.back,
-                color: Theme.of(context).primaryIconTheme.color,
+              child: SizedBox(
+                width: 24,
+                height: 24,
+                child: Icon(
+                  CupertinoIcons.back,
+                  color: Theme.of(context).primaryIconTheme.color,
+                ),
               ),
               onTap: () {
                 Get.back();
@@ -110,7 +118,7 @@ class _ParseVipManagePageViewState extends State<ParseVipManagePageView> {
         ),
         actions: [
           GestureDetector(
-            onTap: easyAddParseModel,
+            onTap: easyAddVipParseModel,
             child: Icon(Icons.add),
           ),
           SizedBox(
@@ -127,14 +135,14 @@ class _ParseVipManagePageViewState extends State<ParseVipManagePageView> {
       ),
       body: Builder(builder: (context) {
         if (parseList.length <= 0) {
-          return _buildWithEmptry();
+          return _buildWithEmptry;
         }
-        return _buildWithListBody();
+        return _buildWithListBody;
       }),
     );
   }
 
-  Widget _buildWithEmptry() {
+  Widget get _buildWithEmptry {
     return Container(
       child: Center(
         child: SingleChildScrollView(
@@ -155,30 +163,31 @@ class _ParseVipManagePageViewState extends State<ParseVipManagePageView> {
     );
   }
 
-  Widget _buildWithListBody() {
+  Widget get _buildWithListBody {
     return ListView.builder(
       controller: ScrollController(),
       itemCount: parseList.length,
       itemBuilder: (BuildContext context, int index) {
         var curr = parseList[index];
+        bool isSelected = parseListCurrentIndex == index;
         return Material(
           child: Slidable(
             endActionPane: ActionPane(
               motion: const ScrollMotion(),
+              key: ObjectKey(curr),
               children: [
+                if (!isSelected)
+                  SlidableAction(
+                    onPressed: (_) {},
+                    backgroundColor: CupertinoColors.systemBlue,
+                    foregroundColor: Colors.white,
+                    icon: CupertinoIcons.bag,
+                    flex: 2,
+                    label: '设为默认',
+                  ),
                 SlidableAction(
                   onPressed: (_) {
-                    debugPrint('set default curr: ' + curr.name);
-                  },
-                  backgroundColor: CupertinoColors.systemBlue,
-                  foregroundColor: Colors.white,
-                  icon: CupertinoIcons.bag,
-                  flex: 2,
-                  label: '设为默认',
-                ),
-                SlidableAction(
-                  onPressed: (_) {
-                    debugPrint('delete curr: ' + curr.name);
+                    easyRemoveOnceVipParseModel(index);
                   },
                   backgroundColor: Color(0xFFFE4A49),
                   foregroundColor: Colors.white,
@@ -207,6 +216,7 @@ class _ParseVipManagePageViewState extends State<ParseVipManagePageView> {
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
+                          color: isSelected ? CupertinoColors.systemBlue : null,
                           fontSize: 16.0,
                         ),
                       ),
@@ -222,7 +232,9 @@ class _ParseVipManagePageViewState extends State<ParseVipManagePageView> {
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
                         fontSize: 12.0,
-                        color: Theme.of(context).textTheme.caption?.color,
+                        color: isSelected
+                            ? CupertinoColors.systemGrey
+                            : Theme.of(context).textTheme.caption?.color,
                       ),
                     ),
                   ),
@@ -263,7 +275,7 @@ class _ParseVipAddDialogState extends State<ParseVipAddDialog> {
     return Material(
       child: SizedBox(
         width: double.infinity,
-        height: Get.height * .24,
+        height: Get.height * .42,
         child: CupertinoPageScaffold(
           navigationBar: CupertinoNavigationBar(
             border: Border(
@@ -285,60 +297,64 @@ class _ParseVipAddDialogState extends State<ParseVipAddDialog> {
             ),
           ),
           child: SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  children: <Widget>[
-                    TextFormField(
-                      style: TextStyle(
-                        fontSize: 14.0,
-                      ),
-                      decoration: InputDecoration(hintText: '输入名称'),
-                      onChanged: (value) {
-                        name = value;
-                        setState(() {});
-                      },
-                      validator: (value) {
-                        var _b = value!.length >= 2;
-                        var msg = _b ? null : '名称最少2个字符';
-                        return msg;
-                      },
-                    ),
-                    TextFormField(
-                      style: TextStyle(
-                        fontSize: 14.0,
-                      ),
-                      decoration: InputDecoration(hintText: '输入URL'),
-                      onChanged: (value) {
-                        url = value;
-                        setState(() {});
-                      },
-                      validator: (value) {
-                        bool bindCheck = isURL(value);
-                        return !bindCheck ? '不是url' : null;
-                      },
-                    ),
-                    SizedBox(
-                      height: 12.0,
-                    ),
-                    SizedBox(
-                      width: double.infinity,
-                      child: CupertinoButton.filled(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 24.0,
-                        ),
-                        onPressed: submit,
-                        child: Text(
-                          "添加",
+            child: Center(
+              child: Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: SingleChildScrollView(
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      children: <Widget>[
+                        TextFormField(
                           style: TextStyle(
                             fontSize: 14.0,
                           ),
+                          decoration: InputDecoration(hintText: '输入名称'),
+                          onChanged: (value) {
+                            name = value;
+                            setState(() {});
+                          },
+                          validator: (value) {
+                            var _b = value!.length >= 2;
+                            var msg = _b ? null : '名称最少2个字符';
+                            return msg;
+                          },
                         ),
-                      ),
+                        TextFormField(
+                          style: TextStyle(
+                            fontSize: 14.0,
+                          ),
+                          decoration: InputDecoration(hintText: '输入URL'),
+                          onChanged: (value) {
+                            url = value;
+                            setState(() {});
+                          },
+                          validator: (value) {
+                            bool bindCheck = isURL(value);
+                            return !bindCheck ? '不是url' : null;
+                          },
+                        ),
+                        SizedBox(
+                          height: 12.0,
+                        ),
+                        SizedBox(
+                          width: double.infinity,
+                          child: CupertinoButton.filled(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 24.0,
+                            ),
+                            onPressed: submit,
+                            child: Text(
+                              "添加",
+                              style: TextStyle(
+                                fontSize: 14.0,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
+                  ),
                 ),
               ),
             ),

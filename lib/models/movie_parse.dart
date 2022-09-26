@@ -30,4 +30,9 @@ class MovieParseModel {
         "name": name,
         "url": url,
       };
+
+  @override
+  String toString() {
+    return '{"name": "$name", "url": "$url"}';
+  }
 }

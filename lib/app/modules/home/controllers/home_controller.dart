@@ -50,6 +50,7 @@ class HomeController extends GetxController with WidgetsBindingObserver {
 
   int _currentParseVipIndex = 0;
   List<MovieParseModel> _parseVipList = [];
+  int get currentParseVipIndex => _currentParseVipIndex;
   List<MovieParseModel> get parseVipList => _parseVipList;
   MovieParseModel get currentParseVipModelData {
     return _parseVipList[_currentParseVipIndex];
@@ -256,14 +257,33 @@ class HomeController extends GetxController with WidgetsBindingObserver {
   }
 
   initMovieParseVipList() {
-    String dataWithJson = localStorage.read(ConstDart.movieParseVip) ?? "[]";
-    var models = movieParseModelFromJson(dataWithJson);
-    _parseVipList = models;
-    update();
+    dynamic dataWithJson = localStorage.read(ConstDart.movieParseVip) ?? [];
+    if (dataWithJson is List) {
+      var models = dataWithJson
+          .map(
+            (e) => MovieParseModel.fromJson(e),
+          )
+          .toList();
+      _parseVipList = models;
+      update();
+    }
   }
 
   addMovieParseVipOnce(MovieParseModel model) {
     _parseVipList.insert(0, model);
+    update();
+    localStorage.write(ConstDart.movieParseVip, _parseVipList);
+  }
+
+  removeMovieParseVipOnce(int index) {
+    _parseVipList.removeAt(index);
+    update();
+    localStorage.write(ConstDart.movieParseVip, _parseVipList);
+  }
+
+  setDefaultMovieParseVipIndex(int index) {
+    if (_parseVipList.length <= index) return;
+    _currentParseVipIndex = index;
     update();
   }
 

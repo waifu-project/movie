@@ -11,6 +11,10 @@
 
 [Re: 从零开始的开发日志](docs/dev.md)
 
+[Re: 视频源制作](docs/源制作.md)
+
+[Re: 视频解析](docs/解析.md)
+
 > `iOS` 下载 `ipa` 之后, 请使用 [sideloadly](https://sideloadly.io/) 签名安装
 
 ## 截图

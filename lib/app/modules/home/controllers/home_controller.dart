@@ -52,8 +52,12 @@ class HomeController extends GetxController with WidgetsBindingObserver {
   List<MovieParseModel> _parseVipList = [];
   int get currentParseVipIndex => _currentParseVipIndex;
   List<MovieParseModel> get parseVipList => _parseVipList;
-  MovieParseModel get currentParseVipModelData {
-    return _parseVipList[_currentParseVipIndex];
+  MovieParseModel? get currentParseVipModelData {
+    if (parseVipList.length <= 0 ||
+        currentParseVipIndex >= parseVipList.length) {
+      return null;
+    }
+    return parseVipList[currentParseVipIndex];
   }
 
   final localStorage = GetStorage();

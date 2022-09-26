@@ -25,6 +25,7 @@ import 'package:movie/app/modules/play/views/chewie_view.dart';
 import 'package:movie/app/modules/play/views/webview_view.dart';
 import 'package:movie/config.dart';
 import 'package:movie/mirror/mirror_serialize.dart';
+import 'package:movie/models/movie_parse.dart';
 import 'package:movie/utils/helper.dart';
 
 const _kWindowsWebviewRuntimeLink =
@@ -94,6 +95,12 @@ String getPlayUrl(String str) {
     }
   }
   return str;
+}
+
+String easyGenParseVipUrl(String raw, MovieParseModel model) {
+  String url = model.url;
+  String result = '$url$raw';
+  return result;
 }
 
 class PlayController extends GetxController {
@@ -167,6 +174,13 @@ class PlayController extends GetxController {
         context: Get.context as BuildContext,
       );
       return;
+    }
+
+    if (needParse) {
+      var modelData = home.currentParseVipModelData;
+      if (modelData != null) {
+        url = easyGenParseVipUrl(url, modelData);
+      }
     }
 
     debugPrint("play url: [$url]");

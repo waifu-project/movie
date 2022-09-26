@@ -178,7 +178,9 @@ class _ParseVipManagePageViewState extends State<ParseVipManagePageView> {
               children: [
                 if (!isSelected)
                   SlidableAction(
-                    onPressed: (_) {},
+                    onPressed: (_) {
+                      easySetDefaultOnceVipParseModal(index);
+                    },
                     backgroundColor: CupertinoColors.systemBlue,
                     foregroundColor: Colors.white,
                     icon: CupertinoIcons.bag,

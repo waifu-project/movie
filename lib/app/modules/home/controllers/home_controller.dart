@@ -273,11 +273,13 @@ class HomeController extends GetxController with WidgetsBindingObserver {
     bool tryBetter = false;
     if (model is List<MovieParseModel>) {
       _parseVipList.addAll(model);
-      _currentParseVipIndex++;
+      _currentParseVipIndex = 0;
       tryBetter = true;
     } else if (model is MovieParseModel) {
       _parseVipList.insert(0, model);
-      _currentParseVipIndex++;
+      if (_parseVipList.length >= 2) {
+        _currentParseVipIndex++;
+      }
       tryBetter = true;
     }
     if (tryBetter) {
@@ -289,6 +291,10 @@ class HomeController extends GetxController with WidgetsBindingObserver {
 
   removeMovieParseVipOnce(int index) {
     _parseVipList.removeAt(index);
+
+    // TODO: 实现正确的索引而不是每次都重置
+    _currentParseVipIndex = 0;
+
     update();
     localStorage.write(ConstDart.movieParseVip, _parseVipList);
   }

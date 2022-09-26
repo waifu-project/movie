@@ -15,6 +15,14 @@ import 'package:movie/utils/json.dart';
 import '../controllers/home_controller.dart';
 import 'source_help.dart';
 
+enum _kStatusCounter {
+  success,
+  fail,
+  total,
+}
+
+typedef ValueImportCallback<T> = void Function(T value, List<dynamic> data);
+
 class ParseVipManagePageView extends StatefulWidget {
   const ParseVipManagePageView({Key? key}) : super(key: key);
 
@@ -36,9 +44,17 @@ class _ParseVipManagePageViewState extends State<ParseVipManagePageView> {
     var futureWith = await showCupertinoModalBottomSheet<MovieParseModel>(
       context: context,
       builder: (BuildContext context) => ParseVipAddDialog(
-        onImport: (data) {
+        onImport: (data, statusCounter) {
           home.addMovieParseVip(data);
           setState(() {});
+          String msg = '''本次导入成功${statusCounter[0]}, 失败${statusCounter[1]}, 共${statusCounter[2]}''';
+          showEasyCupertinoDialog(
+            title: '提示',
+            content: msg,
+            onDone: () {
+              Get.back();
+            },
+          );
         },
       ),
     );
@@ -245,7 +261,7 @@ class ParseVipAddDialog extends StatefulWidget {
     required this.onImport,
   }) : super(key: key);
 
-  final ValueChanged<List<MovieParseModel>> onImport;
+  final ValueImportCallback<List<MovieParseModel>> onImport;
 
   @override
   State<ParseVipAddDialog> createState() => _ParseVipAddDialogState();
@@ -289,19 +305,41 @@ class _ParseVipAddDialogState extends State<ParseVipAddDialog> {
     }
     contents = contents.where(verifyStringIsJSON).toList();
     List<MovieParseModel> outputData = [];
+
+    /// 状态计数器
+    /// [0] => 成功
+    /// [1] => 失败
+    /// [2] => 总数()
+    List<int> statusCounter = [0, 0, 0];
     try {
       contents.forEach((content) {
         JSONBodyType? jsonType = getJSONBodyType(content);
         List<MovieParseModel> data = [];
         if (jsonType == JSONBodyType.array) {
-          data = movieParseModelFromJson(content);
+          var verifiedData = movieParseModelFromJson(content);
+          for (var whenData in verifiedData) {
+            var canBeNext = isURL(whenData.url);
+            var point =
+                canBeNext ? _kStatusCounter.success : _kStatusCounter.fail;
+            statusCounter[point.index]++;
+            if (canBeNext) {
+              data.add(whenData);
+            }
+          }
         } else if (jsonType == JSONBodyType.obj) {
           var onceData = MovieParseModel.fromJson(
             json.decode(content),
           );
-          data.add(onceData);
+          var canBeNext = isURL(onceData.url);
+          var point =
+              canBeNext ? _kStatusCounter.success : _kStatusCounter.fail;
+          statusCounter[point.index]++;
+          if (canBeNext) {
+            data.add(onceData);
+          }
         }
         if (data.isEmpty) return;
+        statusCounter[_kStatusCounter.total.index] = data.length;
         outputData.addAll(data);
       });
     } catch (e) {
@@ -311,9 +349,9 @@ class _ParseVipAddDialogState extends State<ParseVipAddDialog> {
       );
       return;
     }
-    if (outputData.isNotEmpty) {
+    if (statusCounter[_kStatusCounter.total.index] >= 1) {
       Get.back();
-      widget.onImport(outputData);
+      widget.onImport(outputData, statusCounter);
     }
   }
 
@@ -322,7 +360,7 @@ class _ParseVipAddDialogState extends State<ParseVipAddDialog> {
     return Material(
       child: SizedBox(
         width: double.infinity,
-        height: Get.height * .42,
+        height: 240,
         child: CupertinoPageScaffold(
           navigationBar: CupertinoNavigationBar(
             border: Border(

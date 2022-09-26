@@ -18,6 +18,8 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:movie/app/modules/home/controllers/home_controller.dart';
+import 'package:movie/app/modules/home/views/parse_vip_manage.dart';
 import 'package:movie/app/widget/helper.dart';
 import 'package:movie/app/widget/window_appbar.dart';
 import 'package:movie/mirror/m_utils/m.dart';
@@ -47,6 +49,11 @@ class PlayView extends StatefulWidget {
 
 class _PlayViewState extends State<PlayView> {
   final PlayController play = Get.find<PlayController>();
+  final HomeController home = Get.find<HomeController>();
+
+  bool get canBeShowParseVipButton {
+    return home.parseVipList.length >= 1;
+  }
 
   List<PlayListData> get playlist {
     List<PlayListData> result = [];
@@ -119,8 +126,29 @@ class _PlayViewState extends State<PlayView> {
       builder: (play) => Scaffold(
         appBar: CupertinoEasyAppBar(
           child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               const CupertinoNavigationBarBackButton(),
+              if (canBeShowParseVipButton)
+                CupertinoButton(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 6.0,
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(CupertinoIcons.collections, size: 16),
+                      SizedBox(width: 6.0),
+                      Text(
+                        "解析源",
+                        style: TextStyle(fontSize: 14.0),
+                      ),
+                      SizedBox(width: 2.0),
+                    ],
+                  ),
+                  onPressed: () {
+                    Get.to(() => ParseVipManagePageView());
+                  },
+                ),
             ],
           ),
         ),

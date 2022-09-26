@@ -266,6 +266,55 @@ class _ParseVipAddDialogState extends State<ParseVipAddDialog> {
     Get.back<MovieParseModel>(result: model);
   }
 
+  handleImportFile() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      allowMultiple: true,
+      type: FileType.custom,
+      allowedExtensions: [
+        'json',
+      ],
+    );
+    if (result == null) {
+      showEasyCupertinoDialog(
+        content: "未选择文件 :(",
+        confirmText: '我知道了',
+      );
+      return;
+    }
+    var files = result.paths.map((path) => File(path!)).toList();
+    List<String> contents = [];
+    for (var file in files) {
+      var data = file.readAsStringSync();
+      contents.add(data);
+    }
+    contents = contents.where(verifyStringIsJSON).toList();
+    List<MovieParseModel> outputData = [];
+    try {
+      contents.forEach((content) {
+        JSONBodyType? jsonType = getJSONBodyType(content);
+        List<MovieParseModel> data = [];
+        if (jsonType == JSONBodyType.array) {
+          data = movieParseModelFromJson(content);
+        } else if (jsonType == JSONBodyType.obj) {
+          var onceData = MovieParseModel.fromJson(
+            json.decode(content),
+          );
+          data.add(onceData);
+        }
+        if (data.isEmpty) return;
+        outputData.addAll(data);
+      });
+    } catch (e) {
+      showEasyCupertinoDialog(
+        title: '解析失败',
+        content: e.toString(),
+      );
+      return;
+    }
+    Get.back();
+    widget.onImport(outputData);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Material(
@@ -292,54 +341,7 @@ class _ParseVipAddDialogState extends State<ParseVipAddDialog> {
               ),
             ),
             trailing: GestureDetector(
-              onTap: () async {
-                FilePickerResult? result = await FilePicker.platform.pickFiles(
-                  allowMultiple: true,
-                  type: FileType.custom,
-                  allowedExtensions: [
-                    'json',
-                  ],
-                );
-                if (result == null) {
-                  showEasyCupertinoDialog(
-                    content: "未选择文件 :(",
-                    confirmText: '我知道了',
-                  );
-                  return;
-                }
-                var files = result.paths.map((path) => File(path!)).toList();
-                List<String> contents = [];
-                for (var file in files) {
-                  var data = file.readAsStringSync();
-                  contents.add(data);
-                }
-                contents = contents.where(verifyStringIsJSON).toList();
-                List<MovieParseModel> outputData = [];
-                try {
-                  contents.forEach((content) {
-                    JSONBodyType? jsonType = getJSONBodyType(content);
-                    List<MovieParseModel> data = [];
-                    if (jsonType == JSONBodyType.array) {
-                      data = movieParseModelFromJson(content);
-                    } else if (jsonType == JSONBodyType.obj) {
-                      var onceData = MovieParseModel.fromJson(
-                        json.decode(content),
-                      );
-                      data.add(onceData);
-                    }
-                    if (data.isEmpty) return;
-                    outputData.addAll(data);
-                  });
-                } catch (e) {
-                  showEasyCupertinoDialog(
-                    title: '解析失败',
-                    content: e.toString(),
-                  );
-                  return;
-                }
-                Get.back();
-                widget.onImport(outputData);
-              },
+              onTap: handleImportFile,
               child: Icon(
                 Icons.add_box,
                 size: 20,

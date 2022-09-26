@@ -30,24 +30,41 @@ import 'package:movie/utils/helper.dart';
 const _kWindowsWebviewRuntimeLink =
     "https://developer.microsoft.com/en-us/microsoft-edge/webview2";
 
+/// 需要解析的链接集合
 const _kNeedToParseDomains = [
   "www.iqiyi.com",
-  "v.youku.com",
   "v.qq.com",
+  "youku.com",
+  "www.le.com",
+  "mgtv.com",
+  "sohu.com",
+  "acfun.cn",
   "bilibili.com",
-  "www.mgtv.com",
-  "tv.sohu.com",
-  "www.bilibili.com",
+  "baofeng.com",
+  "pptv.com",
+  "1905.com",
+  "miguvideo.com",
+  'm.bilibili.com',
+  'www.youku.com',
+  'm.youku.com',
+  'v.youku.com',
+  'm.v.qq.com',
+  'm.iqiyi.com',
+  'm.mgtv.com',
+  'm.tv.sohu.com',
+  'm.1905.com',
+  'm.pptv.com',
+  'm.le.com'
 ];
+const _kHttpPrefix = "http://";
+const _kHttpsPrefix = "https://";
 
 /// 检测是否需要解析
 bool checkDomainIsParse(String raw) {
-  const _kPrefix = "http://";
-  const _kPrefixs = "https://";
   for (var i = 0; i < _kNeedToParseDomains.length; i++) {
     var curr = _kNeedToParseDomains[i];
-    var p1 = _kPrefix + curr;
-    var p2 = _kPrefixs + curr;
+    var p1 = _kHttpPrefix + curr;
+    var p2 = _kHttpsPrefix + curr;
     var check = raw.startsWith(p1) || raw.startsWith(p2);
     if (check) return true;
   }
@@ -84,7 +101,8 @@ class PlayController extends GetxController {
 
   HomeController home = Get.find<HomeController>();
 
-  bool get canTryParseVip => home.parseVipList.length >= 1 && home.currentParseVipIndex >= 0;
+  bool get canTryParseVip =>
+      home.parseVipList.length >= 1 && home.currentParseVipIndex >= 0;
 
   bool _canShowPlayTips = false;
 

@@ -269,11 +269,22 @@ class HomeController extends GetxController with WidgetsBindingObserver {
     }
   }
 
-  addMovieParseVipOnce(MovieParseModel model) {
-    _parseVipList.insert(0, model);
-    _currentParseVipIndex++;
-    update();
-    localStorage.write(ConstDart.movieParseVip, _parseVipList);
+  bool addMovieParseVip(dynamic model) {
+    bool tryBetter = false;
+    if (model is List<MovieParseModel>) {
+      _parseVipList.addAll(model);
+      _currentParseVipIndex++;
+      tryBetter = true;
+    } else if (model is MovieParseModel) {
+      _parseVipList.insert(0, model);
+      _currentParseVipIndex++;
+      tryBetter = true;
+    }
+    if (tryBetter) {
+      update();
+      localStorage.write(ConstDart.movieParseVip, _parseVipList);
+    }
+    return tryBetter;
   }
 
   removeMovieParseVipOnce(int index) {

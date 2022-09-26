@@ -1,3 +1,7 @@
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
@@ -6,8 +10,10 @@ import 'package:get/get.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:movie/models/movie_parse.dart';
 import 'package:movie/utils/helper.dart';
+import 'package:movie/utils/json.dart';
 
 import '../controllers/home_controller.dart';
+import 'source_help.dart';
 
 class ParseVipManagePageView extends StatefulWidget {
   const ParseVipManagePageView({Key? key}) : super(key: key);
@@ -29,10 +35,15 @@ class _ParseVipManagePageViewState extends State<ParseVipManagePageView> {
   easyAddVipParseModel() async {
     var futureWith = await showCupertinoModalBottomSheet<MovieParseModel>(
       context: context,
-      builder: (BuildContext context) => ParseVipAddDialog(),
+      builder: (BuildContext context) => ParseVipAddDialog(
+        onImport: (data) {
+          home.addMovieParseVip(data);
+          setState(() {});
+        },
+      ),
     );
     if (futureWith == null) return;
-    home.addMovieParseVipOnce(futureWith);
+    home.addMovieParseVip(futureWith);
     setState(() {});
   }
 
@@ -47,35 +58,13 @@ class _ParseVipManagePageViewState extends State<ParseVipManagePageView> {
   }
 
   easyShowHelp() {
-    showCupertinoDialog(
-      builder: (BuildContext context) => CupertinoAlertDialog(
-        title: const Text('帮助'),
-        content: Padding(
-          padding: const EdgeInsets.symmetric(
-            vertical: 12.0,
-          ),
-          child: Text(
-            '''某些白名单播放链接(例如.爱奇艺,腾讯)需要解析才可以播放''',
-            style: TextStyle(
-              fontSize: 14,
-            ),
-          ),
-        ),
-        actions: <CupertinoDialogAction>[
-          CupertinoDialogAction(
-            child: Text(
-              '我知道了',
-              style: TextStyle(
-                color: CupertinoColors.activeBlue,
-              ),
-            ),
-            onPressed: () {
-              Get.back();
-            },
-          ),
-        ],
-      ),
-      context: Get.context as BuildContext,
+    showEasyCupertinoDialog(
+      title: '帮助',
+      content: '''某些白名单播放链接(例如.爱奇艺,腾讯)需要解析才可以播放''',
+      confirmText: '我知道了',
+      onDone: () {
+        Get.back();
+      },
     );
   }
 
@@ -251,7 +240,12 @@ class _ParseVipManagePageViewState extends State<ParseVipManagePageView> {
 }
 
 class ParseVipAddDialog extends StatefulWidget {
-  const ParseVipAddDialog({Key? key}) : super(key: key);
+  const ParseVipAddDialog({
+    Key? key,
+    required this.onImport,
+  }) : super(key: key);
+
+  final ValueChanged<List<MovieParseModel>> onImport;
 
   @override
   State<ParseVipAddDialog> createState() => _ParseVipAddDialogState();
@@ -293,7 +287,62 @@ class _ParseVipAddDialogState extends State<ParseVipAddDialog> {
               },
               child: Icon(
                 Icons.close,
-                size: 18,
+                size: 20,
+                color: CupertinoColors.systemBlue,
+              ),
+            ),
+            trailing: GestureDetector(
+              onTap: () async {
+                FilePickerResult? result = await FilePicker.platform.pickFiles(
+                  allowMultiple: true,
+                  type: FileType.custom,
+                  allowedExtensions: [
+                    'json',
+                  ],
+                );
+                if (result == null) {
+                  showEasyCupertinoDialog(
+                    content: "未选择文件 :(",
+                    confirmText: '我知道了',
+                  );
+                  return;
+                }
+                var files = result.paths.map((path) => File(path!)).toList();
+                List<String> contents = [];
+                for (var file in files) {
+                  var data = file.readAsStringSync();
+                  contents.add(data);
+                }
+                contents = contents.where(verifyStringIsJSON).toList();
+                List<MovieParseModel> outputData = [];
+                try {
+                  contents.forEach((content) {
+                    JSONBodyType? jsonType = getJSONBodyType(content);
+                    List<MovieParseModel> data = [];
+                    if (jsonType == JSONBodyType.array) {
+                      data = movieParseModelFromJson(content);
+                    } else if (jsonType == JSONBodyType.obj) {
+                      var onceData = MovieParseModel.fromJson(
+                        json.decode(content),
+                      );
+                      data.add(onceData);
+                    }
+                    if (data.isEmpty) return;
+                    outputData.addAll(data);
+                  });
+                } catch (e) {
+                  showEasyCupertinoDialog(
+                    title: '解析失败',
+                    content: e.toString(),
+                  );
+                  return;
+                }
+                Get.back();
+                widget.onImport(outputData);
+              },
+              child: Icon(
+                Icons.add_box,
+                size: 20,
                 color: CupertinoColors.systemBlue,
               ),
             ),

@@ -311,8 +311,10 @@ class _ParseVipAddDialogState extends State<ParseVipAddDialog> {
       );
       return;
     }
-    Get.back();
-    widget.onImport(outputData);
+    if (outputData.isNotEmpty) {
+      Get.back();
+      widget.onImport(outputData);
+    }
   }
 
   @override

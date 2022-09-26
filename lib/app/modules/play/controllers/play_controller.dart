@@ -84,6 +84,8 @@ class PlayController extends GetxController {
 
   HomeController home = Get.find<HomeController>();
 
+  bool get canTryParseVip => home.parseVipList.length >= 1 && home.currentParseVipIndex >= 0;
+
   bool _canShowPlayTips = false;
 
   int tabIndex = 0;
@@ -115,7 +117,7 @@ class PlayController extends GetxController {
     var url = e.url;
     url = getPlayUrl(url);
     bool needParse = checkDomainIsParse(url);
-    if (needParse) {
+    if (needParse && !canTryParseVip) {
       showCupertinoDialog(
         builder: (BuildContext context) => CupertinoAlertDialog(
           title: const Text('提示'),
@@ -124,9 +126,9 @@ class PlayController extends GetxController {
               vertical: 12.0,
             ),
             child: Text(
-              '暂不支持需要解析的播放链接',
+              '暂不支持需要解析的播放链接(无线路)',
               style: TextStyle(
-                fontSize: 18,
+                fontSize: 14,
               ),
             ),
           ),

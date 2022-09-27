@@ -21,6 +21,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:movie/app/modules/home/controllers/home_controller.dart';
+import 'package:movie/app/modules/home/views/source_help.dart';
 import 'package:movie/app/modules/play/views/chewie_view.dart';
 import 'package:movie/app/modules/play/views/webview_view.dart';
 import 'package:movie/config.dart';
@@ -143,35 +144,13 @@ class PlayController extends GetxController {
     url = getPlayUrl(url);
     bool needParse = checkDomainIsParse(url);
     if (needParse && !canTryParseVip) {
-      showCupertinoDialog(
-        builder: (BuildContext context) => CupertinoAlertDialog(
-          title: const Text('提示'),
-          content: Padding(
-            padding: const EdgeInsets.symmetric(
-              vertical: 12.0,
-            ),
-            child: Text(
-              '暂不支持需要解析的播放链接(无线路)',
-              style: TextStyle(
-                fontSize: 14,
-              ),
-            ),
-          ),
-          actions: <CupertinoDialogAction>[
-            CupertinoDialogAction(
-              child: const Text(
-                '我知道了',
-                style: TextStyle(
-                  color: Colors.red,
-                ),
-              ),
-              onPressed: () {
-                Get.back();
-              },
-            ),
-          ],
-        ),
-        context: Get.context as BuildContext,
+      showEasyCupertinoDialog(
+        title: '提示',
+        content: '暂不支持需要解析的播放链接(无线路)',
+        confirmText: '我知道了',
+        onDone: () {
+          Get.back();
+        },
       );
       return;
     }

@@ -25,6 +25,8 @@ import 'package:movie/app/modules/home/views/source_help.dart';
 import 'package:movie/app/modules/play/views/chewie_view.dart';
 import 'package:movie/app/modules/play/views/webview_view.dart';
 import 'package:movie/config.dart';
+import 'package:movie/impl/movie.dart';
+import 'package:movie/mirror/m_utils/m.dart';
 import 'package:movie/mirror/mirror_serialize.dart';
 import 'package:movie/models/movie_parse.dart';
 import 'package:movie/utils/helper.dart';
@@ -53,6 +55,7 @@ const _kNeedToParseDomains = [
   'm.v.qq.com',
   'm.iqiyi.com',
   'm.mgtv.com',
+  'www.mgtv.com',
   'm.tv.sohu.com',
   'm.1905.com',
   'm.pptv.com',
@@ -109,8 +112,30 @@ class PlayController extends GetxController {
 
   HomeController home = Get.find<HomeController>();
 
-  bool get canTryParseVip =>
-      home.parseVipList.length >= 1 && home.currentParseVipIndex >= 0;
+  MovieImpl get currentMovieInstance {
+    var itemAs = home.currentMirrorItem;
+    return itemAs;
+  }
+
+  /// 是否可以解析
+  bool get canTryParseVip {
+    var listTotal = home.parseVipList.length;
+    var currIndex = home.currentBarIndex;
+    var wrapperIf = listTotal >= 1 && currIndex >= 0;
+
+    /// 通用扩展源才具备所谓的解析
+    /// > 源包括 [ 自实现源, 通用扩展源 ]
+    /// >> 自实现源不是继承的 `KBaseMirrorMovie`
+    if (currentMovieInstance is KBaseMirrorMovie) {
+      /// NOTE: 当前实例有解析地址, 并且无边界情况
+      var instance = currentMovieInstance as KBaseMirrorMovie;
+      var jiexiUrl = instance.jiexiUrl;
+      bool next = jiexiUrl.isNotEmpty || wrapperIf;
+      return next;
+    }
+
+    return wrapperIf;
+  }
 
   bool _canShowPlayTips = false;
 
@@ -142,8 +167,17 @@ class PlayController extends GetxController {
   handleTapPlayerButtom(MirrorSerializeVideoInfo e) async {
     var url = e.url;
     url = getPlayUrl(url);
+
+    /// NOTE: 解析条件
+    /// - 通过比对 `_kNeedToParseDomains` 是否需要解析
+    /// - 是否是通用扩展源(未完成!!)
     bool needParse = checkDomainIsParse(url);
-    if (needParse && !canTryParseVip) {
+
+    /// NOTE: 是否弹出无解析提示, 需同时具备:
+    /// 1. 需要解析
+    /// 2. 是否可以解析
+    bool bWarnShowNotParse = needParse && !canTryParseVip;
+    if (bWarnShowNotParse) {
       showEasyCupertinoDialog(
         title: '提示',
         content: '暂不支持需要解析的播放链接(无线路)',
@@ -156,9 +190,18 @@ class PlayController extends GetxController {
     }
 
     if (needParse) {
-      var modelData = home.currentParseVipModelData;
-      if (modelData != null) {
-        url = easyGenParseVipUrl(url, modelData);
+      var instance = currentMovieInstance as KBaseMirrorMovie;
+
+      /// !! 如果当前节点有解析接口优先使用
+      /// > 反之将使用自用节点(即`解析线路管理`)
+      /// !!!! TODO: 解析接口优先级暂无法控制
+      if (instance.hasJiexiUrl) {
+        url = instance.jiexiUrl + url;
+      } else {
+        var modelData = home.currentParseVipModelData;
+        if (modelData != null) {
+          url = easyGenParseVipUrl(url, modelData);
+        }
       }
     }
 
@@ -231,10 +274,14 @@ class PlayController extends GetxController {
       if (typeIsM3u8) url = m3u82Iframe(url);
       Webview webview = await WebviewWindow.create();
 
-      /// 白嫖的第三方资源会自动跳转广告网站, 这个方法将延迟删除广告
-      int beforeRemoveADTime = 1200;
-      webview.addScriptToExecuteOnDocumentCreated(
-          "alert('$webviewShowMessage');setTimeout(function() {window.removeEventListener('click', _popwnd_open);}, $beforeRemoveADTime)");
+      /// (不需要解析)白嫖的第三方资源会自动跳转广告网站, 这个方法将延迟删除广告
+      if (!needParse) {
+        int beforeRemoveADTime = 1200;
+        String execCode =
+            "alert('$webviewShowMessage');setTimeout(function() {window.removeEventListener('click', _popwnd_open);}, $beforeRemoveADTime)";
+        webview.addScriptToExecuteOnDocumentCreated(execCode);
+      }
+
       webview.launch(url);
 
       return;

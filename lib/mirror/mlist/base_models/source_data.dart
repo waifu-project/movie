@@ -45,6 +45,7 @@ class SourceJsonData {
     this.api,
     this.id,
     this.status,
+    this.jiexiUrl,
   });
 
   final String? name;
@@ -54,6 +55,7 @@ class SourceJsonData {
   final Api? api;
   final String? id;
   final bool? status;
+  final String? jiexiUrl;
 
   /// [SourceUtils.tryParseData]
   @Deprecated('不推荐使用, 推荐使用 SourceUtils.tryParseData()')
@@ -101,6 +103,8 @@ class SourceJsonData {
       nsfw = _nsfw;
     }
 
+    var jiexiUrl = json['jiexiUrl'] ?? "";
+
     return SourceJsonData(
       name: name,
       logo: logo,
@@ -109,6 +113,7 @@ class SourceJsonData {
       api: api,
       status: status,
       id: id,
+      jiexiUrl: jiexiUrl,
     );
   }
 
@@ -120,6 +125,7 @@ class SourceJsonData {
         "api": api?.toJson(),
         'id': id,
         'status': status,
+        'jiexiUrl': jiexiUrl,
       };
 }
 

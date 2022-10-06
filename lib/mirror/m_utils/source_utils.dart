@@ -74,6 +74,7 @@ class SourceUtils {
         nsfw: data.nsfw ?? false,
         id: id,
         status: data.status ?? true,
+        jiexiUrl: data.jiexiUrl ?? "",
       );
     } else {
       return null;
@@ -100,6 +101,7 @@ class SourceUtils {
     bool hasName = name != null;
     var api = rawData['api'];
     var id = rawData['id'];
+    var jiexiUrl = rawData['jiexiUrl'];
 
     /// => zy-player 源
     if (id != null) {
@@ -116,6 +118,7 @@ class SourceUtils {
           logo: "",
           desc: "",
           nsfw: isNsfw,
+          jiexiUrl: jiexiUrl,
           api: Api(
             path: url.path,
             root: url.origin,
@@ -134,6 +137,7 @@ class SourceUtils {
       logo: rawData["logo"],
       desc: rawData["desc"],
       nsfw: rawData["nsfw"],
+      jiexiUrl: jiexiUrl,
       api: apiStru,
     );
     return [true, normalizedData];
@@ -290,6 +294,7 @@ class SourceUtils {
           logo: e.meta.logo,
           desc: e.meta.desc,
           nsfw: e.isNsfw,
+          jiexiUrl: e.jiexiUrl,
           api: Api(
             root: e.meta.domain,
             path: e.api_path,

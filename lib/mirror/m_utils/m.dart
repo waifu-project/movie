@@ -40,6 +40,7 @@ enum ResponseCustomType {
 
 class KBaseMirrorMovie extends MovieImpl {
   final bool nsfw;
+  final String jiexiUrl;
   final String name;
   final String logo;
   final String desc;
@@ -52,6 +53,7 @@ class KBaseMirrorMovie extends MovieImpl {
     this.name = "",
     this.logo = "",
     this.desc = "",
+    this.jiexiUrl = "",
     this.status = true,
     required this.id,
     required this.root_url,
@@ -67,6 +69,10 @@ class KBaseMirrorMovie extends MovieImpl {
   Options ops = Options(
     responseType: ResponseType.plain,
   );
+
+  bool get hasJiexiUrl {
+    return jiexiUrl.isNotEmpty;
+  }
 
   /// 简单获取视频链接类型
   static MirrorSerializeVideoType easyGetVideoType(String rawUrl) {

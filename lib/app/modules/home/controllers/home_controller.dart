@@ -128,11 +128,14 @@ class HomeController extends GetxController with WidgetsBindingObserver {
   }
 
   /// 清理缓存
-  ///
-  /// 嗯哼??
+  /// => 重启之后部分设置才会生效
   easyCleanCacheHook() {
     _isNsfw = false;
     _cacheMirrorIndex = -1;
+    if (_parseVipList.isNotEmpty) {
+      _parseVipList = [];
+      update();
+    }
   }
 
   /// -1 = 未初始化

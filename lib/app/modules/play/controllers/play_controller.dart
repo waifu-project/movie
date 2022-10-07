@@ -117,6 +117,11 @@ class PlayController extends GetxController {
     return itemAs;
   }
 
+  /// 是否为通用解析
+  bool get bIsBaseMirrorMovie {
+    return currentMovieInstance is KBaseMirrorMovie;
+  }
+
   /// 是否可以解析
   bool get canTryParseVip {
     var listTotal = home.parseVipList.length;
@@ -126,7 +131,7 @@ class PlayController extends GetxController {
     /// 通用扩展源才具备所谓的解析
     /// > 源包括 [ 自实现源, 通用扩展源 ]
     /// >> 自实现源不是继承的 `KBaseMirrorMovie`
-    if (currentMovieInstance is KBaseMirrorMovie) {
+    if (bIsBaseMirrorMovie) {
       /// NOTE: 当前实例有解析地址, 并且无边界情况
       var instance = currentMovieInstance as KBaseMirrorMovie;
       var jiexiUrl = instance.jiexiUrl;

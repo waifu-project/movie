@@ -52,6 +52,18 @@ class MovieMetaData {
   });
 }
 
+class MovieQueryCategory {
+  final String name;
+  final String id;
+
+  MovieQueryCategory(this.name, this.id);
+
+  @override
+  String toString() {
+    return '$id: $name';
+  }
+}
+
 abstract class MovieImpl {
   /// 是否为R18资源
   /// **Not Safe For Work**
@@ -60,10 +72,14 @@ abstract class MovieImpl {
   /// 源信息
   MovieMetaData get meta;
 
+  /// 获取分类
+  Future<List<MovieQueryCategory>> getCategory();
+
   /// 获取首页
   Future<List<MirrorOnceItemSerialize>> getHome({
     int page = 1,
     int limit = 10,
+    String? category,
   });
 
   /// 搜索

@@ -18,6 +18,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:movie/app/modules/home/views/mirrortable.dart';
+import 'package:movie/app/shared/mirror_category.dart';
 import 'package:movie/app/shared/mirror_status_stack.dart';
 import 'package:movie/config.dart';
 import 'package:movie/impl/movie.dart';
@@ -62,11 +63,38 @@ class HomeController extends GetxController with WidgetsBindingObserver {
 
   final localStorage = GetStorage();
 
+  final mirrorCategory = MirrorCategory();
+
+  String get currentMirrorItemId {
+    if (mirrorListIsEmpty) return "";
+    return currentMirrorItem.meta.id;
+  }
+
   /// `ios` 播放视频是否使用默认的系统浏览器
   /// 1. 浏览器默认支持: `m3u8` | `mp4`
   /// 2. 网页可以直接跳转给浏览器用
   /// (所以`ios`默认直接走浏览器岂不美哉?)
   bool _iosCanBeUseSystemBrowser = true;
+
+  List<MovieQueryCategory> get currentCategoryer {
+    var data = mirrorCategory.data(currentMirrorItemId);
+    return data;
+  }
+
+  bool get currentHasCategoryer {
+    return mirrorCategory.has(currentMirrorItemId);
+  }
+
+  MovieQueryCategory? currentCategoryerNow;
+
+  setCurrentCategoryerNow(MovieQueryCategory category) {
+    currentCategoryerNow = category;
+    // FIXME(d1y): 初始化
+    updateHomeData(
+      isFirst: true,
+    );
+    update();
+  }
 
   bool get iosCanBeUseSystemBrowser =>
       _iosCanBeUseSystemBrowser && GetPlatform.isIOS && !GetPlatform.isLinux;
@@ -121,6 +149,7 @@ class HomeController extends GetxController with WidgetsBindingObserver {
     mirrorIndex = newVal;
     _cacheMirrorIndex = newVal;
     searchBarController.clear();
+    currentCategoryerNow = null;
     update();
     updateHomeData(
       isFirst: true,
@@ -132,6 +161,7 @@ class HomeController extends GetxController with WidgetsBindingObserver {
   easyCleanCacheHook() {
     _isNsfw = false;
     _cacheMirrorIndex = -1;
+    mirrorCategory.clean();
     if (_parseVipList.isNotEmpty) {
       _parseVipList = [];
       update();
@@ -355,9 +385,37 @@ class HomeController extends GetxController with WidgetsBindingObserver {
     return resp;
   }
 
+  Future<String?> syncCurrentCategoryer() async {
+    try {
+      if (mirrorListIsEmpty) return null;
+      var category = await currentMirrorItem.getCategory();
+      if (category.isEmpty) return null;
+      mirrorCategory.put(currentMirrorItemId, category);
+      // XXX(d1y): 暂时下次默认取值第一个
+      var now = category[0];
+      currentCategoryerNow = now;
+      update();
+      return now.id;
+    } catch (e) {
+      // FIXME: get category error
+      debugPrint(e.toString());
+      return null;
+    }
+  }
+
   /// [isFirst] 初始化加载数据需要将 [isLoading] => true
   /// [missIsLoading] 某些特殊情况下不需要设置 [isLoading] => true
   updateHomeData({bool isFirst = false, missIsLoading = false}) async {
+    var onceCategory = "";
+    if (currentCategoryerNow != null) {
+      onceCategory = currentCategoryerNow!.id;
+    }
+    if (isFirst) {
+      if (!currentHasCategoryer) {
+        onceCategory = await syncCurrentCategoryer() ?? "";
+      }
+    }
+
     /// 如果都没有源, 则不需要加载数据
     /// => +_+ 还玩个球啊
     if (mirrorListIsEmpty) return;
@@ -376,6 +434,7 @@ class HomeController extends GetxController with WidgetsBindingObserver {
       List<MirrorOnceItemSerialize> data = await currentMirrorItem.getHome(
         page: page,
         limit: limit,
+        category: onceCategory,
       );
       if (isFirst) {
         homedata = data;

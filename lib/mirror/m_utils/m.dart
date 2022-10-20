@@ -168,14 +168,18 @@ class KBaseMirrorMovie extends MovieImpl {
   Future<List<MirrorOnceItemSerialize>> getHome({
     int page = 1,
     int limit = 10,
+    String? category,
   }) async {
+    var qs = {
+      "ac": "videolist",
+      "pg": page,
+    };
+    if (category != null && category.isNotEmpty) {
+      qs['t'] = category;
+    }
     var resp = await XHttp.dio.get(
       createUrl(suffix: api_path),
-      queryParameters: {
-        "ac": "videolist",
-        // "t": limit,
-        "pg": page,
-      },
+      queryParameters: qs,
       options: ops,
     );
     dynamic data = resp.data;
@@ -310,6 +314,20 @@ class KBaseMirrorMovie extends MovieImpl {
         id: id,
         status: status,
       );
+
+  @override
+  Future<List<MovieQueryCategory>> getCategory() async {
+    var path = createUrl(suffix: api_path);
+    var resp = await XHttp.dio.get(path);
+    dynamic data = resp.data;
+    beforeTestResponseData(data);
+    var x2j = Xml2Json();
+    x2j.parse(data);
+    var _json = x2j.toBadgerfish();
+    var _ = json.decode(_json);
+    KBaseMovieXmlData xml = KBaseMovieXmlData.fromJson(_);
+    return xml.rss.category;
+  }
 
   @override
   String toString() {

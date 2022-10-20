@@ -13,6 +13,8 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import 'package:movie/impl/movie.dart';
+
 class KBaseMovieXmlData {
   KBaseMovieXmlData({
     required this.rss,
@@ -34,19 +36,31 @@ class Rss {
   Rss({
     required this.list,
     required this.version,
+    required this.category,
   });
   late final ListX list;
   late final String version;
+  late final List<MovieQueryCategory> category;
 
   Rss.fromJson(Map<String, dynamic> json) {
     list = ListX.fromJson(json['list']);
     version = json['@version'];
+    Map<String, dynamic> _category = json['class'] ?? {};
+    List<dynamic> data = _category['ty'] ?? [];
+    List<MovieQueryCategory> _categorys = data.map((e) {
+      var map = Map<String, String>.from(e);
+      var name = map['\$'] ?? "";
+      var id = map['\@id'] ?? "";
+      return MovieQueryCategory(name, id);
+    }).toList();
+    category = _categorys;
   }
 
   Map<String, dynamic> toJson() {
     final _data = <String, dynamic>{};
     _data['list'] = list.toJson();
     _data['_version'] = version;
+    _data['category'] = category;
     return _data;
   }
 }
@@ -68,7 +82,9 @@ class ListX {
   ListX.fromJson(Map<String, dynamic> json) {
     var v = json['video'];
     List<Video> rv = [];
-    if (v is Map) {
+    if (v == null) {
+      // ignore the line
+    } else if (v is Map) {
       rv = [Video.fromJson(v.cast())];
     } else {
       rv = List.from(v).map((e) {
@@ -131,7 +147,9 @@ class Video {
   ///   => 该库默认行为会生成一个Map,
   dynamic autoFix2String(dynamic raw, String rawKey) {
     if (raw is Map) {
-      var r = raw[rawKey]['\$'];
+      var _m = raw[rawKey];
+      if (_m == null) return null;
+      var r = _m['\$'];
       if (r == null) {
         var __r = raw[rawKey]['__cdata'];
         if (__r == null) return "";
@@ -143,21 +161,21 @@ class Video {
   }
 
   Video.fromJson(Map<String, dynamic> json) {
-    last = autoFix2String(json, 'last');
-    id = autoFix2String(json, 'id');
-    tid = autoFix2String(json, 'tid');
-    name = autoFix2String(json, 'name');
-    type = autoFix2String(json, 'type');
-    pic = autoFix2String(json, 'pic');
-    lang = autoFix2String(json, 'lang');
-    area = autoFix2String(json, 'area');
-    year = autoFix2String(json, 'year');
-    state = autoFix2String(json, 'state');
-    note = autoFix2String(json, 'note');
-    actor = autoFix2String(json, 'actor');
-    director = autoFix2String(json, 'director');
-    dl = Dl.fromJson(json['dl']);
-    des = autoFix2String(json, 'des');
+    last = autoFix2String(json, 'last') ?? "";
+    id = autoFix2String(json, 'id') ?? "";
+    tid = autoFix2String(json, 'tid') ?? "";
+    name = autoFix2String(json, 'name') ?? "";
+    type = autoFix2String(json, 'type') ?? "";
+    pic = autoFix2String(json, 'pic') ?? "";
+    lang = autoFix2String(json, 'lang') ?? "";
+    area = autoFix2String(json, 'area') ?? "";
+    year = autoFix2String(json, 'year') ?? "";
+    state = autoFix2String(json, 'state') ?? "";
+    note = autoFix2String(json, 'note') ?? "";
+    actor = autoFix2String(json, 'actor') ?? "";
+    director = autoFix2String(json, 'director') ?? "";
+    dl = Dl.fromJson(json['dl'] ?? {});
+    des = autoFix2String(json, 'des') ?? "";
   }
 
   Map<String, dynamic> toJson() {
@@ -188,7 +206,7 @@ class Dl {
   late final List<Dd> dd;
 
   Dl.fromJson(Map<String, dynamic> json) {
-    var __dd = json['dd'];
+    var __dd = json['dd'] ?? {};
     if (__dd is Map) {
       dd = [Dd.fromJson(__dd.cast())];
     } else {
@@ -212,8 +230,8 @@ class Dd {
   late final String cData;
 
   Dd.fromJson(Map<String, dynamic> json) {
-    flag = json['@flag'];
-    cData = json['__cdata'];
+    flag = json['@flag'] ?? "";
+    cData = json['__cdata'] ?? "";
   }
 
   Map<String, dynamic> toJson() {

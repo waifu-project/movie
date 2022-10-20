@@ -7,6 +7,10 @@ class MirrorCategory {
 
   Map<String, List<MovieQueryCategory>> stacks = {};
 
+  clean() {
+    stacks = {};
+  }
+
   put(String key, List<MovieQueryCategory> data) {
     stacks[key] = data;
   }
@@ -20,5 +24,4 @@ class MirrorCategory {
     if (stack == null) return false;
     return stack.isNotEmpty;
   }
-
 }

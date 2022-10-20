@@ -161,6 +161,7 @@ class HomeController extends GetxController with WidgetsBindingObserver {
   easyCleanCacheHook() {
     _isNsfw = false;
     _cacheMirrorIndex = -1;
+    mirrorCategory.clean();
     if (_parseVipList.isNotEmpty) {
       _parseVipList = [];
       update();

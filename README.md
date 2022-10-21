@@ -15,7 +15,10 @@
 
 [Re: 视频解析](docs/解析.md)
 
-> `iOS` 下载 `ipa` 之后, 请使用 [sideloadly](https://sideloadly.io/) 签名安装
+> `iOS` 下载 `ipa` 之后, 可以使用 [sideloadly](https://sideloadly.io/) | [TrollStore(推荐)](https://github.com/opa334/TrollStore) (签名)安装
+
+[![image](https://user-images.githubusercontent.com/45585937/197248782-f173db3f-401f-4e15-b5ab-92d7928475ec.png)](https://sideloadly.io/)
+[![image](https://user-images.githubusercontent.com/45585937/197247561-0a60dbd6-1c91-4c22-a008-189819145e24.png)](https://github.com/opa334/TrollStore)
 
 ## 截图
 

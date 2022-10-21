@@ -27,6 +27,9 @@ import 'package:movie/mirror/mirror_serialize.dart';
 import 'package:movie/models/movie_parse.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 
+const kAllCategoryPoint = '-114514';
+var kAllCategoryData = MovieQueryCategory('全部', kAllCategoryPoint);
+
 /// 历史记录处理类型
 enum UpdateSearchHistoryType {
   /// 添加
@@ -63,7 +66,7 @@ class HomeController extends GetxController with WidgetsBindingObserver {
 
   final localStorage = GetStorage();
 
-  final mirrorCategory = MirrorCategory();
+  final mirrorCategoryPool = MirrorCategoryPool();
 
   String get currentMirrorItemId {
     if (mirrorListIsEmpty) return "";
@@ -77,15 +80,18 @@ class HomeController extends GetxController with WidgetsBindingObserver {
   bool _iosCanBeUseSystemBrowser = true;
 
   List<MovieQueryCategory> get currentCategoryer {
-    var data = mirrorCategory.data(currentMirrorItemId);
+    var data = mirrorCategoryPool.data(currentMirrorItemId);
+    if (data.isNotEmpty) {
+      return [kAllCategoryData, ...data];
+    }
     return data;
   }
 
   bool get currentHasCategoryer {
-    return mirrorCategory.has(currentMirrorItemId);
+    return mirrorCategoryPool.has(currentMirrorItemId);
   }
 
-  MovieQueryCategory? currentCategoryerNow;
+  MovieQueryCategory? currentCategoryerNow = kAllCategoryData;
 
   setCurrentCategoryerNow(MovieQueryCategory category) {
     currentCategoryerNow = category;
@@ -161,7 +167,7 @@ class HomeController extends GetxController with WidgetsBindingObserver {
   easyCleanCacheHook() {
     _isNsfw = false;
     _cacheMirrorIndex = -1;
-    mirrorCategory.clean();
+    mirrorCategoryPool.clean();
     if (_parseVipList.isNotEmpty) {
       _parseVipList = [];
       update();
@@ -389,15 +395,20 @@ class HomeController extends GetxController with WidgetsBindingObserver {
     try {
       if (mirrorListIsEmpty) return null;
       var category = await currentMirrorItem.getCategory();
-      if (category.isEmpty) return null;
-      mirrorCategory.put(currentMirrorItemId, category);
-      // XXX(d1y): 暂时下次默认取值第一个
-      var now = category[0];
-      currentCategoryerNow = now;
+      /// NOTE(d1y): 为空也是一种错误的表现
+      if (category.isEmpty) {
+        mirrorCategoryPool.fetchCountPP(currentMirrorItemId);
+        return null;
+      }
+      mirrorCategoryPool.put(currentMirrorItemId, category);
+      // XXX(d1y): 默认使用全部分类
+      currentCategoryerNow = kAllCategoryData;
       update();
-      return now.id;
+      return kAllCategoryData.id;
     } catch (e) {
-      // FIXME: get category error
+      if (currentMirrorItemId.isNotEmpty) {
+        mirrorCategoryPool.fetchCountPP(currentMirrorItemId);
+      }
       debugPrint(e.toString());
       return null;
     }
@@ -406,19 +417,26 @@ class HomeController extends GetxController with WidgetsBindingObserver {
   /// [isFirst] 初始化加载数据需要将 [isLoading] => true
   /// [missIsLoading] 某些特殊情况下不需要设置 [isLoading] => true
   updateHomeData({bool isFirst = false, missIsLoading = false}) async {
+    /// 如果都没有源, 则不需要加载数据
+    /// => +_+ 还玩个球啊
+    if (mirrorListIsEmpty) return;
+
     var onceCategory = "";
     if (currentCategoryerNow != null) {
-      onceCategory = currentCategoryerNow!.id;
+      var id = currentCategoryerNow!.id;
+      onceCategory = id;
     }
     if (isFirst) {
-      if (!currentHasCategoryer) {
+      /// NOTE(d1y): 不存在分类并且请求次数没有超过阈值
+      if (!currentHasCategoryer && !mirrorCategoryPool.fetchCountAlreadyMax(currentMirrorItemId)) {
         onceCategory = await syncCurrentCategoryer() ?? "";
       }
     }
 
-    /// 如果都没有源, 则不需要加载数据
-    /// => +_+ 还玩个球啊
-    if (mirrorListIsEmpty) return;
+    /// XXX(d1y): 但凡是个正常一点的站点都不会用 `-114514` 作为分类的
+    if (onceCategory == kAllCategoryPoint) {
+      onceCategory = "";
+    }
 
     /// 如果 [indexHomeLoadDataErrorMessage] 错误栈有内容的话
     /// 并且 [isFirst] 不是初始化数据的话, 就不允许加载更多

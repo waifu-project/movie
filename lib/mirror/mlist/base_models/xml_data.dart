@@ -46,7 +46,13 @@ class Rss {
     list = ListX.fromJson(json['list']);
     version = json['@version'];
     Map<String, dynamic> _category = json['class'] ?? {};
-    List<dynamic> data = _category['ty'] ?? [];
+    dynamic ty = _category['ty'];
+    List<dynamic> data = [];
+    if (ty is List) {
+      data = ty;
+    } else if (ty is Map) {
+      data.add(ty);
+    }
     List<MovieQueryCategory> _categorys = data.map((e) {
       var map = Map<String, String>.from(e);
       var name = map['\$'] ?? "";

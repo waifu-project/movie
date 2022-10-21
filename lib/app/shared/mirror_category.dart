@@ -1,11 +1,35 @@
 import 'package:movie/impl/movie.dart';
 
-class MirrorCategory {
-  MirrorCategory._internal();
-  factory MirrorCategory() => _instance;
-  static late final MirrorCategory _instance = MirrorCategory._internal();
+/// NOTE(d1y): 获取分类最大尝试次数(3次)
+const kMirrorCategoryTryCountMax = 3;
+
+/// 源分类缓存池
+/// TODO(d1y): 持久化
+class MirrorCategoryPool {
+  MirrorCategoryPool._internal();
+  factory MirrorCategoryPool() => _instance;
+  static late final MirrorCategoryPool _instance =
+      MirrorCategoryPool._internal();
 
   Map<String, List<MovieQueryCategory>> stacks = {};
+
+  //===============================
+  /// 标记一个最大数📌的请求分类池
+  Map<String, int> fetchCounter = {};
+  bool fetchCountAlreadyMax(String key) {
+    int count = fetchCounter[key] ?? 0;
+    return count >= kMirrorCategoryTryCountMax;
+  }
+
+  fetchCountPP(String key) {
+    int count = fetchCounter[key] ?? 0;
+    fetchCounter[key] = count + 1;
+  }
+
+  cleanCounter() {
+    fetchCounter = {};
+  }
+  //===============================
 
   clean() {
     stacks = {};

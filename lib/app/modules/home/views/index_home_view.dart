@@ -185,7 +185,8 @@ class IndexHomeViewPage extends GetView {
                   scrollDirection: Axis.horizontal,
                   itemBuilder: ((context, index) {
                     MovieQueryCategory curr = home.currentCategoryer[index];
-                    bool isCurr = curr.id == home.currentCategoryerNow!.id;
+                    // XXX(d1y): 默认为全部
+                    bool isCurr = curr.id == (home.currentCategoryerNow?.id ?? kAllCategoryPoint);
                     return Padding(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 4.2,
@@ -207,7 +208,7 @@ class IndexHomeViewPage extends GetView {
                         ),
                         onPressed: () {
                           // XXX(d1y): 不允许点击当前分类
-                          if (curr.id == home.currentCategoryerNow!.id) return;
+                          if (curr.id == home.currentCategoryerNow?.id) return;
                           home.setCurrentCategoryerNow(curr);
                         },
                       ),

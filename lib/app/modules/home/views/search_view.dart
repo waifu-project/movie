@@ -16,7 +16,7 @@
 import 'dart:async';
 
 import 'package:dio/dio.dart';
-import 'package:flappy_search_bar_ns/flappy_search_bar_ns.dart';
+import 'package:flappy_search_bar_ns/flappy_search_bar_ns.dart' as ExtendSearchBar;
 import 'package:flappy_search_bar_ns/search_bar_style.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -44,7 +44,7 @@ class _SearchViewState extends State<SearchView>
     with AutomaticKeepAliveClientMixin {
   final HomeController home = Get.find<HomeController>();
 
-  SearchBarController get _searchBarController => home.searchBarController;
+  ExtendSearchBar.SearchBarController get _searchBarController => home.searchBarController;
 
   List<String> _searchHistory = [];
 
@@ -173,7 +173,7 @@ class _SearchViewState extends State<SearchView>
                 width: _kEmptyMirrorWidth,
               );
             }
-            return SearchBar<MirrorOnceItemSerialize>(
+            return ExtendSearchBar.SearchBar<MirrorOnceItemSerialize>(
               textStyle: TextStyle(
                 color: Get.isDarkMode ? Colors.white : Colors.black,
               ),
@@ -521,7 +521,7 @@ class _SearchViewState extends State<SearchView>
       setState(() {
         isTriggerSearch = false;
       });
-      throw AsyncError(dioError, StackTrace.fromString(dioError.error));
+      throw AsyncError(dioError, StackTrace.fromString(dioError.error.toString()));
     }
   }
 

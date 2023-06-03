@@ -16,7 +16,7 @@
 import 'dart:io';
 
 import 'package:cookie_jar/cookie_jar.dart';
-import 'package:dio/adapter.dart';
+import 'package:dio/io.dart';
 import 'package:dio/dio.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import 'package:flutter/foundation.dart';
@@ -27,16 +27,16 @@ class XHttp {
 
   /// 网络请求配置
   static final Dio dio = Dio(BaseOptions(
-    connectTimeout: 15000,
-    receiveTimeout: 13000,
+    connectTimeout: Duration(seconds: 15),
+    receiveTimeout: Duration(seconds: 13),
   ));
 
   static changeTimeout({
-    int connectTimeout = 15000,
-    int receiveTimeout = 13000,
+    int connectTimeout = 15,
+    int receiveTimeout = 13,
   }) {
-    dio.options.connectTimeout = connectTimeout;
-    dio.options.receiveTimeout = receiveTimeout;
+    dio.options.connectTimeout = Duration(seconds: connectTimeout);
+    dio.options.receiveTimeout = Duration(seconds: receiveTimeout);
   }
 
   /// 初始化dio
@@ -93,7 +93,7 @@ class XHttp {
   /// error统一处理
   static void handleError(DioError e) {
     switch (e.type) {
-      case DioErrorType.connectTimeout:
+      case DioErrorType.connectionTimeout:
         debugPrint("连接超时");
         break;
       case DioErrorType.sendTimeout:
@@ -102,7 +102,7 @@ class XHttp {
       case DioErrorType.receiveTimeout:
         debugPrint("响应超时");
         break;
-      case DioErrorType.response:
+      case DioErrorType.badResponse:
         debugPrint("出现异常");
         break;
       case DioErrorType.cancel:

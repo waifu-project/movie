@@ -1,12 +1,13 @@
 // This is a generated file; do not edit or check into version control.
-FLUTTER_ROOT=/Users/d1y/fvm/versions/3.0.5
+FLUTTER_ROOT=/Users/d1y/fvm/versions/3.7.12
 FLUTTER_APPLICATION_PATH=/Users/d1y/code/github/movie
 COCOAPODS_PARALLEL_CODE_SIGN=true
-FLUTTER_TARGET=lib/main.dart
+FLUTTER_TARGET=/Users/d1y/code/github/movie/lib/main.dart
 FLUTTER_BUILD_DIR=build
-FLUTTER_BUILD_NAME=1.0.0
-FLUTTER_BUILD_NUMBER=1
+FLUTTER_BUILD_NAME=2.1.0
+FLUTTER_BUILD_NUMBER=2
+DART_DEFINES=RkxVVFRFUl9XRUJfQVVUT19ERVRFQ1Q9dHJ1ZQ==,RkxVVFRFUl9XRUJfQ0FOVkFTS0lUX1VSTD1odHRwczovL3d3dy5nc3RhdGljLmNvbS9mbHV0dGVyLWNhbnZhc2tpdC8yYTM0MDFjOWJiYjVhOWE5YWVjNzRkNGY3MzVkMThhOWRkM2ViZjJkLw==
 DART_OBFUSCATION=false
 TRACK_WIDGET_CREATION=true
-TREE_SHAKE_ICONS=true
+TREE_SHAKE_ICONS=false
 PACKAGE_CONFIG=/Users/d1y/code/github/movie/.dart_tool/package_config.json

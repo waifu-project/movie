@@ -33,8 +33,6 @@ import 'package:movie/utils/http.dart';
 import 'package:clipboard/clipboard.dart';
 import 'package:movie/utils/json.dart';
 
-import 'package:movie/widget/list_tile.dart';
-
 class SourceItemJSONData {
   String? title;
   String? url;

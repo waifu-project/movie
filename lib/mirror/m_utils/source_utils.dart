@@ -216,12 +216,13 @@ class SourceUtils {
     List<KBaseMirrorMovie> result = [];
     await Future.forEach(sources, (String element) async {
       try {
+        var time = Duration(seconds: 1);
         var resp = await XHttp.dio.get(
           element,
           options: Options(
             responseType: ResponseType.json, // 暂未设计出 `.xv` 文件, 通过 `json` 导入
-            receiveTimeout: 1000,
-            sendTimeout: 1000,
+            receiveTimeout: time,
+            sendTimeout: time,
           ),
         );
         dynamic respData = resp.data;

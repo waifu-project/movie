@@ -37,7 +37,7 @@ jobs:
           path: build/windows/runner/Release/yy-windows.zip
 
   build-with-linux-x86_64:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
 
     env:
       TARBALL_NAME: yy-linux-x86_64.tar.gz

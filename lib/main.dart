@@ -1,4 +1,5 @@
 import 'package:bitsdojo_window/bitsdojo_window.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
@@ -9,6 +10,20 @@ import 'package:movie/utils/helper.dart';
 
 import 'app/routes/app_pages.dart';
 import 'utils/http.dart';
+
+ThemeData applyTheme({isDark = true}) {
+  var theme = isDark ? ThemeData.dark() : ThemeData.light();
+  if (GetPlatform.isLinux || kDebugMode) {
+    theme = theme.copyWith(
+      textTheme: const TextTheme(
+        bodyMedium: TextStyle(
+          fontFamily: 'LXG',
+        ),
+      ),
+    );
+  }
+  return theme;
+}
 
 /// 运行之前
 Future<List<dynamic>> runBefore() async {
@@ -71,8 +86,8 @@ void main() async {
           : wrapperIfDark == Brightness.dark
               ? ThemeMode.dark
               : ThemeMode.light,
-      theme: ThemeData.light(),
-      darkTheme: ThemeData.dark(),
+      theme: applyTheme(isDark: false),
+      darkTheme: applyTheme(),
     ),
   );
 

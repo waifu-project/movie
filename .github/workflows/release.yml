@@ -6,7 +6,7 @@ on:
 
 env:
   FLUTTER_VERSION: 3.10.3
-  LINUX_DEPENDENCIES: git unzip zip xz-utils curl clang cmake ninja-build pkg-config libgtk-3-dev libblkid-dev liblzma-dev libjsoncpp-dev cmake-data libjsoncpp25 libsecret-1-dev libsecret-1-0 librhash0 libsqlite3-dev libappindicator3-dev gettext libwebkit2gtk-4.1-dev
+  LINUX_DEPENDENCIES: git wget unzip python3 zip xz-utils curl clang cmake ninja-build pkg-config libgtk-3-dev libblkid-dev liblzma-dev libjsoncpp-dev cmake-data libjsoncpp25 libsecret-1-dev libsecret-1-0 librhash0 libsqlite3-dev libappindicator3-dev gettext libwebkit2gtk-4.1-dev
 
 jobs:
 
@@ -56,7 +56,9 @@ jobs:
       - name: Install dependencies
         run: sudo apt update && sudo apt-get install -y ${{ env.LINUX_DEPENDENCIES }} || true
       - name: Build
-        run: flutter build linux --release
+        run: |
+          python3 script/linux_apply_font.py
+          flutter build linux --release
       - name: Create tarball
         run: |
           cd build/linux/x64/release/bundle

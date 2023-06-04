@@ -50,3 +50,5 @@ cache/
 json/
 
 node_modules/
+
+fonts/*.ttf

@@ -11,7 +11,6 @@ export './custom_render.dart';
 //export render context api
 export './html_parser.dart';
 //export render context api
-export './html_parser.dart';
 //export src for advanced custom render uses (e.g. casting context.tree)
 export './src/anchor.dart';
 export './src/interactable_element.dart';
@@ -147,7 +146,6 @@ class Html extends StatefulWidget {
     ..addAll(LAYOUT_ELEMENTS)
     ..addAll(TABLE_CELL_ELEMENTS)
     ..addAll(TABLE_DEFINITION_ELEMENTS);
-    // FIXME: simple parse html, not support there tag.. 
     // ..addAll(EXTERNAL_ELEMENTS);
 
   @override

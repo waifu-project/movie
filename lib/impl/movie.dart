@@ -76,5 +76,5 @@ abstract class MovieImpl {
   });
 
   /// 获取视频详情
-  Future<MirrorOnceItemSerialize> getDetail(String movie_id);
+  Future<MirrorOnceItemSerialize> getDetail(String movieId);
 }

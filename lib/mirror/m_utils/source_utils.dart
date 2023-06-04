@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:movie/impl/movie.dart';
 import 'package:movie/mirror/mirror.dart';
 import 'package:movie/mirror/mlist/base_models/source_data.dart';
 import 'package:movie/utils/helper.dart';
@@ -19,7 +18,7 @@ class SourceUtils {
   static List<String> getSources(String rawString) {
     var spList = rawString.split("\n");
     return spList.map((e) => e.trim()).toList().where((item) {
-      var flag = (!item.isEmpty && isURL(item));
+      var flag = (item.isNotEmpty && isURL(item));
       return flag;
     }).toList();
   }
@@ -157,10 +156,10 @@ class SourceUtils {
         }).toList();
         return tryParseDynamic(cacheAsMap);
       } else {
-        var BIND_KEY = 'mirrors';
+        var bindKey = 'mirrors';
         var jsonDataAsMap = jsonData as Map<String, dynamic>;
-        if (jsonDataAsMap.containsKey(BIND_KEY)) {
-          var cache = jsonDataAsMap[BIND_KEY];
+        if (jsonDataAsMap.containsKey(bindKey)) {
+          var cache = jsonDataAsMap[bindKey];
           if (cache is List) {
             List<Map<String, dynamic>> cacheAsMapList = cache
                 .map((item) {
@@ -201,7 +200,7 @@ class SourceUtils {
     List<KBaseMirrorMovie> result = [];
     await Future.forEach(sources, (String element) async {
       try {
-        var time = Duration(seconds: 1);
+        var time = const Duration(seconds: 1);
         var resp = await XHttp.dio.get(
           element,
           options: Options(
@@ -250,12 +249,12 @@ class SourceUtils {
   }) {
     int len = MirrorManage.extend.length;
 
-    newSourceData.forEach((element) {
+    for (var element in newSourceData) {
       var newDataDomain = element.meta.domain;
       MirrorManage.extend.removeWhere(
         (element) => element.meta.domain == newDataDomain,
       );
-    });
+    }
 
     MirrorManage.extend.addAll(newSourceData);
 
@@ -265,11 +264,9 @@ class SourceUtils {
     if (newLen <= 0 && diff) return [0, []];
 
     var inputData = MirrorManage.extend;
-    if (inputData is List<MovieImpl>) {
-      inputData = inputData.map((e) {
-        return e as KBaseMirrorMovie;
-      }).toList();
-    }
+    inputData = inputData.map((e) {
+      return e as KBaseMirrorMovie;
+    }).toList();
     // return [0, []];
     var copyData = (inputData as List<KBaseMirrorMovie>).map(
       (e) {

@@ -108,12 +108,12 @@ class KBaseMirrorMovie extends MovieImpl {
   }
 
   @override
-  Future<MirrorOnceItemSerialize> getDetail(String movie_id) async {
+  Future<MirrorOnceItemSerialize> getDetail(String movieId) async {
     var resp = await XHttp.dio.post(
       createUrl(suffix: api_path),
       queryParameters: {
         "ac": "videolist",
-        "ids": movie_id,
+        "ids": movieId,
       },
       options: ops,
     );
@@ -208,7 +208,7 @@ class KBaseMirrorMovie extends MovieImpl {
   }
 
   ///   返回值比对 [kv]
-  Map<String, ResponseCustomType> _RespCheckkv = {
+  final Map<String, ResponseCustomType> _RespCheckkv = {
     "{\"": ResponseCustomType.json,
     "<?xml": ResponseCustomType.xml,
   };

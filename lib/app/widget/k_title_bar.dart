@@ -9,7 +9,7 @@ class kTitleBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(
+      padding: const EdgeInsets.symmetric(
         horizontal: 12,
         vertical: 8,
       ),
@@ -22,11 +22,11 @@ class kTitleBar extends StatelessWidget {
             children: [
               Text(
                 title,
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 24,
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 8,
               ),
               Container(
@@ -36,7 +36,7 @@ class kTitleBar extends StatelessWidget {
               ),
             ],
           ),
-          Row(
+          const Row(
             children: [
               Text(
                 "全部",

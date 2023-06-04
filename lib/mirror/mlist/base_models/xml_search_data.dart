@@ -203,13 +203,9 @@ class Ty {
 
   factory Ty.fromJson(Map<String, dynamic> json) {
     var id = json["_id"];
-    if (id == null) {
-      id = json["@id"];
-    }
+    id ??= json["@id"];
     var text = json["__text"];
-    if (text == null) {
-      text = json["\$"];
-    }
+    text ??= json["\$"];
     return Ty(
       id: id,
       text: text,

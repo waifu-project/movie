@@ -42,7 +42,7 @@ class HomeController extends GetxController with WidgetsBindingObserver {
   int get currentParseVipIndex => _currentParseVipIndex;
   List<MovieParseModel> get parseVipList => _parseVipList;
   MovieParseModel? get currentParseVipModelData {
-    if (parseVipList.length <= 0 ||
+    if (parseVipList.isEmpty ||
         currentParseVipIndex >= parseVipList.length) {
       return null;
     }
@@ -127,8 +127,9 @@ class HomeController extends GetxController with WidgetsBindingObserver {
   }
 
   int get mirrorIndex {
-    if (_cacheMirrorIndex == -1)
+    if (_cacheMirrorIndex == -1) {
       return localStorage.read(ConstDart.ls_mirrorIndex) ?? 0;
+    }
     return _cacheMirrorIndex;
   }
 
@@ -219,8 +220,8 @@ class HomeController extends GetxController with WidgetsBindingObserver {
 
   showMirrorModel(BuildContext context) {
     Get.to(
-      () => MirrorTableView(),
-      duration: Duration(
+      () => const MirrorTableView(),
+      duration: const Duration(
         milliseconds: 240,
       ),
       transition: Transition.cupertino,
@@ -467,7 +468,7 @@ class HomeController extends GetxController with WidgetsBindingObserver {
 
   @override
   void onReady() {
-    refreshController = new RefreshController();
+    refreshController = RefreshController();
     super.onReady();
   }
 

@@ -9,12 +9,12 @@ import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 RegExp _ipv4Maybe =
-    new RegExp(r'^(\d?\d?\d)\.(\d?\d?\d)\.(\d?\d?\d)\.(\d?\d?\d)$');
+    RegExp(r'^(\d?\d?\d)\.(\d?\d?\d)\.(\d?\d?\d)\.(\d?\d?\d)$');
 RegExp _ipv6 =
-    new RegExp(r'^::|^::1|^([a-fA-F0-9]{1,4}::?){1,7}([a-fA-F0-9]{1,4})$');
+    RegExp(r'^::|^::1|^([a-fA-F0-9]{1,4}::?){1,7}([a-fA-F0-9]{1,4})$');
 
 shift(List l) {
-  if (l.length >= 1) {
+  if (l.isNotEmpty) {
     var first = l.first;
     l.removeAt(0);
     return first;
@@ -49,7 +49,7 @@ bool isFQDN(String str,
   var parts = str.split('.');
   if (requireTld) {
     var tld = parts.removeLast();
-    if (parts.length == 0 || !new RegExp(r'^[a-z]{2,}$').hasMatch(tld)) {
+    if (parts.isEmpty || !RegExp(r'^[a-z]{2,}$').hasMatch(tld)) {
       return false;
     }
   }
@@ -60,12 +60,12 @@ bool isFQDN(String str,
         return false;
       }
     }
-    if (!new RegExp(r'^[a-z\\u00a1-\\uffff0-9-]+$').hasMatch(part)) {
+    if (!RegExp(r'^[a-z\\u00a1-\\uffff0-9-]+$').hasMatch(part)) {
       return false;
     }
     if (part[0] == '-' ||
         part[part.length - 1] == '-' ||
-        part.indexOf('---') >= 0) {
+        part.contains('---')) {
       return false;
     }
   }
@@ -88,7 +88,7 @@ bool isURL(String? str,
     List<String> hostWhitelist = const [],
     List<String> hostBlacklist = const []}) {
   if (str == null ||
-      str.length == 0 ||
+      str.isEmpty ||
       str.length > 2083 ||
       str.startsWith('mailto:')) {
     return false;
@@ -100,7 +100,7 @@ bool isURL(String? str,
       host,
       hostname,
       port,
-      port_str,
+      portStr,
       path,
       query,
       hash,
@@ -110,7 +110,7 @@ bool isURL(String? str,
   split = str.split('://');
   if (split.length > 1) {
     protocol = shift(split);
-    if (protocols.indexOf(protocol) == -1) {
+    if (!protocols.contains(protocol)) {
       return false;
     }
   } else if (requireProtocol == true) {
@@ -122,7 +122,7 @@ bool isURL(String? str,
   split = str!.split('#');
   str = shift(split);
   hash = split.join('#');
-  if (hash != null && hash != "" && new RegExp(r'\s').hasMatch(hash)) {
+  if (hash != null && hash != "" && RegExp(r'\s').hasMatch(hash)) {
     return false;
   }
 
@@ -130,7 +130,7 @@ bool isURL(String? str,
   split = str!.split('?');
   str = shift(split);
   query = split.join('?');
-  if (query != null && query != "" && new RegExp(r'\s').hasMatch(query)) {
+  if (query != null && query != "" && RegExp(r'\s').hasMatch(query)) {
     return false;
   }
 
@@ -138,7 +138,7 @@ bool isURL(String? str,
   split = str!.split('/');
   str = shift(split);
   path = split.join('/');
-  if (path != null && path != "" && new RegExp(r'\s').hasMatch(path)) {
+  if (path != null && path != "" && RegExp(r'\s').hasMatch(path)) {
     return false;
   }
 
@@ -149,10 +149,10 @@ bool isURL(String? str,
     if (auth.indexOf(':') >= 0) {
       auth = auth.split(':');
       user = shift(auth);
-      if (!new RegExp(r'^\S+$').hasMatch(user)) {
+      if (!RegExp(r'^\S+$').hasMatch(user)) {
         return false;
       }
-      if (!new RegExp(r'^\S*$').hasMatch(user)) {
+      if (!RegExp(r'^\S*$').hasMatch(user)) {
         return false;
       }
     }
@@ -163,13 +163,13 @@ bool isURL(String? str,
   split = hostname.split(':');
   host = shift(split);
   if (split.length > 0) {
-    port_str = split.join(':');
+    portStr = split.join(':');
     try {
-      port = int.parse(port_str, radix: 10);
+      port = int.parse(portStr, radix: 10);
     } catch (e) {
       return false;
     }
-    if (!new RegExp(r'^[0-9]+$').hasMatch(port_str) ||
+    if (!RegExp(r'^[0-9]+$').hasMatch(portStr) ||
         port <= 0 ||
         port > 65535) {
       return false;
@@ -245,7 +245,7 @@ easyPlayToIINA(String url) {
 
 /// 判断 `iina` 是否安装
 bool checkInstalledIINA() {
-  final iinaAPP = '/Applications/IINA.app';
+  const iinaAPP = '/Applications/IINA.app';
   // if (kDebugMode) return false;
   return Directory(iinaAPP).existsSync();
 }

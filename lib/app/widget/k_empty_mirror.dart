@@ -20,7 +20,7 @@ class KEmptyMirror extends StatelessWidget {
     var ctx = Get.context as BuildContext;
     return Theme.of(ctx)
         .textTheme
-        .headline6!
+        .titleLarge!
         .copyWith(color: Theme.of(ctx).indicatorColor);
   }
 
@@ -36,11 +36,11 @@ class KEmptyMirror extends StatelessWidget {
             fit: BoxFit.cover,
             width: _width,
           ),
-          SizedBox(
+          const SizedBox(
             height: 12,
           ),
-          Text('无数据源 :('),
-          SizedBox(
+          const Text('无数据源 :('),
+          const SizedBox(
             height: 12,
           ),
           Text(

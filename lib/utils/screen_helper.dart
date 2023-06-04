@@ -31,7 +31,7 @@ execScreenDirction(
           break;
         default:
       }
-      SystemUiOverlayStyle systemUiOverlayStyle = SystemUiOverlayStyle(
+      SystemUiOverlayStyle systemUiOverlayStyle = const SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
       );
       SystemChrome.setSystemUIOverlayStyle(systemUiOverlayStyle);

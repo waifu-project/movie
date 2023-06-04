@@ -39,11 +39,11 @@ class SourceItemJSONData {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['title'] = this.title;
-    data['url'] = this.url;
-    data['msg'] = this.msg;
-    data['nswf'] = this.nsfw;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['title'] = title;
+    data['url'] = url;
+    data['msg'] = msg;
+    data['nswf'] = nsfw;
     return data;
   }
 }
@@ -137,9 +137,9 @@ class _SourceHelpTableState extends State<SourceHelpTable> {
 
     if (canCopyAll) {
       result = "";
-      actions.forEach((element) {
+      for (var element in actions) {
         result += '${element.url}\n';
-      });
+      }
     }
     if (result.isEmpty) return;
     await FlutterClipboard.copy(result);
@@ -177,8 +177,8 @@ class _SourceHelpTableState extends State<SourceHelpTable> {
     List<File> files = result.paths.map((path) => File(path!)).toList();
 
     // ==========================
-    var SOURCE_KEY = "source";
-    var FILENAME_KEY = "filename";
+    var sourceKey = "source";
+    var filenameKey = "filename";
     // ==========================
 
     var data = files
@@ -187,12 +187,12 @@ class _SourceHelpTableState extends State<SourceHelpTable> {
         .map<Map<String, dynamic>>((item) {
           String filename = item.uri.pathSegments.last;
           return {
-            SOURCE_KEY: item.readAsStringSync(),
-            FILENAME_KEY: filename,
+            sourceKey: item.readAsStringSync(),
+            filenameKey: filename,
           };
         })
         .toList()
-        .where((e) => verifyStringIsJSON(e[SOURCE_KEY] as String))
+        .where((e) => verifyStringIsJSON(e[sourceKey] as String))
         .toList();
     if (data.isEmpty) {
       showEasyCupertinoDialog(
@@ -201,12 +201,12 @@ class _SourceHelpTableState extends State<SourceHelpTable> {
       );
       return;
     }
-    var _collData = new Map<String, List<KBaseMirrorMovie>>();
-    data.forEach((item) {
-      String source = item[SOURCE_KEY] as String;
-      String filename = item[FILENAME_KEY] as String;
+    var _collData = <String, List<KBaseMirrorMovie>>{};
+    for (var item in data) {
+      String source = item[sourceKey] as String;
+      String filename = item[filenameKey] as String;
       var easyParseData = SourceUtils.tryParseDynamic(source);
-      if (easyParseData == null) return;
+      if (easyParseData == null) continue;
       List<KBaseMirrorMovie> result = [];
       if (easyParseData is KBaseMirrorMovie) {
         result = [easyParseData];
@@ -222,7 +222,7 @@ class _SourceHelpTableState extends State<SourceHelpTable> {
         result.addAll(append);
       }
       _collData[filename] = result;
-    });
+    }
 
     String easyMessage = "";
     List<KBaseMirrorMovie> stack = [];
@@ -258,12 +258,12 @@ class _SourceHelpTableState extends State<SourceHelpTable> {
       showEasyCupertinoDialog(
         content: Column(
           children: [
-            Icon(
+            const Icon(
               CupertinoIcons.hand_thumbsup,
               size: 51,
               color: CupertinoColors.systemBlue,
             ),
-            SizedBox(
+            const SizedBox(
               height: 24,
             ),
             Text(easyMessage),
@@ -280,7 +280,7 @@ class _SourceHelpTableState extends State<SourceHelpTable> {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Text(
+          const Text(
             "// 需要科学上网",
             style: TextStyle(
               decoration: TextDecoration.lineThrough,
@@ -305,11 +305,11 @@ class _SourceHelpTableState extends State<SourceHelpTable> {
         children: [
           Builder(builder: (context) {
             if (_isLoadingFromAJAX) {
-              return CircularProgressIndicator();
+              return const CircularProgressIndicator();
             }
-            return Icon(CupertinoIcons.zzz);
+            return const Icon(CupertinoIcons.zzz);
           }),
-          SizedBox(
+          const SizedBox(
             height: 24,
           ),
           Text(
@@ -332,34 +332,34 @@ class _SourceHelpTableState extends State<SourceHelpTable> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  CupertinoNavigationBarBackButton(),
+                  const CupertinoNavigationBarBackButton(),
                   Text(
                     "o(-`д´- ｡)",
-                    style: Theme.of(context).textTheme.headline6,
+                    style: Theme.of(context).textTheme.titleLarge,
                   ),
                   Padding(
                     padding: const EdgeInsets.only(
                       right: 12,
                     ),
                     child: CupertinoButton.filled(
-                      padding: EdgeInsets.symmetric(
+                      padding: const EdgeInsets.symmetric(
                         horizontal: 12,
                         vertical: 6,
                       ),
                       child: Row(
                         children: [
-                          Icon(
+                          const Icon(
                             CupertinoIcons.arrow_down_square_fill,
                             color: CupertinoColors.white,
                           ),
-                          SizedBox(
+                          const SizedBox(
                             width: 3,
                           ),
                           Text(
                             "导入文件",
                             style: Theme.of(
                               context,
-                            ).textTheme.bodyText1!.copyWith(
+                            ).textTheme.bodyLarge!.copyWith(
                                   color: CupertinoColors.white,
                                   fontSize: 12,
                                 ),
@@ -371,7 +371,7 @@ class _SourceHelpTableState extends State<SourceHelpTable> {
                   ),
                 ],
               ),
-              Divider()
+              const Divider()
             ],
           ),
         ),
@@ -415,29 +415,30 @@ class _SourceHelpTableState extends State<SourceHelpTable> {
                 Builder(
                   builder: (context) {
                     if (mirrors.isEmpty) {
-                      if (_canLoadFail)
+                      if (_canLoadFail) {
                         return Padding(
-                          padding: EdgeInsets.only(
+                          padding: const EdgeInsets.only(
                             bottom: 24,
                           ),
                           child: CupertinoButton.filled(
-                            padding: EdgeInsets.all(12),
-                            child: Text("重新加载"),
+                            padding: const EdgeInsets.all(12),
+                            child: const Text("重新加载"),
                             onPressed: () {
                               loadMirrorListApi();
                             },
                           ),
                         );
-                      return SizedBox.shrink();
+                      }
+                      return const SizedBox.shrink();
                     }
                     return Container(
-                      margin: EdgeInsets.symmetric(
+                      margin: const EdgeInsets.symmetric(
                         horizontal: 0,
                         vertical: 12,
                       ),
                       child: CupertinoButton.filled(
                         borderRadius: BorderRadius.circular(24),
-                        child: Text("一键复制到剪贴板"),
+                        child: const Text("一键复制到剪贴板"),
                         onPressed: () {
                           handleCopyText(canCopyAll: true);
                         },
@@ -461,7 +462,7 @@ showEasyCupertinoDialog({
   BuildContext? context,
   String? confirmText,
 }) {
-  Widget child = SizedBox.shrink();
+  Widget child = const SizedBox.shrink();
   String outputTitle = title ?? "提示";
   String outputConfrimText = confirmText ?? "确定";
   if (content is Widget) {

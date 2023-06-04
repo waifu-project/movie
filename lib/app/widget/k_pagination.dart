@@ -56,7 +56,7 @@ class KPaginationActionButton extends StatelessWidget {
     List<Widget> children = [
       Text(
         directionStr,
-        style: TextStyle(fontSize: 9),
+        style: const TextStyle(fontSize: 9),
       ),
     ];
     int index = 0;
@@ -82,7 +82,7 @@ class KPaginationActionButton extends StatelessWidget {
               ),
               borderRadius: BorderRadius.circular(12),
             ),
-            padding: EdgeInsets.symmetric(
+            padding: const EdgeInsets.symmetric(
               horizontal: 12,
               vertical: 3,
             ),
@@ -160,19 +160,21 @@ class _KPaginationState extends State<KPagination> {
               KPaginationActionButton(
                 disable: !widget.turnL,
                 onTap: () {
-                  if (widget.turnL)
+                  if (widget.turnL) {
                     widget.onActionTap(KPaginationActionButtonDirection.l);
+                  }
                 },
               ),
-              SizedBox(
+              const SizedBox(
                 width: 6,
               ),
               KPaginationActionButton(
                 disable: !widget.turnR,
                 direction: KPaginationActionButtonDirection.r,
                 onTap: () {
-                  if (widget.turnR)
+                  if (widget.turnR) {
                     widget.onActionTap(KPaginationActionButtonDirection.r);
+                  }
                 },
               ),
             ],
@@ -197,7 +199,7 @@ class _KPaginationState extends State<KPagination> {
                   keyboardType: TextInputType.number,
 
                   padding: EdgeInsets.zero,
-                  strutStyle: StrutStyle(
+                  strutStyle: const StrutStyle(
                     forceStrutHeight: true,
                   ),
                   style: TextStyle(
@@ -206,7 +208,7 @@ class _KPaginationState extends State<KPagination> {
                 ),
                 width: 66,
               ),
-              SizedBox(
+              const SizedBox(
                 width: 6,
               ),
               MouseRegion(
@@ -215,7 +217,7 @@ class _KPaginationState extends State<KPagination> {
                   onTap: () {
                     widget.onJumpTap();
                   },
-                  child: Text(
+                  child: const Text(
                     "点击跳转",
                     style: TextStyle(
                       fontSize: 12,

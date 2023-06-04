@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'helper.dart';
@@ -22,7 +21,7 @@ class MovieCardItem extends StatefulWidget {
 }
 
 class _MovieCardItemState extends State<MovieCardItem> {
-  double _radiusSize = 8.0;
+  final double _radiusSize = 8.0;
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +31,7 @@ class _MovieCardItemState extends State<MovieCardItem> {
         width: double.infinity,
         // tip: 不设置高度
         // height: 120,
-        padding: EdgeInsets.symmetric(
+        padding: const EdgeInsets.symmetric(
           horizontal: 6,
           vertical: 3,
         ),
@@ -45,7 +44,7 @@ class _MovieCardItemState extends State<MovieCardItem> {
                 width: double.infinity,
                 fit: BoxFit.cover,
                 loadingBuilder: (context, child, loadingProgress) {
-                  if (loadingProgress == null)
+                  if (loadingProgress == null) {
                     return DecoratedBox(
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(_radiusSize),
@@ -54,7 +53,7 @@ class _MovieCardItemState extends State<MovieCardItem> {
                             color: Theme.of(
                               context,
                             ).primaryColor.withOpacity(.2),
-                            offset: Offset(1, 1),
+                            offset: const Offset(1, 1),
                             blurRadius: 2,
                             spreadRadius: 2,
                           ),
@@ -65,7 +64,8 @@ class _MovieCardItemState extends State<MovieCardItem> {
                         child: child,
                       ),
                     );
-                  return Center(
+                  }
+                  return const Center(
                     child: CircularProgressIndicator(),
                   );
                 },
@@ -75,14 +75,14 @@ class _MovieCardItemState extends State<MovieCardItem> {
                 ),
               ),
             ),
-            SizedBox(
+            const SizedBox(
               height: 9,
             ),
             Container(
               child: Text(
                 widget.title,
                 maxLines: 1,
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 12,
                 ),
                 overflow: TextOverflow.ellipsis,

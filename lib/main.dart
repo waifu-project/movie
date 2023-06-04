@@ -44,7 +44,7 @@ Future<List<dynamic>> runBefore() async {
 void runAfter() {
   if (GetPlatform.isDesktop) {
     doWhenWindowReady(() {
-      final minSize = Size(420, 420);
+      const minSize = Size(420, 420);
       appWindow.minSize = minSize;
       // final initialSize = Size(990, 720);
       // appWindow.size = initialSize;

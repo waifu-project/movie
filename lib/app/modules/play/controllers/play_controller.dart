@@ -216,8 +216,8 @@ class PlayController extends GetxController {
           showCupertinoDialog(
             builder: (BuildContext context) => CupertinoAlertDialog(
               title: const Text('提示'),
-              content: Padding(
-                padding: const EdgeInsets.symmetric(
+              content: const Padding(
+                padding: EdgeInsets.symmetric(
                   vertical: 12.0,
                 ),
                 child: Text(
@@ -289,12 +289,12 @@ class PlayController extends GetxController {
 
     if (e.type == MirrorSerializeVideoType.iframe) {
       Get.to(
-        () => WebviewView(),
+        () => const WebviewView(),
         arguments: url,
       );
     } else if (canUseChewieView) {
       Get.to(
-        () => ChewieView(),
+        () => const ChewieView(),
         arguments: {
           'url': url,
           'cover': movieItem.smallCoverImage,
@@ -352,7 +352,7 @@ class PlayController extends GetxController {
         home.localStorage.read<bool>(ConstDart.showPlayTips) ?? true;
     update();
     if (canShowPlayTips) {
-      Timer(Duration(seconds: 2), () {
+      Timer(const Duration(seconds: 2), () {
         showPlayTips();
       });
     }

@@ -80,7 +80,7 @@ class Html extends StatefulWidget {
     this.style = const {},
   })  : data = null,
         assert(document != null),
-        this.documentElement = document!.documentElement,
+        documentElement = document!.documentElement,
         _anchorKey = anchorKey ?? GlobalKey(),
         super(key: key);
 
@@ -141,7 +141,7 @@ class Html extends StatefulWidget {
   /// An API that allows you to override the default style for any HTML element
   final Map<String, Style> style;
 
-  static List<String> get tags => new List<String>.from(STYLED_ELEMENTS)
+  static List<String> get tags => List<String>.from(STYLED_ELEMENTS)
     ..addAll(INTERACTABLE_ELEMENTS)
     ..addAll(REPLACED_ELEMENTS)
     ..addAll(LAYOUT_ELEMENTS)
@@ -178,7 +178,7 @@ class _HtmlState extends State<Html> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       width: widget.shrinkWrap ? null : MediaQuery.of(context).size.width,
       child: HtmlParser(
         key: widget._anchorKey,
@@ -265,7 +265,7 @@ class SelectableHtml extends StatefulWidget {
     this.scrollPhysics,
   })  : data = null,
         assert(document != null),
-        this.documentElement = document!.documentElement,
+        documentElement = document!.documentElement,
         _anchorKey = anchorKey ?? GlobalKey(),
         super(key: key);
 
@@ -327,7 +327,7 @@ class SelectableHtml extends StatefulWidget {
   /// fallback to the default rendering.
   final Map<CustomRenderMatcher, SelectableCustomRender> customRenders;
 
-  static List<String> get tags => new List<String>.from(SELECTABLE_ELEMENTS);
+  static List<String> get tags => List<String>.from(SELECTABLE_ELEMENTS);
 
   @override
   State<StatefulWidget> createState() => _SelectableHtmlState();
@@ -346,7 +346,7 @@ class _SelectableHtmlState extends State<SelectableHtml> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       width: widget.shrinkWrap ? null : MediaQuery.of(context).size.width,
       child: HtmlParser(
         key: widget._anchorKey,

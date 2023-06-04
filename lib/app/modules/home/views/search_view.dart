@@ -126,7 +126,7 @@ class _SearchViewState extends State<SearchView>
   PreferredSizeWidget? get _appBar {
     bool isDesktop = GetPlatform.isDesktop;
     if (isDesktop) {
-      return WindowAppBar(
+      return const WindowAppBar(
         centerTitle: true,
         title: Text(
           "搜索",
@@ -164,7 +164,7 @@ class _SearchViewState extends State<SearchView>
               ),
               searchBarController: _searchBarController,
               header: Builder(builder: (context) {
-                if (!canShowPagingView) return SizedBox.shrink();
+                if (!canShowPagingView) return const SizedBox.shrink();
                 return KPagination(
                   turnL: isPrevPage,
                   turnR: isNextPage,
@@ -216,7 +216,7 @@ class _SearchViewState extends State<SearchView>
                         child: child,
                       );
                     }
-                    return Center(
+                    return const Center(
                       child: CircularProgressIndicator(),
                     );
                   },
@@ -233,7 +233,7 @@ class _SearchViewState extends State<SearchView>
                 // EdgeInsets _sharkPadding = EdgeInsets.all(canNotFindCover ? 10 : 0);
 
                 if (canNotFindCover) {
-                  coverWidget = SizedBox.shrink();
+                  coverWidget = const SizedBox.shrink();
                 }
 
                 return GestureDetector(
@@ -242,7 +242,7 @@ class _SearchViewState extends State<SearchView>
                     if (item!.videos.isEmpty) {
                       String id = item.id;
                       Get.dialog(
-                        Center(
+                        const Center(
                           child: CupertinoActivityIndicator(),
                         ),
                       );
@@ -255,7 +255,7 @@ class _SearchViewState extends State<SearchView>
                     );
                   },
                   child: Container(
-                    padding: EdgeInsets.symmetric(
+                    padding: const EdgeInsets.symmetric(
                       vertical: 24,
                       horizontal: 12,
                     ),
@@ -271,17 +271,17 @@ class _SearchViewState extends State<SearchView>
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         coverWidget,
-                        SizedBox(
+                        const SizedBox(
                           width: 12,
                         ),
                         Expanded(
-                          child: Container(
+                          child: SizedBox(
                             width: double.infinity,
                             child: Text(
                               item?.title ?? "",
                               overflow: TextOverflow.ellipsis,
                               maxLines: 2,
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontSize: 18,
                               ),
                             ),
@@ -292,11 +292,11 @@ class _SearchViewState extends State<SearchView>
                   ),
                 );
               },
-              searchBarStyle: SearchBarStyle(
-                padding: const EdgeInsets.symmetric(
+              searchBarStyle: const SearchBarStyle(
+                padding: EdgeInsets.symmetric(
                   horizontal: 12,
                 ),
-                borderRadius: const BorderRadius.all(
+                borderRadius: BorderRadius.all(
                   Radius.circular(24.0),
                 ),
               ),
@@ -321,10 +321,10 @@ class _SearchViewState extends State<SearchView>
                       fit: BoxFit.cover,
                       width: _kEmptyMirrorWidth,
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 12,
                     ),
-                    Text(
+                    const Text(
                       '没有找到相关视频 :(',
                       style: TextStyle(
                         fontSize: 12,
@@ -338,18 +338,18 @@ class _SearchViewState extends State<SearchView>
                   msg: error.toString(),
                 );
               },
-              cancellationWidget: Text("取消"),
+              cancellationWidget: const Text("取消"),
               onCancelled: () {
                 setState(() {
                   isTriggerSearch = false;
                 });
               },
-              searchBarPadding: EdgeInsets.symmetric(
+              searchBarPadding: const EdgeInsets.symmetric(
                 horizontal: 12,
                 vertical: 0,
               ),
               placeHolder: Padding(
-                padding: EdgeInsets.symmetric(
+                padding: const EdgeInsets.symmetric(
                   horizontal: 12,
                   vertical: 1,
                 ),
@@ -375,13 +375,13 @@ class _SearchViewState extends State<SearchView>
                               ),
                               Text(
                                 "搜索历史",
-                                style: Theme.of(context).textTheme.headline6,
+                                style: Theme.of(context).textTheme.titleLarge,
                               ),
                             ],
                           ),
                           IconButton(
                             tooltip: "删除所有历史记录",
-                            padding: EdgeInsets.symmetric(
+                            padding: const EdgeInsets.symmetric(
                               vertical: 3,
                               horizontal: 2,
                             ),
@@ -391,18 +391,18 @@ class _SearchViewState extends State<SearchView>
                                 type: UpdateSearchHistoryType.clean,
                               );
                             },
-                            icon: Icon(CupertinoIcons.clear),
+                            icon: const Icon(CupertinoIcons.clear),
                           ),
                         ],
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 12,
                       ),
                       Builder(builder: (context) {
                         if (searchHistory.isEmpty) {
                           return Text(
                             "暂无历史记录",
-                            style: Theme.of(context).textTheme.subtitle2,
+                            style: Theme.of(context).textTheme.titleSmall,
                           );
                         }
                         return Wrap(

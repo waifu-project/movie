@@ -23,7 +23,7 @@ class StyledElement {
     required this.children,
     required this.style,
     required dom.Element? node,
-  }) : this._node = node;
+  }) : _node = node;
 
   bool matchesSelector(String selector) =>
       (_node != null && matches(_node!, selector)) || name == selector;
@@ -32,7 +32,7 @@ class StyledElement {
       _node?.attributes.map((key, value) {
         return MapEntry(key.toString(), value);
       }) ??
-      Map<String, String>();
+      <String, String>{};
 
   dom.Element? get element => _node;
 
@@ -40,10 +40,10 @@ class StyledElement {
   String toString() {
     String selfData =
         "[$name] ${children.length} ${elementClasses.isNotEmpty == true ? 'C:${elementClasses.toString()}' : ''}${elementId.isNotEmpty == true ? 'ID: $elementId' : ''}";
-    children.forEach((child) {
+    for (var child in children) {
       selfData += ("\n${child.toString()}")
           .replaceAll(RegExp("^", multiLine: true), "-");
-    });
+    }
     return selfData;
   }
 }
@@ -115,7 +115,7 @@ StyledElement parseStyledElement(
       break;
     case "body":
       styledElement.style = Style(
-        margin: EdgeInsets.all(8.0),
+        margin: const EdgeInsets.all(8.0),
         display: Display.BLOCK,
       );
       break;
@@ -135,7 +135,7 @@ StyledElement parseStyledElement(
       break;
     case "dd":
       styledElement.style = Style(
-        margin: EdgeInsets.only(left: 40.0),
+        margin: const EdgeInsets.only(left: 40.0),
         display: Display.BLOCK,
       );
       break;
@@ -149,13 +149,13 @@ StyledElement parseStyledElement(
       continue italics;
     case "div":
       styledElement.style = Style(
-        margin: EdgeInsets.all(0),
+        margin: const EdgeInsets.all(0),
         display: Display.BLOCK,
       );
       break;
     case "dl":
       styledElement.style = Style(
-        margin: EdgeInsets.symmetric(vertical: 14.0),
+        margin: const EdgeInsets.symmetric(vertical: 14.0),
         display: Display.BLOCK,
       );
       break;
@@ -173,7 +173,7 @@ StyledElement parseStyledElement(
       break;
     case "figure":
       styledElement.style = Style(
-        margin: EdgeInsets.symmetric(vertical: 14.0, horizontal: 40.0),
+        margin: const EdgeInsets.symmetric(vertical: 14.0, horizontal: 40.0),
         display: Display.BLOCK,
       );
       break;
@@ -197,7 +197,7 @@ StyledElement parseStyledElement(
       styledElement.style = Style(
         fontSize: FontSize.xxLarge,
         fontWeight: FontWeight.bold,
-        margin: EdgeInsets.symmetric(vertical: 18.67),
+        margin: const EdgeInsets.symmetric(vertical: 18.67),
         display: Display.BLOCK,
       );
       break;
@@ -205,15 +205,15 @@ StyledElement parseStyledElement(
       styledElement.style = Style(
         fontSize: FontSize.xLarge,
         fontWeight: FontWeight.bold,
-        margin: EdgeInsets.symmetric(vertical: 17.5),
+        margin: const EdgeInsets.symmetric(vertical: 17.5),
         display: Display.BLOCK,
       );
       break;
     case "h3":
       styledElement.style = Style(
-        fontSize: FontSize(16.38),
+        fontSize: const FontSize(16.38),
         fontWeight: FontWeight.bold,
-        margin: EdgeInsets.symmetric(vertical: 16.5),
+        margin: const EdgeInsets.symmetric(vertical: 16.5),
         display: Display.BLOCK,
       );
       break;
@@ -221,23 +221,23 @@ StyledElement parseStyledElement(
       styledElement.style = Style(
         fontSize: FontSize.medium,
         fontWeight: FontWeight.bold,
-        margin: EdgeInsets.symmetric(vertical: 18.5),
+        margin: const EdgeInsets.symmetric(vertical: 18.5),
         display: Display.BLOCK,
       );
       break;
     case "h5":
       styledElement.style = Style(
-        fontSize: FontSize(11.62),
+        fontSize: const FontSize(11.62),
         fontWeight: FontWeight.bold,
-        margin: EdgeInsets.symmetric(vertical: 19.25),
+        margin: const EdgeInsets.symmetric(vertical: 19.25),
         display: Display.BLOCK,
       );
       break;
     case "h6":
       styledElement.style = Style(
-        fontSize: FontSize(9.38),
+        fontSize: const FontSize(9.38),
         fontWeight: FontWeight.bold,
-        margin: EdgeInsets.symmetric(vertical: 22),
+        margin: const EdgeInsets.symmetric(vertical: 22),
         display: Display.BLOCK,
       );
       break;
@@ -248,7 +248,7 @@ StyledElement parseStyledElement(
       break;
     case "hr":
       styledElement.style = Style(
-        margin: EdgeInsets.symmetric(vertical: 7.0),
+        margin: const EdgeInsets.symmetric(vertical: 7.0),
         width: double.infinity,
         height: 1,
         backgroundColor: Colors.black,
@@ -319,14 +319,14 @@ StyledElement parseStyledElement(
       break;
     case "p":
       styledElement.style = Style(
-        margin: EdgeInsets.symmetric(vertical: 14.0),
+        margin: const EdgeInsets.symmetric(vertical: 14.0),
         display: Display.BLOCK,
       );
       break;
     case "pre":
       styledElement.style = Style(
         fontFamily: 'monospace',
-        margin: EdgeInsets.symmetric(vertical: 14.0),
+        margin: const EdgeInsets.symmetric(vertical: 14.0),
         whiteSpace: WhiteSpace.PRE,
         display: Display.BLOCK,
       );

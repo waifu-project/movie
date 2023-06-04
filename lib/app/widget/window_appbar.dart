@@ -8,7 +8,7 @@ import 'mac.dart';
 double kMacPaddingTop = 16;
 
 class _MoveWindow extends StatelessWidget {
-  _MoveWindow({Key? key, this.child}) : super(key: key);
+  const _MoveWindow({Key? key, this.child}) : super(key: key);
   final Widget? child;
   @override
   Widget build(BuildContext context) {
@@ -24,22 +24,22 @@ class _MoveWindow extends StatelessWidget {
           appWindow.maximizeOrRestore();
         }
       },
-      child: this.child ?? Container(),
+      child: child ?? Container(),
     );
   }
 }
 
 class CustomMoveWindow extends StatelessWidget {
   final Widget? child;
-  CustomMoveWindow({
+  const CustomMoveWindow({
     Key? key,
     this.child,
   }) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    if (child == null) return _MoveWindow();
+    if (child == null) return const _MoveWindow();
     return _MoveWindow(
-      child: this.child,
+      child: child,
     );
   }
 }
@@ -85,7 +85,7 @@ class _CupertinoEasyAppBarState extends State<CupertinoEasyAppBar> {
 
     /// FIXME: 若child为空
     /// FIXME: 多平台下
-    if (child == null) return SizedBox.shrink();
+    if (child == null) return const SizedBox.shrink();
     Widget target = child;
     if (GetPlatform.isMacOS) {
       target = Padding(
@@ -150,7 +150,7 @@ class _CupertinoEasyAppBarState extends State<CupertinoEasyAppBar> {
 // }
 
 class WindowAppBar extends StatelessWidget implements PreferredSizeWidget {
-  WindowAppBar({
+  const WindowAppBar({super.key, 
     this.toolBarHeigth,
     this.title,
     this.iosBackStyle = false,
@@ -188,20 +188,23 @@ class WindowAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   Widget get titleWidget {
     var _ = Get.context;
-    if (_ == null)
+    if (_ == null) {
       return BackButton(
         color: purueColor,
       );
-    if (title != null)
+    }
+    if (title != null) {
       return DefaultTextStyle(
-        style: Theme.of(_).appBarTheme.titleTextStyle ?? TextStyle(),
+        style: Theme.of(_).appBarTheme.titleTextStyle ?? const TextStyle(),
         child: title as Widget,
       );
-    if (iosBackStyle)
+    }
+    if (iosBackStyle) {
       return CupertinoNavigationBarBackButton(
         color: purueColor,
         onPressed: () => Get.back(),
       );
+    }
     return BackButton(
       color: purueColor,
     );
@@ -218,11 +221,12 @@ class WindowAppBar extends StatelessWidget implements PreferredSizeWidget {
         ),
       )
     ];
-    if (centerTitle)
+    if (centerTitle) {
       childrens.insert(
         0,
-        Text(''),
+        const Text(''),
       );
+    }
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       child: CustomMoveWindow(
@@ -266,7 +270,7 @@ class WindowAppBar extends StatelessWidget implements PreferredSizeWidget {
                       },
                     );
                   }
-                  return SizedBox.shrink();
+                  return const SizedBox.shrink();
                 }),
               ],
             ),

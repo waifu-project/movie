@@ -65,7 +65,7 @@ class _NsfwTableViewState extends State<NsfwTableView> {
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
-      navigationBar: CupertinoEasyAppBar(
+      navigationBar: const CupertinoEasyAppBar(
         child: Column(
           children: [
             Row(
@@ -93,7 +93,7 @@ class _NsfwTableViewState extends State<NsfwTableView> {
             children: [
               Text(html),
               Padding(
-                padding: EdgeInsets.all(12),
+                padding: const EdgeInsets.all(12),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -102,24 +102,24 @@ class _NsfwTableViewState extends State<NsfwTableView> {
                       "为了确定您已经未成年, 请完成一道数学题之后开启:  ",
                       style: TextStyle(
                         fontSize:
-                            Theme.of(context).textTheme.headline6?.fontSize ??
+                            Theme.of(context).textTheme.titleLarge?.fontSize ??
                                 21,
                         decoration: TextDecoration.none,
                       ),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 12,
                     ),
                     Text(
                       "某个住在湖边的老人养有狗和鸭子，某天，老人看到5个头、14只脚。那么老人看到的是多少条狗？多少只鸭子？",
                       style: TextStyle(
                         fontSize:
-                            Theme.of(context).textTheme.bodyText2?.fontSize ??
+                            Theme.of(context).textTheme.bodyMedium?.fontSize ??
                                 12,
                         decoration: TextDecoration.none,
                       ),
                     ),
-                    Text(
+                    const Text(
                       "狗子: ",
                       style: TextStyle(
                         decoration: TextDecoration.none,
@@ -132,7 +132,7 @@ class _NsfwTableViewState extends State<NsfwTableView> {
                         color: Get.isDarkMode ? Colors.white : Colors.black,
                       ),
                     ),
-                    Text(
+                    const Text(
                       "鸭子: ",
                       style: TextStyle(
                         decoration: TextDecoration.none,
@@ -145,14 +145,14 @@ class _NsfwTableViewState extends State<NsfwTableView> {
                         color: Get.isDarkMode ? Colors.white : Colors.black,
                       ),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 24,
                     ),
                     canInputNext
                         ? Center(
                             child: CupertinoButton(
                               color: Colors.red,
-                              child: Text("开启"),
+                              child: const Text("开启"),
                               onPressed: () {
                                 Get.back(
                                   result: GetBackResultType.success,
@@ -160,7 +160,7 @@ class _NsfwTableViewState extends State<NsfwTableView> {
                               },
                             ),
                           )
-                        : SizedBox.shrink(),
+                        : const SizedBox.shrink(),
                     SizedBox(
                       height: Get.height * .42,
                     )

@@ -41,7 +41,7 @@ class Rss {
     List<MovieQueryCategory> _categorys = data.map((e) {
       var map = Map<String, String>.from(e);
       var name = map['\$'] ?? "";
-      var id = map['\@id'] ?? "";
+      var id = map['@id'] ?? "";
       return MovieQueryCategory(name, id);
     }).toList();
     category = _categorys;

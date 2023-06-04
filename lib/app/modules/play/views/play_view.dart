@@ -37,13 +37,13 @@ class _PlayViewState extends State<PlayView> {
   final HomeController home = Get.find<HomeController>();
 
   bool get canBeShowParseVipButton {
-    return home.parseVipList.length >= 1;
+    return home.parseVipList.isNotEmpty;
   }
 
   List<PlayListData> get playlist {
     List<PlayListData> result = [];
     var v = play.movieItem.videos;
-    v.forEach((element) {
+    for (var element in v) {
       var url = element.url;
       var hasUrl = isURL(url);
       if (hasUrl) {
@@ -64,9 +64,9 @@ class _PlayViewState extends State<PlayView> {
       } else {
         var movies = url.split("#");
         var cache = PlayListData(title: element.name, datas: []);
-        movies.forEach((e) {
+        for (var e in movies) {
           var subItem = e.split("\$");
-          if (subItem.length <= 1) return;
+          if (subItem.length <= 1) continue;
           var title = subItem[0];
           var _url = subItem[1];
           // var subType = subItem[2];
@@ -75,12 +75,12 @@ class _PlayViewState extends State<PlayView> {
             url: _url,
             type: KBaseMirrorMovie.easyGetVideoType(_url),
           ));
-        });
+        }
         result.add(cache);
       }
-    });
+    }
     result = result.where((element) {
-      return element.datas.length >= 1;
+      return element.datas.isNotEmpty;
     }).toList();
     return result;
   }
@@ -116,10 +116,10 @@ class _PlayViewState extends State<PlayView> {
               const CupertinoNavigationBarBackButton(),
               if (canBeShowParseVipButton)
                 CupertinoButton(
-                  padding: EdgeInsets.symmetric(
+                  padding: const EdgeInsets.symmetric(
                     horizontal: 6.0,
                   ),
-                  child: Row(
+                  child: const Row(
                     children: [
                       Icon(CupertinoIcons.collections, size: 16),
                       SizedBox(width: 6.0),
@@ -131,7 +131,7 @@ class _PlayViewState extends State<PlayView> {
                     ],
                   ),
                   onPressed: () {
-                    Get.to(() => ParseVipManagePageView());
+                    Get.to(() => const ParseVipManagePageView());
                   },
                 ),
             ],
@@ -145,7 +145,7 @@ class _PlayViewState extends State<PlayView> {
               Container(
                 width: double.infinity,
                 height: Get.height * coverHeightScale,
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   color: Color.fromRGBO(246, 246, 246, 1),
                 ),
                 child: Stack(
@@ -165,11 +165,11 @@ class _PlayViewState extends State<PlayView> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Expanded(child: SizedBox.shrink()),
+                        const Expanded(child: SizedBox.shrink()),
                         Container(
                           width: double.infinity,
                           clipBehavior: Clip.antiAlias,
-                          decoration: BoxDecoration(
+                          decoration: const BoxDecoration(
                             color: Colors.black12,
                           ),
                           child: BackdropFilter(
@@ -178,7 +178,7 @@ class _PlayViewState extends State<PlayView> {
                               sigmaY: 24,
                             ),
                             child: Padding(
-                              padding: EdgeInsets.symmetric(
+                              padding: const EdgeInsets.symmetric(
                                 vertical: 12,
                                 horizontal: 24,
                               ),
@@ -198,18 +198,18 @@ class _PlayViewState extends State<PlayView> {
               ),
               _buildWithDesc,
               Container(
-                margin: EdgeInsets.symmetric(
+                margin: const EdgeInsets.symmetric(
                   horizontal: 12,
                   vertical: 9,
                 ),
-                child: Text(
+                child: const Text(
                   "播放列表",
                   style: TextStyle(
                     fontSize: 18,
                   ),
                 ),
               ),
-              Divider(),
+              const Divider(),
               Container(
                 width: double.infinity,
                 height: canRenderIosStyle ? 32 + 12 : null,
@@ -224,13 +224,13 @@ class _PlayViewState extends State<PlayView> {
                       )
                     : null,
                 padding: canRenderIosStyle
-                    ? EdgeInsets.only(
+                    ? const EdgeInsets.only(
                         bottom: 12,
                       )
                     : null,
                 child: Builder(builder: (_) {
                   var isNext = playlist.length <= 1 || tabviewData[1] == null;
-                  if (isNext) return SizedBox.shrink();
+                  if (isNext) return const SizedBox.shrink();
                   if (canRenderIosStyle) {
                     return ListView.builder(
                       scrollDirection: Axis.horizontal,
@@ -249,18 +249,18 @@ class _PlayViewState extends State<PlayView> {
                           child: AnimatedContainer(
                             alignment: Alignment.center,
                             height: 32,
-                            duration: Duration(milliseconds: 300),
+                            duration: const Duration(milliseconds: 300),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(12),
                               border: Border.all(
                                 color: currentBorderColor,
                               ),
                             ),
-                            margin: EdgeInsets.only(
+                            margin: const EdgeInsets.only(
                               right: 6,
                               left: 9,
                             ),
-                            padding: EdgeInsets.symmetric(
+                            padding: const EdgeInsets.symmetric(
                               horizontal: 24,
                             ),
                             child: Text(
@@ -339,7 +339,7 @@ class _PlayViewState extends State<PlayView> {
     );
   }
 
-  Style _textOncelineStyle = Style(
+  final Style _textOncelineStyle = Style(
     textOverflow: TextOverflow.ellipsis,
     maxLines: 1,
     fontSize: const FontSize(
@@ -348,7 +348,7 @@ class _PlayViewState extends State<PlayView> {
     height: 24,
   );
 
-  List<String> _textIncludeTags = [
+  final List<String> _textIncludeTags = [
     "p",
     "span",
     "h1",
@@ -362,9 +362,9 @@ class _PlayViewState extends State<PlayView> {
 
   Map<String, Style> get _shortDescStyleWithHTML {
     Map<String, Style> map = {};
-    _textIncludeTags.forEach((ele) {
+    for (var ele in _textIncludeTags) {
       map[ele] = _textOncelineStyle;
-    });
+    }
     return map;
   }
 
@@ -375,7 +375,7 @@ class _PlayViewState extends State<PlayView> {
       return Text(
         humanDesc,
         maxLines: 1,
-        style: TextStyle(
+        style: const TextStyle(
           overflow: TextOverflow.ellipsis,
           fontSize: 12,
         ),
@@ -391,17 +391,17 @@ class _PlayViewState extends State<PlayView> {
     var desc = play.movieItem.desc.replaceAll('\\\\n', '\n');
     if (desc.isEmpty) {
       return Container(
-        margin: EdgeInsets.symmetric(
+        margin: const EdgeInsets.symmetric(
           horizontal: 12,
           vertical: 9,
         ),
-        child: Text('暂无简介~'),
+        child: const Text('暂无简介~'),
       );
     }
     return ExpansionTile(
       initiallyExpanded: false,
       subtitle: _buildWithShortDesc(desc),
-      title: Text(
+      title: const Text(
         '查看简介',
         style: TextStyle(
           fontSize: 18,
@@ -435,17 +435,17 @@ class _PlayViewState extends State<PlayView> {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Icon(
+          const Icon(
             CupertinoIcons.tornado,
             size: 42,
             color: CupertinoColors.systemBlue,
           ),
-          SizedBox(
+          const SizedBox(
             height: 12,
           ),
           Text(
             "暂无播放链接",
-            style: Theme.of(context).textTheme.caption,
+            style: Theme.of(context).textTheme.bodySmall,
           ),
         ],
       ),

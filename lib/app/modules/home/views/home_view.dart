@@ -13,12 +13,14 @@ import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 import '../controllers/home_controller.dart';
 
 class HomeView extends GetView<HomeController> {
+  HomeView({super.key});
+
   bool get isDark => Get.isDarkMode;
 
   final List<Widget> _views = [
-    IndexHomeView(),
-    SearchView(),
-    SettingsView(),
+    const IndexHomeView(),
+    const SearchView(),
+    const SettingsView(),
   ];
 
   final List<Map<String, dynamic>> _tabs = [
@@ -40,8 +42,8 @@ class HomeView extends GetView<HomeController> {
   ];
 
   Color get _color => isDark
-      ? Color.fromRGBO(0, 0, 0, .63)
-      : Color.fromRGBO(255, 255, 255, .63);
+      ? const Color.fromRGBO(0, 0, 0, .63)
+      : const Color.fromRGBO(255, 255, 255, .63);
 
   @override
   Widget build(BuildContext context) {
@@ -59,7 +61,7 @@ class HomeView extends GetView<HomeController> {
           // => 滑动的实在太生硬了
           // => 而且在桌面端会和窗口拖动冲突
           // => 所以放弃了滚动
-          physics: NeverScrollableScrollPhysics(),
+          physics: const NeverScrollableScrollPhysics(),
 
           onPageChanged: (index) {
 
@@ -82,11 +84,11 @@ class HomeView extends GetView<HomeController> {
                   filter: ImageFilter.blur(sigmaX: 40, sigmaY: 40),
                   child: Center(
                     child: ConstrainedBox(
-                      constraints: BoxConstraints(
+                      constraints: const BoxConstraints(
                         maxWidth: 360,
                       ),
                       child: SalomonBottomBar(
-                        itemPadding: EdgeInsets.symmetric(
+                        itemPadding: const EdgeInsets.symmetric(
                           vertical: 9,
                           horizontal: 18,
                         ),

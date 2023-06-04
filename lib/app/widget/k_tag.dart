@@ -52,14 +52,14 @@ class KTag extends StatelessWidget {
             },
             child: child,
           ),
-          SizedBox(
+          const SizedBox(
             width: 3,
           ),
           InkWell(
             onTap: () {
               onTap(KTagTapEventType.action);
             },
-            child: Icon(
+            child: const Icon(
               Icons.close,
               size: 12,
             ),

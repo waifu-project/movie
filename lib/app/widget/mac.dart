@@ -29,7 +29,7 @@ class Macwindowctl extends StatefulWidget {
 
   final bool? buttonReverse;
 
-  Macwindowctl({
+  const Macwindowctl({super.key, 
     this.buttonReverse,
     this.onClick,
     this.onExit,
@@ -117,7 +117,7 @@ class _MacwindowctlState extends State<Macwindowctl> {
                         });
                       },
                       child: Container(
-                        margin: EdgeInsets.only(
+                        margin: const EdgeInsets.only(
                           right: 6.0,
                         ),
                         width: widget.buttonSize,
@@ -135,7 +135,7 @@ class _MacwindowctlState extends State<Macwindowctl> {
                                       (widget.focused ?? false))
                                   ? item["color"]
                                   : Colors.transparent,
-                              offset: Offset(1, 1),
+                              offset: const Offset(1, 1),
                               blurRadius: widget.blurSize == null
                                   ? 0
                                   : (widget.blurSize ?? 0),

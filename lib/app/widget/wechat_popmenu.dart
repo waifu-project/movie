@@ -38,7 +38,7 @@ class CustomPopupMenuController extends ChangeNotifier {
 Rect _menuRect = Rect.zero;
 
 class CustomPopupMenu extends StatefulWidget {
-  CustomPopupMenu({
+  const CustomPopupMenu({super.key, 
     required this.child,
     required this.menuBuilder,
     required this.pressType,
@@ -155,7 +155,7 @@ class _CustomPopupMenuState extends State<CustomPopupMenu> {
             // but the passed event would trigger [showMenu] again.
             // So, we use time threshold to solve this bug.
             _canResponse = false;
-            Future.delayed(Duration(milliseconds: 300))
+            Future.delayed(const Duration(milliseconds: 300))
                 .then((_) => _canResponse = true);
           },
           child: widget.barrierColor == Colors.transparent
@@ -168,7 +168,7 @@ class _CustomPopupMenuState extends State<CustomPopupMenu> {
       },
     );
     if (_overlayEntry != null) {
-      Overlay.of(context)!.insert(_overlayEntry!);
+      Overlay.of(context).insert(_overlayEntry!);
     }
   }
 
@@ -193,13 +193,13 @@ class _CustomPopupMenuState extends State<CustomPopupMenu> {
   void initState() {
     super.initState();
     _controller = widget.controller;
-    if (_controller == null) _controller = CustomPopupMenuController();
+    _controller ??= CustomPopupMenuController();
     _controller?.addListener(_updateView);
     WidgetsBinding.instance.addPostFrameCallback((call) {
       if (mounted) {
         _childBox = context.findRenderObject() as RenderBox?;
         _parentBox =
-            Overlay.of(context)?.context.findRenderObject() as RenderBox?;
+            Overlay.of(context).context.findRenderObject() as RenderBox?;
       }
     });
   }
@@ -279,8 +279,8 @@ class _MenuLayoutDelegate extends MultiChildLayoutDelegate {
   void performLayout(Size size) {
     Size contentSize = Size.zero;
     Size arrowSize = Size.zero;
-    Offset contentOffset = Offset(0, 0);
-    Offset arrowOffset = Offset(0, 0);
+    Offset contentOffset = const Offset(0, 0);
+    Offset arrowOffset =const  Offset(0, 0);
 
     double anchorCenterX = anchorOffset.dx + anchorSize.width / 2;
     double anchorTopY = anchorOffset.dy;
@@ -400,7 +400,7 @@ class _MenuLayoutDelegate extends MultiChildLayoutDelegate {
         _MenuLayoutId.arrow,
         isBottom
             ? Offset(arrowOffset.dx, arrowOffset.dy + 0.1)
-            : Offset(-100, 0),
+            : const Offset(-100, 0),
       );
     }
     if (hasChild(_MenuLayoutId.downArrow)) {
@@ -408,7 +408,7 @@ class _MenuLayoutDelegate extends MultiChildLayoutDelegate {
         _MenuLayoutId.downArrow,
         !isBottom
             ? Offset(arrowOffset.dx, arrowOffset.dy - 0.1)
-            : Offset(-100, 0),
+            : const Offset(-100, 0),
       );
     }
   }

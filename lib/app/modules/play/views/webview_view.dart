@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
@@ -46,7 +45,7 @@ class _WebviewViewState extends State<WebviewView> {
           borderRadius: BorderRadius.circular(10),
           color: Colors.black38,
         ),
-        margin: EdgeInsets.symmetric(vertical: 9),
+        margin: const EdgeInsets.symmetric(vertical: 9),
         child: IconButton(
           icon: const BackButtonIcon(),
           color: Colors.white,

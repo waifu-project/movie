@@ -16,17 +16,17 @@ CustomLicensePage cupertinoLicensePage = CustomLicensePage((
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              CupertinoNavigationBarBackButton(),
+              const CupertinoNavigationBarBackButton(),
               Expanded(
                 child: Text(
                   "License",
-                  style: Theme.of(context).textTheme.headline6,
+                  style: Theme.of(context).textTheme.titleLarge,
                 ),
               ),
-              Text(''),
+              const Text(''),
             ],
           ),
-          Divider(),
+          const Divider(),
         ],
       ),
     ),
@@ -63,17 +63,17 @@ Widget body(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                CupertinoNavigationBarBackButton(),
+                                const CupertinoNavigationBarBackButton(),
                                 Expanded(
                                   child: Text(
                                     currentPackage,
-                                    style: Theme.of(context).textTheme.headline6,
+                                    style: Theme.of(context).textTheme.titleLarge,
                                   ),
                                 ),
-                                Text(''),
+                                const Text(''),
                               ],
                             ),
-                            Divider(),
+                            const Divider(),
                           ],
                         ),
                       ),
@@ -82,7 +82,7 @@ Widget body(
                           itemCount: packageLicenses.length,
                           itemBuilder: (context, index) {
                             return Padding(
-                              padding: EdgeInsets.all(15),
+                              padding: const EdgeInsets.all(15),
                               child: Text(
                                 packageLicenses[index]
                                     .paragraphs
@@ -103,7 +103,7 @@ Widget body(
       );
 
     default:
-      return Center(
+      return const Center(
         child: CupertinoActivityIndicator(),
       );
   }

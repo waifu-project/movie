@@ -48,7 +48,7 @@ CustomRenderMatcher dataUriMatcher(
     };
 
 CustomRenderMatcher networkSourceMatcher({
-  List<String> schemas: const ["https", "http"],
+  List<String> schemas = const ["https", "http"],
   List<String>? domains,
   String? extension,
 }) =>
@@ -125,13 +125,13 @@ CustomRender blockElementRender({Style? style, List<InlineSpan>? children}) =>
                         if (childTree.style.display == Display.BLOCK &&
                             i > 0 &&
                             context.tree.children[i - 1] is ReplacedElement)
-                          TextSpan(text: "\n"),
+                          const TextSpan(text: "\n"),
                         context.parser.parseTree(context, childTree),
                         if (i != context.tree.children.length - 1 &&
                             childTree.style.display == Display.BLOCK &&
                             childTree.element?.localName != "html" &&
                             childTree.element?.localName != "body")
-                          TextSpan(text: "\n"),
+                          const TextSpan(text: "\n"),
                       ])
                   .toList(),
         );
@@ -149,13 +149,13 @@ CustomRender blockElementRender({Style? style, List<InlineSpan>? children}) =>
                           childTree.style.display == Display.BLOCK &&
                           i > 0 &&
                           context.tree.children[i - 1] is ReplacedElement)
-                        TextSpan(text: "\n"),
+                        const TextSpan(text: "\n"),
                       context.parser.parseTree(context, childTree),
                       if (i != context.tree.children.length - 1 &&
                           childTree.style.display == Display.BLOCK &&
                           childTree.element?.localName != "html" &&
                           childTree.element?.localName != "body")
-                        TextSpan(text: "\n"),
+                        const TextSpan(text: "\n"),
                     ])
                 .toList(),
       ));
@@ -195,8 +195,8 @@ CustomRender listElementRender(
                                         : 0.0),
                             child: style?.markerContent ??
                                 context.style.markerContent)
-                        : Container(height: 0, width: 0),
-                    Text("\u0020",
+                        : const SizedBox(height: 0, width: 0),
+                    const Text("\u0020",
                         textAlign: TextAlign.right,
                         style: TextStyle(fontWeight: FontWeight.w400)),
                     Expanded(
@@ -234,7 +234,7 @@ CustomRender listElementRender(
                                                   child: style?.markerContent ??
                                                       context.style
                                                           .markerContent ??
-                                                      Container(
+                                                      const SizedBox(
                                                           height: 0, width: 0))
                                             ]
                                           : []),
@@ -386,16 +386,16 @@ CustomRender networkImageRender({
           if (!completer.isCompleted) {
             context.parser.cachedImageSizes[src] = size;
             completer.complete(size);
-            image.image.resolve(ImageConfiguration()).removeListener(listener!);
+            image.image.resolve(const ImageConfiguration()).removeListener(listener!);
           }
         }, onError: (object, stacktrace) {
           if (!completer.isCompleted) {
             completer.completeError(object);
-            image.image.resolve(ImageConfiguration()).removeListener(listener!);
+            image.image.resolve(const ImageConfiguration()).removeListener(listener!);
           }
         });
 
-        image.image.resolve(ImageConfiguration()).addListener(listener);
+        image.image.resolve(const ImageConfiguration()).addListener(listener);
       }
       final attributes =
           context.tree.element!.attributes.cast<String, String>();
@@ -513,7 +513,7 @@ CustomRender fallbackRender({Style? style, List<InlineSpan>? children}) =>
                             tree.element?.parent?.localName != "td" &&
                             tree.element?.localName != "html" &&
                             tree.element?.localName != "body")
-                          TextSpan(text: "\n"),
+                          const TextSpan(text: "\n"),
                       ])
                   .toList(),
             ));
@@ -536,7 +536,7 @@ List<InlineSpan> _getListElementChildren(
     ListStylePosition? position, Function() buildChildren) {
   List<InlineSpan> children = buildChildren.call();
   if (position == ListStylePosition.INSIDE) {
-    final tabSpan = WidgetSpan(
+    const tabSpan = WidgetSpan(
       child: Text("\t",
           textAlign: TextAlign.right,
           style: TextStyle(fontWeight: FontWeight.w400)),
@@ -586,7 +586,7 @@ InlineSpan _getInteractableChildren(RenderContext context,
 }
 
 final _dataUriFormat = RegExp(
-    "^(?<scheme>data):(?<mime>image\/[\\w\+\-\.]+)(?<encoding>;base64)?\,(?<data>.*)");
+    "^(?<scheme>data):(?<mime>image/[\\w+-.]+)(?<encoding>;base64)?,(?<data>.*)");
 
 double _getVerticalOffset(StyledElement tree) {
   switch (tree.style.verticalAlign) {
@@ -637,5 +637,5 @@ double _aspectRatio(
 
 extension ClampedEdgeInsets on EdgeInsetsGeometry {
   EdgeInsetsGeometry get nonNegative =>
-      this.clamp(EdgeInsets.zero, const EdgeInsets.all(double.infinity));
+      clamp(EdgeInsets.zero, const EdgeInsets.all(double.infinity));
 }

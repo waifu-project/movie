@@ -113,6 +113,8 @@ icons_launcher:
 flutter_icons:
   android: "launcher_icon"
   ios: true
-  image_path: "design/logo.png"
+  image_path: design/logo_round.png
   image_path_macos: design/logo_round.png
-  macos: true
+  macos:
+    generate: true
+    image_path: design/logo_round.png

@@ -1,18 +1,3 @@
-// Copyright (C) 2022 d1y <chenhonzhou@gmail.com>
-//
-// This program is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Affero General Public License as
-// published by the Free Software Foundation, either version 3 of the
-// License, or (at your option) any later version.
-//
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Affero General Public License for more details.
-//
-// You should have received a copy of the GNU Affero General Public License
-// along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -23,7 +8,7 @@ import 'mac.dart';
 double kMacPaddingTop = 16;
 
 class _MoveWindow extends StatelessWidget {
-  _MoveWindow({Key? key, this.child}) : super(key: key);
+  const _MoveWindow({Key? key, this.child}) : super(key: key);
   final Widget? child;
   @override
   Widget build(BuildContext context) {
@@ -39,22 +24,22 @@ class _MoveWindow extends StatelessWidget {
           appWindow.maximizeOrRestore();
         }
       },
-      child: this.child ?? Container(),
+      child: child ?? Container(),
     );
   }
 }
 
 class CustomMoveWindow extends StatelessWidget {
   final Widget? child;
-  CustomMoveWindow({
+  const CustomMoveWindow({
     Key? key,
     this.child,
   }) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    if (child == null) return _MoveWindow();
+    if (child == null) return const _MoveWindow();
     return _MoveWindow(
-      child: this.child,
+      child: child,
     );
   }
 }
@@ -100,7 +85,7 @@ class _CupertinoEasyAppBarState extends State<CupertinoEasyAppBar> {
 
     /// FIXME: 若child为空
     /// FIXME: 多平台下
-    if (child == null) return SizedBox.shrink();
+    if (child == null) return const SizedBox.shrink();
     Widget target = child;
     if (GetPlatform.isMacOS) {
       target = Padding(
@@ -165,7 +150,7 @@ class _CupertinoEasyAppBarState extends State<CupertinoEasyAppBar> {
 // }
 
 class WindowAppBar extends StatelessWidget implements PreferredSizeWidget {
-  WindowAppBar({
+  const WindowAppBar({super.key, 
     this.toolBarHeigth,
     this.title,
     this.iosBackStyle = false,
@@ -203,20 +188,23 @@ class WindowAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   Widget get titleWidget {
     var _ = Get.context;
-    if (_ == null)
+    if (_ == null) {
       return BackButton(
         color: purueColor,
       );
-    if (title != null)
+    }
+    if (title != null) {
       return DefaultTextStyle(
-        style: Theme.of(_).appBarTheme.titleTextStyle ?? TextStyle(),
+        style: Theme.of(_).appBarTheme.titleTextStyle ?? const TextStyle(),
         child: title as Widget,
       );
-    if (iosBackStyle)
+    }
+    if (iosBackStyle) {
       return CupertinoNavigationBarBackButton(
         color: purueColor,
         onPressed: () => Get.back(),
       );
+    }
     return BackButton(
       color: purueColor,
     );
@@ -233,11 +221,12 @@ class WindowAppBar extends StatelessWidget implements PreferredSizeWidget {
         ),
       )
     ];
-    if (centerTitle)
+    if (centerTitle) {
       childrens.insert(
         0,
-        Text(''),
+        const Text(''),
       );
+    }
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       child: CustomMoveWindow(
@@ -281,7 +270,7 @@ class WindowAppBar extends StatelessWidget implements PreferredSizeWidget {
                       },
                     );
                   }
-                  return SizedBox.shrink();
+                  return const SizedBox.shrink();
                 }),
               ],
             ),

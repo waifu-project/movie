@@ -1,5 +1,4 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:movie/app/shared/mirror_status_stack.dart';
@@ -158,17 +157,17 @@ class _MirrorCheckViewState extends State<MirrorCheckView> {
           height: _checkBoxHeight,
           child: Column(
             children: [
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
               Text(
                 "获取源状态",
-                style: Theme.of(context).textTheme.bodyText1,
+                style: Theme.of(context).textTheme.bodyLarge,
               ),
-              SizedBox(
+              const SizedBox(
                 height: 6,
               ),
-              Divider(
+              const Divider(
                 thickness: 2,
               ),
               Expanded(
@@ -177,7 +176,7 @@ class _MirrorCheckViewState extends State<MirrorCheckView> {
                     DefaultTextStyle(
                       style: TextStyle(
                         fontSize: 14,
-                        color: Theme.of(context).textTheme.bodyText1?.color,
+                        color: Theme.of(context).textTheme.bodyLarge?.color,
                       ),
                       child: Expanded(
                         child: Column(
@@ -194,15 +193,15 @@ class _MirrorCheckViewState extends State<MirrorCheckView> {
                     ),
                     Builder(builder: (context) {
                       if (easyDone) {
-                        return Icon(
+                        return const Icon(
                           CupertinoIcons.archivebox,
                           size: 66,
                         );
                       }
-                      return CircularProgressIndicator();
+                      return const CircularProgressIndicator();
                     }),
                     Builder(builder: (context) {
-                      if (easyDone) return SizedBox.shrink();
+                      if (easyDone) return const SizedBox.shrink();
                       Color bgColor = Colors.white;
                       if (!Get.isDarkMode) {
                         bgColor = Colors.black;
@@ -211,7 +210,7 @@ class _MirrorCheckViewState extends State<MirrorCheckView> {
                         padding: const EdgeInsets.all(8.0),
                         child: Container(
                           width: double.infinity,
-                          padding: EdgeInsets.symmetric(
+                          padding: const EdgeInsets.symmetric(
                             vertical: 12,
                           ),
                           decoration: BoxDecoration(
@@ -226,7 +225,7 @@ class _MirrorCheckViewState extends State<MirrorCheckView> {
                       );
                     }),
                     if (!easyDone)
-                      SizedBox(
+                      const SizedBox(
                         height: 12,
                       ),
                     Builder(builder: (context) {
@@ -241,13 +240,13 @@ class _MirrorCheckViewState extends State<MirrorCheckView> {
                   ],
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 8,
               ),
               if (!easyDone)
                 CupertinoButton.filled(
                   borderRadius: BorderRadius.circular(12),
-                  padding: EdgeInsets.symmetric(
+                  padding: const EdgeInsets.symmetric(
                     vertical: 8,
                     horizontal: 16,
                   ),
@@ -270,10 +269,10 @@ class _MirrorCheckViewState extends State<MirrorCheckView> {
                     }
                   },
                 ),
-              SizedBox(
+              const SizedBox(
                 height: 8,
               ),
-              Divider(
+              const Divider(
                 thickness: 1,
                 height: 0,
               ),
@@ -286,7 +285,7 @@ class _MirrorCheckViewState extends State<MirrorCheckView> {
                       flex: 1,
                       child: CupertinoButton(
                         padding: EdgeInsets.zero,
-                        child: Text("取消"),
+                        child: const Text("取消"),
                         onPressed: () {
                           handleClickMenu(
                             mirrorTabButtonStatus.cancel,
@@ -305,7 +304,7 @@ class _MirrorCheckViewState extends State<MirrorCheckView> {
                       flex: 1,
                       child: CupertinoButton(
                         padding: EdgeInsets.zero,
-                        child: Text("确定"),
+                        child: const Text("确定"),
                         onPressed: () {
                           handleClickMenu(
                             mirrorTabButtonStatus.done,

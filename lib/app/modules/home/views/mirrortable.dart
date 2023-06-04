@@ -1,18 +1,3 @@
-// Copyright (C) 2021-2022 d1y <chenhonzhou@gmail.com>
-//
-// This program is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Affero General Public License as
-// published by the Free Software Foundation, either version 3 of the
-// License, or (at your option) any later version.
-//
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Affero General Public License for more details.
-//
-// You should have received a copy of the GNU Affero General Public License
-// along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
 import 'dart:async';
 import 'dart:io';
 
@@ -83,7 +68,7 @@ class _MirrorTableViewState extends State<MirrorTableView> {
 
   updateCacheMirrorTableScrollControllerOffset([bool isFirst = true]) {
     if (isFirst && cacheMirrorTableScrollControllerOffset <= 0) return;
-    Future.delayed(Duration(milliseconds: 200), () {
+    Future.delayed(const Duration(milliseconds: 200), () {
       if (scrollController.hasClients) {
         scrollController.jumpTo(
           cacheMirrorTableScrollControllerOffset,
@@ -120,7 +105,7 @@ class _MirrorTableViewState extends State<MirrorTableView> {
   /// 标题
   String get _title {
     var count = mirrorList.length;
-    return "视频源管理(${count})";
+    return "视频源管理($count)";
   }
 
   var menuItems = [
@@ -141,7 +126,7 @@ class _MirrorTableViewState extends State<MirrorTableView> {
     ),
   ];
 
-  CustomPopupMenuController _controller = CustomPopupMenuController();
+  final CustomPopupMenuController _controller = CustomPopupMenuController();
 
   Map<String, bool> __statusMap = {};
 
@@ -183,7 +168,7 @@ class _MirrorTableViewState extends State<MirrorTableView> {
           full: home.isNsfw,
         );
 
-        DateTime today = new DateTime.now();
+        DateTime today = DateTime.now();
         String dateSlug =
             "${today.year.toString()}${today.month.toString().padLeft(2, '0')}${today.day.toString().padLeft(2, '0')}";
 
@@ -211,11 +196,11 @@ class _MirrorTableViewState extends State<MirrorTableView> {
   }
 
   showDelUnavailableMirrorDialog() async {
-    var completer = new Completer();
+    var completer = Completer();
     showCupertinoDialog(
       builder: (BuildContext context) => CupertinoAlertDialog(
         title: const Text('提示'),
-        content: Text('确定要删除所有失效源吗？'),
+        content: const Text('确定要删除所有失效源吗？'),
         actions: <CupertinoDialogAction>[
           CupertinoDialogAction(
             child: const Text(
@@ -259,20 +244,20 @@ class _MirrorTableViewState extends State<MirrorTableView> {
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                CupertinoNavigationBarBackButton(),
+                const CupertinoNavigationBarBackButton(),
                 Expanded(
                   child: Text(
                     _title,
-                    style: Theme.of(context).textTheme.headline6,
+                    style: Theme.of(context).textTheme.titleLarge,
                   ),
                 ),
                 CustomPopupMenu(
                   child: Container(
-                    child: Icon(
+                    child: const Icon(
                       CupertinoIcons.command,
                       size: 24,
                     ),
-                    padding: EdgeInsets.all(12),
+                    padding: const EdgeInsets.all(12),
                   ),
                   menuBuilder: () => popMenuBox(
                     items: menuItems,
@@ -287,7 +272,7 @@ class _MirrorTableViewState extends State<MirrorTableView> {
                 ),
               ],
             ),
-            Divider()
+            const Divider()
           ],
         ),
       ),
@@ -311,7 +296,7 @@ class _MirrorTableViewState extends State<MirrorTableView> {
                 onDel: (context) {
                   showCupertinoDialog(
                     builder: (context) => CupertinoAlertDialog(
-                      content: Text("是否删除该镜像源?"),
+                      content: const Text("是否删除该镜像源?"),
                       actions: [
                         CupertinoDialogAction(
                           child: const Text(
@@ -417,7 +402,7 @@ class mirrorCard extends StatelessWidget {
         : Colors.black.withOpacity(.1);
 
     return ConstrainedBox(
-      constraints: new BoxConstraints(
+      constraints: BoxConstraints(
         minHeight: minHeight,
         maxHeight: maxHeight,
       ),
@@ -438,7 +423,7 @@ class mirrorCard extends StatelessWidget {
             children: [
               SlidableAction(
                 onPressed: onDel,
-                backgroundColor: Color(0xFFFE4A49),
+                backgroundColor: const Color(0xFFFE4A49),
                 foregroundColor: Colors.white,
                 icon: CupertinoIcons.delete,
                 label: '删除',
@@ -455,13 +440,13 @@ class mirrorCard extends StatelessWidget {
                   ),
                 ),
               ),
-              padding: EdgeInsets.symmetric(
+              padding: const EdgeInsets.symmetric(
                 vertical: 6,
               ),
               child: Row(children: [
                 Container(
                   width: 92,
-                  margin: EdgeInsets.symmetric(
+                  margin: const EdgeInsets.symmetric(
                     vertical: 6,
                     horizontal: 2,
                   ),
@@ -473,7 +458,7 @@ class mirrorCard extends StatelessWidget {
                       imageUrl: _logo,
                       fit: BoxFit.cover,
                       width: 60,
-                      placeholder: (context, url) => Center(
+                      placeholder: (context, url) => const Center(
                         child: CircularProgressIndicator(),
                       ),
                       errorWidget: (
@@ -506,7 +491,7 @@ class mirrorCard extends StatelessWidget {
                               height: _desc.isEmpty ? 0 : 3,
                             ),
                             _desc.isEmpty
-                                ? SizedBox.shrink()
+                                ? const SizedBox.shrink()
                                 : Text(
                                     _desc,
                                     style: TextStyle(
@@ -534,7 +519,7 @@ class mirrorCard extends StatelessWidget {
                             current ? Icons.done : CupertinoIcons.right_chevron,
                             color: _color,
                           ),
-                          SizedBox(
+                          const SizedBox(
                             width: 8,
                           ),
                         ],
@@ -630,7 +615,7 @@ class movieStatusWidget extends StatelessWidget {
             color: _color,
           ),
         ),
-        SizedBox(
+        const SizedBox(
           width: 6,
         ),
         Container(
@@ -694,7 +679,7 @@ class _popMenuBoxState extends State<popMenuBox> {
                     },
                     child: Container(
                       height: 40,
-                      padding: EdgeInsets.symmetric(
+                      padding: const EdgeInsets.symmetric(
                         horizontal: 20,
                       ),
                       decoration: BoxDecoration(
@@ -711,15 +696,15 @@ class _popMenuBoxState extends State<popMenuBox> {
                           ),
                           Expanded(
                             child: Container(
-                              margin: EdgeInsets.only(
+                              margin: const EdgeInsets.only(
                                 left: 10,
                               ),
-                              padding: EdgeInsets.symmetric(
+                              padding: const EdgeInsets.symmetric(
                                 vertical: 10,
                               ),
                               child: Text(
                                 item.title,
-                                style: TextStyle(
+                                style: const TextStyle(
                                   color: Colors.white,
                                   fontSize: 12,
                                 ),

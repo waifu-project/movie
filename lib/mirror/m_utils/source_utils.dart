@@ -1,23 +1,7 @@
-// Copyright (C) 2021-2022 d1y <chenhonzhou@gmail.com>
-//
-// This program is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Affero General Public License as
-// published by the Free Software Foundation, either version 3 of the
-// License, or (at your option) any later version.
-//
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Affero General Public License for more details.
-//
-// You should have received a copy of the GNU Affero General Public License
-// along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:movie/impl/movie.dart';
 import 'package:movie/mirror/mirror.dart';
 import 'package:movie/mirror/mlist/base_models/source_data.dart';
 import 'package:movie/utils/helper.dart';
@@ -34,7 +18,7 @@ class SourceUtils {
   static List<String> getSources(String rawString) {
     var spList = rawString.split("\n");
     return spList.map((e) => e.trim()).toList().where((item) {
-      var flag = (!item.isEmpty && isURL(item));
+      var flag = (item.isNotEmpty && isURL(item));
       return flag;
     }).toList();
   }
@@ -172,10 +156,10 @@ class SourceUtils {
         }).toList();
         return tryParseDynamic(cacheAsMap);
       } else {
-        var BIND_KEY = 'mirrors';
+        var bindKey = 'mirrors';
         var jsonDataAsMap = jsonData as Map<String, dynamic>;
-        if (jsonDataAsMap.containsKey(BIND_KEY)) {
-          var cache = jsonDataAsMap[BIND_KEY];
+        if (jsonDataAsMap.containsKey(bindKey)) {
+          var cache = jsonDataAsMap[bindKey];
           if (cache is List) {
             List<Map<String, dynamic>> cacheAsMapList = cache
                 .map((item) {
@@ -216,12 +200,13 @@ class SourceUtils {
     List<KBaseMirrorMovie> result = [];
     await Future.forEach(sources, (String element) async {
       try {
+        var time = const Duration(seconds: 1);
         var resp = await XHttp.dio.get(
           element,
           options: Options(
             responseType: ResponseType.json, // 暂未设计出 `.xv` 文件, 通过 `json` 导入
-            receiveTimeout: 1000,
-            sendTimeout: 1000,
+            receiveTimeout: time,
+            sendTimeout: time,
           ),
         );
         dynamic respData = resp.data;
@@ -264,12 +249,12 @@ class SourceUtils {
   }) {
     int len = MirrorManage.extend.length;
 
-    newSourceData.forEach((element) {
+    for (var element in newSourceData) {
       var newDataDomain = element.meta.domain;
       MirrorManage.extend.removeWhere(
         (element) => element.meta.domain == newDataDomain,
       );
-    });
+    }
 
     MirrorManage.extend.addAll(newSourceData);
 
@@ -279,11 +264,9 @@ class SourceUtils {
     if (newLen <= 0 && diff) return [0, []];
 
     var inputData = MirrorManage.extend;
-    if (inputData is List<MovieImpl>) {
-      inputData = inputData.map((e) {
-        return e as KBaseMirrorMovie;
-      }).toList();
-    }
+    inputData = inputData.map((e) {
+      return e as KBaseMirrorMovie;
+    }).toList();
     // return [0, []];
     var copyData = (inputData as List<KBaseMirrorMovie>).map(
       (e) {

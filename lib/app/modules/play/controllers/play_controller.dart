@@ -1,18 +1,3 @@
-// Copyright (C) 2021-2022 d1y <chenhonzhou@gmail.com>
-//
-// This program is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Affero General Public License as
-// published by the Free Software Foundation, either version 3 of the
-// License, or (at your option) any later version.
-//
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Affero General Public License for more details.
-//
-// You should have received a copy of the GNU Affero General Public License
-// along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
 import 'dart:async';
 
 import 'package:desktop_webview_window/desktop_webview_window.dart';
@@ -231,8 +216,8 @@ class PlayController extends GetxController {
           showCupertinoDialog(
             builder: (BuildContext context) => CupertinoAlertDialog(
               title: const Text('提示'),
-              content: Padding(
-                padding: const EdgeInsets.symmetric(
+              content: const Padding(
+                padding: EdgeInsets.symmetric(
                   vertical: 12.0,
                 ),
                 child: Text(
@@ -304,12 +289,12 @@ class PlayController extends GetxController {
 
     if (e.type == MirrorSerializeVideoType.iframe) {
       Get.to(
-        () => WebviewView(),
+        () => const WebviewView(),
         arguments: url,
       );
     } else if (canUseChewieView) {
       Get.to(
-        () => ChewieView(),
+        () => const ChewieView(),
         arguments: {
           'url': url,
           'cover': movieItem.smallCoverImage,
@@ -367,7 +352,7 @@ class PlayController extends GetxController {
         home.localStorage.read<bool>(ConstDart.showPlayTips) ?? true;
     update();
     if (canShowPlayTips) {
-      Timer(Duration(seconds: 2), () {
+      Timer(const Duration(seconds: 2), () {
         showPlayTips();
       });
     }

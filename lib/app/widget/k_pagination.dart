@@ -1,18 +1,3 @@
-// Copyright (C) 2021-2022 d1y <chenhonzhou@gmail.com>
-//
-// This program is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Affero General Public License as
-// published by the Free Software Foundation, either version 3 of the
-// License, or (at your option) any later version.
-//
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Affero General Public License for more details.
-//
-// You should have received a copy of the GNU Affero General Public License
-// along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -71,7 +56,7 @@ class KPaginationActionButton extends StatelessWidget {
     List<Widget> children = [
       Text(
         directionStr,
-        style: TextStyle(fontSize: 9),
+        style: const TextStyle(fontSize: 9),
       ),
     ];
     int index = 0;
@@ -97,7 +82,7 @@ class KPaginationActionButton extends StatelessWidget {
               ),
               borderRadius: BorderRadius.circular(12),
             ),
-            padding: EdgeInsets.symmetric(
+            padding: const EdgeInsets.symmetric(
               horizontal: 12,
               vertical: 3,
             ),
@@ -175,19 +160,21 @@ class _KPaginationState extends State<KPagination> {
               KPaginationActionButton(
                 disable: !widget.turnL,
                 onTap: () {
-                  if (widget.turnL)
+                  if (widget.turnL) {
                     widget.onActionTap(KPaginationActionButtonDirection.l);
+                  }
                 },
               ),
-              SizedBox(
+              const SizedBox(
                 width: 6,
               ),
               KPaginationActionButton(
                 disable: !widget.turnR,
                 direction: KPaginationActionButtonDirection.r,
                 onTap: () {
-                  if (widget.turnR)
+                  if (widget.turnR) {
                     widget.onActionTap(KPaginationActionButtonDirection.r);
+                  }
                 },
               ),
             ],
@@ -212,7 +199,7 @@ class _KPaginationState extends State<KPagination> {
                   keyboardType: TextInputType.number,
 
                   padding: EdgeInsets.zero,
-                  strutStyle: StrutStyle(
+                  strutStyle: const StrutStyle(
                     forceStrutHeight: true,
                   ),
                   style: TextStyle(
@@ -221,7 +208,7 @@ class _KPaginationState extends State<KPagination> {
                 ),
                 width: 66,
               ),
-              SizedBox(
+              const SizedBox(
                 width: 6,
               ),
               MouseRegion(
@@ -230,7 +217,7 @@ class _KPaginationState extends State<KPagination> {
                   onTap: () {
                     widget.onJumpTap();
                   },
-                  child: Text(
+                  child: const Text(
                     "点击跳转",
                     style: TextStyle(
                       fontSize: 12,

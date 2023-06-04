@@ -13,7 +13,7 @@ import 'package:flutter/widgets.dart' hide Flow;
 /// [LicenseRegistry] API, which can be used to add more licenses to the list.
 class CustomLicensePage extends StatefulWidget {
   const CustomLicensePage(
-    this.builder,);
+    this.builder, {super.key});
 
   final Widget Function(BuildContext, AsyncSnapshot<LicenseData>) builder;
 
@@ -78,7 +78,7 @@ class LicenseData {
   /// Sort the packages using some comparison method, or by the default manner,
   /// which is to put the application package first, followed by every other
   /// package in case-insensitive alphabetical order.
-  void sortPackages([int compare(String a, String b)?]) {
+  void sortPackages([int Function(String a, String b)? compare]) {
     packages.sort(compare ??
         (String a, String b) {
           // Based on how LicenseRegistry currently behaves, the first package

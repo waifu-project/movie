@@ -28,7 +28,7 @@ class TableSectionLayoutElement extends LayoutElement {
   @override
   Widget toWidget(RenderContext context) {
     // Not rendered; TableLayoutElement will instead consume its children
-    return Container(child: Text("TABLE SECTION"));
+    return Container(child: const Text("TABLE SECTION"));
   }
 }
 
@@ -42,7 +42,7 @@ class TableRowLayoutElement extends LayoutElement {
   @override
   Widget toWidget(RenderContext context) {
     // Not rendered; TableLayoutElement will instead consume its children
-    return Container(child: Text("TABLE ROW"));
+    return Container(child: const Text("TABLE ROW"));
   }
 }
 
@@ -153,7 +153,7 @@ class DetailsContentElement extends LayoutElement {
           ),
           style: style,
           renderContext: context,
-        ) : Text("Details"),
+        ) : const Text("Details"),
         children: [
           StyledText(
             textSpan: TextSpan(

@@ -67,7 +67,7 @@ class VinculumRomanNumeralsConfig extends RomanNumeralsConfig {
 /// can change this early in runtime so that you don't have to keep
 /// passing the config to every method call. See [RomansNumeralsConfig].
 class RomanNumerals {
-  static RomanNumeralsConfig romanNumeralsConfig = CommonRomanNumeralsConfig();
+  static RomanNumeralsConfig romanNumeralsConfig = const CommonRomanNumeralsConfig();
 }
 
 final _sharedRomanNumbersToLetters = {

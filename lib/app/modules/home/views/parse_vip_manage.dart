@@ -91,7 +91,7 @@ class _ParseVipManagePageViewState extends State<ParseVipManagePageView> {
         iosBackStyle: true,
         title: Row(
           children: [
-            SizedBox(
+            const SizedBox(
               width: 6.0,
             ),
             GestureDetector(
@@ -107,7 +107,7 @@ class _ParseVipManagePageViewState extends State<ParseVipManagePageView> {
                 Get.back();
               },
             ),
-            Padding(
+            const Padding(
               padding: EdgeInsets.symmetric(
                 horizontal: 9,
               ),
@@ -124,22 +124,22 @@ class _ParseVipManagePageViewState extends State<ParseVipManagePageView> {
         actions: [
           GestureDetector(
             onTap: easyAddVipParseModel,
-            child: Icon(Icons.add),
+            child: const Icon(Icons.add),
           ),
-          SizedBox(
+          const SizedBox(
             width: 12.0,
           ),
           GestureDetector(
             onTap: easyShowHelp,
-            child: Icon(Icons.help),
+            child: const Icon(Icons.help),
           ),
-          SizedBox(
+          const SizedBox(
             width: 12.0,
           ),
         ],
       ),
       body: Builder(builder: (context) {
-        if (parseList.length <= 0) {
+        if (parseList.isEmpty) {
           return _buildWithEmptry;
         }
         return _buildWithListBody;
@@ -157,10 +157,10 @@ class _ParseVipManagePageViewState extends State<ParseVipManagePageView> {
                 "assets/images/error.png",
                 width: Get.width * .33,
               ),
-              SizedBox(
+              const SizedBox(
                 height: 24,
               ),
-              Text("暂无解析接口 :("),
+              const Text("暂无解析接口 :("),
             ],
           ),
         ),
@@ -196,7 +196,7 @@ class _ParseVipManagePageViewState extends State<ParseVipManagePageView> {
                   onPressed: (_) {
                     easyRemoveOnceVipParseModel(index);
                   },
-                  backgroundColor: Color(0xFFFE4A49),
+                  backgroundColor: const Color(0xFFFE4A49),
                   foregroundColor: Colors.white,
                   icon: CupertinoIcons.delete,
                   flex: 1,
@@ -206,8 +206,8 @@ class _ParseVipManagePageViewState extends State<ParseVipManagePageView> {
             ),
             child: Container(
               width: double.infinity,
-              decoration: BoxDecoration(),
-              margin: EdgeInsets.symmetric(
+              decoration: const BoxDecoration(),
+              margin: const EdgeInsets.symmetric(
                 vertical: 12.0,
               ),
               child: Column(
@@ -215,7 +215,7 @@ class _ParseVipManagePageViewState extends State<ParseVipManagePageView> {
                 children: [
                   Row(
                     children: [
-                      SizedBox(
+                      const SizedBox(
                         width: 12.0,
                       ),
                       Text(
@@ -230,7 +230,7 @@ class _ParseVipManagePageViewState extends State<ParseVipManagePageView> {
                     ],
                   ),
                   Padding(
-                    padding: EdgeInsets.symmetric(
+                    padding: const EdgeInsets.symmetric(
                       horizontal: 12.0,
                     ),
                     child: Text(
@@ -241,7 +241,7 @@ class _ParseVipManagePageViewState extends State<ParseVipManagePageView> {
                         fontSize: 12.0,
                         color: isSelected
                             ? CupertinoColors.systemGrey
-                            : Theme.of(context).textTheme.caption?.color,
+                            : Theme.of(context).textTheme.bodySmall?.color,
                       ),
                     ),
                   ),
@@ -312,7 +312,7 @@ class _ParseVipAddDialogState extends State<ParseVipAddDialog> {
     /// [2] => 总数()
     List<int> statusCounter = [0, 0, 0];
     try {
-      contents.forEach((content) {
+      for (var content in contents) {
         JSONBodyType? jsonType = getJSONBodyType(content);
         List<MovieParseModel> data = [];
         if (jsonType == JSONBodyType.array) {
@@ -338,10 +338,10 @@ class _ParseVipAddDialogState extends State<ParseVipAddDialog> {
             data.add(onceData);
           }
         }
-        if (data.isEmpty) return;
+        if (data.isEmpty) continue;
         statusCounter[_kStatusCounter.total.index] = data.length;
         outputData.addAll(data);
-      });
+      }
     } catch (e) {
       showEasyCupertinoDialog(
         title: '解析失败',
@@ -374,7 +374,7 @@ class _ParseVipAddDialogState extends State<ParseVipAddDialog> {
               onTap: () {
                 Get.back();
               },
-              child: Icon(
+              child: const Icon(
                 Icons.close,
                 size: 20,
                 color: CupertinoColors.systemBlue,
@@ -382,7 +382,7 @@ class _ParseVipAddDialogState extends State<ParseVipAddDialog> {
             ),
             trailing: GestureDetector(
               onTap: handleImportFile,
-              child: Icon(
+              child: const Icon(
                 Icons.add_box,
                 size: 20,
                 color: CupertinoColors.systemBlue,
@@ -399,10 +399,10 @@ class _ParseVipAddDialogState extends State<ParseVipAddDialog> {
                     child: Column(
                       children: <Widget>[
                         TextFormField(
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 14.0,
                           ),
-                          decoration: InputDecoration(hintText: '输入名称'),
+                          decoration: const InputDecoration(hintText: '输入名称'),
                           onChanged: (value) {
                             name = value;
                             setState(() {});
@@ -414,10 +414,10 @@ class _ParseVipAddDialogState extends State<ParseVipAddDialog> {
                           },
                         ),
                         TextFormField(
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 14.0,
                           ),
-                          decoration: InputDecoration(hintText: '输入URL'),
+                          decoration: const InputDecoration(hintText: '输入URL'),
                           onChanged: (value) {
                             url = value;
                             setState(() {});
@@ -427,17 +427,17 @@ class _ParseVipAddDialogState extends State<ParseVipAddDialog> {
                             return !bindCheck ? '不是url' : null;
                           },
                         ),
-                        SizedBox(
+                        const SizedBox(
                           height: 12.0,
                         ),
                         SizedBox(
                           width: double.infinity,
                           child: CupertinoButton.filled(
-                            padding: EdgeInsets.symmetric(
+                            padding: const EdgeInsets.symmetric(
                               horizontal: 24.0,
                             ),
                             onPressed: submit,
-                            child: Text(
+                            child: const Text(
                               "添加",
                               style: TextStyle(
                                 fontSize: 14.0,

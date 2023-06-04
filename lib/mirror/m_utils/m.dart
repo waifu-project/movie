@@ -1,18 +1,3 @@
-// Copyright (C) 2021-2022 d1y <chenhonzhou@gmail.com>
-//
-// This program is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Affero General Public License as
-// published by the Free Software Foundation, either version 3 of the
-// License, or (at your option) any later version.
-//
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Affero General Public License for more details.
-//
-// You should have received a copy of the GNU Affero General Public License
-// along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
 // https://github.com/cuiocean/ZY-Player-APP/blob/main/utils/request.js
 
 import 'dart:async';
@@ -123,12 +108,12 @@ class KBaseMirrorMovie extends MovieImpl {
   }
 
   @override
-  Future<MirrorOnceItemSerialize> getDetail(String movie_id) async {
+  Future<MirrorOnceItemSerialize> getDetail(String movieId) async {
     var resp = await XHttp.dio.post(
       createUrl(suffix: api_path),
       queryParameters: {
         "ac": "videolist",
-        "ids": movie_id,
+        "ids": movieId,
       },
       options: ops,
     );
@@ -223,7 +208,7 @@ class KBaseMirrorMovie extends MovieImpl {
   }
 
   ///   返回值比对 [kv]
-  Map<String, ResponseCustomType> _RespCheckkv = {
+  final Map<String, ResponseCustomType> _RespCheckkv = {
     "{\"": ResponseCustomType.json,
     "<?xml": ResponseCustomType.xml,
   };

@@ -2,12 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 /// 错误栈最大行数
-final int KErrorStackMaxLine = 12;
+const int KErrorStackMaxLine = 12;
 
 /// 错误栈展示 `widget`
 class KErrorStack extends StatelessWidget {
-  KErrorStack({
-    Key? key,
+  const KErrorStack({super.key, 
     this.msg = "",
     this.maxLine,
   });
@@ -20,7 +19,7 @@ class KErrorStack extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (msg.isEmpty) return SizedBox.shrink();
+    if (msg.isEmpty) return const SizedBox.shrink();
     return Card(
       color: Colors.transparent,
       shadowColor: Colors.transparent,
@@ -30,7 +29,7 @@ class KErrorStack extends StatelessWidget {
           msg,
           maxLines: _maxLine,
           overflow: TextOverflow.ellipsis,
-          style: TextStyle(
+          style: const TextStyle(
             fontSize: 12,
             fontWeight: FontWeight.w400,
             color: Colors.grey,
@@ -38,6 +37,5 @@ class KErrorStack extends StatelessWidget {
         ),
       ),
     );
-    ;
   }
 }

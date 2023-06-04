@@ -80,7 +80,7 @@ class _ChewieViewState extends State<ChewieView> {
       allowFullScreen: true,
       allowedScreenSleep: false,
       useRootNavigator: false,
-      customControls: CustomCupertinoControls(
+      customControls: const CustomCupertinoControls(
         backgroundColor: Colors.black38,
         iconColor: Colors.white,
       ),
@@ -101,7 +101,7 @@ class _ChewieViewState extends State<ChewieView> {
                 "提示",
                 "已复制到剪贴板",
                 snackPosition: SnackPosition.BOTTOM,
-                duration: Duration(
+                duration: const Duration(
                   milliseconds: 1200,
                 ),
               );
@@ -153,7 +153,7 @@ class _ChewieViewState extends State<ChewieView> {
             borderRadius: BorderRadius.circular(24),
             color: Colors.black.withOpacity(.42),
           ),
-          padding: EdgeInsets.symmetric(
+          padding: const EdgeInsets.symmetric(
             horizontal: 18,
             vertical: 24,
           ).copyWith(
@@ -169,14 +169,14 @@ class _ChewieViewState extends State<ChewieView> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(
+                  const Icon(
                     CupertinoIcons.bolt_slash_fill,
                     size: 88,
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 12,
                   ),
-                  Text(
+                  const Text(
                     "播放失败",
                     style: TextStyle(
                       fontSize: 24,
@@ -191,15 +191,15 @@ class _ChewieViewState extends State<ChewieView> {
                   ),
                 ],
               ),
-              SizedBox(
+              const SizedBox(
                 height: 12,
               ),
               CupertinoButton(
-                padding: EdgeInsets.symmetric(
+                padding: const EdgeInsets.symmetric(
                   horizontal: 16.0,
                 ),
                 color: CupertinoColors.systemRed,
-                child: Text("退出播放"),
+                child: const Text("退出播放"),
                 onPressed: () {
                   Get.back();
                 },
@@ -214,7 +214,7 @@ class _ChewieViewState extends State<ChewieView> {
   Widget get placeholderWidget {
     return Center(
       child: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           color: Colors.black12,
         ),
         clipBehavior: Clip.antiAlias,

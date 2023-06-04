@@ -1,18 +1,3 @@
-// Copyright (C) 2021-2022 d1y <chenhonzhou@gmail.com>
-//
-// This program is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Affero General Public License as
-// published by the Free Software Foundation, either version 3 of the
-// License, or (at your option) any later version.
-//
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Affero General Public License for more details.
-//
-// You should have received a copy of the GNU Affero General Public License
-// along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -52,6 +37,8 @@ class _IndexHomeViewState extends State<IndexHomeView>
 class IndexHomeViewPage extends GetView {
   final HomeController home = Get.find();
 
+  IndexHomeViewPage({super.key});
+
   int get cardCount {
     bool isLandscape = Get.context!.isLandscape;
     if (GetPlatform.isMobile && !isLandscape) return 3;
@@ -77,7 +64,7 @@ class IndexHomeViewPage extends GetView {
     if (subItem.videos.isEmpty) {
       var id = subItem.id;
       var _textStyle =
-          Theme.of(Get.context as BuildContext).textTheme.bodyText2!.copyWith(
+          Theme.of(Get.context as BuildContext).textTheme.bodyMedium!.copyWith(
                 color: CupertinoColors.systemBlue,
               );
       Get.dialog(
@@ -86,10 +73,10 @@ class IndexHomeViewPage extends GetView {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              CircularProgressIndicator(
+              const CircularProgressIndicator(
                 color: CupertinoColors.systemBlue,
               ),
-              SizedBox(
+              const SizedBox(
                 height: 12,
               ),
               Text(
@@ -133,7 +120,7 @@ class IndexHomeViewPage extends GetView {
   }
 
   bool get indexEnablePullUp {
-    return !home.isLoading && home.homedata.length >= 1;
+    return !home.isLoading && home.homedata.isNotEmpty;
   }
 
   @override
@@ -142,7 +129,7 @@ class IndexHomeViewPage extends GetView {
       builder: (homeview) => Scaffold(
         appBar: WindowAppBar(
           iosBackStyle: true,
-          title: Padding(
+          title: const Padding(
             padding: EdgeInsets.symmetric(
               horizontal: 9,
             ),
@@ -159,7 +146,7 @@ class IndexHomeViewPage extends GetView {
               MouseRegion(
                 cursor: SystemMouseCursors.click,
                 child: CupertinoButton(
-                  child: Icon(
+                  child: const Icon(
                     Icons.movie,
                     color: Colors.white,
                   ),
@@ -176,7 +163,7 @@ class IndexHomeViewPage extends GetView {
               AnimatedContainer(
                 width: double.infinity,
                 height: home.currentCategoryer.isNotEmpty ? 42 : 0,
-                duration: Duration(
+                duration: const Duration(
                   milliseconds: 420,
                 ),
                 curve: Curves.decelerate,
@@ -193,7 +180,7 @@ class IndexHomeViewPage extends GetView {
                         vertical: 6.2,
                       ),
                       child: CupertinoButton(
-                        padding: EdgeInsets.symmetric(
+                        padding: const EdgeInsets.symmetric(
                           horizontal: 24.0,
                         ),
                         color: isCurr ? CupertinoColors.systemBlue : null,
@@ -203,7 +190,7 @@ class IndexHomeViewPage extends GetView {
                             fontSize: 14,
                             color: isCurr
                                 ? Colors.white
-                                : Theme.of(context).textTheme.button!.color,
+                                : Theme.of(context).textTheme.labelLarge!.color,
                           ),
                         ),
                         onPressed: () {
@@ -226,7 +213,7 @@ class IndexHomeViewPage extends GetView {
                   return SmartRefresher(
                     enablePullDown: indexEnablePullDown,
                     enablePullUp: indexEnablePullUp,
-                    header: WaterDropHeader(
+                    header: const WaterDropHeader(
                       refresh: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -252,15 +239,15 @@ class IndexHomeViewPage extends GetView {
                       builder: (BuildContext context, LoadStatus? mode) {
                         Widget body;
                         if (mode == LoadStatus.idle) {
-                          body = Text("上划加载更多");
+                          body = const Text("上划加载更多");
                         } else if (mode == LoadStatus.loading) {
-                          body = CupertinoActivityIndicator();
+                          body = const CupertinoActivityIndicator();
                         } else if (mode == LoadStatus.failed) {
-                          body = Text("加载失败, 请重试");
+                          body = const Text("加载失败, 请重试");
                         } else if (mode == LoadStatus.canLoading) {
-                          body = Text("释放以加载更多");
+                          body = const Text("释放以加载更多");
                         } else {
-                          body = Text("没有更多数据");
+                          body = const Text("没有更多数据");
                         }
                         return Center(
                           child: body,
@@ -274,45 +261,43 @@ class IndexHomeViewPage extends GetView {
                     child: Builder(
                       builder: (_) {
                         if (homeview.isLoading) {
-                          return Center(
+                          return const Center(
                             child: CupertinoActivityIndicator(),
                           );
                         }
 
                         if (homeview.homedata.isEmpty) {
-                          return Container(
-                            child: Center(
-                              child: SingleChildScrollView(
-                                child: Column(
-                                  children: [
-                                    Image.asset(
-                                      "assets/images/error.png",
-                                      width: Get.width * .33,
-                                    ),
-                                    SizedBox(
-                                      height: 24,
-                                    ),
-                                    CupertinoButton.filled(
-                                      child: Text("重新加载"),
-                                      onPressed: () {
-                                        homeview.updateHomeData(isFirst: true);
-                                      },
-                                    ),
-                                    SizedBox(
-                                      height: 12,
-                                    ),
-                                    KErrorStack(
-                                      msg: errorMsg,
-                                    ),
-                                  ],
-                                ),
+                          return Center(
+                            child: SingleChildScrollView(
+                              child: Column(
+                                children: [
+                                  Image.asset(
+                                    "assets/images/error.png",
+                                    width: Get.width * .33,
+                                  ),
+                                  const SizedBox(
+                                    height: 24,
+                                  ),
+                                  CupertinoButton.filled(
+                                    child: const Text("重新加载"),
+                                    onPressed: () {
+                                      homeview.updateHomeData(isFirst: true);
+                                    },
+                                  ),
+                                  const SizedBox(
+                                    height: 12,
+                                  ),
+                                  KErrorStack(
+                                    msg: errorMsg,
+                                  ),
+                                ],
                               ),
                             ),
                           );
                         }
                         return WaterfallFlow.builder(
                           controller: ScrollController(),
-                          physics: NeverScrollableScrollPhysics(),
+                          physics: const NeverScrollableScrollPhysics(),
                           shrinkWrap: true,
                           gridDelegate:
                               SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
@@ -325,7 +310,7 @@ class IndexHomeViewPage extends GetView {
                             var subItem = homeview.homedata[index];
                             var _scale = index % 2 == 0 ? 1 : .8;
                             var _h = _cardOnceHeight * _scale;
-                            return Container(
+                            return SizedBox(
                               height: _h,
                               child: MovieCardItem(
                                 imageUrl: subItem.smallCoverImage,

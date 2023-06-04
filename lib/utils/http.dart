@@ -1,22 +1,7 @@
-// Copyright (C) 2021-2022 d1y <chenhonzhou@gmail.com>
-//
-// This program is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Affero General Public License as
-// published by the Free Software Foundation, either version 3 of the
-// License, or (at your option) any later version.
-//
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Affero General Public License for more details.
-//
-// You should have received a copy of the GNU Affero General Public License
-// along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
 import 'dart:io';
 
 import 'package:cookie_jar/cookie_jar.dart';
-import 'package:dio/adapter.dart';
+import 'package:dio/io.dart';
 import 'package:dio/dio.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import 'package:flutter/foundation.dart';
@@ -27,16 +12,16 @@ class XHttp {
 
   /// 网络请求配置
   static final Dio dio = Dio(BaseOptions(
-    connectTimeout: 15000,
-    receiveTimeout: 13000,
+    connectTimeout: const Duration(seconds: 15),
+    receiveTimeout: const Duration(seconds: 13),
   ));
 
   static changeTimeout({
-    int connectTimeout = 15000,
-    int receiveTimeout = 13000,
+    int connectTimeout = 15,
+    int receiveTimeout = 13,
   }) {
-    dio.options.connectTimeout = connectTimeout;
-    dio.options.receiveTimeout = receiveTimeout;
+    dio.options.connectTimeout = Duration(seconds: connectTimeout);
+    dio.options.receiveTimeout = Duration(seconds: receiveTimeout);
   }
 
   /// 初始化dio
@@ -93,7 +78,7 @@ class XHttp {
   /// error统一处理
   static void handleError(DioError e) {
     switch (e.type) {
-      case DioErrorType.connectTimeout:
+      case DioErrorType.connectionTimeout:
         debugPrint("连接超时");
         break;
       case DioErrorType.sendTimeout:
@@ -102,7 +87,7 @@ class XHttp {
       case DioErrorType.receiveTimeout:
         debugPrint("响应超时");
         break;
-      case DioErrorType.response:
+      case DioErrorType.badResponse:
         debugPrint("出现异常");
         break;
       case DioErrorType.cancel:

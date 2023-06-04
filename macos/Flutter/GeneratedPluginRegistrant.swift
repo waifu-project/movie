@@ -7,7 +7,7 @@ import Foundation
 
 import bitsdojo_window_macos
 import desktop_webview_window
-import path_provider_macos
+import path_provider_foundation
 import share_plus_macos
 import sqflite
 import url_launcher_macos

@@ -37,7 +37,7 @@ jobs:
           path: build/windows/runner/Release/yy-windows.zip
 
   build-with-linux-x86_64:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
 
     env:
       TARBALL_NAME: yy-linux-x86_64.tar.gz
@@ -54,7 +54,7 @@ jobs:
       - name: Enable Linux support
         run: flutter config --enable-linux-desktop
       - name: Install dependencies
-        run: sudo apt update && sudo apt-get install ${{ env.LINUX_DEPENDENCIES }} -y || true
+        run: sudo apt update && sudo apt-get install -y ${{ env.LINUX_DEPENDENCIES }} || true
       - name: Build
         run: flutter build linux --release
       - name: Create tarball

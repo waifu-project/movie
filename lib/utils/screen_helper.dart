@@ -1,4 +1,3 @@
-import 'package:auto_orientation/auto_orientation.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -24,10 +23,10 @@ execScreenDirction(
     Future.delayed(beforeTime, () {
       switch (action) {
         case ScreenDirction.x:
-          AutoOrientation.landscapeAutoMode();
+          SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft, DeviceOrientation.landscapeRight]);
           break;
         case ScreenDirction.y:
-          AutoOrientation.portraitAutoMode();
+          SystemChrome.setPreferredOrientations([DeviceOrientation.portraitDown, DeviceOrientation.portraitUp]);
           break;
         default:
       }

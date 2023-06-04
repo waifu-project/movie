@@ -6,7 +6,7 @@ on:
 
 env:
   FLUTTER_VERSION: 3.10.3
-  LINUX_DEPENDENCIES: git unzip zip xz-utils curl clang cmake ninja-build pkg-config libgtk-3-dev libblkid-dev liblzma-dev libjsoncpp-dev cmake-data libjsoncpp1 libsecret-1-dev libsecret-1-0 librhash0 libsqlite3-dev libappindicator3-dev gettext webkit2gtk-4.0 libwebkit2gtk-4.0-dev
+  LINUX_DEPENDENCIES: git unzip zip xz-utils curl clang cmake ninja-build pkg-config libgtk-3-dev libblkid-dev liblzma-dev libjsoncpp-dev cmake-data libjsoncpp1 libsecret-1-dev libsecret-1-0 librhash0 libsqlite3-dev libappindicator3-dev gettext libwebkit2gtk-4.0-dev
 
 jobs:
 
@@ -54,7 +54,7 @@ jobs:
       - name: Enable Linux support
         run: flutter config --enable-linux-desktop
       - name: Install dependencies
-        run: sudo apt update && sudo apt install ${{ env.LINUX_DEPENDENCIES }} -y
+        run: sudo apt update && sudo apt install ${{ env.LINUX_DEPENDENCIES }} -y || true
       - name: Build
         run: flutter build linux --release
       - name: Create tarball

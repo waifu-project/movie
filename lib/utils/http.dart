@@ -54,7 +54,6 @@ class XHttp {
     );
 
     // 证书啥的, 都是访问的盗版资源, 无所谓
-    // @陈大大哦了 <2021/10/30>
     //   ______          _
     //  |  ____|        | |
     //  | |__ _   _  ___| | __
@@ -62,7 +61,7 @@ class XHttp {
     //  | |  | |_| | (__|   <
     //  |_|   \__,_|\___|_|\_\
     //
-    (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate = (
+    (dio.httpClientAdapter as IOHttpClientAdapter).onHttpClientCreate = (
       HttpClient client,
     ) {
       client.badCertificateCallback = (

@@ -11,13 +11,15 @@ import 'package:movie/utils/helper.dart';
 import 'app/routes/app_pages.dart';
 import 'utils/http.dart';
 
+const kStandWenKaiFontName = "LXGW WenKai";
+
 ThemeData applyTheme({isDark = true}) {
   var theme = isDark ? ThemeData.dark() : ThemeData.light();
   if (GetPlatform.isLinux || kDebugMode) {
     theme = theme.copyWith(
-      textTheme: const TextTheme(
+      textTheme: TextTheme(
         bodyMedium: TextStyle(
-          fontFamily: 'LXG',
+          fontFamily: GetPlatform.isMacOS ? kStandWenKaiFontName : 'LXG',
         ),
       ),
     );

@@ -89,13 +89,15 @@ class SourceUtils {
 
     /// => zy-player 源
     if (id != null) {
-      var url = Uri.tryParse(api);
+      Uri? url;
+      if (api is String) {
+        url = Uri.parse(api);
+      } else if (api is Map<String, dynamic>) {
+        url = Uri.parse(api['root'] + api['path']);
+      }
       if (url == null) return [false, null];
 
-      /// FIXME: 不严谨的判断条件
-      var ifNext = hasName && (url.path.isNotEmpty && url.origin.isNotEmpty);
-
-      if (ifNext) {
+      if (hasName) {
         bool isNsfw = (rawData['group'] ?? "") == "18禁";
         var data = SourceJsonData(
           name: name,

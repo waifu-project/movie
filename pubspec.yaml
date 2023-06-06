@@ -48,6 +48,8 @@ dependencies:
   flutter: 
     sdk: flutter
   equatable: ^2.0.3
+  isar: ^3.1.0+1
+  isar_flutter_libs: ^3.1.0+1
 
 dev_dependencies:
 
@@ -65,6 +67,8 @@ dev_dependencies:
   # icons_launcher: ^2.0.4
 
   flutter_native_splash: ^2.3.0
+  isar_generator: ^3.1.0+1
+  build_runner: ^2.4.4
   # icons_launcher: ^1.1.7
 
 # flutter pub run flutter_launcher_name:main

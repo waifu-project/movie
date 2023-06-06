@@ -5,6 +5,7 @@
 list(APPEND FLUTTER_PLUGIN_LIST
   bitsdojo_window_linux
   desktop_webview_window
+  isar_flutter_libs
   url_launcher_linux
 )
 

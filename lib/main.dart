@@ -7,6 +7,7 @@ import 'package:get_storage/get_storage.dart';
 import 'package:movie/config.dart';
 import 'package:movie/mirror/mirror.dart';
 import 'package:movie/utils/helper.dart';
+import 'package:tuple/tuple.dart';
 
 import 'app/routes/app_pages.dart';
 import 'utils/http.dart';
@@ -27,8 +28,7 @@ ThemeData applyTheme({isDark = true}) {
   return theme;
 }
 
-/// 运行之前
-Future<List<dynamic>> runBefore() async {
+Future<Tuple2<Brightness, bool>> runBefore() async {
   WidgetsFlutterBinding.ensureInitialized();
   await XHttp.init();
   await GetStorage.init();
@@ -48,23 +48,23 @@ Future<List<dynamic>> runBefore() async {
     }
   }
 
-  // {
-  //   if (GetPlatform.isMacOS && systemBrightnessFlag) {
-  //     wrapperIfDark = Get.isPlatformDarkMode ? Brightness.dark : Brightness.light;
-  //   }
-  // }
+  // ignore: dead_code
+  if (false) {
+    // remove this(不记得为什么要写这一段代码了, 估计是为了兼容)
+    if (GetPlatform.isMacOS && systemBrightnessFlag) {
+      wrapperIfDark =
+          Get.isPlatformDarkMode ? Brightness.dark : Brightness.light;
+    }
+  }
 
-  return [wrapperIfDark, systemBrightnessFlag];
+  return Tuple2(wrapperIfDark, systemBrightnessFlag);
 }
 
-/// 运行之后
 void runAfter() {
   if (GetPlatform.isDesktop) {
     doWhenWindowReady(() {
       const minSize = Size(420, 420);
       appWindow.minSize = minSize;
-      // final initialSize = Size(990, 720);
-      // appWindow.size = initialSize;
       appWindow.alignment = Alignment.center;
       appWindow.show();
     });
@@ -72,9 +72,15 @@ void runAfter() {
 }
 
 void main() async {
-  List<dynamic> _futureStatus = await runBefore();
-  Brightness wrapperIfDark = _futureStatus[0];
-  bool systemBrightnessFlag = _futureStatus[1];
+  Tuple2<Brightness, bool> futureStatus = await runBefore();
+  Brightness wrapperIfDark = futureStatus.item1;
+  bool systemBrightnessFlag = futureStatus.item2;
+
+  ThemeMode currentThemeMode = systemBrightnessFlag
+      ? ThemeMode.system
+      : wrapperIfDark == Brightness.dark
+          ? ThemeMode.dark
+          : ThemeMode.light;
 
   runApp(
     GetMaterialApp(
@@ -83,11 +89,7 @@ void main() async {
       initialRoute: AppPages.INITIAL,
       getPages: AppPages.routes,
       debugShowCheckedModeBanner: false,
-      themeMode: systemBrightnessFlag
-          ? ThemeMode.system
-          : wrapperIfDark == Brightness.dark
-              ? ThemeMode.dark
-              : ThemeMode.light,
+      themeMode: currentThemeMode,
       theme: applyTheme(isDark: false),
       darkTheme: applyTheme(),
     ),

@@ -3,9 +3,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
 import 'package:movie/config.dart';
+import 'package:movie/isar/repo.dart';
 import 'package:movie/mirror/mirror.dart';
+import 'package:movie/shared/enum.dart';
 import 'package:movie/utils/helper.dart';
 import 'package:tuple/tuple.dart';
 
@@ -28,36 +29,27 @@ ThemeData applyTheme({isDark = true}) {
   return theme;
 }
 
+/// 返回两个值
+///
+/// `Future<Tuple2<Brightness, bool>>`
+///
+/// 主题 | 是否是系统主题
+///
+/// @d1y: 只返回 `ThemeMode`
 Future<Tuple2<Brightness, bool>> runBefore() async {
   WidgetsFlutterBinding.ensureInitialized();
   await XHttp.init();
-  await GetStorage.init();
+  await IsarRepository().init();
   await MirrorManage.init();
-  final localStorage = GetStorage();
-
-  bool isDark = (localStorage.read(ConstDart.ls_isDark) ?? false);
-  bool systemBrightnessFlag = (localStorage.read(ConstDart.auto_dark) ?? false);
-
+  var currTheme = IsarRepository().settingsSingleModel.themeMode;
   Brightness wrapperIfDark = Brightness.light;
-
-  {
-    if (isDark) wrapperIfDark = Brightness.dark;
-    if (GetPlatform.isWindows && systemBrightnessFlag) {
-      var windowMode = getWindowsThemeMode();
-      wrapperIfDark = windowMode;
-    }
+  if (currTheme.isDark) {
+    wrapperIfDark = Brightness.dark;
   }
-
-  // ignore: dead_code
-  if (false) {
-    // remove this(不记得为什么要写这一段代码了, 估计是为了兼容)
-    if (GetPlatform.isMacOS && systemBrightnessFlag) {
-      wrapperIfDark =
-          Get.isPlatformDarkMode ? Brightness.dark : Brightness.light;
-    }
+  if (GetPlatform.isWindows && currTheme.isSytem) {
+    wrapperIfDark = getWindowsThemeMode();
   }
-
-  return Tuple2(wrapperIfDark, systemBrightnessFlag);
+  return Tuple2(wrapperIfDark, currTheme.isSytem);
 }
 
 void runAfter() {

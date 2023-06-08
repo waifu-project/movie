@@ -27,7 +27,6 @@ dependencies:
   cached_network_image: ^3.2.1
   chewie: ^1.5.0
   video_player: ^2.2.5
-  get_storage: ^2.1.1
   path_provider: ^2.0.6
   # flutter_html: ^2.1.5
   clipboard: ^0.1.3

@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:get_storage/get_storage.dart';
 import 'package:movie/config.dart';
 import 'package:movie/impl/movie.dart';
 
@@ -8,8 +7,6 @@ import 'm_utils/m.dart';
 import 'mlist/base_models/source_data.dart';
 
 class MirrorManage {
-  static final local = GetStorage();
-
   MirrorManage._internal();
 
   /// 扩展的源
@@ -26,8 +23,10 @@ class MirrorManage {
 
   /// 初始化
   static init() async {
-    var cacheData = local.read<List<dynamic>>(ConstDart.mirror_list) ?? [];
-    var output = cacheData.map((e) => SourceJsonData.fromJson(e)).toList();
+    // var cacheData = local.read<List<dynamic>>(ConstDart.mirror_list) ?? [];
+    // var output = cacheData.map((e) => SourceJsonData.fromJson(e)).toList();
+    // TODO: use isar reimpl this
+    var output = [];
     var result = output.map((data) {
       return KBaseMirrorMovie(
         logo: data.logo ?? "",
@@ -57,7 +56,7 @@ class MirrorManage {
   }
 
   /// 导出文件
-  /// 
+  ///
   /// [full] 是否全量导出(nsfw 是否导出)
   static String export({
     bool full = false,
@@ -159,6 +158,7 @@ class MirrorManage {
   }
 
   static Future<void> mergeMirror(List<SourceJsonData> data) async {
-    await local.write(ConstDart.mirror_list, data);
+    // TODO: use isar reimpl this
+    // await local.write(ConstDart.mirror_list, data);
   }
 }

@@ -1,11 +1,9 @@
 import 'package:flappy_search_bar_ns/flappy_search_bar_ns.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
 import 'package:movie/app/modules/home/views/mirrortable.dart';
 import 'package:movie/app/shared/mirror_category.dart';
 import 'package:movie/app/shared/mirror_status_stack.dart';
-import 'package:movie/config.dart';
 import 'package:movie/impl/movie.dart';
 import 'package:movie/mirror/mirror.dart';
 import 'package:movie/mirror/mirror_serialize.dart';
@@ -42,14 +40,11 @@ class HomeController extends GetxController with WidgetsBindingObserver {
   int get currentParseVipIndex => _currentParseVipIndex;
   List<MovieParseModel> get parseVipList => _parseVipList;
   MovieParseModel? get currentParseVipModelData {
-    if (parseVipList.isEmpty ||
-        currentParseVipIndex >= parseVipList.length) {
+    if (parseVipList.isEmpty || currentParseVipIndex >= parseVipList.length) {
       return null;
     }
     return parseVipList[currentParseVipIndex];
   }
-
-  final localStorage = GetStorage();
 
   final mirrorCategoryPool = MirrorCategoryPool();
 
@@ -93,12 +88,14 @@ class HomeController extends GetxController with WidgetsBindingObserver {
   set iosCanBeUseSystemBrowser(bool newVal) {
     _iosCanBeUseSystemBrowser = newVal;
     update();
-    localStorage.write(ConstDart.iosVideoSystemBrowser, newVal);
+    // TODO: reimpl this
+    // localStorage.write(ConstDart.iosVideoSystemBrowser, newVal);
   }
 
   updateIOSCanBeUseSystemBrowser() {
-    iosCanBeUseSystemBrowser =
-        localStorage.read<bool>(ConstDart.iosVideoSystemBrowser) ?? true;
+    // TODO: reimp this
+    // iosCanBeUseSystemBrowser =
+    //     localStorage.read<bool>(ConstDart.iosVideoSystemBrowser) ?? true;
   }
 
   bool _isNsfw = false;
@@ -112,7 +109,8 @@ class HomeController extends GetxController with WidgetsBindingObserver {
   set macosPlayUseIINA(bool newVal) {
     _macosPlayUseIINA = newVal;
     update();
-    localStorage.write(ConstDart.macosPlayUseIINA, newVal);
+    // TODO: reimpl this
+    // localStorage.write(ConstDart.macosPlayUseIINA, newVal);
   }
 
   bool get isNsfw {
@@ -123,18 +121,21 @@ class HomeController extends GetxController with WidgetsBindingObserver {
     _isNsfw = newVal;
     _mirrorIndex = 0;
     update();
-    localStorage.write(ConstDart.is_nsfw, newVal);
+    // TODO: reimpl this
+    // localStorage.write(ConstDart.is_nsfw, newVal);
   }
 
   int get mirrorIndex {
     if (_cacheMirrorIndex == -1) {
-      return localStorage.read(ConstDart.ls_mirrorIndex) ?? 0;
+      // TODO: reimpl this
+      // return localStorage.read(ConstDart.ls_mirrorIndex) ?? 0;
     }
     return _cacheMirrorIndex;
   }
 
   set mirrorIndex(int newVal) {
-    localStorage.write(ConstDart.ls_mirrorIndex, newVal);
+    // TODO: reimpl this
+    // localStorage.write(ConstDart.ls_mirrorIndex, newVal);
   }
 
   set _mirrorIndex(int newVal) {
@@ -286,7 +287,9 @@ class HomeController extends GetxController with WidgetsBindingObserver {
   }
 
   initMovieParseVipList() {
-    dynamic dataWithJson = localStorage.read(ConstDart.movieParseVip) ?? [];
+    // TODO: reimpl this
+    // dynamic dataWithJson = localStorage.read(ConstDart.movieParseVip) ?? [];
+    dynamic dataWithJson = [];
     if (dataWithJson is List) {
       var models = dataWithJson
           .map(
@@ -313,7 +316,8 @@ class HomeController extends GetxController with WidgetsBindingObserver {
     }
     if (tryBetter) {
       update();
-      localStorage.write(ConstDart.movieParseVip, _parseVipList);
+      // TODO: reimpl this
+      // localStorage.write(ConstDart.movieParseVip, _parseVipList);
     }
     return tryBetter;
   }
@@ -325,7 +329,9 @@ class HomeController extends GetxController with WidgetsBindingObserver {
     _currentParseVipIndex = 0;
 
     update();
-    localStorage.write(ConstDart.movieParseVip, _parseVipList);
+
+    // TODO: reimpl this
+    // localStorage.write(ConstDart.movieParseVip, _parseVipList);
   }
 
   setDefaultMovieParseVipIndex(int index) {
@@ -353,14 +359,16 @@ class HomeController extends GetxController with WidgetsBindingObserver {
   }
 
   updateMacosPlayUseIINAState() {
-    _macosPlayUseIINA = localStorage.read(ConstDart.macosPlayUseIINA) ?? false;
+    // TODO: reimpl this
+    // _macosPlayUseIINA = localStorage.read(ConstDart.macosPlayUseIINA) ?? false;
     update();
   }
 
   String indexHomeLoadDataErrorMessage = "";
 
   updateNsfwSetting() {
-    _isNsfw = localStorage.read(ConstDart.is_nsfw) ?? false;
+    // TODO: reimpl this
+    // _isNsfw = localStorage.read(ConstDart.is_nsfw) ?? false;
     update();
   }
 
@@ -381,6 +389,7 @@ class HomeController extends GetxController with WidgetsBindingObserver {
     try {
       if (mirrorListIsEmpty) return null;
       var category = await currentMirrorItem.getCategory();
+
       /// NOTE(d1y): 为空也是一种错误的表现
       if (category.isEmpty) {
         mirrorCategoryPool.fetchCountPP(currentMirrorItemId);
@@ -414,7 +423,8 @@ class HomeController extends GetxController with WidgetsBindingObserver {
     }
     if (isFirst) {
       /// NOTE(d1y): 不存在分类并且请求次数没有超过阈值
-      if (!currentHasCategoryer && !mirrorCategoryPool.fetchCountAlreadyMax(currentMirrorItemId)) {
+      if (!currentHasCategoryer &&
+          !mirrorCategoryPool.fetchCountAlreadyMax(currentMirrorItemId)) {
         onceCategory = await syncCurrentCategoryer() ?? "";
       }
     }

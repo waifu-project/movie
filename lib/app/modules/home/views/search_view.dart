@@ -41,12 +41,15 @@ class _SearchViewState extends State<SearchView>
     setState(() {
       _searchHistory = newVal;
     });
-    home.localStorage.write(ConstDart.search_history, newVal);
+    // TODO: reimpl this
+    // home.localStorage.write(ConstDart.search_history, newVal);
   }
 
   loadSearchHistory() {
     var data = List<String>.from(
-      home.localStorage.read(ConstDart.search_history) ?? [],
+      // TODO: reimpl this
+      // home.localStorage.read(ConstDart.search_history) ?? [],
+      []
     );
     setState(() {
       _searchHistory = data;

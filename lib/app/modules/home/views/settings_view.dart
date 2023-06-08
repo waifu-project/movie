@@ -10,8 +10,10 @@ import 'package:movie/app/modules/home/views/parse_vip_manage.dart';
 import 'package:movie/app/modules/home/views/source_help.dart';
 import 'package:movie/app/widget/window_appbar.dart';
 import 'package:movie/config.dart';
+import 'package:movie/isar/repo.dart';
 import 'package:movie/mirror/m_utils/source_utils.dart';
 import 'package:movie/mirror/mirror.dart';
+import 'package:movie/shared/enum.dart';
 import 'package:movie/utils/helper.dart';
 import 'package:movie/app/modules/home/views/cupertino_license.dart';
 
@@ -56,7 +58,8 @@ class _SettingsViewState extends State<SettingsView> {
   }
 
   set isDark(bool newVal) {
-    home.localStorage.write(ConstDart.ls_isDark, newVal);
+    // TODO: reimpl this
+    // home.localStorage.write(ConstDart.ls_isDark, newVal);
     setState(() {
       _isDark = newVal;
     });
@@ -66,7 +69,8 @@ class _SettingsViewState extends State<SettingsView> {
   bool _autoDarkMode = false;
 
   set autoDarkMode(bool newVal) {
-    home.localStorage.write(ConstDart.auto_dark, newVal);
+    // TODO: reimpl this
+    // home.localStorage.write(ConstDart.auto_dark, newVal);
     setState(() {
       _autoDarkMode = newVal;
     });
@@ -89,8 +93,10 @@ class _SettingsViewState extends State<SettingsView> {
   @override
   void initState() {
     setState(() {
-      _isDark = home.localStorage.read(ConstDart.ls_isDark) ?? false;
-      _autoDarkMode = home.localStorage.read(ConstDart.auto_dark) ?? false;
+      _isDark = IsarRepository().settingsSingleModel.themeMode.isDark;
+      // home.localStorage.read(ConstDart.ls_isDark) ?? false;
+      _autoDarkMode = IsarRepository().settingsSingleModel.themeMode.isSytem;
+      // home.localStorage.read(ConstDart.auto_dark) ?? false;
       _canBeShowIosBrowser = home.iosCanBeUseSystemBrowser;
       _macosPlayUseIINA = home.macosPlayUseIINA;
     });
@@ -106,14 +112,15 @@ class _SettingsViewState extends State<SettingsView> {
   }
 
   addMirrorMangerTextareaLister() {
-    editingControllerValue =
-        home.localStorage.read<String>(ConstDart.mirror_textArea) ?? "";
-    _editingController.addListener(() {
-      home.localStorage.write(
-        ConstDart.mirror_textArea,
-        editingControllerValue,
-      );
-    });
+    // TODO: reimpl this
+    // editingControllerValue =
+    //     home.localStorage.read<String>(ConstDart.mirror_textArea) ?? "";
+    // _editingController.addListener(() {
+    //   home.localStorage.write(
+    //     ConstDart.mirror_textArea,
+    //     editingControllerValue,
+    //   );
+    // });
   }
 
   loadSourceHelp() async {
@@ -296,7 +303,8 @@ class _SettingsViewState extends State<SettingsView> {
     MirrorManage.cleanAll();
     home.easyCleanCacheHook();
     _editingController.text = "";
-    await home.localStorage.erase();
+    // TODO: reimpl this
+    // await home.localStorage.erase();
     Get.back();
     showCupertinoDialog(
       builder: (context) => CupertinoAlertDialog(
@@ -613,7 +621,8 @@ class _SettingsViewState extends State<SettingsView> {
                         color: Colors.grey.withOpacity(0.5),
                         spreadRadius: 5,
                         blurRadius: 7,
-                        offset: const Offset(0, 3), // changes position of shadow
+                        offset:
+                            const Offset(0, 3), // changes position of shadow
                       ),
                     ],
                   ),

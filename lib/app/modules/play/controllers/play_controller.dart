@@ -143,7 +143,8 @@ class PlayController extends GetxController {
   set canShowPlayTips(bool newVal) {
     _canShowPlayTips = newVal;
     update();
-    home.localStorage.write(ConstDart.showPlayTips, newVal);
+    // TODO: reimpl
+    // home.localStorage.write(ConstDart.showPlayTips, newVal);
   }
 
   String playTips = "";
@@ -348,8 +349,9 @@ class PlayController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    _canShowPlayTips =
-        home.localStorage.read<bool>(ConstDart.showPlayTips) ?? true;
+    // TODO: reimpl
+    // _canShowPlayTips =
+    //     home.localStorage.read<bool>(ConstDart.showPlayTips) ?? true;
     update();
     if (canShowPlayTips) {
       Timer(const Duration(seconds: 2), () {

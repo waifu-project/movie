@@ -1,7 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:isar/isar.dart';
 import 'package:movie/isar/schema/settings_schema.dart';
-import 'package:movie/shared/enum.dart';
 import 'package:path_provider/path_provider.dart';
 
 // isar auto generated *.g.dart do you want add .gitignore?
@@ -44,7 +43,6 @@ class IsarRepository {
     if (isar.settingsIsarModels.countSync() <= 0) {
       debugPrint("[logger] 初始化设置");
       var defaultSetting = SettingsIsarModel();
-      defaultSetting.themeMode = SystemThemeMode.system;
       isar.writeTxnSync(() {
         isar.settingsIsarModels.putSync(defaultSetting);
       });

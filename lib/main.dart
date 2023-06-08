@@ -8,7 +8,6 @@ import 'package:movie/isar/repo.dart';
 import 'package:movie/mirror/mirror.dart';
 import 'package:movie/shared/enum.dart';
 import 'package:movie/utils/helper.dart';
-import 'package:tuple/tuple.dart';
 
 import 'app/routes/app_pages.dart';
 import 'utils/http.dart';
@@ -29,14 +28,8 @@ ThemeData applyTheme({isDark = true}) {
   return theme;
 }
 
-/// 返回两个值
-///
-/// `Future<Tuple2<Brightness, bool>>`
-///
-/// 主题 | 是否是系统主题
-///
-/// @d1y: 只返回 `ThemeMode`
-Future<Tuple2<Brightness, bool>> runBefore() async {
+/// 返回当前主题 -> [ThemeMode]
+Future<ThemeMode> runBefore() async {
   WidgetsFlutterBinding.ensureInitialized();
   await XHttp.init();
   await IsarRepository().init();
@@ -49,7 +42,8 @@ Future<Tuple2<Brightness, bool>> runBefore() async {
   if (GetPlatform.isWindows && currTheme.isSytem) {
     wrapperIfDark = getWindowsThemeMode();
   }
-  return Tuple2(wrapperIfDark, currTheme.isSytem);
+  if (currTheme.isSytem) return ThemeMode.system;
+  return wrapperIfDark == Brightness.dark ? ThemeMode.dark : ThemeMode.light;
 }
 
 void runAfter() {
@@ -64,16 +58,7 @@ void runAfter() {
 }
 
 void main() async {
-  Tuple2<Brightness, bool> futureStatus = await runBefore();
-  Brightness wrapperIfDark = futureStatus.item1;
-  bool systemBrightnessFlag = futureStatus.item2;
-
-  ThemeMode currentThemeMode = systemBrightnessFlag
-      ? ThemeMode.system
-      : wrapperIfDark == Brightness.dark
-          ? ThemeMode.dark
-          : ThemeMode.light;
-
+  ThemeMode currentThemeMode = await runBefore();
   runApp(
     GetMaterialApp(
       title: APP_TITLE,
@@ -86,6 +71,5 @@ void main() async {
       darkTheme: applyTheme(),
     ),
   );
-
   runAfter();
 }

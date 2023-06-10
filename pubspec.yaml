@@ -50,6 +50,7 @@ dependencies:
   isar: ^3.1.0+1
   isar_flutter_libs: ^3.1.0+1
   tuple: ^2.0.1
+  flutter_easyloading: ^3.0.5
 
 dev_dependencies:
 

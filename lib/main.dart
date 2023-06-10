@@ -1,6 +1,7 @@
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'package:get/get.dart';
 import 'package:movie/config.dart';
@@ -69,6 +70,7 @@ void main() async {
       themeMode: currentThemeMode,
       theme: applyTheme(isDark: false),
       darkTheme: applyTheme(),
+      builder: EasyLoading.init(),
     ),
   );
   runAfter();

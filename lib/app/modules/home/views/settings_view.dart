@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_cupertino_settings/flutter_cupertino_settings.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'package:get/get.dart';
 import 'package:movie/app/extension.dart';
@@ -181,31 +182,16 @@ class _SettingsViewState extends State<SettingsView> {
     switch (type) {
       case HandleDiglogTapType.clean:
         editingControllerValue = "";
-        Get.showSnackbar(
-          GetBar(
-            message: "解析内容已经清空!",
-            duration: const Duration(seconds: 1),
-          ),
-        );
+        EasyLoading.showInfo("解析内容已经清空!");
         break;
       case HandleDiglogTapType.kget:
         if (editingControllerValue.isEmpty) {
-          Get.showSnackbar(
-            GetBar(
-              message: "内容为空, 请填入url!",
-              duration: const Duration(seconds: 1),
-            ),
-          );
+          EasyLoading.showError("内容为空, 请填写url!");
           return;
         }
         var target = SourceUtils.getSources(editingControllerValue);
         if (target.isEmpty) {
-          Get.showSnackbar(
-            GetBar(
-              message: "没有找到匹配的源!",
-              duration: const Duration(seconds: 1),
-            ),
-          );
+          EasyLoading.showError("没有找到匹配的源!");
           return;
         }
         Get.dialog(
@@ -243,12 +229,7 @@ class _SettingsViewState extends State<SettingsView> {
         var data = await SourceUtils.runTaks(target);
         Get.back();
         if (data.isEmpty) {
-          Get.showSnackbar(
-            GetBar(
-              message: "获取的内容为空!",
-              duration: const Duration(seconds: 1),
-            ),
-          );
+          EasyLoading.showError("获取的内容为空!");
           return;
         }
         var _easyData = SourceUtils.mergeMirror(
@@ -264,12 +245,7 @@ class _SettingsViewState extends State<SettingsView> {
         if (addLen <= 0) {
           showMessage = "获取成功, 没有新的源!";
         }
-        Get.showSnackbar(
-          GetBar(
-            message: showMessage,
-            duration: const Duration(seconds: 1),
-          ),
-        );
+        EasyLoading.showSuccess(showMessage);
         break;
       default:
     }
@@ -494,13 +470,7 @@ class _SettingsViewState extends State<SettingsView> {
                   if (value) {
                     final bool isInstall = checkInstalledIINA();
                     if (!isInstall) {
-                      Get.showSnackbar(
-                        GetBar(
-                          message: "未安装IINA, 请先安装!",
-                          duration: const Duration(seconds: 3),
-                          overlayBlur: 3,
-                        ),
-                      );
+                      EasyLoading.showError("未安装IINA, 请先安装!");
                       return;
                     }
                   }

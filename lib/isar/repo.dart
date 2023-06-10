@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:isar/isar.dart';
+import 'package:movie/isar/schema/history_schema.dart';
 import 'package:movie/isar/schema/settings_schema.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -23,11 +24,12 @@ class IsarRepository {
 
   List<CollectionSchema<dynamic>> get schemas => [
         SettingsIsarModelSchema,
+        HistoryIsarModelSchema,
       ];
 
   Future<void> init() async {
     final dir = await getApplicationDocumentsDirectory();
-    _isar = await Isar.open(schemas, directory: dir.path);
+    _isar = await Isar.open(schemas, directory: dir.path, maxSizeMiB: 512,);
     _initDB(_isar);
   }
 

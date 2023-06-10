@@ -1,12 +1,15 @@
 import 'dart:async';
 
 import 'package:dio/dio.dart';
-import 'package:flappy_search_bar_ns/flappy_search_bar_ns.dart' as ExtendSearchBar;
+import 'package:flappy_search_bar_ns/flappy_search_bar_ns.dart'
+    as ExtendSearchBar;
 import 'package:flappy_search_bar_ns/search_bar_style.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
+import 'package:isar/isar.dart';
+import 'package:movie/app/extension.dart';
 import 'package:movie/app/modules/home/controllers/home_controller.dart';
 import 'package:movie/app/routes/app_pages.dart';
 import 'package:movie/app/widget/helper.dart';
@@ -15,7 +18,7 @@ import 'package:movie/app/widget/k_error_stack.dart';
 import 'package:movie/app/widget/k_pagination.dart';
 import 'package:movie/app/widget/k_tag.dart';
 import 'package:movie/app/widget/window_appbar.dart';
-import 'package:movie/config.dart';
+import 'package:movie/isar/schema/history_schema.dart';
 import 'package:movie/mirror/mirror_serialize.dart';
 
 class SearchView extends StatefulWidget {
@@ -29,7 +32,8 @@ class _SearchViewState extends State<SearchView>
     with AutomaticKeepAliveClientMixin {
   final HomeController home = Get.find<HomeController>();
 
-  ExtendSearchBar.SearchBarController get _searchBarController => home.searchBarController;
+  ExtendSearchBar.SearchBarController get _searchBarController =>
+      home.searchBarController;
 
   List<String> _searchHistory = [];
 
@@ -37,22 +41,20 @@ class _SearchViewState extends State<SearchView>
     return _searchHistory;
   }
 
-  set searchHistory(newVal) {
+  set searchHistory(List<String> newVal) {
     setState(() {
       _searchHistory = newVal;
     });
-    // TODO: reimpl this
-    // home.localStorage.write(ConstDart.search_history, newVal);
+    isarInstance.writeTxn(() async {
+      final data = newVal.map((e) => HistoryIsarModel(e)).toList();
+      historyAs.putAll(data);
+    });
   }
 
-  loadSearchHistory() {
-    var data = List<String>.from(
-      // TODO: reimpl this
-      // home.localStorage.read(ConstDart.search_history) ?? [],
-      []
-    );
+  loadSearchHistory() async {
+    var data = historyAs.where(distinct: false).findAllSync();
     setState(() {
-      _searchHistory = data;
+      _searchHistory = data.map((e) => e.content).toList();
     });
   }
 
@@ -509,7 +511,12 @@ class _SearchViewState extends State<SearchView>
       setState(() {
         isTriggerSearch = false;
       });
-      throw AsyncError(dioError, StackTrace.fromString(dioError.error.toString()));
+      throw AsyncError(
+        dioError,
+        StackTrace.fromString(
+          dioError.error.toString(),
+        ),
+      );
     }
   }
 

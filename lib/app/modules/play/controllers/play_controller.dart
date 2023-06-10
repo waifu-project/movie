@@ -11,9 +11,9 @@ import 'package:movie/app/modules/home/views/source_help.dart';
 import 'package:movie/app/modules/play/views/chewie_view.dart';
 import 'package:movie/app/modules/play/views/webview_view.dart';
 import 'package:movie/impl/movie.dart';
+import 'package:movie/isar/schema/parse_schema.dart';
 import 'package:movie/mirror/m_utils/m.dart';
 import 'package:movie/mirror/mirror_serialize.dart';
-import 'package:movie/models/movie_parse.dart';
 import 'package:movie/shared/enum.dart';
 import 'package:movie/utils/helper.dart';
 
@@ -87,7 +87,7 @@ String getPlayUrl(String str) {
   return str;
 }
 
-String easyGenParseVipUrl(String raw, MovieParseModel model) {
+String easyGenParseVipUrl(String raw, ParseIsarModel model) {
   String url = model.url;
   String result = '$url$raw';
   return result;

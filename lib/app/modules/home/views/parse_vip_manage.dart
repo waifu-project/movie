@@ -8,6 +8,7 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:movie/app/widget/window_appbar.dart';
 import 'package:get/get.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:movie/isar/schema/parse_schema.dart';
 import 'package:movie/models/movie_parse.dart';
 import 'package:movie/utils/helper.dart';
 import 'package:movie/utils/json.dart';
@@ -32,7 +33,7 @@ class ParseVipManagePageView extends StatefulWidget {
 
 class _ParseVipManagePageViewState extends State<ParseVipManagePageView> {
   final HomeController home = Get.find<HomeController>();
-  List<MovieParseModel> get parseList => home.parseVipList;
+  List<ParseIsarModel> get parseList => home.parseVipList;
   int get parseListCurrentIndex => home.currentParseVipIndex;
 
   @override

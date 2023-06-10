@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:movie/config.dart';
 import 'package:movie/impl/movie.dart';
 
 import 'm_utils/m.dart';

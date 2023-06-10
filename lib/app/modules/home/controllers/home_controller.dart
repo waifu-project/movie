@@ -1,13 +1,14 @@
 import 'package:flappy_search_bar_ns/flappy_search_bar_ns.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:isar/isar.dart';
 import 'package:movie/app/modules/home/views/mirrortable.dart';
 import 'package:movie/app/shared/mirror_category.dart';
 import 'package:movie/app/shared/mirror_status_stack.dart';
 import 'package:movie/impl/movie.dart';
+import 'package:movie/isar/schema/parse_schema.dart';
 import 'package:movie/mirror/mirror.dart';
 import 'package:movie/mirror/mirror_serialize.dart';
-import 'package:movie/models/movie_parse.dart';
 import 'package:movie/shared/enum.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 
@@ -39,10 +40,10 @@ class HomeController extends GetxController with WidgetsBindingObserver {
   );
 
   int _currentParseVipIndex = 0;
-  List<MovieParseModel> _parseVipList = [];
+  List<ParseIsarModel> _parseVipList = [];
   int get currentParseVipIndex => _currentParseVipIndex;
-  List<MovieParseModel> get parseVipList => _parseVipList;
-  MovieParseModel? get currentParseVipModelData {
+  List<ParseIsarModel> get parseVipList => _parseVipList;
+  ParseIsarModel? get currentParseVipModelData {
     if (parseVipList.isEmpty || currentParseVipIndex >= parseVipList.length) {
       return null;
     }
@@ -281,27 +282,18 @@ class HomeController extends GetxController with WidgetsBindingObserver {
   }
 
   initMovieParseVipList() {
-    // TODO: reimpl this
-    // dynamic dataWithJson = localStorage.read(ConstDart.movieParseVip) ?? [];
-    dynamic dataWithJson = [];
-    if (dataWithJson is List) {
-      var models = dataWithJson
-          .map(
-            (e) => MovieParseModel.fromJson(e),
-          )
-          .toList();
-      _parseVipList = models;
-      update();
-    }
+    var data = parseAs.where(distinct: false).findAllSync();
+    _parseVipList = data;
+    update();
   }
 
   bool addMovieParseVip(dynamic model) {
     bool tryBetter = false;
-    if (model is List<MovieParseModel>) {
+    if (model is List<ParseIsarModel>) {
       _parseVipList.addAll(model);
       _currentParseVipIndex = 0;
       tryBetter = true;
-    } else if (model is MovieParseModel) {
+    } else if (model is ParseIsarModel) {
       _parseVipList.insert(0, model);
       if (_parseVipList.length >= 2) {
         _currentParseVipIndex++;
@@ -310,8 +302,9 @@ class HomeController extends GetxController with WidgetsBindingObserver {
     }
     if (tryBetter) {
       update();
-      // TODO: reimpl this
-      // localStorage.write(ConstDart.movieParseVip, _parseVipList);
+      isarInstance.writeTxnSync(() {
+        parseAs.putAllSync(_parseVipList);
+      });
     }
     return tryBetter;
   }

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:flappy_search_bar_ns/flappy_search_bar_ns.dart'
     as extend_search_bar;
@@ -209,30 +210,17 @@ class _SearchViewState extends State<SearchView>
 
                 double h = 100;
 
-                Widget coverWidget = Image.network(
-                  _targetImage ?? _defaultLogo,
+                Widget coverWidget = CachedNetworkImage(
+                  imageUrl: _targetImage ?? _defaultLogo,
                   width: w,
                   height: h,
                   fit: BoxFit.cover,
-                  loadingBuilder: (context, child, loadingProgress) {
-                    if (loadingProgress == null) {
-                      return ClipRRect(
-                        borderRadius: BorderRadius.circular(8.0),
-                        child: child,
-                      );
-                    }
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  },
-                  errorBuilder: (context, error, stackTrace) => ClipRRect(
-                    borderRadius: BorderRadius.circular(8.0),
-                    child: Image.asset(
-                      K_DEFAULT_IMAGE,
-                      fit: BoxFit.cover,
-                      width: 80,
+                  progressIndicatorBuilder: (context, url, progress) => Center(
+                    child: CircularProgressIndicator(
+                      value: progress.progress,
                     ),
                   ),
+                  errorWidget: (context, error, stackTrace) => kErrorImage,
                 );
 
                 // EdgeInsets _sharkPadding = EdgeInsets.all(canNotFindCover ? 10 : 0);

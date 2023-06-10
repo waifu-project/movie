@@ -452,7 +452,7 @@ class MirrorCard extends StatelessWidget {
                       fit: BoxFit.cover,
                       width: 60,
                       placeholder: (context, url) => const Center(
-                        child: CircularProgressIndicator(),
+                        child: SizedBox.shrink()
                       ),
                       errorWidget: (
                         context,

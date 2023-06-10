@@ -1,3 +1,5 @@
+// ignore_for_file: constant_identifier_names
+
 export 'styled_element.dart';
 export 'interactable_element.dart';
 export 'replaced_element.dart';

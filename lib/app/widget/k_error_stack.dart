@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 /// 错误栈最大行数
-const int KErrorStackMaxLine = 12;
+const int kErrorStackMaxLine = 12;
 
 /// 错误栈展示 `widget`
 class KErrorStack extends StatelessWidget {
@@ -15,7 +15,7 @@ class KErrorStack extends StatelessWidget {
 
   final int? maxLine;
 
-  int get _maxLine => maxLine ?? KErrorStackMaxLine;
+  int get _maxLine => maxLine ?? kErrorStackMaxLine;
 
   @override
   Widget build(BuildContext context) {

@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_renaming_method_parameters
+
 import 'dart:math';
 
 import 'package:collection/collection.dart';
@@ -132,7 +134,7 @@ class RubyElement extends ReplacedElement {
     return Padding(
       padding: EdgeInsets.only(top: rubySize),
       child: Wrap(
-        key: AnchorKey.of(context.parser.key, this),
+        key: AnchorKey.of(context.parser.parseKey, this),
         runSpacing: rubySize,
         children: widgets.map((e) => Row(
           crossAxisAlignment: CrossAxisAlignment.end,

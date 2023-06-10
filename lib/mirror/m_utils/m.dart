@@ -1,5 +1,7 @@
 // https://github.com/cuiocean/ZY-Player-APP/blob/main/utils/request.js
 
+// ignore_for_file: non_constant_identifier_names
+
 import 'dart:async';
 import 'dart:convert';
 

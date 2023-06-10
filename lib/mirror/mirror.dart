@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:isar/isar.dart';
 import 'package:movie/app/extension.dart';
 import 'package:movie/impl/movie.dart';
@@ -45,7 +46,7 @@ class MirrorManage {
 
   /// 删除单个源
   static removeItem(MovieImpl item) {
-    print("删除该源: $item");
+    debugPrint("删除该源: $item");
     extend.remove(item);
     saveToCache(extend);
   }

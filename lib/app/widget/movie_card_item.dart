@@ -71,22 +71,20 @@ class _MovieCardItemState extends State<MovieCardItem> {
                 },
                 errorBuilder: (context, error, stackTrace) => ClipRRect(
                   borderRadius: BorderRadius.circular(_radiusSize),
-                  child: KCoverImage,
+                  child: kCoverImage,
                 ),
               ),
             ),
             const SizedBox(
               height: 9,
             ),
-            Container(
-              child: Text(
-                widget.title,
-                maxLines: 1,
-                style: const TextStyle(
-                  fontSize: 12,
-                ),
-                overflow: TextOverflow.ellipsis,
+            Text(
+              widget.title,
+              maxLines: 1,
+              style: const TextStyle(
+                fontSize: 12,
               ),
+              overflow: TextOverflow.ellipsis,
             ),
           ],
         ),

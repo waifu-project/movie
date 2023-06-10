@@ -17,13 +17,14 @@ import 'package:movie/mirror/mirror.dart';
 import 'package:movie/utils/http.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:cross_file/cross_file.dart';
 
 enum MenuActionType {
   /// 检测源
   check,
 
   /// 删除不可用源
-  delete_unavailable,
+  deleteUnavailable,
 
   /// 导出
   export,
@@ -117,7 +118,7 @@ class _MirrorTableViewState extends State<MirrorTableView> {
     ItemModel(
       '一键删除失效源',
       Icons.no_encryption,
-      MenuActionType.delete_unavailable,
+      MenuActionType.deleteUnavailable,
     ),
     ItemModel(
       '导出源',
@@ -150,7 +151,7 @@ class _MirrorTableViewState extends State<MirrorTableView> {
           updateMirrorStatusMap();
         }
         break;
-      case MenuActionType.delete_unavailable:
+      case MenuActionType.deleteUnavailable:
         bool status = await showDelUnavailableMirrorDialog();
         if (!status) return;
         List<String> result = MirrorManage.removeUnavailable(
@@ -178,7 +179,7 @@ class _MirrorTableViewState extends State<MirrorTableView> {
           String path = '${directory.path}/$filename';
           File file = File(path);
           await file.writeAsString(append);
-          Share.shareFilesWithResult([path]);
+          Share.shareXFiles([XFile(path)]);
         } else if (GetPlatform.isDesktop) {
           Directory? directory = await getDownloadsDirectory();
           if (directory == null) return;
@@ -259,7 +260,7 @@ class _MirrorTableViewState extends State<MirrorTableView> {
                     ),
                     padding: const EdgeInsets.all(12),
                   ),
-                  menuBuilder: () => popMenuBox(
+                  menuBuilder: () => PopMenuBox(
                     items: menuItems,
                     onTap: (MenuActionType value) {
                       _controller.hideMenu();
@@ -284,7 +285,7 @@ class _MirrorTableViewState extends State<MirrorTableView> {
             itemCount: mirrorList.length,
             itemBuilder: (_, index) {
               var e = mirrorList[index];
-              return mirrorCard(
+              return MirrorCard(
                 item: e,
                 current: home.currentMirrorItem == e,
                 onTap: () {
@@ -339,8 +340,8 @@ class _MirrorTableViewState extends State<MirrorTableView> {
   }
 }
 
-class mirrorCard extends StatelessWidget {
-  const mirrorCard({
+class MirrorCard extends StatelessWidget {
+  const MirrorCard({
     Key? key,
     required this.item,
     this.current = false,
@@ -412,14 +413,6 @@ class mirrorCard extends StatelessWidget {
           key: ObjectKey(item),
           endActionPane: ActionPane(
             motion: const ScrollMotion(),
-            // TODO
-            // 滑动可关闭
-            // dismissible: DismissiblePane(
-            //   confirmDismiss: () async {
-            //     return false;
-            //   },
-            //   onDismissed: () {},
-            // ),
             children: [
               SlidableAction(
                 onPressed: onDel,
@@ -503,7 +496,7 @@ class mirrorCard extends StatelessWidget {
                                     maxLines: 2,
                                     overflow: TextOverflow.ellipsis,
                                   ),
-                            movieStatusWidget(
+                            MovieStatusWidget(
                               status: item.meta.status
                                   ? MovieStatusType.available
                                   : MovieStatusType.unavailable,
@@ -548,7 +541,7 @@ enum MovieStatusType {
   unknown,
 }
 
-extension movieStatusTypeExtension on MovieStatusType {
+extension MovieStatusTypeExtension on MovieStatusType {
   String get text {
     switch (this) {
       case MovieStatusType.available:
@@ -563,8 +556,8 @@ extension movieStatusTypeExtension on MovieStatusType {
   }
 }
 
-class movieStatusWidget extends StatelessWidget {
-  const movieStatusWidget({
+class MovieStatusWidget extends StatelessWidget {
+  const MovieStatusWidget({
     Key? key,
     this.status = MovieStatusType.available,
 
@@ -618,13 +611,11 @@ class movieStatusWidget extends StatelessWidget {
         const SizedBox(
           width: 6,
         ),
-        Container(
-          child: Text(
-            _text,
-            style: TextStyle(
-              color: _color,
-              fontSize: 12,
-            ),
+        Text(
+          _text,
+          style: TextStyle(
+            color: _color,
+            fontSize: 12,
           ),
         ),
       ],
@@ -632,8 +623,8 @@ class movieStatusWidget extends StatelessWidget {
   }
 }
 
-class popMenuBox extends StatefulWidget {
-  const popMenuBox({
+class PopMenuBox extends StatefulWidget {
+  const PopMenuBox({
     Key? key,
     required this.items,
     required this.onTap,
@@ -644,10 +635,10 @@ class popMenuBox extends StatefulWidget {
   final ValueChanged<MenuActionType> onTap;
 
   @override
-  State<popMenuBox> createState() => _popMenuBoxState();
+  State<PopMenuBox> createState() => _PopMenuBoxState();
 }
 
-class _popMenuBoxState extends State<popMenuBox> {
+class _PopMenuBoxState extends State<PopMenuBox> {
   ItemModel? _hoverPopMenuItem;
 
   @override

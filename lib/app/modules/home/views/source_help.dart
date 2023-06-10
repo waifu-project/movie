@@ -66,7 +66,7 @@ class _SourceHelpTableState extends State<SourceHelpTable> {
     });
     try {
       // if (kDebugMode) await Future.delayed(Duration(seconds: 2));
-      var resp = await XHttp.dio.get(FetchMirrorAPI);
+      var resp = await XHttp.dio.get(fetchMirrorAPI);
       List<SourceItemJSONData> data = List.from(resp.data)
           .map((e) => SourceItemJSONData.fromJson(e as Map<String, dynamic>))
           .toList();
@@ -81,7 +81,7 @@ class _SourceHelpTableState extends State<SourceHelpTable> {
         _loadingErrorStack = "";
       });
     } catch (e) {
-      print(e);
+      debugPrint(e.toString());
       setState(() {
         _isLoadingFromAJAX = false;
         _loadingErrorStack = e.toString();
@@ -376,78 +376,76 @@ class _SourceHelpTableState extends State<SourceHelpTable> {
           ),
         ),
         child: SafeArea(
-          child: Container(
-            child: Column(
-              children: [
-                Expanded(
-                  child: CupertinoScrollbar(
-                    child: Builder(
-                      builder: (context) {
-                        if (mirrors.isEmpty) {
-                          if (_canLoadFail) {
-                            return _errorWidget;
-                          }
-                          return _mirrorEmptyStateWidget;
+          child: Column(
+            children: [
+              Expanded(
+                child: CupertinoScrollbar(
+                  child: Builder(
+                    builder: (context) {
+                      if (mirrors.isEmpty) {
+                        if (_canLoadFail) {
+                          return _errorWidget;
                         }
-                        return ListView(
-                          children: mirrors.map((item) {
-                            return CupertinoListTile(
-                              title: Text(
-                                item.title ?? "",
-                                style: TextStyle(
-                                  color: Get.isDarkMode
-                                      ? Colors.white54
-                                      : Colors.black54,
-                                ),
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
+                        return _mirrorEmptyStateWidget;
+                      }
+                      return ListView(
+                        children: mirrors.map((item) {
+                          return CupertinoListTile(
+                            title: Text(
+                              item.title ?? "",
+                              style: TextStyle(
+                                color: Get.isDarkMode
+                                    ? Colors.white54
+                                    : Colors.black54,
                               ),
-                              onTap: () {
-                                handleCopyText(item: item);
-                              },
-                            );
-                          }).toList(),
-                        );
-                      },
-                    ),
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            onTap: () {
+                              handleCopyText(item: item);
+                            },
+                          );
+                        }).toList(),
+                      );
+                    },
                   ),
                 ),
-                Builder(
-                  builder: (context) {
-                    if (mirrors.isEmpty) {
-                      if (_canLoadFail) {
-                        return Padding(
-                          padding: const EdgeInsets.only(
-                            bottom: 24,
-                          ),
-                          child: CupertinoButton.filled(
-                            padding: const EdgeInsets.all(12),
-                            child: const Text("重新加载"),
-                            onPressed: () {
-                              loadMirrorListApi();
-                            },
-                          ),
-                        );
-                      }
-                      return const SizedBox.shrink();
+              ),
+              Builder(
+                builder: (context) {
+                  if (mirrors.isEmpty) {
+                    if (_canLoadFail) {
+                      return Padding(
+                        padding: const EdgeInsets.only(
+                          bottom: 24,
+                        ),
+                        child: CupertinoButton.filled(
+                          padding: const EdgeInsets.all(12),
+                          child: const Text("重新加载"),
+                          onPressed: () {
+                            loadMirrorListApi();
+                          },
+                        ),
+                      );
                     }
-                    return Container(
-                      margin: const EdgeInsets.symmetric(
-                        horizontal: 0,
-                        vertical: 12,
-                      ),
-                      child: CupertinoButton.filled(
-                        borderRadius: BorderRadius.circular(24),
-                        child: const Text("一键复制到剪贴板"),
-                        onPressed: () {
-                          handleCopyText(canCopyAll: true);
-                        },
-                      ),
-                    );
-                  },
-                )
-              ],
-            ),
+                    return const SizedBox.shrink();
+                  }
+                  return Container(
+                    margin: const EdgeInsets.symmetric(
+                      horizontal: 0,
+                      vertical: 12,
+                    ),
+                    child: CupertinoButton.filled(
+                      borderRadius: BorderRadius.circular(24),
+                      child: const Text("一键复制到剪贴板"),
+                      onPressed: () {
+                        handleCopyText(canCopyAll: true);
+                      },
+                    ),
+                  );
+                },
+              )
+            ],
           ),
         ),
       ),
@@ -473,7 +471,7 @@ showEasyCupertinoDialog({
   var ctx = Get.context as BuildContext;
   if (context != null) ctx = context;
   showCupertinoDialog(
-    builder: (BuildContext context) => easyShowModalWidget(
+    builder: (BuildContext context) => EasyShowModalWidget(
       content: child,
       title: outputTitle,
       onDone: onDone,
@@ -483,8 +481,8 @@ showEasyCupertinoDialog({
   );
 }
 
-class easyShowModalWidget extends StatelessWidget {
-  const easyShowModalWidget({
+class EasyShowModalWidget extends StatelessWidget {
+  const EasyShowModalWidget({
     Key? key,
     this.onDone,
     required this.content,

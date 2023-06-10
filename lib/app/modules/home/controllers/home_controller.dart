@@ -198,14 +198,6 @@ class HomeController extends GetxController with WidgetsBindingObserver {
   int page = 1;
   int limit = 10;
 
-  set _page(newVal) {
-    // TODO
-  }
-
-  set _limit(newVal) {
-    // TODO
-  }
-
   List<MirrorOnceItemSerialize> homedata = [];
 
   bool isLoading = false;
@@ -341,7 +333,7 @@ class HomeController extends GetxController with WidgetsBindingObserver {
   }
 
   updateWindowLastSize() {
-    windowLastSize = WidgetsBinding.instance.window.physicalSize;
+    windowLastSize = View.of(Get.context!).physicalSize;
     update();
   }
 

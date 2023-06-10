@@ -88,74 +88,72 @@ class _MacwindowctlState extends State<Macwindowctl> {
         ];
       });
     }
-    return Container(
-      child: Row(
-        children: [
-          ..._actions
-              .map((item) => GestureDetector(
-                    onTap: () {
-                      if (widget.onClick != null && mounted) {
-                        widget.onClick!(item["action"] as MacwindowctlAction);
+    return Row(
+      children: [
+        ..._actions
+            .map((item) => GestureDetector(
+                  onTap: () {
+                    if (widget.onClick != null && mounted) {
+                      widget.onClick!(item["action"] as MacwindowctlAction);
+                    }
+                  },
+                  child: MouseRegion(
+                    cursor: SystemMouseCursors.click,
+                    onHover: (event) {
+                      if (widget.onHover != null && mounted) {
+                        widget.onHover!(item["action"] as MacwindowctlAction);
                       }
+                      setState(() {
+                        onHoverFlag = true;
+                      });
                     },
-                    child: MouseRegion(
-                      cursor: SystemMouseCursors.click,
-                      onHover: (event) {
-                        if (widget.onHover != null && mounted) {
-                          widget.onHover!(item["action"] as MacwindowctlAction);
-                        }
-                        setState(() {
-                          onHoverFlag = true;
-                        });
-                      },
-                      onExit: (event) {
-                        if (widget.onExit != null && mounted) {
-                          widget.onExit!(item["action"] as MacwindowctlAction);
-                        }
-                        setState(() {
-                          onHoverFlag = false;
-                        });
-                      },
-                      child: Container(
-                        margin: const EdgeInsets.only(
-                          right: 6.0,
-                        ),
-                        width: widget.buttonSize,
-                        height: widget.buttonSize,
-                        decoration: BoxDecoration(
-                          color: (widget.focused ?? false)
-                              ? item["color"]
-                              : Colors.black26,
-                          shape: BoxShape.circle,
-                          border: Border.all(color: Colors.black12),
-                          boxShadow: [
-                            BoxShadow(
-                              color: (widget.blurSize != null &&
-                                      widget.blurSize! > 0 &&
-                                      (widget.focused ?? false))
-                                  ? item["color"]
-                                  : Colors.transparent,
-                              offset: const Offset(1, 1),
-                              blurRadius: widget.blurSize == null
-                                  ? 0
-                                  : (widget.blurSize ?? 0),
-                            ),
-                          ],
-                        ),
-                        child: Center(
-                          child: Icon(
-                            item["icon"],
-                            color:
-                                onHoverFlag ? Colors.black87 : Colors.transparent,
-                            size: (widget.buttonSize ?? 12) * .75,
+                    onExit: (event) {
+                      if (widget.onExit != null && mounted) {
+                        widget.onExit!(item["action"] as MacwindowctlAction);
+                      }
+                      setState(() {
+                        onHoverFlag = false;
+                      });
+                    },
+                    child: Container(
+                      margin: const EdgeInsets.only(
+                        right: 6.0,
+                      ),
+                      width: widget.buttonSize,
+                      height: widget.buttonSize,
+                      decoration: BoxDecoration(
+                        color: (widget.focused ?? false)
+                            ? item["color"]
+                            : Colors.black26,
+                        shape: BoxShape.circle,
+                        border: Border.all(color: Colors.black12),
+                        boxShadow: [
+                          BoxShadow(
+                            color: (widget.blurSize != null &&
+                                    widget.blurSize! > 0 &&
+                                    (widget.focused ?? false))
+                                ? item["color"]
+                                : Colors.transparent,
+                            offset: const Offset(1, 1),
+                            blurRadius: widget.blurSize == null
+                                ? 0
+                                : (widget.blurSize ?? 0),
                           ),
+                        ],
+                      ),
+                      child: Center(
+                        child: Icon(
+                          item["icon"],
+                          color:
+                              onHoverFlag ? Colors.black87 : Colors.transparent,
+                          size: (widget.buttonSize ?? 12) * .75,
                         ),
                       ),
                     ),
-                  ))
-              .toList(),
-        ],
-      ),
+                  ),
+                ))
+            .toList(),
+      ],
     );
   }
 }

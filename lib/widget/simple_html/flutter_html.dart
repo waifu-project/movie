@@ -179,7 +179,7 @@ class _HtmlState extends State<Html> {
     return SizedBox(
       width: widget.shrinkWrap ? null : MediaQuery.of(context).size.width,
       child: HtmlParser(
-        key: widget._anchorKey,
+        parseKey: widget._anchorKey,
         htmlData: documentElement,
         onLinkTap: widget.onLinkTap,
         onAnchorTap: widget.onAnchorTap,
@@ -347,7 +347,7 @@ class _SelectableHtmlState extends State<SelectableHtml> {
     return SizedBox(
       width: widget.shrinkWrap ? null : MediaQuery.of(context).size.width,
       child: HtmlParser(
-        key: widget._anchorKey,
+        parseKey: widget._anchorKey,
         htmlData: documentElement,
         onLinkTap: widget.onLinkTap,
         onAnchorTap: widget.onAnchorTap,

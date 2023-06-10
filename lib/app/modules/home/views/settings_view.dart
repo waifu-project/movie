@@ -133,9 +133,6 @@ class _SettingsViewState extends State<SettingsView> {
   }
 
   set showNSFW(newVal) {
-    // TODO 为 `false` 时
-    // showBlurModel();
-
     setState(() {
       nShowNSFW = !newVal ? 0 : 10;
     });

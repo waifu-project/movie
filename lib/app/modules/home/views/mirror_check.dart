@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import 'package:movie/app/shared/mirror_status_stack.dart';
 import 'package:movie/impl/movie.dart';
 
-enum mirrorTabButtonStatus {
+enum MirrorTabButtonStatus {
   /// 取消
   cancel,
 
@@ -116,9 +116,9 @@ class _MirrorCheckViewState extends State<MirrorCheckView> {
     super.dispose();
   }
 
-  handleClickMenu(mirrorTabButtonStatus action) {
+  handleClickMenu(MirrorTabButtonStatus action) {
     switch (action) {
-      case mirrorTabButtonStatus.cancel:
+      case MirrorTabButtonStatus.cancel:
         running = false;
         // MirrorStatusStack().clean();
         debugPrint("已取消 >_<");
@@ -127,7 +127,7 @@ class _MirrorCheckViewState extends State<MirrorCheckView> {
           result: false,
         );
         break;
-      case mirrorTabButtonStatus.done:
+      case MirrorTabButtonStatus.done:
         MirrorStatusStack().flash();
         Get.back(
           result: true,
@@ -288,7 +288,7 @@ class _MirrorCheckViewState extends State<MirrorCheckView> {
                         child: const Text("取消"),
                         onPressed: () {
                           handleClickMenu(
-                            mirrorTabButtonStatus.cancel,
+                            MirrorTabButtonStatus.cancel,
                           );
                         },
                       ),
@@ -307,7 +307,7 @@ class _MirrorCheckViewState extends State<MirrorCheckView> {
                         child: const Text("确定"),
                         onPressed: () {
                           handleClickMenu(
-                            mirrorTabButtonStatus.done,
+                            MirrorTabButtonStatus.done,
                           );
                         },
                       ),

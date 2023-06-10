@@ -1,3 +1,7 @@
+// ignore_for_file: constant_identifier_names
+
+// FIXME: remove [ConstDart]
+
 const String APP_TITLE = "yoyo";
 
 /// 映射常量表

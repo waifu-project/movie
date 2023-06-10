@@ -32,9 +32,9 @@ class _NsfwTableViewState extends State<NsfwTableView> {
   String c2Value = "";
 
   bool get canInputNext {
-    var _1 = c1Value == '2';
-    var _2 = c2Value == '3';
-    return _1 && _2;
+    var answer1 = c1Value == '2';
+    var answer2 = c2Value == '3';
+    return answer1 && answer2;
   }
 
   String html = "";

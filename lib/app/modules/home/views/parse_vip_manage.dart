@@ -16,7 +16,7 @@ import 'package:movie/utils/json.dart';
 import '../controllers/home_controller.dart';
 import 'source_help.dart';
 
-enum _kStatusCounter {
+enum KStatusCounter {
   success,
   fail,
   total,
@@ -149,21 +149,19 @@ class _ParseVipManagePageViewState extends State<ParseVipManagePageView> {
   }
 
   Widget get _buildWithEmptry {
-    return Container(
-      child: Center(
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              Image.asset(
-                "assets/images/error.png",
-                width: Get.width * .33,
-              ),
-              const SizedBox(
-                height: 24,
-              ),
-              const Text("暂无解析接口 :("),
-            ],
-          ),
+    return Center(
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            Image.asset(
+              "assets/images/error.png",
+              width: Get.width * .33,
+            ),
+            const SizedBox(
+              height: 24,
+            ),
+            const Text("暂无解析接口 :("),
+          ],
         ),
       ),
     );
@@ -321,7 +319,7 @@ class _ParseVipAddDialogState extends State<ParseVipAddDialog> {
           for (var whenData in verifiedData) {
             var canBeNext = isURL(whenData.url);
             var point =
-                canBeNext ? _kStatusCounter.success : _kStatusCounter.fail;
+                canBeNext ? KStatusCounter.success : KStatusCounter.fail;
             statusCounter[point.index]++;
             if (canBeNext) {
               data.add(whenData);
@@ -333,14 +331,14 @@ class _ParseVipAddDialogState extends State<ParseVipAddDialog> {
           );
           var canBeNext = isURL(onceData.url);
           var point =
-              canBeNext ? _kStatusCounter.success : _kStatusCounter.fail;
+              canBeNext ? KStatusCounter.success : KStatusCounter.fail;
           statusCounter[point.index]++;
           if (canBeNext) {
             data.add(onceData);
           }
         }
         if (data.isEmpty) continue;
-        statusCounter[_kStatusCounter.total.index] = data.length;
+        statusCounter[KStatusCounter.total.index] = data.length;
         outputData.addAll(data);
       }
     } catch (e) {
@@ -350,7 +348,7 @@ class _ParseVipAddDialogState extends State<ParseVipAddDialog> {
       );
       return;
     }
-    if (statusCounter[_kStatusCounter.total.index] >= 1) {
+    if (statusCounter[KStatusCounter.total.index] >= 1) {
       Get.back();
       widget.onImport(outputData, statusCounter);
     }

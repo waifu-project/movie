@@ -49,7 +49,7 @@ class SourceJsonData {
     var logo = json['logo'];
     var desc = json['desc'];
 
-    /// FIXME: 兼容 `ZY-Player`
+    /// 兼容 `ZY-Player`
     var status = json['status'] ?? true;
 
     var oldID = json['id'];

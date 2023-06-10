@@ -17,14 +17,12 @@ class MirrorSerializeVideoSize {
   final double duration;
 
   /// 视频大小
-  /// TODO 视频大小应该在 [MirrorSerializeVideoInfo] 中包含
+  /// 视频大小应该在 [MirrorSerializeVideoInfo] 中包含
   final double size;
 
-  /// TODO
   /// 格式化视频大小
   get humanSize {}
 
-  /// TODO
   /// 格式化视频时间
   get humanDuration {}
 

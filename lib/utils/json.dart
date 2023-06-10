@@ -1,3 +1,5 @@
+// ignore_for_file: non_constant_identifier_names
+
 var MAGIC_START_SYMBOL = [
   "[",
   "{",

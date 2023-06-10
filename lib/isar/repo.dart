@@ -50,6 +50,7 @@ class IsarRepository {
   }
 
   @Deprecated("调试模式, 后续请删除")
+  // FIXME: remove this
   _fake(Isar isar) {
     isar.writeTxnSync(() {
       isar.settingsIsarModels.clearSync();

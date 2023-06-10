@@ -26,8 +26,7 @@ typedef OnCssParseError = String? Function(
 );
 
 class HtmlParser extends StatelessWidget {
-  @override
-  final Key? key;
+  final Key? parseKey;
   final dom.Element htmlData;
   final OnTap? onLinkTap;
   final OnTap? onAnchorTap;
@@ -48,7 +47,7 @@ class HtmlParser extends StatelessWidget {
   final Map<String, Size> cachedImageSizes = {};
 
   HtmlParser({
-    required this.key,
+    required this.parseKey,
     required this.htmlData,
     required this.onLinkTap,
     required this.onAnchorTap,
@@ -63,10 +62,10 @@ class HtmlParser extends StatelessWidget {
     this.root,
     this.selectionControls,
     this.scrollPhysics,
-  })  : internalOnAnchorTap = onAnchorTap ?? (key != null
-              ? _handleAnchorTap(key, onLinkTap)
+  })  : internalOnAnchorTap = onAnchorTap ?? (parseKey != null
+              ? _handleAnchorTap(parseKey, onLinkTap)
               : onLinkTap),
-        super(key: key);
+        super(key: parseKey);
 
   @override
   Widget build(BuildContext context) {
@@ -325,7 +324,7 @@ class HtmlParser extends StatelessWidget {
       parser: this,
       tree: tree,
       style: context.style.copyOnlyInherited(tree.style),
-      key: AnchorKey.of(key, tree),
+      key: AnchorKey.of(parseKey, tree),
     );
 
     for (final entry in customRenders.keys) {
@@ -836,8 +835,7 @@ class RenderContext {
 /// A [ContainerSpan] can have a border, background color, height, width, padding, and margin
 /// and can represent either an INLINE or BLOCK-level element.
 class ContainerSpan extends StatelessWidget {
-  @override
-  final AnchorKey? key;
+  final AnchorKey? parseKey;
   final Widget? child;
   final List<InlineSpan>? children;
   final Style style;
@@ -845,16 +843,16 @@ class ContainerSpan extends StatelessWidget {
   final bool shrinkWrap;
 
   const ContainerSpan({
-    this.key,
+    this.parseKey,
     this.child,
     this.children,
     required this.style,
     required this.newContext,
     this.shrinkWrap = false,
-  }): super(key: key);
+  }): super(key: parseKey);
 
   @override
-  Widget build(BuildContext _) {
+  Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
         border: style.border,
@@ -883,8 +881,7 @@ class StyledText extends StatelessWidget {
   final Style style;
   final double textScaleFactor;
   final RenderContext renderContext;
-  @override
-  final AnchorKey? key;
+  final AnchorKey? parseKey;
   final bool _selectable;
   final TextSelectionControls? selectionControls;
   final ScrollPhysics? scrollPhysics;
@@ -894,22 +891,22 @@ class StyledText extends StatelessWidget {
     required this.style,
     this.textScaleFactor = 1.0,
     required this.renderContext,
-    this.key,
+    this.parseKey,
     this.selectionControls,
     this.scrollPhysics,
   }) : _selectable = false,
-        super(key: key);
+        super(key: parseKey);
 
   const StyledText.selectable({
     required TextSpan this.textSpan,
     required this.style,
     this.textScaleFactor = 1.0,
     required this.renderContext,
-    this.key,
+    this.parseKey,
     this.selectionControls,
     this.scrollPhysics,
   }) : _selectable = true,
-        super(key: key);
+        super(key: parseKey);
 
   @override
   Widget build(BuildContext context) {

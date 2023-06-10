@@ -138,7 +138,7 @@ CustomRender blockElementRender({Style? style, List<InlineSpan>? children}) =>
       }
       return WidgetSpan(
           child: ContainerSpan(
-        key: context.key,
+        parseKey: context.key,
         newContext: context,
         style: style ?? context.tree.style,
         shrinkWrap: context.parser.shrinkWrap,
@@ -166,7 +166,7 @@ CustomRender listElementRender(
     CustomRender.inlineSpan(
         inlineSpan: (context, buildChildren) => WidgetSpan(
               child: ContainerSpan(
-                key: context.key,
+                parseKey: context.key,
                 newContext: context,
                 style: style ?? context.tree.style,
                 shrinkWrap: context.parser.shrinkWrap,

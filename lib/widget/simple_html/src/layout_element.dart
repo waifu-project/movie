@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_unnecessary_containers
+
 import 'package:flutter/material.dart';
 import 'package:html/dom.dart' as dom;
 
@@ -144,7 +146,7 @@ class DetailsContentElement extends LayoutElement {
     }
     InlineSpan? firstChild = childrenList.isNotEmpty == true ? childrenList.first : null;
     return ExpansionTile(
-        key: AnchorKey.of(context.parser.key, this),
+        key: AnchorKey.of(context.parser.parseKey, this),
         expandedAlignment: Alignment.centerLeft,
         title: elementList.isNotEmpty == true && elementList.first.localName == "summary" ? StyledText(
           textSpan: TextSpan(
@@ -177,7 +179,7 @@ class EmptyLayoutElement extends LayoutElement {
   EmptyLayoutElement({required String name}) : super(name: name, children: []);
 
   @override
-  Widget? toWidget(_) => null;
+  Widget? toWidget(context) => null;
 }
 
 LayoutElement parseLayoutElement(

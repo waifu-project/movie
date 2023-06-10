@@ -1,10 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class kTitleBar extends StatelessWidget {
+class KTitleBar extends StatelessWidget {
   final String title;
 
-  const kTitleBar({Key? key, required this.title}) : super(key: key);
+  const KTitleBar({Key? key, required this.title}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

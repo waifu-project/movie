@@ -16,11 +16,11 @@
 支持自定义源, 可自行添加源
 欢迎加入TG裙交流(有源分享): https://t.me/+xub6INGSHqczN2Jl
 
-[Re: 从零开始的开发日志](docs/dev.md)
+<!-- [Re: 从零开始的开发日志](docs/dev.md)
 
 [Re: 视频源制作](docs/源制作.md)
 
-[Re: 视频解析](docs/解析.md)
+[Re: 视频解析](docs/解析.md) -->
 
 ### 安装
 
@@ -77,13 +77,9 @@ x86_64架构: [![](https://img.shields.io/badge/-点我下载-blue?logo=github)]
 
 ## 截图
 
-|                      首页                       |                      详情                      |
-| :----------------------------------------------------------: | :----------------------------------------------------------: |
-| ![](https://s2.loli.net/2022/09/02/P6NV8wm1QTjci3Z.png) | ![](https://s2.loli.net/2022/09/02/IMGYahWXwAyikO9.png) |
-|                            搜索                            |                            设置                            |
-| ![](https://s2.loli.net/2022/09/02/Vz5EDR9LpSOTYFx.png) | ![](https://s2.loli.net/2022/09/02/TijI7GqQNg6E8X3.png) |
-|                      播放                               |     |
-| ![](https://s2.loli.net/2022/09/02/rKDfYdBXQcxEIU2.png) |    |
+<img src="https://s2.loli.net/2023/06/10/U1WZuja7PVfo9sp.png" width="420" />
+<img src="https://s2.loli.net/2023/06/10/iX1kdqFBIpamAxj.png" width="420" />
+<img src="https://s2.loli.net/2023/06/10/ytAVfTH8RZ7Prem.png" width="420" />
 
 
 ## 小提示🥳
@@ -97,11 +93,13 @@ x86_64架构: [![](https://img.shields.io/badge/-点我下载-blue?logo=github)]
 
 ### 怎么样获得最好的使用(播放)体验?
 
-`macOS` 推荐使用 `iina` 来播放视频
+> 目前不打算在播放体验上花功夫, 大部分的逻辑会走系统 `webview`
+
+`macOS` 推荐使用 [IINA](https://iina.io) 来播放视频
 
 `iOS` 推荐使用内置浏览器来播放视频
 
-![](https://files.catbox.moe/fzqpps.png)
+<img width="240" src="https://files.catbox.moe/fzqpps.png" />
 
 ### copyright
 

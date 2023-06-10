@@ -113,5 +113,7 @@ x86_64架构: [![](https://img.shields.io/badge/-点我下载-blue?logo=github)]
 
 - [chuncui199188](https://www.iconfont.cn/illustrations/detail?spm=a313x.7781069.1998910419.d9df05512&cid=24522)
 
+- [九月红前来求药](https://www.iconfont.cn/user/detail?spm=a313x.7781069.0.d214f71f6&uid=4919826&nid=5Z6XDuRro8Q4)
+
 
 **仅供学习参考**

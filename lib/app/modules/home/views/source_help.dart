@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -17,6 +18,8 @@ import 'package:movie/utils/helper.dart';
 import 'package:movie/utils/http.dart';
 import 'package:clipboard/clipboard.dart';
 import 'package:movie/utils/json.dart';
+
+import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
 
 class SourceItemJSONData {
   String? title;
@@ -65,8 +68,10 @@ class _SourceHelpTableState extends State<SourceHelpTable> {
       _isLoadingFromAJAX = true;
     });
     try {
-      // if (kDebugMode) await Future.delayed(Duration(seconds: 2));
-      var resp = await XHttp.dio.get(fetchMirrorAPI);
+      var resp = await XHttp.dio.get(
+        fetchMirrorAPI,
+        options: $toDioOptions(CachePolicy.noCache),
+      );
       List<SourceItemJSONData> data = List.from(resp.data)
           .map((e) => SourceItemJSONData.fromJson(e as Map<String, dynamic>))
           .toList();

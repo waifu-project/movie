@@ -4,9 +4,47 @@ import 'package:awesome_dio_interceptor/awesome_dio_interceptor.dart';
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dio/io.dart';
 import 'package:dio/dio.dart';
+import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import 'package:flutter/foundation.dart';
 import 'package:movie/utils/path.dart';
+
+/// dio http 请求库缓存时间
+/// 
+/// FIXME: `detail/search` 这种接口不能缓存👀
+const kHttpCacheTime = Duration(hours: 2);
+
+/// 默认所有的 `dio-http` 请求都持久化话([kHttpCacheTime])
+///
+/// 此扩展可以修改 `options` 控制缓存行为
+///
+/// 参考: https://pub.dev/packages/dio_cache_interceptor
+///
+/// ```dart
+/// var resp = await XHttp.dio.get(
+///  fetchMirrorAPI,
+///  options: $toDioOptions(CachePolicy.noCache),
+/// );
+///```
+extension AnyInjectHttpCacheOptions on Object {
+  Options $toDioOptions(CachePolicy? cachePolicy) {
+    var options = kHttpCacheMiddlewareOptions
+        .copyWith(policy: CachePolicy.noCache)
+        .toOptions();
+    return options;
+  }
+}
+
+var kHttpCacheMiddlewareOptions = CacheOptions(
+  store: MemCacheStore(),
+  policy: CachePolicy.request,
+  hitCacheOnErrorExcept: [401, 403],
+  maxStale: kHttpCacheTime,
+  priority: CachePriority.normal,
+  cipher: null,
+  keyBuilder: CacheOptions.defaultCacheKeyBuilder,
+  allowPostMethod: true,
+);
 
 class XHttp {
   XHttp._internal();
@@ -33,6 +71,9 @@ class XHttp {
       storage: FileStorage(value + "/.cookies/"),
     );
     dio.interceptors.add(CookieManager(cookieJar));
+
+    dio.interceptors
+        .add(DioCacheInterceptor(options: kHttpCacheMiddlewareOptions));
 
     /// https://pub.dev/packages/awesome_dio_interceptor
     dio.interceptors.add(

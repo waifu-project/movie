@@ -52,6 +52,7 @@ dependencies:
   tuple: ^2.0.1
   flutter_easyloading: ^3.0.5
   awesome_dio_interceptor: ^1.0.0
+  dio_cache_interceptor: ^3.4.2
 
 dev_dependencies:
 

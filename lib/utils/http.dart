@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:awesome_dio_interceptor/awesome_dio_interceptor.dart';
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dio/io.dart';
 import 'package:dio/dio.dart';
@@ -32,7 +33,16 @@ class XHttp {
       storage: FileStorage(value + "/.cookies/"),
     );
     dio.interceptors.add(CookieManager(cookieJar));
-    dio.interceptors.add(LogInterceptor());
+
+    /// https://pub.dev/packages/awesome_dio_interceptor
+    dio.interceptors.add(
+      AwesomeDioInterceptor(
+        logRequestTimeout: false,
+        logRequestHeaders: false,
+        logResponseHeaders: false,
+        logger: debugPrint,
+      ),
+    );
 
     /// 添加拦截器
     dio.interceptors.add(
@@ -120,23 +130,4 @@ class XHttp {
     Response response = await dio.post(url, data: data);
     return response.data;
   }
-
-  /// 下载文件
-  // static Future downloadFile(urlPath, savePath) async {
-  //   Response response;
-  //   try {
-  //     response = await dio.download(
-  //       urlPath,
-  //       savePath,
-  //       onReceiveProgress: (int count, int total) {
-  //         //进度
-  //         print("$count $total");
-  //       },
-  //     );
-  //   } on DioError catch (e) {
-  //     handleError(e);
-  //   }
-  //   return response.data;
-  // }
-
 }

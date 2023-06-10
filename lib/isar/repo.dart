@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:isar/isar.dart';
 import 'package:movie/isar/schema/history_schema.dart';
+import 'package:movie/isar/schema/parse_schema.dart';
 import 'package:movie/isar/schema/settings_schema.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -25,6 +26,7 @@ class IsarRepository {
   List<CollectionSchema<dynamic>> get schemas => [
         SettingsIsarModelSchema,
         HistoryIsarModelSchema,
+        ParseIsarModelSchema,
       ];
 
   Future<void> init() async {

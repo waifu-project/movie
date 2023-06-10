@@ -26,3 +26,13 @@ extension SystemThemeModeExtension on SystemThemeMode {
     }
   }
 }
+
+enum SettingsAllKey {
+  themeMode,
+  iosCanBeUseSystemBrowser,
+  macosPlayUseIINA,
+  isNsfw,
+  mirrorIndex,
+  mirrorTextarea,
+  showPlayTips
+}

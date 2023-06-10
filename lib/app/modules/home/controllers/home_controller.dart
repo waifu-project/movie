@@ -8,7 +8,10 @@ import 'package:movie/impl/movie.dart';
 import 'package:movie/mirror/mirror.dart';
 import 'package:movie/mirror/mirror_serialize.dart';
 import 'package:movie/models/movie_parse.dart';
+import 'package:movie/shared/enum.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
+
+import 'package:movie/app/extension.dart';
 
 const kAllCategoryPoint = '-114514';
 var kAllCategoryData = MovieQueryCategory('全部', kAllCategoryPoint);
@@ -53,10 +56,6 @@ class HomeController extends GetxController with WidgetsBindingObserver {
     return currentMirrorItem.meta.id;
   }
 
-  /// `ios` 播放视频是否使用默认的系统浏览器
-  /// 1. 浏览器默认支持: `m3u8` | `mp4`
-  /// 2. 网页可以直接跳转给浏览器用
-  /// (所以`ios`默认直接走浏览器岂不美哉?)
   bool _iosCanBeUseSystemBrowser = true;
 
   List<MovieQueryCategory> get currentCategoryer {
@@ -88,14 +87,13 @@ class HomeController extends GetxController with WidgetsBindingObserver {
   set iosCanBeUseSystemBrowser(bool newVal) {
     _iosCanBeUseSystemBrowser = newVal;
     update();
-    // TODO: reimpl this
-    // localStorage.write(ConstDart.iosVideoSystemBrowser, newVal);
+    updateSetting(SettingsAllKey.iosCanBeUseSystemBrowser, newVal);
   }
 
   updateIOSCanBeUseSystemBrowser() {
-    // TODO: reimp this
-    // iosCanBeUseSystemBrowser =
-    //     localStorage.read<bool>(ConstDart.iosVideoSystemBrowser) ?? true;
+    var val =
+        getSettingAsKeyIdent<bool>(SettingsAllKey.iosCanBeUseSystemBrowser);
+    iosCanBeUseSystemBrowser = val;
   }
 
   bool _isNsfw = false;
@@ -109,8 +107,7 @@ class HomeController extends GetxController with WidgetsBindingObserver {
   set macosPlayUseIINA(bool newVal) {
     _macosPlayUseIINA = newVal;
     update();
-    // TODO: reimpl this
-    // localStorage.write(ConstDart.macosPlayUseIINA, newVal);
+    updateSetting(SettingsAllKey.macosPlayUseIINA, newVal);
   }
 
   bool get isNsfw {
@@ -121,21 +118,18 @@ class HomeController extends GetxController with WidgetsBindingObserver {
     _isNsfw = newVal;
     _mirrorIndex = 0;
     update();
-    // TODO: reimpl this
-    // localStorage.write(ConstDart.is_nsfw, newVal);
+    updateSetting(SettingsAllKey.isNsfw, newVal);
   }
 
   int get mirrorIndex {
     if (_cacheMirrorIndex == -1) {
-      // TODO: reimpl this
-      // return localStorage.read(ConstDart.ls_mirrorIndex) ?? 0;
+      return getSettingAsKeyIdent<int>(SettingsAllKey.mirrorIndex);
     }
     return _cacheMirrorIndex;
   }
 
   set mirrorIndex(int newVal) {
-    // TODO: reimpl this
-    // localStorage.write(ConstDart.ls_mirrorIndex, newVal);
+    updateSetting(SettingsAllKey.mirrorIndex, newVal);
   }
 
   set _mirrorIndex(int newVal) {
@@ -359,16 +353,15 @@ class HomeController extends GetxController with WidgetsBindingObserver {
   }
 
   updateMacosPlayUseIINAState() {
-    // TODO: reimpl this
-    // _macosPlayUseIINA = localStorage.read(ConstDart.macosPlayUseIINA) ?? false;
+    _macosPlayUseIINA =
+        getSettingAsKeyIdent<bool>(SettingsAllKey.macosPlayUseIINA);
     update();
   }
 
   String indexHomeLoadDataErrorMessage = "";
 
   updateNsfwSetting() {
-    // TODO: reimpl this
-    // _isNsfw = localStorage.read(ConstDart.is_nsfw) ?? false;
+    _isNsfw = getSettingAsKeyIdent<bool>(SettingsAllKey.isNsfw);
     update();
   }
 

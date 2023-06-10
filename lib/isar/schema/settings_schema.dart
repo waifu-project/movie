@@ -3,7 +3,7 @@ import 'package:movie/shared/enum.dart';
 
 part 'settings_schema.g.dart';
 
-@collection
+@Collection(inheritance: false)
 class SettingsIsarModel {
   Id id = Isar.autoIncrement;
 

@@ -5,15 +5,16 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:movie/app/extension.dart';
 import 'package:movie/app/modules/home/controllers/home_controller.dart';
 import 'package:movie/app/modules/home/views/source_help.dart';
 import 'package:movie/app/modules/play/views/chewie_view.dart';
 import 'package:movie/app/modules/play/views/webview_view.dart';
-import 'package:movie/config.dart';
 import 'package:movie/impl/movie.dart';
 import 'package:movie/mirror/m_utils/m.dart';
 import 'package:movie/mirror/mirror_serialize.dart';
 import 'package:movie/models/movie_parse.dart';
+import 'package:movie/shared/enum.dart';
 import 'package:movie/utils/helper.dart';
 
 const _kWindowsWebviewRuntimeLink =
@@ -143,8 +144,7 @@ class PlayController extends GetxController {
   set canShowPlayTips(bool newVal) {
     _canShowPlayTips = newVal;
     update();
-    // TODO: reimpl
-    // home.localStorage.write(ConstDart.showPlayTips, newVal);
+    updateSetting(SettingsAllKey.showPlayTips, newVal);
   }
 
   String playTips = "";
@@ -349,9 +349,7 @@ class PlayController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    // TODO: reimpl
-    // _canShowPlayTips =
-    //     home.localStorage.read<bool>(ConstDart.showPlayTips) ?? true;
+    _canShowPlayTips = getSettingAsKeyIdent<bool>(SettingsAllKey.showPlayTips);
     update();
     if (canShowPlayTips) {
       Timer(const Duration(seconds: 2), () {

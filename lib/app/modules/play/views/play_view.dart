@@ -370,6 +370,7 @@ class _PlayViewState extends State<PlayView> {
 
   Widget _buildWithShortDesc(String desc) {
     String humanDesc = desc.trim();
+    if (humanDesc.isEmpty) return const SizedBox.shrink();
     // NOTE: 不是标签,实际上不是很严谨!!
     if (humanDesc[0] != '<') {
       return Text(

@@ -5,12 +5,14 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:movie/app/extension.dart';
 import 'package:movie/app/modules/home/views/home_config.dart';
 import 'package:movie/app/widget/k_error_stack.dart';
 import 'package:movie/app/widget/window_appbar.dart';
 import 'package:movie/mirror/m_utils/m.dart';
 import 'package:movie/mirror/m_utils/source_utils.dart';
 import 'package:movie/mirror/mirror.dart';
+import 'package:movie/shared/enum.dart';
 import 'package:movie/utils/helper.dart';
 import 'package:movie/utils/http.dart';
 import 'package:clipboard/clipboard.dart';
@@ -55,9 +57,7 @@ class SourceHelpTable extends StatefulWidget {
 
 class _SourceHelpTableState extends State<SourceHelpTable> {
   bool get showNSFW {
-    // TODO: reimpl
-    // return GetStorage().read(ConstDart.is_nsfw) ?? false;
-    return false;
+    return getSettingAsKeyIdent<bool>(SettingsAllKey.isNsfw);
   }
 
   loadMirrorListApi() async {

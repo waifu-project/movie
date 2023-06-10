@@ -36,3 +36,16 @@ enum SettingsAllKey {
   mirrorTextarea,
   showPlayTips
 }
+
+/// 镜像源状态
+enum MirrorStatus {
+  
+  /// 可用
+  available,
+
+  /// 不可用
+  unavailable,
+
+  /// 未知领域
+  unknow
+}

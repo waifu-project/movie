@@ -317,8 +317,8 @@ class HomeController extends GetxController with WidgetsBindingObserver {
 
     update();
 
-    // TODO: reimpl this
-    // localStorage.write(ConstDart.movieParseVip, _parseVipList);
+    parseAs.clearSync();
+    parseAs.putAll(_parseVipList);
   }
 
   setDefaultMovieParseVipIndex(int index) {

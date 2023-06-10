@@ -1,6 +1,11 @@
 import 'dart:convert';
 
+import 'package:isar/isar.dart';
+import 'package:movie/app/extension.dart';
 import 'package:movie/impl/movie.dart';
+import 'package:movie/isar/repo.dart';
+import 'package:movie/isar/schema/mirror_schema.dart';
+import 'package:movie/shared/enum.dart';
 
 import 'm_utils/m.dart';
 import 'mlist/base_models/source_data.dart';
@@ -22,20 +27,17 @@ class MirrorManage {
 
   /// 初始化
   static init() async {
-    // var cacheData = local.read<List<dynamic>>(ConstDart.mirror_list) ?? [];
-    // var output = cacheData.map((e) => SourceJsonData.fromJson(e)).toList();
-    // TODO: use isar reimpl this
-    var output = [];
-    var result = output.map((data) {
+    final data = IsarRepository().mirrorAs.where(distinct: false).findAllSync();
+    var result = data.map((item) {
       return KBaseMirrorMovie(
-        logo: data.logo ?? "",
-        name: data.name ?? "",
-        desc: data.desc ?? "",
-        api_path: data.api!.path ?? "",
-        root_url: data.api!.root ?? "",
-        nsfw: data.nsfw ?? false,
-        id: data.id ?? "",
-        status: data.status ?? true,
+        logo: item.logo,
+        name: item.name,
+        desc: item.desc,
+        api_path: item.api.path,
+        root_url: item.api.root,
+        nsfw: item.nsfw,
+        id: item.id.toString(),
+        status: true, // TODO: reimpl this
       );
     }).toList();
     extend = result;
@@ -157,7 +159,23 @@ class MirrorManage {
   }
 
   static Future<void> mergeMirror(List<SourceJsonData> data) async {
-    // TODO: use isar reimpl this
-    // await local.write(ConstDart.mirror_list, data);
+    var output = data.map((item) {
+      // TODO: reimpl this
+      var api = MirrorApiIsardModel();
+      api.root = item.api?.root ?? "";
+      api.path = item.api?.path ?? "";
+      return MirrorIsarModel(
+        name: item.name ?? "",
+        logo: item.name ?? "",
+        api: api,
+        desc: '',
+        nsfw: item.nsfw ?? false,
+        status: MirrorStatus.available,
+      );
+    }).toList();
+    IsarRepository().safeWrite(() {
+      IsarRepository().mirrorAs.clearSync();
+      IsarRepository().mirrorAs.putAllSync(output);
+    });
   }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:isar/isar.dart';
 import 'package:movie/isar/schema/history_schema.dart';
+import 'package:movie/isar/schema/mirror_schema.dart';
 import 'package:movie/isar/schema/parse_schema.dart';
 import 'package:movie/isar/schema/settings_schema.dart';
 import 'package:path_provider/path_provider.dart';
@@ -23,15 +24,28 @@ class IsarRepository {
     init();
   }
 
+  safeWrite(VoidCallback fn) {
+    isar.writeTxnSync(() async => fn());
+  }
+
+  safeRead(VoidCallback fn) {
+    isar.txn(() async => fn);
+  }
+
   List<CollectionSchema<dynamic>> get schemas => [
         SettingsIsarModelSchema,
         HistoryIsarModelSchema,
         ParseIsarModelSchema,
+        MirrorIsarModelSchema,
       ];
 
   Future<void> init() async {
     final dir = await getApplicationDocumentsDirectory();
-    _isar = await Isar.open(schemas, directory: dir.path, maxSizeMiB: 512,);
+    _isar = await Isar.open(
+      schemas,
+      directory: dir.path,
+      maxSizeMiB: 512,
+    );
     _initDB(_isar);
   }
 

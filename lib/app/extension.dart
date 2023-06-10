@@ -1,6 +1,7 @@
 import 'package:isar/isar.dart';
 import 'package:movie/isar/repo.dart';
 import 'package:movie/isar/schema/history_schema.dart';
+import 'package:movie/isar/schema/mirror_schema.dart';
 import 'package:movie/isar/schema/parse_schema.dart';
 import 'package:movie/isar/schema/settings_schema.dart';
 import 'package:movie/shared/enum.dart';
@@ -10,9 +11,14 @@ extension ISettingMixin on Object {
   IsarCollection<SettingsIsarModel> get settingAs => IsarRepository().settingAs;
   SettingsIsarModel get settingAsValue => IsarRepository().settingsSingleModel;
 
-  IsarCollection<HistoryIsarModel> get historyAs => IsarRepository().isar.historyIsarModels;
+  IsarCollection<HistoryIsarModel> get historyAs =>
+      IsarRepository().isar.historyIsarModels;
 
-  IsarCollection<ParseIsarModel> get parseAs => IsarRepository().isar.parseIsarModels;
+  IsarCollection<ParseIsarModel> get parseAs =>
+      IsarRepository().isar.parseIsarModels;
+
+  IsarCollection<MirrorIsarModel> get mirrorAs =>
+      IsarRepository().isar.mirrorIsarModels;
 
   Isar get isarInstance => IsarRepository().isar;
 

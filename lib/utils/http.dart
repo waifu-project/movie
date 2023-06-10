@@ -76,14 +76,16 @@ class XHttp {
         .add(DioCacheInterceptor(options: kHttpCacheMiddlewareOptions));
 
     /// https://pub.dev/packages/awesome_dio_interceptor
-    dio.interceptors.add(
-      AwesomeDioInterceptor(
-        logRequestTimeout: false,
-        logRequestHeaders: false,
-        logResponseHeaders: false,
-        logger: debugPrint,
-      ),
-    );
+    if (kDebugMode) {
+      dio.interceptors.add(
+        AwesomeDioInterceptor(
+          logRequestTimeout: false,
+          logRequestHeaders: false,
+          logResponseHeaders: false,
+          logger: debugPrint,
+        ),
+      );
+    }
 
     /*
     ---------------------------------------------------------------------证书啥的, 都是访问的盗版资源, 无所谓

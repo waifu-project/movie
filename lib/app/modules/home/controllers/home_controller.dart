@@ -318,7 +318,7 @@ class HomeController extends GetxController with WidgetsBindingObserver {
     update();
 
     parseAs.clearSync();
-    parseAs.putAll(_parseVipList);
+    parseAs.putAllSync(_parseVipList);
   }
 
   setDefaultMovieParseVipIndex(int index) {

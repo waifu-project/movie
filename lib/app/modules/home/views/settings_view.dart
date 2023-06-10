@@ -11,6 +11,7 @@ import 'package:movie/app/modules/home/views/parse_vip_manage.dart';
 import 'package:movie/app/modules/home/views/source_help.dart';
 import 'package:movie/app/widget/window_appbar.dart';
 import 'package:movie/config.dart';
+import 'package:movie/isar/repo.dart';
 import 'package:movie/mirror/m_utils/source_utils.dart';
 import 'package:movie/mirror/mirror.dart';
 import 'package:movie/shared/enum.dart';
@@ -69,7 +70,7 @@ class _SettingsViewState extends State<SettingsView> {
 
   set autoDarkMode(bool newVal) {
     if (newVal) {
-      updateSetting(SettingsAllKey.themeMode,  SystemThemeMode.system);
+      updateSetting(SettingsAllKey.themeMode, SystemThemeMode.system);
     }
     setState(() {
       _autoDarkMode = newVal;
@@ -300,7 +301,9 @@ class _SettingsViewState extends State<SettingsView> {
     MirrorManage.cleanAll();
     home.easyCleanCacheHook();
     _editingController.text = "";
-    isarInstance.clearSync();
+    IsarRepository().safeWrite(() {
+      isarInstance.clearSync();
+    });
     Get.back();
     showCupertinoDialog(
       builder: (context) => CupertinoAlertDialog(

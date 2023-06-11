@@ -258,6 +258,15 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.0"
+  command_palette:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: HEAD
+      resolved-ref: "498e1c25532cf62ef7fe81b19da6c7fbd4f58752"
+      url: "https://github.com/d1y/command_palette"
+    source: git
+    version: "0.7.3"
   convert:
     dependency: transitive
     description:
@@ -1022,6 +1031,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.2.0"
+  substring_highlight:
+    dependency: transitive
+    description:
+      name: substring_highlight
+      sha256: "96c61e8316098831f6bee87d2386617e4be6aaf87fbc89402dc049d371b67efb"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.33"
   synchronized:
     dependency: transitive
     description:
@@ -1310,6 +1327,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.1.4"
+  woozy_search:
+    dependency: transitive
+    description:
+      name: woozy_search
+      sha256: c453181e0c3d03002b68094fe1869a8a5033d844541d48937288a75b3b923a15
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.3"
   xdg_directories:
     dependency: transitive
     description:

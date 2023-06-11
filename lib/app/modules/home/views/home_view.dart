@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:command_palette/command_palette.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -41,6 +42,8 @@ class HomeView extends GetView<HomeController> {
     },
   ];
 
+  final FocusNode focusNode = FocusNode();
+
   Color get _color => isDark
       ? const Color.fromRGBO(0, 0, 0, .63)
       : const Color.fromRGBO(255, 255, 255, .63);
@@ -48,63 +51,90 @@ class HomeView extends GetView<HomeController> {
   @override
   Widget build(BuildContext context) {
     return GetBuilder<HomeController>(
-      builder: (homeview) => Scaffold(
-        body: PageView.builder(
-          controller: homeview.currentBarController,
-          itemBuilder: (context, index) {
-            return _views[index];
-          },
-          itemCount: _views.length,
-
-          // NOTE:
-          // => 2022年/05月/14日 14:51
-          // => 滑动的实在太生硬了
-          // => 而且在桌面端会和窗口拖动冲突
-          // => 所以放弃了滚动
-          physics: const NeverScrollableScrollPhysics(),
-
-          onPageChanged: (index) {
-
-            // fix ios keyboard auto up
-            var currentFocus = FocusScope.of(context);
-            currentFocus.unfocus();
-
-            homeview.changeCurrentBarIndex(index);
-          },
+      builder: (homeview) => CommandPalette(
+        focusNode: focusNode,
+        config: CommandPaletteConfig(
+          transitionCurve: Curves.easeOutQuart,
+          style: CommandPaletteStyle(
+            barrierFilter: ImageFilter.blur(sigmaX: 6, sigmaY: 6),
+            actionLabelTextAlign: TextAlign.left,
+            borderRadius: BorderRadius.circular(12),
+            textFieldInputDecoration: const InputDecoration(
+              hintText: "Enter Something",
+              contentPadding: EdgeInsets.all(16),
+            ),
+          ),
+          showInstructions: true,
         ),
-        bottomNavigationBar: BottomAppBar(
-          elevation: 0,
-          color: _color,
-          child: GestureDetector(
-            behavior: HitTestBehavior.opaque,
-            child: SizedBox(
-              height: kBarHeight,
-              child: ClipRect(
-                child: BackdropFilter(
-                  filter: ImageFilter.blur(sigmaX: 40, sigmaY: 40),
-                  child: Center(
-                    child: ConstrainedBox(
-                      constraints: const BoxConstraints(
-                        maxWidth: 360,
-                      ),
-                      child: SalomonBottomBar(
-                        itemPadding: const EdgeInsets.symmetric(
-                          vertical: 9,
-                          horizontal: 18,
+        actions: [
+          CommandPaletteAction.single(
+            label: "Close Command Palette",
+            description: "Closes the command palette",
+            shortcut: ["esc"],
+            leading: const Icon(Icons.close),
+            onSelect: () {
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+        child: Scaffold(
+          body: PageView.builder(
+            controller: homeview.currentBarController,
+            itemBuilder: (context, index) {
+              return _views[index];
+            },
+            itemCount: _views.length,
+
+            // NOTE:
+            // => 2022年/05月/14日 14:51
+            // => 滑动的实在太生硬了
+            // => 而且在桌面端会和窗口拖动冲突
+            // => 所以放弃了滚动
+            physics: const NeverScrollableScrollPhysics(),
+
+            onPageChanged: (index) {
+              // fix ios keyboard auto up
+              var currentFocus = FocusScope.of(context);
+              currentFocus.unfocus();
+              focusNode.requestFocus();
+
+              homeview.changeCurrentBarIndex(index);
+            },
+          ),
+          bottomNavigationBar: BottomAppBar(
+            elevation: 0,
+            color: _color,
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              child: SizedBox(
+                height: kBarHeight,
+                child: ClipRect(
+                  child: BackdropFilter(
+                    filter: ImageFilter.blur(sigmaX: 40, sigmaY: 40),
+                    child: Center(
+                      child: ConstrainedBox(
+                        constraints: const BoxConstraints(
+                          maxWidth: 360,
                         ),
-                        currentIndex: homeview.currentBarIndex,
-                        onTap: (int i) {
-                          homeview.changeCurrentBarIndex(i);
-                        },
-                        items: _tabs
-                            .map(
-                              (e) => SalomonBottomBarItem(
-                                icon: Icon(e['icon']),
-                                title: Text(e['title']),
-                                selectedColor: e['color'],
-                              ),
-                            )
-                            .toList(),
+                        child: SalomonBottomBar(
+                          itemPadding: const EdgeInsets.symmetric(
+                            vertical: 9,
+                            horizontal: 18,
+                          ),
+                          currentIndex: homeview.currentBarIndex,
+                          onTap: (int i) {
+                            homeview.changeCurrentBarIndex(i);
+                          },
+                          items: _tabs
+                              .map(
+                                (e) => SalomonBottomBarItem(
+                                  icon: Icon(e['icon']),
+                                  title: Text(e['title']),
+                                  selectedColor: e['color'],
+                                ),
+                              )
+                              .toList(),
+                        ),
                       ),
                     ),
                   ),
@@ -112,8 +142,8 @@ class HomeView extends GetView<HomeController> {
               ),
             ),
           ),
+          extendBody: true,
         ),
-        extendBody: true,
       ),
     );
   }

@@ -54,6 +54,8 @@ dependencies:
   awesome_dio_interceptor: ^1.0.0
   dio_cache_interceptor: ^3.4.2
   executor: ^2.2.3
+  command_palette:
+    git: https://github.com/d1y/command_palette
 
 dev_dependencies:
 

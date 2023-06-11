@@ -54,3 +54,5 @@ node_modules/
 fonts/*.ttf
 
 *.g.dart
+
+thirdparty/

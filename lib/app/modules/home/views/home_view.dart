@@ -9,6 +9,7 @@ import 'package:movie/app/modules/home/views/home_config.dart';
 import 'package:movie/app/modules/home/views/index_home_view.dart';
 import 'package:movie/app/modules/home/views/search_view.dart';
 import 'package:movie/app/modules/home/views/settings_view.dart';
+import 'package:movie/impl/movie.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 
 import '../controllers/home_controller.dart';
@@ -17,6 +18,8 @@ class HomeView extends GetView<HomeController> {
   HomeView({super.key});
 
   bool get isDark => Get.isDarkMode;
+
+  final HomeController home = Get.find();
 
   final List<Widget> _views = [
     const IndexHomeView(),
@@ -48,6 +51,8 @@ class HomeView extends GetView<HomeController> {
       ? const Color.fromRGBO(0, 0, 0, .63)
       : const Color.fromRGBO(255, 255, 255, .63);
 
+  List<MovieImpl> get mirror => home.mirrorList;
+
   @override
   Widget build(BuildContext context) {
     return GetBuilder<HomeController>(
@@ -67,14 +72,19 @@ class HomeView extends GetView<HomeController> {
           showInstructions: true,
         ),
         actions: [
-          CommandPaletteAction.single(
-            label: "Close Command Palette",
-            description: "Closes the command palette",
-            shortcut: ["esc"],
-            leading: const Icon(Icons.close),
-            onSelect: () {
-              Navigator.of(context).pop();
-            },
+          CommandPaletteAction.nested(
+            label: "切换镜像",
+            leading: const Icon(Icons.burst_mode),
+            childrenActions: mirror.map((e) {
+              return CommandPaletteAction.single(
+                label: e.meta.name,
+                onSelect: () {
+                  var idx = mirror.indexOf(e);
+                  home.updateMirrorIndex(idx);
+                  Get.back();
+                },
+              );
+            }).toList(),
           ),
         ],
         child: Scaffold(

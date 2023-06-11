@@ -123,18 +123,26 @@ class IndexHomeViewPage extends GetView {
     return !home.isLoading && home.homedata.isNotEmpty;
   }
 
+  String get currentTitle {
+    try {
+      return home.currentMirrorItem.meta.name;
+    } catch (e) {
+      return APP_TITLE;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return GetBuilder<HomeController>(
       builder: (homeview) => Scaffold(
         appBar: WindowAppBar(
           iosBackStyle: true,
-          title: const Padding(
+          title: Padding(
             padding: EdgeInsets.symmetric(
               horizontal: 9,
             ),
             child: Text(
-              APP_TITLE,
+              currentTitle,
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 18,
@@ -173,7 +181,8 @@ class IndexHomeViewPage extends GetView {
                   itemBuilder: ((context, index) {
                     MovieQueryCategory curr = home.currentCategoryer[index];
                     // XXX(d1y): 默认为全部
-                    bool isCurr = curr.id == (home.currentCategoryerNow?.id ?? kAllCategoryPoint);
+                    bool isCurr = curr.id ==
+                        (home.currentCategoryerNow?.id ?? kAllCategoryPoint);
                     return Padding(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 4.2,

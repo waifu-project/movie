@@ -67,7 +67,12 @@ class _MirrorCheckViewState extends State<MirrorCheckView> {
     executor = Executor(concurrency: 12);
     var target = widget.list.where((element) {
       return !currCacheID.contains(element.meta.id);
-    });
+    }).toList();
+    if (target.isEmpty) {
+      running = false;
+      setState(() {});
+      return;
+    }
     debugPrint("即将执行任务(共${target.length})");
     for (var curr in target) {
       executor!.scheduleTask(() async {
@@ -88,7 +93,9 @@ class _MirrorCheckViewState extends State<MirrorCheckView> {
         String id = curr.meta.id;
         debugPrint("测试: $id, 结果: ${isSuccess ? '成功' : '失败'}");
         MirrorStatusStack().pushStatus(id, isSuccess);
-        _taskCount++;
+        if (_taskCount < listStackLen) {
+          _taskCount++;
+        }
         setState(() {});
         currCacheID.add(id);
       });

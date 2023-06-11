@@ -9,7 +9,6 @@ import 'package:movie/app/widget/window_appbar.dart';
 import 'package:get/get.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:movie/isar/schema/parse_schema.dart';
-import 'package:movie/models/movie_parse.dart';
 import 'package:movie/utils/helper.dart';
 import 'package:movie/utils/json.dart';
 
@@ -42,7 +41,7 @@ class _ParseVipManagePageViewState extends State<ParseVipManagePageView> {
   }
 
   easyAddVipParseModel() async {
-    var futureWith = await showCupertinoModalBottomSheet<MovieParseModel>(
+    var futureWith = await showCupertinoModalBottomSheet<ParseIsarModel>(
       context: context,
       builder: (BuildContext context) => ParseVipAddDialog(
         onImport: (data, statusCounter) {
@@ -260,7 +259,7 @@ class ParseVipAddDialog extends StatefulWidget {
     required this.onImport,
   }) : super(key: key);
 
-  final ValueImportCallback<List<MovieParseModel>> onImport;
+  final ValueImportCallback<List<ParseIsarModel>> onImport;
 
   @override
   State<ParseVipAddDialog> createState() => _ParseVipAddDialogState();
@@ -274,11 +273,11 @@ class _ParseVipAddDialogState extends State<ParseVipAddDialog> {
   submit() async {
     bool isNext = _formKey.currentState!.validate();
     if (!isNext) return;
-    var model = MovieParseModel(
-      name: name,
-      url: url,
+    var model = ParseIsarModel(
+      name,
+      url,
     );
-    Get.back<MovieParseModel>(result: model);
+    Get.back<ParseIsarModel>(result: model);
   }
 
   handleImportFile() async {
@@ -303,7 +302,7 @@ class _ParseVipAddDialogState extends State<ParseVipAddDialog> {
       contents.add(data);
     }
     contents = contents.where(verifyStringIsJSON).toList();
-    List<MovieParseModel> outputData = [];
+    List<ParseIsarModel> outputData = [];
 
     /// 状态计数器
     /// [0] => 成功
@@ -313,7 +312,7 @@ class _ParseVipAddDialogState extends State<ParseVipAddDialog> {
     try {
       for (var content in contents) {
         JSONBodyType? jsonType = getJSONBodyType(content);
-        List<MovieParseModel> data = [];
+        List<ParseIsarModel> data = [];
         if (jsonType == JSONBodyType.array) {
           var verifiedData = movieParseModelFromJson(content);
           for (var whenData in verifiedData) {
@@ -326,9 +325,7 @@ class _ParseVipAddDialogState extends State<ParseVipAddDialog> {
             }
           }
         } else if (jsonType == JSONBodyType.obj) {
-          var onceData = MovieParseModel.fromJson(
-            json.decode(content),
-          );
+          var onceData = ParseIsarModel.fromJson(json.decode(content));
           var canBeNext = isURL(onceData.url);
           var point =
               canBeNext ? KStatusCounter.success : KStatusCounter.fail;

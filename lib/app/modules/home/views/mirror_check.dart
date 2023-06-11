@@ -1,8 +1,22 @@
+import 'package:executor/executor.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:movie/app/shared/mirror_status_stack.dart';
 import 'package:movie/impl/movie.dart';
+
+// 这里的代码借鉴(抄袭)了:
+//
+// https://github.com/Hentioe/mikack-mobile/blob/d6c92e509ae4c7fce6aaea48202b34ebb3b9f546/lib/pages/search.dart#L3
+// https://github.com/honjow/FEhViewer/blob/d3c0d773418cbf5ee3697bff3a081764b74aca04/lib/common/controller/download_state.dart#L4
+// https://github.com/jiangtian616/JHenTai/blob/cbcb16d422ba28bff5c560493b8ad760e6746d20/lib/src/utils/eh_executor.dart#L6
+//
+// 可参考的包:
+//
+// https://pub.dev/packages/concurrent_queue
+// https://pub.dev/packages/computer
+//
+// now impl is stupid, need reimpl...
 
 enum MirrorTabButtonStatus {
   /// 取消
@@ -43,37 +57,59 @@ class _MirrorCheckViewState extends State<MirrorCheckView> {
 
   int get listStackLen => listStack.length;
 
+  Executor? executor = Executor(concurrency: 12);
+
+  List<String> currCacheID = [];
+
   runTasks() async {
-    while (_taskCount < listStackLen && running) {
-      var curr = listStack[_taskCount];
-      if (_taskCount == listStackLen - 1) {
-        running = false;
+    running = true;
+    setState(() {});
+    executor = Executor(concurrency: 12);
+    var target = widget.list.where((element) {
+      return !currCacheID.contains(element.meta.id);
+    });
+    debugPrint("即将执行任务(共${target.length})");
+    for (var curr in target) {
+      executor!.scheduleTask(() async {
+        if (!mounted) return;
+        bool isSuccess = false;
+        updateCurrentStatusText("开始测试 ${curr.meta.name}");
+        try {
+          await curr.getHome();
+          isSuccess = true;
+          _success++;
+          setState(() {});
+        } catch (e) {
+          isSuccess = false;
+          debugPrint(e.toString());
+          _fail++;
+          setState(() {});
+        }
+        String id = curr.meta.id;
+        debugPrint("测试: $id, 结果: ${isSuccess ? '成功' : '失败'}");
+        MirrorStatusStack().pushStatus(id, isSuccess);
+        _taskCount++;
+        setState(() {});
+        currCacheID.add(id);
+      });
+    }
+    await executor!.join(withWaiting: true);
+    await executor!.close();
+    running = false;
+    setState(() {});
+  }
+
+  handleTapAction() {
+    if (running) {
+      executor?.close();
+      running = false;
+      setState(() {});
+    } else {
+      if (_taskCount != 0) {
+        _taskCount--;
         setState(() {});
       }
-      var name = curr.meta.name;
-      updateCurrentStatusText("开始测试 $name");
-      bool isSuccess = false;
-      try {
-        await curr.getHome();
-        // debugPrint("本次请求成功");
-        // updateCurrentStatusText("测试成功 $name");
-        isSuccess = true;
-        setState(() {
-          _success++;
-        });
-      } catch (e) {
-        // debugPrint("本次请求错误");
-        // updateCurrentStatusText("测试失败 $name");
-        isSuccess = false;
-        setState(() {
-          _fail++;
-        });
-      }
-      String id = curr.meta.id;
-      MirrorStatusStack().pushStatus(id, isSuccess);
-      setState(() {
-        _taskCount++;
-      });
+      runTasks();
     }
   }
 
@@ -114,6 +150,7 @@ class _MirrorCheckViewState extends State<MirrorCheckView> {
   @override
   void dispose() {
     super.dispose();
+    executor?.close();
   }
 
   handleClickMenu(MirrorTabButtonStatus action) {
@@ -257,17 +294,7 @@ class _MirrorCheckViewState extends State<MirrorCheckView> {
                     }
                     return Text(_text);
                   }),
-                  onPressed: () {
-                    running = !running;
-                    setState(() {});
-                    if (running) {
-                      if (_taskCount != 0) {
-                        _taskCount--;
-                        setState(() {});
-                      }
-                      runTasks();
-                    }
-                  },
+                  onPressed: handleTapAction,
                 ),
               const SizedBox(
                 height: 8,

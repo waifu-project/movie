@@ -362,6 +362,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.5"
+  executor:
+    dependency: "direct main"
+    description:
+      name: executor
+      sha256: "87d935b31b2bdf7fe2af0b77dd8ffe8864eaade25715e9c68bc49497e48c9851"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.2.3"
   extended_list_library:
     dependency: transitive
     description:

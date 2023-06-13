@@ -11,6 +11,8 @@ import 'package:movie/shared/enum.dart';
 import 'm_utils/m.dart';
 import 'mlist/base_models/source_data.dart';
 
+// 唉, 懒得改了, 又不是不能跑, 代码丑点怎么了?
+
 class MirrorManage {
   MirrorManage._internal();
 
@@ -38,7 +40,7 @@ class MirrorManage {
         root_url: item.api.root,
         nsfw: item.nsfw,
         id: item.id.toString(),
-        status: true, // TODO: reimpl this
+        status: item.status == MirrorStatus.available,
       );
     }).toList();
     extend = result;
@@ -161,17 +163,17 @@ class MirrorManage {
 
   static Future<void> mergeMirror(List<SourceJsonData> data) async {
     var output = data.map((item) {
-      // TODO: reimpl this
       var api = MirrorApiIsardModel();
       api.root = item.api?.root ?? "";
       api.path = item.api?.path ?? "";
+      var status = item.status ?? true;
       return MirrorIsarModel(
         name: item.name ?? "",
         logo: item.name ?? "",
         api: api,
-        desc: '',
+        desc: item.desc ?? "",
         nsfw: item.nsfw ?? false,
-        status: MirrorStatus.available,
+        status: status ? MirrorStatus.available : MirrorStatus.unavailable,
       );
     }).toList();
     IsarRepository().safeWrite(() {

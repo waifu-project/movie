@@ -1,0 +1,5 @@
+coverage:
+    range: "60...98"
+ignore:
+    # Only real behavior models have is equality checking, which isn't covered in tests, so they're ignored
+    - "lib/src/models"

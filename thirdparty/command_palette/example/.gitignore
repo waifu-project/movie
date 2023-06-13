@@ -45,12 +45,11 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 
-cache/
 
-json/
 
-node_modules/
-
-fonts/*.ttf
-
-*.g.dart
+*android*
+*ios*
+*linux*
+*macos*
+*web*
+*windows*

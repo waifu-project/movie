@@ -1,0 +1,10 @@
+{
+    "search.exclude": {
+        "**/.fvm": true,
+    },
+    "dart.flutterSdkPath": "./.fvm/flutter_sdk",
+    "cSpell.words": [
+        "keyboardless",
+        "tion"
+    ],
+}

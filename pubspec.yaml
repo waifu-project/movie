@@ -55,10 +55,11 @@ dependencies:
   dio_cache_interceptor: ^3.4.2
   executor: ^2.2.3
   command_palette:
-    # path: ./thirdparty/command_palette
-    git:
-      url: https://github.com/d1y/command_palette
-      branch: d1y
+    # 上游的项目貌似没怎么更新了就自己维护了
+    path: ./thirdparty/command_palette
+    # git:
+    #   url: https://github.com/d1y/command_palette
+    #   branch: d1y
 
 
 dev_dependencies:

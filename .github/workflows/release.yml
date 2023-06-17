@@ -19,7 +19,9 @@ jobs:
         with:
           flutter-version: ${{ env.FLUTTER_VERSION }}
       - name: Install project dependencies
-        run: flutter pub get
+        run: |
+          flutter pub get
+          flutter pub run build_runner build
       - name: Enable windows build
         run: flutter config --enable-windows-desktop
       - name: Build artifacts
@@ -50,7 +52,9 @@ jobs:
       - name: Disable Google Analytics
         run: flutter config --no-analytics
       - name: Install dependencies
-        run: flutter pub get
+        run: |
+          flutter pub get
+          flutter pub run build_runner build
       - name: Enable Linux support
         run: flutter config --enable-linux-desktop
       - name: Install dependencies
@@ -85,6 +89,7 @@ jobs:
           flutter-version: ${{ env.FLUTTER_VERSION }}
           channel: "stable"
       - run: flutter pub get
+      - run: flutter pub run build_runner build
       - run: flutter pub deps
       - run: flutter build apk --target-platform android-arm,android-arm64,android-x64 --split-per-abi
 

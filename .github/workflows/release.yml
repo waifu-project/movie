@@ -18,6 +18,7 @@ jobs:
       - uses: subosito/flutter-action@v2
         with:
           flutter-version: ${{ env.FLUTTER_VERSION }}
+          cache: true
       - name: Install project dependencies
         run: |
           flutter pub get
@@ -49,6 +50,7 @@ jobs:
       - uses: subosito/flutter-action@v2
         with:
           flutter-version: ${{ env.FLUTTER_VERSION }}
+          cache: true
       - name: Disable Google Analytics
         run: flutter config --no-analytics
       - name: Install dependencies
@@ -87,6 +89,7 @@ jobs:
       - uses: subosito/flutter-action@v2
         with:
           flutter-version: ${{ env.FLUTTER_VERSION }}
+          cache: true
           channel: "stable"
       - run: flutter pub get
       - run: flutter pub run build_runner build

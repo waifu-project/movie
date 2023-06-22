@@ -304,6 +304,13 @@ class _SearchViewState extends State<SearchView>
                 });
                 return handleSearch(text);
               },
+              loader: Center(
+                child: Image.asset(
+                  "assets/loading.gif",
+                  width: 120,
+                  height: 120,
+                ),
+              ),
               emptyWidget: Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -403,11 +410,9 @@ class _SearchViewState extends State<SearchView>
                               .map(
                                 (e) => KTag(
                                   child: Text(e),
-                                  backgroundColor:
-                                      Theme.of(context).brightness ==
-                                              Brightness.dark
-                                          ? Colors.black26
-                                          : Colors.black12,
+                                  backgroundColor: Get.isDarkMode
+                                      ? Colors.black26
+                                      : Colors.black12,
                                   onTap: (type) {
                                     switch (type) {
                                       case KTagTapEventType.content: // 内容

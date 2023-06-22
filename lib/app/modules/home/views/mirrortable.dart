@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -244,6 +243,7 @@ class _MirrorTableViewState extends State<MirrorTableView> {
             child: const Icon(
               CupertinoIcons.command,
               size: 24,
+              color: CupertinoColors.activeBlue,
             ),
             padding: const EdgeInsets.all(12),
           ),
@@ -348,8 +348,6 @@ class MirrorCard extends StatelessWidget {
 
   final Map<String, bool> hashTable;
 
-  String get _logo => item.meta.logo;
-
   String get _title => item.meta.name;
 
   String get _desc => item.meta.desc;
@@ -368,14 +366,6 @@ class MirrorCard extends StatelessWidget {
     return item.isNsfw
         ? Colors.red
         : (Get.isDarkMode ? Colors.white : Colors.black45);
-  }
-
-  Widget get _logoDefaultImageWidget {
-    return Image.asset(
-      "assets/images/movie_default.png",
-      width: 60,
-      height: 42,
-    );
   }
 
   @override
@@ -418,92 +408,63 @@ class MirrorCard extends StatelessWidget {
               padding: const EdgeInsets.symmetric(
                 vertical: 6,
               ),
-              child: Row(children: [
-                Container(
-                  width: 92,
-                  margin: const EdgeInsets.symmetric(
-                    vertical: 6,
-                    horizontal: 2,
-                  ),
-                  child: Builder(builder: (_) {
-                    if (_logo.isEmpty) {
-                      return _logoDefaultImageWidget;
-                    }
-                    return CachedNetworkImage(
-                      imageUrl: _logo,
-                      fit: BoxFit.cover,
-                      width: 60,
-                      placeholder: (context, url) => const Center(
-                        child: SizedBox.shrink(),
-                      ),
-                      errorWidget: (
-                        context,
-                        url,
-                        error,
-                      ) =>
-                          _logoDefaultImageWidget,
-                    );
-                  }),
-                ),
-                Expanded(
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              _title,
-                              style: TextStyle(
-                                color: _color,
-                                fontSize: 14,
-                                decoration: TextDecoration.none,
-                                fontWeight: FontWeight.w300,
-                              ),
-                            ),
-                            SizedBox(
-                              height: _desc.isEmpty ? 0 : 3,
-                            ),
-                            _desc.isEmpty
-                                ? const SizedBox.shrink()
-                                : Text(
-                                    _desc,
-                                    style: TextStyle(
-                                      color: _color,
-                                      fontSize: 9,
-                                      decoration: TextDecoration.none,
-                                      fontWeight: FontWeight.w300,
-                                    ),
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                            MovieStatusWidget(
-                              status: item.meta.status
-                                  ? MovieStatusType.available
-                                  : MovieStatusType.unavailable,
-                              hash: item.meta.id,
-                              hashTable: hashTable,
-                            ),
-                          ],
-                        ),
-                      ),
-                      Row(
-                        children: [
-                          Icon(
-                            current ? Icons.done : CupertinoIcons.right_chevron,
+              child: Row(
+                children: [
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          _title,
+                          style: TextStyle(
                             color: _color,
+                            fontSize: 14,
+                            decoration: TextDecoration.none,
+                            fontWeight: FontWeight.w300,
                           ),
-                          const SizedBox(
-                            width: 8,
-                          ),
-                        ],
+                        ),
+                        SizedBox(
+                          height: _desc.isEmpty ? 0 : 3,
+                        ),
+                        _desc.isEmpty
+                            ? const SizedBox.shrink()
+                            : Text(
+                                _desc,
+                                style: TextStyle(
+                                  color: _color,
+                                  fontSize: 9,
+                                  decoration: TextDecoration.none,
+                                  fontWeight: FontWeight.w300,
+                                ),
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                        MovieStatusWidget(
+                          status: item.meta.status
+                              ? MovieStatusType.available
+                              : MovieStatusType.unavailable,
+                          hash: item.meta.id,
+                          hashTable: hashTable,
+                        ),
+                      ],
+                    ),
+                  ),
+                  Row(
+                    children: [
+                      Icon(
+                        current ? Icons.done : CupertinoIcons.right_chevron,
+                        color: _color,
+                      ),
+                      const SizedBox(
+                        width: 8,
                       ),
                     ],
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   ),
-                ),
-              ]),
+                ],
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              ),
             ),
           ),
         ),

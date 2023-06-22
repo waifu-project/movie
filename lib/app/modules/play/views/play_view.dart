@@ -109,7 +109,7 @@ class _PlayViewState extends State<PlayView> {
   Widget build(BuildContext context) {
     return GetBuilder<PlayController>(
       builder: (play) => Scaffold(
-        appBar: CupertinoEasyAppBar(
+        appBar: CupertinoEasyAppBar( // TODO: reimpl this
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -138,201 +138,204 @@ class _PlayViewState extends State<PlayView> {
           ),
         ),
         body: SafeArea(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                width: double.infinity,
-                height: Get.height * coverHeightScale,
-                decoration: const BoxDecoration(
-                  color: Color.fromRGBO(246, 246, 246, 1),
-                ),
-                child: Stack(
-                  children: [
-                    Positioned.fill(
-                      child: Image.network(
-                        play.movieItem.smallCoverImage,
-                        fit: BoxFit.cover,
-                        errorBuilder: (_, __, ___) {
-                          return Image.asset(
-                            K_DEFAULT_IMAGE,
-                            fit: BoxFit.cover,
-                          );
-                        },
+          child: DefaultTextStyle(
+            style: TextStyle(color: Get.isDarkMode ? Colors.white : Colors.black),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  width: double.infinity,
+                  height: Get.height * coverHeightScale,
+                  decoration: const BoxDecoration(
+                    color: Color.fromRGBO(246, 246, 246, 1),
+                  ),
+                  child: Stack(
+                    children: [
+                      Positioned.fill(
+                        child: Image.network(
+                          play.movieItem.smallCoverImage,
+                          fit: BoxFit.cover,
+                          errorBuilder: (_, __, ___) {
+                            return Image.asset(
+                              K_DEFAULT_IMAGE,
+                              fit: BoxFit.cover,
+                            );
+                          },
+                        ),
                       ),
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Expanded(child: SizedBox.shrink()),
-                        Container(
-                          width: double.infinity,
-                          clipBehavior: Clip.antiAlias,
-                          decoration: const BoxDecoration(
-                            color: Colors.black12,
-                          ),
-                          child: BackdropFilter(
-                            filter: ImageFilter.blur(
-                              sigmaX: 24,
-                              sigmaY: 24,
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Expanded(child: SizedBox.shrink()),
+                          Container(
+                            width: double.infinity,
+                            clipBehavior: Clip.antiAlias,
+                            decoration: const BoxDecoration(
+                              color: Colors.black12,
                             ),
-                            child: Padding(
+                            child: BackdropFilter(
+                              filter: ImageFilter.blur(
+                                sigmaX: 24,
+                                sigmaY: 24,
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 12,
+                                  horizontal: 24,
+                                ),
+                                child: Text(
+                                  play.movieItem.title,
+                                  style: Theme.of(context).textTheme.titleLarge,
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 4,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                _buildWithDesc,
+                Container(
+                  margin: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 9,
+                  ),
+                  child: const Text(
+                    "播放列表",
+                    style: TextStyle(
+                      fontSize: 18,
+                    ),
+                  ),
+                ),
+                const Divider(),
+                Container(
+                  width: double.infinity,
+                  height: canRenderIosStyle ? 32 + 12 : null,
+                  decoration: canRenderIosStyle
+                      ? BoxDecoration(
+                          border: Border(
+                            bottom: BorderSide(
+                              color: Colors.grey.withOpacity(.2),
+                              width: 1,
+                            ),
+                          ),
+                        )
+                      : null,
+                  padding: canRenderIosStyle
+                      ? const EdgeInsets.only(
+                          bottom: 12,
+                        )
+                      : null,
+                  child: Builder(builder: (_) {
+                    var isNext = playlist.length <= 1 || tabviewData[1] == null;
+                    if (isNext) return const SizedBox.shrink();
+                    if (canRenderIosStyle) {
+                      return ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: playlist.length,
+                        itemBuilder: (context, index) {
+                          var isCurrentIndex = index == play.tabIndex;
+                          var current = playlist[index];
+                          var currentBorderColor = isCurrentIndex
+                              ? CupertinoTheme.of(context).primaryColor
+                              : (Get.isDarkMode ? Colors.white : Colors.black)
+                                  .withOpacity(.42);
+                          return GestureDetector(
+                            onTap: () {
+                              play.changeTabIndex(index);
+                            },
+                            child: AnimatedContainer(
+                              alignment: Alignment.center,
+                              height: 32,
+                              duration: const Duration(milliseconds: 300),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(12),
+                                border: Border.all(
+                                  color: currentBorderColor,
+                                ),
+                              ),
+                              margin: const EdgeInsets.only(
+                                right: 6,
+                                left: 9,
+                              ),
                               padding: const EdgeInsets.symmetric(
-                                vertical: 12,
                                 horizontal: 24,
                               ),
                               child: Text(
-                                play.movieItem.title,
-                                style: Theme.of(context).textTheme.titleLarge,
-                                overflow: TextOverflow.ellipsis,
-                                maxLines: 4,
+                                current.title,
+                                style: TextStyle(
+                                  color: currentBorderColor,
+                                ),
+                                textAlign: TextAlign.center,
                               ),
                             ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-              _buildWithDesc,
-              Container(
-                margin: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 9,
-                ),
-                child: const Text(
-                  "播放列表",
-                  style: TextStyle(
-                    fontSize: 18,
-                  ),
-                ),
-              ),
-              const Divider(),
-              Container(
-                width: double.infinity,
-                height: canRenderIosStyle ? 32 + 12 : null,
-                decoration: canRenderIosStyle
-                    ? BoxDecoration(
-                        border: Border(
-                          bottom: BorderSide(
-                            color: Colors.grey.withOpacity(.2),
-                            width: 1,
-                          ),
-                        ),
-                      )
-                    : null,
-                padding: canRenderIosStyle
-                    ? const EdgeInsets.only(
-                        bottom: 12,
-                      )
-                    : null,
-                child: Builder(builder: (_) {
-                  var isNext = playlist.length <= 1 || tabviewData[1] == null;
-                  if (isNext) return const SizedBox.shrink();
-                  if (canRenderIosStyle) {
-                    return ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: playlist.length,
-                      itemBuilder: (context, index) {
-                        var isCurrentIndex = index == play.tabIndex;
-                        var current = playlist[index];
-                        var currentBorderColor = isCurrentIndex
-                            ? CupertinoTheme.of(context).primaryColor
-                            : (Get.isDarkMode ? Colors.white : Colors.black)
-                                .withOpacity(.42);
-                        return GestureDetector(
-                          onTap: () {
-                            play.changeTabIndex(index);
-                          },
-                          child: AnimatedContainer(
-                            alignment: Alignment.center,
-                            height: 32,
-                            duration: const Duration(milliseconds: 300),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(
-                                color: currentBorderColor,
-                              ),
-                            ),
-                            margin: const EdgeInsets.only(
-                              right: 6,
-                              left: 9,
-                            ),
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 24,
-                            ),
-                            child: Text(
-                              current.title,
-                              style: TextStyle(
-                                color: currentBorderColor,
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                        );
-                      },
-                    );
-                  }
-                  return CupertinoSlidingSegmentedControl(
-                    backgroundColor: Colors.black26,
-                    thumbColor: Get.isDarkMode ? Colors.blue : Colors.white,
-                    onValueChanged: (value) {
-                      if (value == null) return;
-                      play.changeTabIndex(value);
-                    },
-                    groupValue: play.tabIndex,
-                    children: tabviewData,
-                  );
-                }),
-              ),
-              SizedBox(
-                height: offsetSize,
-              ),
-              Expanded(
-                child: Padding(
-                  padding: EdgeInsets.all(offsetSize),
-                  child: Builder(builder: (context) {
-                    // NOTE: ↓ 若单个是否也为空
-                    bool oneIsEmpty =
-                        playlist.length == 1 && playlist[0].datas.isEmpty;
-                    if (playlist.isEmpty || oneIsEmpty) {
-                      return emptyPlaylistWidget;
-                    }
-                    return SizedBox(
-                      width: double.infinity,
-                      height: 420,
-                      child: GridView.builder(
-                        gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 3,
-                          mainAxisExtent: 48,
-                          crossAxisSpacing: 12,
-                          mainAxisSpacing: 12,
-                        ),
-                        itemCount: playlist[play.tabIndex].datas.length,
-                        itemBuilder: (context, index) {
-                          var curr = playlist[play.tabIndex].datas[index];
-                          return CupertinoButton.filled(
-                            padding: EdgeInsets.zero,
-                            child: Builder(builder: (_) {
-                              // NOTE: `长度 = 1` 实际上会没有标题, 所以文字为默认
-                              var len = playlist[play.tabIndex].datas.length;
-                              var text = len <= 1 ? "默认" : curr.name;
-                              return Text(text);
-                            }),
-                            onPressed: () {
-                              play.handleTapPlayerButtom(curr);
-                            },
                           );
                         },
-                      ),
+                      );
+                    }
+                    return CupertinoSlidingSegmentedControl(
+                      backgroundColor: Colors.black26,
+                      thumbColor: Get.isDarkMode ? Colors.blue : Colors.white,
+                      onValueChanged: (value) {
+                        if (value == null) return;
+                        play.changeTabIndex(value);
+                      },
+                      groupValue: play.tabIndex,
+                      children: tabviewData,
                     );
                   }),
                 ),
-              ),
-            ],
+                SizedBox(
+                  height: offsetSize,
+                ),
+                Expanded(
+                  child: Padding(
+                    padding: EdgeInsets.all(offsetSize),
+                    child: Builder(builder: (context) {
+                      // NOTE: ↓ 若单个是否也为空
+                      bool oneIsEmpty =
+                          playlist.length == 1 && playlist[0].datas.isEmpty;
+                      if (playlist.isEmpty || oneIsEmpty) {
+                        return emptyPlaylistWidget;
+                      }
+                      return SizedBox(
+                        width: double.infinity,
+                        height: 420,
+                        child: GridView.builder(
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 3,
+                            mainAxisExtent: 48,
+                            crossAxisSpacing: 12,
+                            mainAxisSpacing: 12,
+                          ),
+                          itemCount: playlist[play.tabIndex].datas.length,
+                          itemBuilder: (context, index) {
+                            var curr = playlist[play.tabIndex].datas[index];
+                            return CupertinoButton.filled(
+                              padding: EdgeInsets.zero,
+                              child: Builder(builder: (_) {
+                                // NOTE: `长度 = 1` 实际上会没有标题, 所以文字为默认
+                                var len = playlist[play.tabIndex].datas.length;
+                                var text = len <= 1 ? "默认" : curr.name;
+                                return Text(text);
+                              }),
+                              onPressed: () {
+                                play.handleTapPlayerButtom(curr);
+                              },
+                            );
+                          },
+                        ),
+                      );
+                    }),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -376,9 +379,10 @@ class _PlayViewState extends State<PlayView> {
       return Text(
         humanDesc,
         maxLines: 1,
-        style: const TextStyle(
+        style: TextStyle(
           overflow: TextOverflow.ellipsis,
           fontSize: 12,
+          color: Get.isDarkMode ? Colors.white : Colors.black,
         ),
       );
     }
@@ -402,10 +406,11 @@ class _PlayViewState extends State<PlayView> {
     return ExpansionTile(
       initiallyExpanded: false,
       subtitle: _buildWithShortDesc(desc),
-      title: const Text(
+      title: Text(
         '查看简介',
         style: TextStyle(
           fontSize: 18,
+          color: Get.isDarkMode ? Colors.white : Colors.black,
         ),
       ),
       children: [

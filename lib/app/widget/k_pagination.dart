@@ -42,6 +42,10 @@ class KPaginationActionButton extends StatelessWidget {
     return (Get.isDarkMode ? Colors.white : Colors.black);
   }
 
+  Color get textColor {
+    return (Get.isDarkMode ? Colors.white : Colors.black);
+  }
+
   double get boxOpacity {
     return disable ? .3 : 1;
   }
@@ -56,7 +60,10 @@ class KPaginationActionButton extends StatelessWidget {
     List<Widget> children = [
       Text(
         directionStr,
-        style: const TextStyle(fontSize: 9),
+        style: TextStyle(
+          fontSize: 9,
+          color: textColor,
+        ),
       ),
     ];
     int index = 0;
@@ -221,6 +228,7 @@ class _KPaginationState extends State<KPagination> {
                     "点击跳转",
                     style: TextStyle(
                       fontSize: 12,
+                      color: Colors.blue,
                     ),
                   ),
                 ),

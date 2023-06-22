@@ -274,8 +274,9 @@ class _SearchViewState extends State<SearchView>
                               item.title,
                               overflow: TextOverflow.ellipsis,
                               maxLines: 2,
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontSize: 18,
+                                color: !Get.isDarkMode ? Colors.black : Colors.white,
                               ),
                             ),
                           ),
@@ -350,102 +351,105 @@ class _SearchViewState extends State<SearchView>
                 horizontal: 12,
                 vertical: 0,
               ),
-              placeHolder: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 1,
+              placeHolder: DefaultTextStyle(
+                style: TextStyle(
+                  color: !Get.isDarkMode ? Colors.black : Colors.white,
                 ),
-                child: SingleChildScrollView(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Stack(
-                            children: [
-                              Positioned(
-                                left: 6,
-                                bottom: 0,
-                                child: Opacity(
-                                  opacity: .72,
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(8),
-                                    child: Container(
-                                      width: 60,
-                                      height: 6,
-                                      color: CupertinoColors.activeBlue,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 1,
+                  ),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Stack(
+                              children: [
+                                Positioned(
+                                  left: 6,
+                                  bottom: 0,
+                                  child: Opacity(
+                                    opacity: .72,
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(8),
+                                      child: Container(
+                                        width: 60,
+                                        height: 6,
+                                        color: CupertinoColors.activeBlue,
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
-                              Text(
-                                "搜索历史",
-                                style: Theme.of(context).textTheme.titleLarge,
-                              ),
-                            ],
-                          ),
-                          IconButton(
-                            iconSize: 18,
-                            tooltip: "删除所有历史记录",
-                            padding: const EdgeInsets.symmetric(
-                              vertical: 3,
-                              horizontal: 2,
-                            ),
-                            onPressed: () {
-                              handleUpdateSearchHistory(
-                                "",
-                                type: UpdateSearchHistoryType.clean,
-                              );
-                            },
-                            icon: const Icon(CupertinoIcons.clear),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(
-                        height: 12,
-                      ),
-                      Builder(builder: (context) {
-                        if (searchHistory.isEmpty) {
-                          return Text(
-                            "暂无历史记录",
-                            style: Theme.of(context).textTheme.titleSmall,
-                          );
-                        }
-                        return Wrap(
-                          children: searchHistory
-                              .map(
-                                (e) => KTag(
-                                  child: Text(e),
-                                  backgroundColor: Get.isDarkMode
-                                      ? Colors.black26
-                                      : Colors.black12,
-                                  onTap: (type) {
-                                    switch (type) {
-                                      case KTagTapEventType.content: // 内容
-                                        handleUpdateSearchHistory(
-                                          e,
-                                          type: UpdateSearchHistoryType.add,
-                                        );
-                                        handleStandSearch(title: e);
-                                        break;
-                                      case KTagTapEventType.action: // action
-                                        handleUpdateSearchHistory(
-                                          e,
-                                          type: UpdateSearchHistoryType.remove,
-                                        );
-                                        break;
-                                      default:
-                                    }
-                                  },
+                                const Text(
+                                  "搜索历史",
+                                  style: TextStyle(fontSize: 18),
                                 ),
-                              )
-                              .toList(),
-                        );
-                      }),
-                    ],
+                              ],
+                            ),
+                            IconButton(
+                              iconSize: 18,
+                              tooltip: "删除所有历史记录",
+                              padding: const EdgeInsets.symmetric(
+                                vertical: 3,
+                                horizontal: 2,
+                              ),
+                              onPressed: () {
+                                handleUpdateSearchHistory(
+                                  "",
+                                  type: UpdateSearchHistoryType.clean,
+                                );
+                              },
+                              icon: const Icon(CupertinoIcons.clear),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 12,
+                        ),
+                        Builder(builder: (context) {
+                          if (searchHistory.isEmpty) {
+                            return const Text("暂无历史记录");
+                          }
+                          return Wrap(
+                            children: searchHistory
+                                .map(
+                                  (e) => KTag(
+                                    child: Text(e),
+                                    backgroundColor: Get.isDarkMode
+                                        ? Colors.black26
+                                        : Colors.black12,
+                                    onTap: (type) {
+                                      switch (type) {
+                                        case KTagTapEventType.content: // 内容
+                                          handleUpdateSearchHistory(
+                                            e,
+                                            type: UpdateSearchHistoryType.add,
+                                          );
+                                          handleStandSearch(title: e);
+                                          break;
+                                        case KTagTapEventType.action: // action
+                                          handleUpdateSearchHistory(
+                                            e,
+                                            type:
+                                                UpdateSearchHistoryType.remove,
+                                          );
+                                          break;
+                                        default:
+                                      }
+                                    },
+                                  ),
+                                )
+                                .toList(),
+                          );
+                        }),
+                      ],
+                    ),
                   ),
                 ),
               ),

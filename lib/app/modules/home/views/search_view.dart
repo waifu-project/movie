@@ -46,9 +46,10 @@ class _SearchViewState extends State<SearchView>
     setState(() {
       _searchHistory = newVal;
     });
-    isarInstance.writeTxn(() async {
+    isarInstance.writeTxnSync(() async {
       final data = newVal.map((e) => HistoryIsarModel(e)).toList();
-      historyAs.putAll(data);
+      historyAs.clearSync();
+      historyAs.putAllSync(data);
     });
   }
 

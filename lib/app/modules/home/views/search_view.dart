@@ -2,8 +2,7 @@ import 'dart:async';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
-import 'package:flappy_search_bar/flappy_search_bar.dart'
-    as extend_search_bar;
+import 'package:flappy_search_bar/flappy_search_bar.dart' as extend_search_bar;
 import 'package:flappy_search_bar/search_bar_style.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -33,8 +32,8 @@ class _SearchViewState extends State<SearchView>
     with AutomaticKeepAliveClientMixin {
   final HomeController home = Get.find<HomeController>();
 
-  extend_search_bar.SearchBarController<MirrorOnceItemSerialize> get _searchBarController =>
-      home.searchBarController;
+  extend_search_bar.SearchBarController<MirrorOnceItemSerialize>
+      get _searchBarController => home.searchBarController;
 
   List<String> _searchHistory = [];
 
@@ -335,7 +334,13 @@ class _SearchViewState extends State<SearchView>
                   msg: error.toString(),
                 );
               },
-              cancellationWidget: const Text("取消"),
+              cancellationWidget: const Text(
+                "取消",
+                style: TextStyle(
+                  fontSize: 18,
+                  color: CupertinoColors.activeBlue,
+                ),
+              ),
               onCancelled: () {
                 setState(() {
                   isTriggerSearch = false;
@@ -362,12 +367,18 @@ class _SearchViewState extends State<SearchView>
                           Stack(
                             children: [
                               Positioned(
-                                left: 12,
-                                bottom: -6,
-                                child: Container(
-                                  width: 120,
-                                  height: 12,
-                                  color: Colors.red,
+                                left: 6,
+                                bottom: 0,
+                                child: Opacity(
+                                  opacity: .72,
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(8),
+                                    child: Container(
+                                      width: 60,
+                                      height: 6,
+                                      color: CupertinoColors.activeBlue,
+                                    ),
+                                  ),
                                 ),
                               ),
                               Text(
@@ -377,6 +388,7 @@ class _SearchViewState extends State<SearchView>
                             ],
                           ),
                           IconButton(
+                            iconSize: 18,
                             tooltip: "删除所有历史记录",
                             padding: const EdgeInsets.symmetric(
                               vertical: 3,

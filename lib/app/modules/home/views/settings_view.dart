@@ -12,7 +12,6 @@ import 'package:movie/app/modules/home/controllers/home_controller.dart';
 import 'package:movie/app/modules/home/views/parse_vip_manage.dart';
 import 'package:movie/app/modules/home/views/source_help.dart';
 import 'package:movie/app/widget/window_appbar.dart';
-import 'package:movie/config.dart';
 import 'package:movie/git_info.dart';
 import 'package:movie/isar/repo.dart';
 import 'package:movie/mirror/m_utils/source_utils.dart';

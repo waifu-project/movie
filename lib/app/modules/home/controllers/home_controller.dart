@@ -2,6 +2,7 @@ import 'package:flappy_search_bar_ns/flappy_search_bar_ns.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:isar/isar.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:movie/app/modules/home/views/mirrortable.dart';
 import 'package:movie/app/shared/mirror_category.dart';
 import 'package:movie/app/shared/mirror_status_stack.dart';
@@ -207,12 +208,13 @@ class HomeController extends GetxController with WidgetsBindingObserver {
   );
 
   showMirrorModel(BuildContext context) {
-    Get.to(
-      () => const MirrorTableView(),
-      duration: const Duration(
-        milliseconds: 240,
+    showCupertinoModalBottomSheet(
+      context: context,
+      builder: (_) => SizedBox(
+        height: Get.height * .92,
+        width: double.infinity,
+        child: const MirrorTableView(),
       ),
-      transition: Transition.cupertino,
     );
   }
 

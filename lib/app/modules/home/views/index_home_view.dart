@@ -47,12 +47,6 @@ class IndexHomeViewPage extends GetView {
     return 3;
   }
 
-  // double get childAspectRatio {
-  //   var val = home.windowLastSize.aspectRatio;
-  //   if (GetPlatform.isDesktop) return val;
-  //   return val * 1.2;
-  // }
-
   /// 错误日志
   String get errorMsg => home.indexHomeLoadDataErrorMessage;
 
@@ -138,13 +132,13 @@ class IndexHomeViewPage extends GetView {
         appBar: WindowAppBar(
           iosBackStyle: true,
           title: Padding(
-            padding: EdgeInsets.symmetric(
+            padding: const EdgeInsets.symmetric(
               horizontal: 9,
             ),
             child: Text(
               currentTitle,
               textAlign: TextAlign.center,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 18,
               ),
             ),

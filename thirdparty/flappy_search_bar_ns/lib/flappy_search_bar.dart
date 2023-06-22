@@ -60,7 +60,7 @@ class SearchBarController<T> {
       );
 
       final List<T> items =
-          await (_cancelableOperation!.value as FutureOr<List<T>>);
+          await (_cancelableOperation!.value);
       _lastSearchFunction = onSearch;
       _lastSearchedText = text;
       _list.clear();
@@ -76,7 +76,7 @@ class SearchBarController<T> {
 
   void injectSearch(
       String searchText, Future<List<T>> Function(String? text) onSearch) {
-    if (searchText != null && searchText.length >= minimumChars) {
+    if (searchText.length >= minimumChars) {
       _searchQueryController.text = searchText;
       _search(searchText, onSearch);
     }
@@ -310,7 +310,7 @@ class _SearchBarState<T> extends State<SearchBar<T?>>
     }
 
     _debounce = Timer(widget.debounceDuration, () async {
-      if (newText.length >= widget.minimumChars && widget.onSearch != null) {
+      if (newText.length >= widget.minimumChars) {
         searchBarController._search(newText, widget.onSearch);
       } else {
         setState(() {

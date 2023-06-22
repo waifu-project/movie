@@ -53,6 +53,8 @@ class HomeView extends GetView<HomeController> {
 
   List<MovieImpl> get mirror => home.mirrorList;
 
+  int get mirrorIndex => home.mirrorIndex;
+
   @override
   Widget build(BuildContext context) {
     return GetBuilder<HomeController>(
@@ -76,8 +78,10 @@ class HomeView extends GetView<HomeController> {
             label: "切换镜像",
             leading: const Icon(Icons.burst_mode),
             childrenActions: mirror.map((e) {
+              var currIndex = mirror.indexOf(e);
               return CommandPaletteAction.single(
                 label: e.meta.name,
+                description: currIndex == home.mirrorIndex ? '当前使用'  : '',
                 onSelect: () {
                   var idx = mirror.indexOf(e);
                   home.updateMirrorIndex(idx);

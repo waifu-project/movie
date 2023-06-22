@@ -1,5 +1,6 @@
 import 'package:flappy_search_bar_ns/flappy_search_bar_ns.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:isar/isar.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
@@ -201,7 +202,7 @@ class HomeController extends GetxController with WidgetsBindingObserver {
 
   List<MirrorOnceItemSerialize> homedata = [];
 
-  bool isLoading = false;
+  bool isLoading = true;
 
   RefreshController refreshController = RefreshController(
     initialRefresh: false,
@@ -420,6 +421,14 @@ class HomeController extends GetxController with WidgetsBindingObserver {
 
     try {
       if (isFirst) {
+        EasyLoading.show( // 缓存过不需要加载动画🤡
+          status: "加载中",
+          indicator: Image.asset(
+            "assets/loading.gif",
+            width: 120,
+            height: 120,
+          ),
+        );
         isLoading = !missIsLoading;
         page = 1;
         update();
@@ -435,14 +444,15 @@ class HomeController extends GetxController with WidgetsBindingObserver {
       } else {
         homedata.addAll(data);
       }
-      isLoading = false;
       indexHomeLoadDataErrorMessage = "";
       update();
     } catch (e) {
       indexHomeLoadDataErrorMessage = e.toString();
-      isLoading = false;
       homedata = [];
       update();
+    } finally {
+      isLoading = false;
+      EasyLoading.dismiss();
     }
 
     String id = currentMirrorItem.meta.id;

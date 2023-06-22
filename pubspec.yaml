@@ -97,6 +97,7 @@ flutter:
   uses-material-design: true
 
   assets:
+    - assets/
     - assets/data/nsfw.html
     - assets/data/source_help.txt
     - assets/images/movie_default.png

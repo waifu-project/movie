@@ -264,39 +264,57 @@ class IndexHomeViewPage extends GetView {
                     child: Builder(
                       builder: (_) {
                         if (homeview.isLoading) {
-                          return const Center(
-                            child: CupertinoActivityIndicator(),
-                          );
+                          return const SizedBox.shrink();
                         }
-
                         if (homeview.homedata.isEmpty) {
-                          return Center(
-                            child: SingleChildScrollView(
-                              child: Column(
-                                children: [
-                                  Image.asset(
-                                    "assets/images/error.png",
-                                    width: Get.width * .33,
-                                  ),
-                                  const SizedBox(
-                                    height: 24,
-                                  ),
-                                  CupertinoButton.filled(
-                                    child: const Text("重新加载"),
-                                    onPressed: () {
-                                      homeview.updateHomeData(isFirst: true);
-                                    },
-                                  ),
-                                  const SizedBox(
-                                    height: 12,
-                                  ),
-                                  KErrorStack(
-                                    msg: errorMsg,
-                                  ),
-                                ],
+                          if (errorMsg.isNotEmpty) {
+                            return Center(
+                              child: SingleChildScrollView(
+                                child: Column(
+                                  children: [
+                                    Image.asset(
+                                      "assets/images/error.png",
+                                      width: Get.width * .24,
+                                    ),
+                                    const SizedBox(
+                                      height: 24,
+                                    ),
+                                    CupertinoButton.filled(
+                                      child: const Text(
+                                        "重新加载",
+                                        style: TextStyle(fontSize: 12),
+                                      ),
+                                      padding: const EdgeInsets.symmetric(
+                                        vertical: 12.0,
+                                        horizontal: 24.0,
+                                      ),
+                                      onPressed: () {
+                                        homeview.updateHomeData(isFirst: true);
+                                      },
+                                    ),
+                                    const SizedBox(
+                                      height: 6,
+                                    ),
+                                    KErrorStack(
+                                      msg: errorMsg,
+                                    ),
+                                  ],
+                                ),
                               ),
-                            ),
-                          );
+                            );
+                          }
+                          return Center(
+                              child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Image.asset(
+                                "assets/images/error.png",
+                                width: Get.width * .24,
+                              ),
+                              const SizedBox(height: 24),
+                              const Text("当前请求列表为空"),
+                            ],
+                          ));
                         }
                         return WaterfallFlow.builder(
                           controller: ScrollController(),

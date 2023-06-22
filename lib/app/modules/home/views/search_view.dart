@@ -2,9 +2,9 @@ import 'dart:async';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
-import 'package:flappy_search_bar_ns/flappy_search_bar_ns.dart'
+import 'package:flappy_search_bar/flappy_search_bar.dart'
     as extend_search_bar;
-import 'package:flappy_search_bar_ns/search_bar_style.dart';
+import 'package:flappy_search_bar/search_bar_style.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -33,7 +33,7 @@ class _SearchViewState extends State<SearchView>
     with AutomaticKeepAliveClientMixin {
   final HomeController home = Get.find<HomeController>();
 
-  extend_search_bar.SearchBarController get _searchBarController =>
+  extend_search_bar.SearchBarController<MirrorOnceItemSerialize> get _searchBarController =>
       home.searchBarController;
 
   List<String> _searchHistory = [];
@@ -76,7 +76,7 @@ class _SearchViewState extends State<SearchView>
     String text, {
     type = UpdateSearchHistoryType.add,
   }) {
-    var oldData = _searchHistory;
+    var oldData = _searchHistory; // TODO: 使用 isar 中的增删改查, 而不是自己去实现这个逻辑👀
     switch (type) {
       case UpdateSearchHistoryType.add: // 添加
         oldData.remove(text);
@@ -165,7 +165,7 @@ class _SearchViewState extends State<SearchView>
                 width: _kEmptyMirrorWidth,
               );
             }
-            return extend_search_bar.SearchBar<MirrorOnceItemSerialize>(
+            return extend_search_bar.SearchBar<MirrorOnceItemSerialize?>(
               textStyle: TextStyle(
                 color: Get.isDarkMode ? Colors.white : Colors.black,
               ),
@@ -202,7 +202,7 @@ class _SearchViewState extends State<SearchView>
                 );
               }),
               onItemFound: (item, int index) {
-                String? _targetImage = item?.smallCoverImage;
+                String? _targetImage = item!.smallCoverImage;
 
                 /// 比对 [item?.smallCoverImage] 和 [_defaultLogo] 是否相等来确认是否有封面图
                 bool canNotFindCover = _targetImage == _defaultLogo;
@@ -212,7 +212,7 @@ class _SearchViewState extends State<SearchView>
                 double h = 100;
 
                 Widget coverWidget = CachedNetworkImage(
-                  imageUrl: _targetImage ?? _defaultLogo,
+                  imageUrl: _targetImage,
                   width: w,
                   height: h,
                   fit: BoxFit.cover,
@@ -233,7 +233,7 @@ class _SearchViewState extends State<SearchView>
                 return GestureDetector(
                   onTap: () async {
                     var data = item;
-                    if (item!.videos.isEmpty) {
+                    if (item.videos.isEmpty) {
                       String id = item.id;
                       Get.dialog(
                         const Center(
@@ -272,7 +272,7 @@ class _SearchViewState extends State<SearchView>
                           child: SizedBox(
                             width: double.infinity,
                             child: Text(
-                              item?.title ?? "",
+                              item.title,
                               overflow: TextOverflow.ellipsis,
                               maxLines: 2,
                               style: const TextStyle(
@@ -295,10 +295,6 @@ class _SearchViewState extends State<SearchView>
                 ),
               ),
               minimumChars: 2,
-              // 事实上不需要节流
-              // debounceDuration: Duration(
-              //   seconds: 1,
-              // ),
               onSearch: (String? text) {
                 setState(() {
                   page = 1;

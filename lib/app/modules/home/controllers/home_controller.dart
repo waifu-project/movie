@@ -1,4 +1,4 @@
-import 'package:flappy_search_bar_ns/flappy_search_bar_ns.dart';
+import 'package:flappy_search_bar/flappy_search_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
@@ -515,6 +515,6 @@ class HomeController extends GetxController with WidgetsBindingObserver {
     update();
   }
 
-  final SearchBarController searchBarController =
+  final SearchBarController<MirrorOnceItemSerialize> searchBarController =
       SearchBarController<MirrorOnceItemSerialize>();
 }

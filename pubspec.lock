@@ -425,14 +425,13 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.1.0"
-  flappy_search_bar_ns:
+  flappy_search_bar:
     dependency: "direct main"
     description:
-      name: flappy_search_bar_ns
-      sha256: "5517f7ac2cc253a2dd04e7fe7670bfd72234205d1f7c588568c585ab5081ea24"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.0.2"
+      path: "thirdparty/flappy_search_bar_ns"
+      relative: true
+    source: path
+    version: "1.7.2"
   flutter:
     dependency: "direct main"
     description: flutter

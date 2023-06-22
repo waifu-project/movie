@@ -16,7 +16,6 @@ dependencies:
   html: ^0.15.0
   flutter_cupertino_settings: ^0.5.0
   webview_flutter: ^2.1.1
-  flappy_search_bar_ns: ^2.0.2
   xml2json: ^6.1.0
   modal_bottom_sheet: ^3.0.0-pre
 
@@ -54,8 +53,12 @@ dependencies:
   awesome_dio_interceptor: ^1.0.0
   dio_cache_interceptor: ^3.4.2
   executor: ^2.2.3
+  flappy_search_bar:
+    path: ./thirdparty/flappy_search_bar_ns
+    # git:
+    #   url: https://github.com/d1y/flappy_search_bar_ns
+    #   branch: d1y
   command_palette:
-    # 上游的项目貌似没怎么更新了就自己维护了
     path: ./thirdparty/command_palette
     # git:
     #   url: https://github.com/d1y/command_palette

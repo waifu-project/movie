@@ -55,7 +55,7 @@ class _PlayViewState extends State<PlayView> {
               .map(
                 (e) => MirrorSerializeVideoInfo(
                   url: e,
-                  type: KBaseMirrorMovie.easyGetVideoType(e),
+                  type: MacCMSSpider.easyGetVideoType(e),
                 ),
               )
               .toList();
@@ -73,7 +73,7 @@ class _PlayViewState extends State<PlayView> {
           cache.datas.add(MirrorSerializeVideoInfo(
             name: title,
             url: _url,
-            type: KBaseMirrorMovie.easyGetVideoType(_url),
+            type: MacCMSSpider.easyGetVideoType(_url),
           ));
         }
         result.add(cache);

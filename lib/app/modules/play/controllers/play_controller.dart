@@ -105,7 +105,7 @@ class PlayController extends GetxController {
 
   /// 是否为通用解析
   bool get bIsBaseMirrorMovie {
-    return currentMovieInstance is KBaseMirrorMovie;
+    return currentMovieInstance is MacCMSSpider;
   }
 
   /// 是否可以解析
@@ -119,7 +119,7 @@ class PlayController extends GetxController {
     /// >> 自实现源不是继承的 `KBaseMirrorMovie`
     if (bIsBaseMirrorMovie) {
       /// NOTE: 当前实例有解析地址, 并且无边界情况
-      var instance = currentMovieInstance as KBaseMirrorMovie;
+      var instance = currentMovieInstance as MacCMSSpider;
       var jiexiUrl = instance.jiexiUrl;
       bool next = jiexiUrl.isNotEmpty || wrapperIf;
       return next;
@@ -181,7 +181,7 @@ class PlayController extends GetxController {
     }
 
     if (needParse) {
-      var instance = currentMovieInstance as KBaseMirrorMovie;
+      var instance = currentMovieInstance as MacCMSSpider;
 
       /// !! 如果当前节点有解析接口优先使用
       /// > 反之将使用自用节点(即`解析线路管理`)

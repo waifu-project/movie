@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:movie/spider/shared/manage.dart';
-import 'package:movie/spider/models/base_models/source_data.dart';
+import 'package:movie/spider/models/mac_cms/source_data.dart';
 import 'package:movie/utils/helper.dart';
 import 'package:movie/utils/http.dart';
 import 'package:movie/utils/json.dart';
@@ -40,7 +40,7 @@ class SourceUtils {
     return "";
   }
 
-  static KBaseMirrorMovie? parse(Map<String, dynamic> rawData) {
+  static MacCMSSpider? parse(Map<String, dynamic> rawData) {
     List<dynamic> tryData = tryParseData(rawData);
     bool status = tryData[0];
     if (status) {
@@ -49,7 +49,7 @@ class SourceUtils {
       if (id == null || id.isEmpty) {
         id = Xid().toString();
       }
-      return KBaseMirrorMovie(
+      return MacCMSSpider(
         logo: data.logo ?? "",
         name: data.name ?? "",
         desc: data.desc ?? "",
@@ -198,8 +198,8 @@ class SourceUtils {
   }
 
   /// 加载网络源
-  static Future<List<KBaseMirrorMovie>> runTaks(List<String> sources) async {
-    List<KBaseMirrorMovie> result = [];
+  static Future<List<MacCMSSpider>> runTaks(List<String> sources) async {
+    List<MacCMSSpider> result = [];
     await Future.forEach(sources, (String element) async {
       try {
         var time = const Duration(seconds: 1);
@@ -214,7 +214,7 @@ class SourceUtils {
         dynamic respData = resp.data;
         var data = tryParseDynamic(respData);
         if (data == null) return;
-        if (data is KBaseMirrorMovie) {
+        if (data is MacCMSSpider) {
           result.add(data);
         } else if (data is List) {
           var append = data
@@ -223,7 +223,7 @@ class SourceUtils {
               })
               .toList()
               .map((ele) {
-                return ele as KBaseMirrorMovie;
+                return ele as MacCMSSpider;
               })
               .toList();
           result.addAll(append);
@@ -246,7 +246,7 @@ class SourceUtils {
   ///
   /// => [List<KBaseMirrorMovie>]
   static dynamic mergeMirror(
-    List<KBaseMirrorMovie> newSourceData, {
+    List<MacCMSSpider> newSourceData, {
     bool diff = false,
   }) {
     int len = SpiderManage.extend.length;
@@ -267,10 +267,10 @@ class SourceUtils {
 
     var inputData = SpiderManage.extend;
     inputData = inputData.map((e) {
-      return e as KBaseMirrorMovie;
+      return e as MacCMSSpider;
     }).toList();
     // return [0, []];
-    var copyData = (inputData as List<KBaseMirrorMovie>).map(
+    var copyData = (inputData as List<MacCMSSpider>).map(
       (e) {
         var id = e.meta.id;
         var status = e.meta.status;

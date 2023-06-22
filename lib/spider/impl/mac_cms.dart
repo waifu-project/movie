@@ -8,8 +8,8 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:movie/spider/abstract/spider_movie.dart';
 import 'package:movie/spider/abstract/spider_serialize.dart';
-import 'package:movie/spider/models/base_models/xml_data.dart';
-import 'package:movie/spider/models/base_models/xml_search_data.dart';
+import 'package:movie/spider/models/mac_cms/xml_data.dart';
+import 'package:movie/spider/models/mac_cms/xml_search_data.dart';
 import 'package:movie/utils/helper.dart';
 import 'package:movie/utils/http.dart';
 import 'package:xml2json/xml2json.dart';
@@ -25,7 +25,7 @@ enum ResponseCustomType {
   unknow
 }
 
-class KBaseMirrorMovie extends SpiderImpl {
+class MacCMSSpider extends SpiderImpl {
   final bool nsfw;
   final String jiexiUrl;
   final String name;
@@ -35,7 +35,7 @@ class KBaseMirrorMovie extends SpiderImpl {
   final String api_path;
   final String id;
   final bool status;
-  KBaseMirrorMovie({
+  MacCMSSpider({
     this.nsfw = false,
     this.name = "",
     this.logo = "",

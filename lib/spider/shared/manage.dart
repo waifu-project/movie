@@ -9,7 +9,7 @@ import 'package:movie/isar/schema/mirror_schema.dart';
 import 'package:movie/shared/enum.dart';
 
 import '../impl/mac_cms.dart';
-import '../models/base_models/source_data.dart';
+import '../models/mac_cms/source_data.dart';
 
 // 唉, 懒得改了, 又不是不能跑, 代码丑点怎么了?
 
@@ -32,7 +32,7 @@ class SpiderManage {
   static init() async {
     final data = IsarRepository().mirrorAs.where(distinct: false).findAllSync();
     var result = data.map((item) {
-      return KBaseMirrorMovie(
+      return MacCMSSpider(
         logo: item.logo,
         name: item.name,
         desc: item.desc,
@@ -75,7 +75,7 @@ class SpiderManage {
             nsfw: e.isNsfw,
             api: Api(
               root: e.meta.domain,
-              path: (e as KBaseMirrorMovie).api_path,
+              path: (e as MacCMSSpider).api_path,
             ),
             id: e.id,
             status: e.status,
@@ -107,7 +107,7 @@ class SpiderManage {
             nsfw: e.isNsfw,
             api: Api(
               root: e.meta.domain,
-              path: (e as KBaseMirrorMovie).api_path,
+              path: (e as MacCMSSpider).api_path,
             ),
             id: id,
             status: status,
@@ -140,7 +140,7 @@ class SpiderManage {
 
   /// 保存缓存
   /// [该方法只可用来保存第三方源]
-  /// 只适用于 [KBaseMirrorMovie]
+  /// 只适用于 [MacCMSSpider]
   static saveToCache(List<SpiderImpl> saves) {
     List<SourceJsonData> _to = saves
         .map(
@@ -151,7 +151,7 @@ class SpiderManage {
             nsfw: e.isNsfw,
             api: Api(
               root: e.meta.domain,
-              path: (e as KBaseMirrorMovie).api_path,
+              path: (e as MacCMSSpider).api_path,
             ),
             id: e.id,
             status: e.status,

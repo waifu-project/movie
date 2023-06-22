@@ -1,7 +1,7 @@
 import 'package:movie/spider/abstract/spider_movie.dart';
 import 'package:movie/spider/impl/mac_cms.dart';
 import 'package:movie/spider/shared/manage.dart';
-import 'package:movie/spider/models/base_models/source_data.dart';
+import 'package:movie/spider/models/mac_cms/source_data.dart';
 
 class MirrorStatusStack {
   MirrorStatusStack._internal();
@@ -40,7 +40,7 @@ class MirrorStatusStack {
         nsfw: e.isNsfw,
         api: Api(
           root: e.meta.domain,
-          path: (e as KBaseMirrorMovie).api_path,
+          path: (e as MacCMSSpider).api_path,
         ),
         id: id,
         status: status,

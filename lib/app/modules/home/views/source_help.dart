@@ -205,14 +205,14 @@ class _SourceHelpTableState extends State<SourceHelpTable> {
       );
       return;
     }
-    var _collData = <String, List<KBaseMirrorMovie>>{};
+    var _collData = <String, List<MacCMSSpider>>{};
     for (var item in data) {
       String source = item[sourceKey] as String;
       String filename = item[filenameKey] as String;
       var easyParseData = SourceUtils.tryParseDynamic(source);
       if (easyParseData == null) continue;
-      List<KBaseMirrorMovie> result = [];
-      if (easyParseData is KBaseMirrorMovie) {
+      List<MacCMSSpider> result = [];
+      if (easyParseData is MacCMSSpider) {
         result = [easyParseData];
       } else if (easyParseData is List) {
         var append = easyParseData
@@ -221,7 +221,7 @@ class _SourceHelpTableState extends State<SourceHelpTable> {
             })
             .toList()
             .map((ele) {
-              return ele as KBaseMirrorMovie;
+              return ele as MacCMSSpider;
             });
         result.addAll(append);
       }
@@ -229,7 +229,7 @@ class _SourceHelpTableState extends State<SourceHelpTable> {
     }
 
     String easyMessage = "";
-    List<KBaseMirrorMovie> stack = [];
+    List<MacCMSSpider> stack = [];
 
     _collData.forEach((k, v) async {
       int len = v.length;

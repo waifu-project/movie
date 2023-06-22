@@ -10,8 +10,8 @@ import 'package:movie/app/widget/k_error_stack.dart';
 import 'package:movie/app/widget/movie_card_item.dart';
 import 'package:movie/app/widget/window_appbar.dart';
 import 'package:movie/config.dart';
-import 'package:movie/impl/movie.dart';
-import 'package:movie/mirror/mirror_serialize.dart';
+import 'package:movie/spider/abstract/spider_movie.dart';
+import 'package:movie/spider/abstract/spider_serialize.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 import 'package:waterfall_flow/waterfall_flow.dart';
 
@@ -173,7 +173,7 @@ class IndexHomeViewPage extends GetView {
                   itemCount: home.currentCategoryer.length,
                   scrollDirection: Axis.horizontal,
                   itemBuilder: ((context, index) {
-                    MovieQueryCategory curr = home.currentCategoryer[index];
+                    SpiderQueryCategory curr = home.currentCategoryer[index];
                     // XXX(d1y): 默认为全部
                     bool isCurr = curr.id ==
                         (home.currentCategoryerNow?.id ?? kAllCategoryPoint);

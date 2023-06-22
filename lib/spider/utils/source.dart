@@ -2,14 +2,14 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:movie/mirror/mirror.dart';
-import 'package:movie/mirror/mlist/base_models/source_data.dart';
+import 'package:movie/spider/shared/manage.dart';
+import 'package:movie/spider/models/base_models/source_data.dart';
 import 'package:movie/utils/helper.dart';
 import 'package:movie/utils/http.dart';
 import 'package:movie/utils/json.dart';
 import 'package:movie/utils/xid.dart';
 
-import 'm.dart';
+import '../impl/mac_cms.dart';
 
 class SourceUtils {
   /// [rawString] 从输入框拿到值
@@ -249,23 +249,23 @@ class SourceUtils {
     List<KBaseMirrorMovie> newSourceData, {
     bool diff = false,
   }) {
-    int len = MirrorManage.extend.length;
+    int len = SpiderManage.extend.length;
 
     for (var element in newSourceData) {
       var newDataDomain = element.meta.domain;
-      MirrorManage.extend.removeWhere(
+      SpiderManage.extend.removeWhere(
         (element) => element.meta.domain == newDataDomain,
       );
     }
 
-    MirrorManage.extend.addAll(newSourceData);
+    SpiderManage.extend.addAll(newSourceData);
 
-    int newLen = MirrorManage.extend.length;
+    int newLen = SpiderManage.extend.length;
 
     /// 如果比对之后发现没有改变, 则返回 [0, []]
     if (newLen <= 0 && diff) return [0, []];
 
-    var inputData = MirrorManage.extend;
+    var inputData = SpiderManage.extend;
     inputData = inputData.map((e) {
       return e as KBaseMirrorMovie;
     }).toList();

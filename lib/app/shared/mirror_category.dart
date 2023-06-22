@@ -1,4 +1,4 @@
-import 'package:movie/impl/movie.dart';
+import 'package:movie/spider/abstract/spider_movie.dart';
 
 /// NOTE(d1y): 获取分类最大尝试次数(3次)
 const kMirrorCategoryTryCountMax = 3;
@@ -11,7 +11,7 @@ class MirrorCategoryPool {
   static late final MirrorCategoryPool _instance =
       MirrorCategoryPool._internal();
 
-  Map<String, List<MovieQueryCategory>> stacks = {};
+  Map<String, List<SpiderQueryCategory>> stacks = {};
 
   //===============================
   /// 标记一个最大数📌的请求分类池
@@ -35,11 +35,11 @@ class MirrorCategoryPool {
     stacks = {};
   }
 
-  put(String key, List<MovieQueryCategory> data) {
+  put(String key, List<SpiderQueryCategory> data) {
     stacks[key] = data;
   }
 
-  List<MovieQueryCategory> data(String key) {
+  List<SpiderQueryCategory> data(String key) {
     return stacks[key] ?? [];
   }
 

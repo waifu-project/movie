@@ -14,8 +14,8 @@ import 'package:movie/app/modules/home/views/source_help.dart';
 import 'package:movie/app/widget/window_appbar.dart';
 import 'package:movie/git_info.dart';
 import 'package:movie/isar/repo.dart';
-import 'package:movie/mirror/m_utils/source_utils.dart';
-import 'package:movie/mirror/mirror.dart';
+import 'package:movie/spider/utils/source.dart';
+import 'package:movie/spider/shared/manage.dart';
 import 'package:movie/shared/enum.dart';
 import 'package:movie/utils/helper.dart';
 import 'package:movie/app/modules/home/views/cupertino_license.dart';
@@ -221,7 +221,7 @@ class _SettingsViewState extends State<SettingsView> {
         var addLen = _easyData[0];
         if (addLen > 0) {
           var listData = _easyData[1];
-          MirrorManage.mergeMirror(listData);
+          SpiderManage.mergeSpider(listData);
         }
         var showMessage = "获取成功, 已合并$addLen个源!";
         if (addLen <= 0) {
@@ -253,7 +253,7 @@ class _SettingsViewState extends State<SettingsView> {
   }
 
   handleCleanCache() async {
-    MirrorManage.cleanAll();
+    SpiderManage.cleanAll();
     home.easyCleanCacheHook();
     _editingController.text = "";
     IsarRepository().safeWrite(() {

@@ -1,6 +1,6 @@
-import 'package:movie/mirror/mirror_serialize.dart';
+import 'package:movie/spider/abstract/spider_serialize.dart';
 
-class MovieMetaData {
+class SpiderItemMetaData {
   /// 图标, 默认为空将使用本地资源图标
   String logo;
 
@@ -25,7 +25,7 @@ class MovieMetaData {
   /// 是否可用
   bool status;
 
-  MovieMetaData({
+  SpiderItemMetaData({
     this.logo = "",
     this.developer = "",
     this.developerMail = "",
@@ -37,11 +37,11 @@ class MovieMetaData {
   });
 }
 
-class MovieQueryCategory {
+class SpiderQueryCategory {
   final String name;
   final String id;
 
-  MovieQueryCategory(this.name, this.id);
+  SpiderQueryCategory(this.name, this.id);
 
   @override
   String toString() {
@@ -49,16 +49,16 @@ class MovieQueryCategory {
   }
 }
 
-abstract class MovieImpl {
+abstract class SpiderImpl {
   /// 是否为R18资源
   /// **Not Safe For Work**
   bool get isNsfw;
 
   /// 源信息
-  MovieMetaData get meta;
+  SpiderItemMetaData get meta;
 
   /// 获取分类
-  Future<List<MovieQueryCategory>> getCategory();
+  Future<List<SpiderQueryCategory>> getCategory();
 
   /// 获取首页
   Future<List<MirrorOnceItemSerialize>> getHome({

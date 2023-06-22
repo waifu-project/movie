@@ -1,7 +1,7 @@
-import 'package:movie/impl/movie.dart';
-import 'package:movie/mirror/m_utils/m.dart';
-import 'package:movie/mirror/mirror.dart';
-import 'package:movie/mirror/mlist/base_models/source_data.dart';
+import 'package:movie/spider/abstract/spider_movie.dart';
+import 'package:movie/spider/impl/mac_cms.dart';
+import 'package:movie/spider/shared/manage.dart';
+import 'package:movie/spider/models/base_models/source_data.dart';
 
 class MirrorStatusStack {
   MirrorStatusStack._internal();
@@ -12,7 +12,7 @@ class MirrorStatusStack {
 
   Map<String, bool> get getStacks => _stacks;
 
-  final List<MovieImpl> _datas = MirrorManage.extend;
+  final List<SpiderImpl> _datas = SpiderManage.extend;
 
   bool? getStack(String stack) {
     return _stacks[stack];
@@ -46,7 +46,7 @@ class MirrorStatusStack {
         status: status,
       );
     }).toList();
-    MirrorManage.mergeMirror(data);
+    SpiderManage.mergeSpider(data);
   }
 
   clean() {

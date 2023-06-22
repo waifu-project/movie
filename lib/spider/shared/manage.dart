@@ -3,28 +3,28 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:isar/isar.dart';
 import 'package:movie/app/extension.dart';
-import 'package:movie/impl/movie.dart';
+import 'package:movie/spider/abstract/spider_movie.dart';
 import 'package:movie/isar/repo.dart';
 import 'package:movie/isar/schema/mirror_schema.dart';
 import 'package:movie/shared/enum.dart';
 
-import 'm_utils/m.dart';
-import 'mlist/base_models/source_data.dart';
+import '../impl/mac_cms.dart';
+import '../models/base_models/source_data.dart';
 
 // 唉, 懒得改了, 又不是不能跑, 代码丑点怎么了?
 
-class MirrorManage {
-  MirrorManage._internal();
+class SpiderManage {
+  SpiderManage._internal();
 
   /// 扩展的源
-  static List<MovieImpl> extend = [];
+  static List<SpiderImpl> extend = [];
 
   /// 内建支持的源
   /// 一般是需要自己去实现的源
-  static List<MovieImpl> builtin = [];
+  static List<SpiderImpl> builtin = [];
 
   /// 合并之后的数据
-  static List<MovieImpl> get data {
+  static List<SpiderImpl> get data {
     return [...extend, ...builtin];
   }
 
@@ -47,7 +47,7 @@ class MirrorManage {
   }
 
   /// 删除单个源
-  static removeItem(MovieImpl item) {
+  static removeItem(SpiderImpl item) {
     debugPrint("删除该源: $item");
     extend.remove(item);
     saveToCache(extend);
@@ -124,7 +124,7 @@ class MirrorManage {
         })
         .toList();
     extend.removeWhere((e) => result.contains(e.meta.id));
-    mergeMirror(newData);
+    mergeSpider(newData);
     return result;
   }
 
@@ -134,14 +134,14 @@ class MirrorManage {
   }) {
     extend = [];
     if (saveToCahe) {
-      mergeMirror([]);
+      mergeSpider([]);
     }
   }
 
   /// 保存缓存
   /// [该方法只可用来保存第三方源]
   /// 只适用于 [KBaseMirrorMovie]
-  static saveToCache(List<MovieImpl> saves) {
+  static saveToCache(List<SpiderImpl> saves) {
     List<SourceJsonData> _to = saves
         .map(
           (e) => SourceJsonData(
@@ -158,10 +158,10 @@ class MirrorManage {
           ),
         )
         .toList();
-    mergeMirror(_to);
+    mergeSpider(_to);
   }
 
-  static Future<void> mergeMirror(List<SourceJsonData> data) async {
+  static Future<void> mergeSpider(List<SourceJsonData> data) async {
     var output = data.map((item) {
       var api = MirrorApiIsardModel();
       api.root = item.api?.root ?? "";

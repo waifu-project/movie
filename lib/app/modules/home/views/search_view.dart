@@ -19,7 +19,7 @@ import 'package:movie/app/widget/k_pagination.dart';
 import 'package:movie/app/widget/k_tag.dart';
 import 'package:movie/app/widget/window_appbar.dart';
 import 'package:movie/isar/schema/history_schema.dart';
-import 'package:movie/mirror/mirror_serialize.dart';
+import 'package:movie/spider/abstract/spider_serialize.dart';
 
 class SearchView extends StatefulWidget {
   const SearchView({Key? key}) : super(key: key);

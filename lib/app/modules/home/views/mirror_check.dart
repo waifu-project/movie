@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:movie/app/shared/mirror_status_stack.dart';
-import 'package:movie/impl/movie.dart';
+import 'package:movie/spider/abstract/spider_movie.dart';
 
 // 这里的代码借鉴(抄袭)了:
 //
@@ -32,7 +32,7 @@ class MirrorCheckView extends StatefulWidget {
     required this.list,
   }) : super(key: key);
 
-  final List<MovieImpl> list;
+  final List<SpiderImpl> list;
 
   @override
   State<MirrorCheckView> createState() => _MirrorCheckViewState();
@@ -53,7 +53,7 @@ class _MirrorCheckViewState extends State<MirrorCheckView> {
 
   bool running = false;
 
-  List<MovieImpl> get listStack => widget.list;
+  List<SpiderImpl> get listStack => widget.list;
 
   int get listStackLen => listStack.length;
 

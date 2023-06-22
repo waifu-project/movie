@@ -6,10 +6,10 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
-import 'package:movie/impl/movie.dart';
-import 'package:movie/mirror/mirror_serialize.dart';
-import 'package:movie/mirror/mlist/base_models/xml_data.dart';
-import 'package:movie/mirror/mlist/base_models/xml_search_data.dart';
+import 'package:movie/spider/abstract/spider_movie.dart';
+import 'package:movie/spider/abstract/spider_serialize.dart';
+import 'package:movie/spider/models/base_models/xml_data.dart';
+import 'package:movie/spider/models/base_models/xml_search_data.dart';
 import 'package:movie/utils/helper.dart';
 import 'package:movie/utils/http.dart';
 import 'package:xml2json/xml2json.dart';
@@ -25,7 +25,7 @@ enum ResponseCustomType {
   unknow
 }
 
-class KBaseMirrorMovie extends MovieImpl {
+class KBaseMirrorMovie extends SpiderImpl {
   final bool nsfw;
   final String jiexiUrl;
   final String name;
@@ -293,7 +293,7 @@ class KBaseMirrorMovie extends MovieImpl {
   bool get isNsfw => nsfw;
 
   @override
-  MovieMetaData get meta => MovieMetaData(
+  SpiderItemMetaData get meta => SpiderItemMetaData(
         name: name,
         logo: logo,
         desc: desc,
@@ -303,7 +303,7 @@ class KBaseMirrorMovie extends MovieImpl {
       );
 
   @override
-  Future<List<MovieQueryCategory>> getCategory() async {
+  Future<List<SpiderQueryCategory>> getCategory() async {
     var path = createUrl(suffix: api_path);
     var resp = await XHttp.dio.get(path);
     dynamic data = resp.data;

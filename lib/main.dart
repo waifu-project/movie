@@ -6,7 +6,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:movie/config.dart';
 import 'package:movie/isar/repo.dart';
-import 'package:movie/mirror/mirror.dart';
+import 'package:movie/spider/shared/manage.dart';
 import 'package:movie/shared/enum.dart';
 import 'package:movie/utils/helper.dart';
 
@@ -34,7 +34,7 @@ Future<ThemeMode> runBefore() async {
   WidgetsFlutterBinding.ensureInitialized();
   await XHttp.init();
   await IsarRepository().init();
-  await MirrorManage.init();
+  await SpiderManage.init();
   var currTheme = IsarRepository().settingsSingleModel.themeMode;
   Brightness wrapperIfDark = Brightness.light;
   if (currTheme.isDark) {

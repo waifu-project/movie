@@ -7,17 +7,17 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:movie/app/modules/home/views/mirrortable.dart';
 import 'package:movie/app/shared/mirror_category.dart';
 import 'package:movie/app/shared/mirror_status_stack.dart';
-import 'package:movie/impl/movie.dart';
+import 'package:movie/spider/abstract/spider_movie.dart';
 import 'package:movie/isar/schema/parse_schema.dart';
-import 'package:movie/mirror/mirror.dart';
-import 'package:movie/mirror/mirror_serialize.dart';
+import 'package:movie/spider/shared/manage.dart';
+import 'package:movie/spider/abstract/spider_serialize.dart';
 import 'package:movie/shared/enum.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 
 import 'package:movie/app/extension.dart';
 
 const kAllCategoryPoint = '-114514';
-var kAllCategoryData = MovieQueryCategory('全部', kAllCategoryPoint);
+var kAllCategoryData = SpiderQueryCategory('全部', kAllCategoryPoint);
 
 /// 历史记录处理类型
 enum UpdateSearchHistoryType {
@@ -73,7 +73,7 @@ class HomeController extends GetxController with WidgetsBindingObserver {
 
   bool _iosCanBeUseSystemBrowser = true;
 
-  List<MovieQueryCategory> get currentCategoryer {
+  List<SpiderQueryCategory> get currentCategoryer {
     var data = mirrorCategoryPool.data(currentMirrorItemId);
     if (data.isNotEmpty) {
       return [kAllCategoryData, ...data];
@@ -85,9 +85,9 @@ class HomeController extends GetxController with WidgetsBindingObserver {
     return mirrorCategoryPool.has(currentMirrorItemId);
   }
 
-  MovieQueryCategory? currentCategoryerNow = kAllCategoryData;
+  SpiderQueryCategory? currentCategoryerNow = kAllCategoryData;
 
-  setCurrentCategoryerNow(MovieQueryCategory category) {
+  setCurrentCategoryerNow(SpiderQueryCategory category) {
     currentCategoryerNow = category;
     // FIXME(d1y): 初始化
     updateHomeData(
@@ -179,7 +179,7 @@ class HomeController extends GetxController with WidgetsBindingObserver {
   /// 如果是在源之前的, 则 [index] = [mirrorIndex] - 1
   ///
   /// 如果是在源之后, 则 [index] = [mirrorIndex]
-  removeMirrorItemSync(MovieImpl item) {
+  removeMirrorItemSync(SpiderImpl item) {
     var _index = mirrorList.indexOf(item);
     if (_index == -1) return;
     var _oldIndex = mirrorIndex;
@@ -196,7 +196,7 @@ class HomeController extends GetxController with WidgetsBindingObserver {
     _mirrorIndex = index;
   }
 
-  MovieImpl get currentMirrorItem {
+  SpiderImpl get currentMirrorItem {
     return mirrorList[mirrorIndex];
   }
 
@@ -204,9 +204,9 @@ class HomeController extends GetxController with WidgetsBindingObserver {
     return mirrorList.isEmpty;
   }
 
-  List<MovieImpl> get mirrorList {
-    if (isNsfw) return MirrorManage.data;
-    return MirrorManage.data.where((e) => !e.isNsfw).toList();
+  List<SpiderImpl> get mirrorList {
+    if (isNsfw) return SpiderManage.data;
+    return SpiderManage.data.where((e) => !e.isNsfw).toList();
   }
 
   int page = 1;

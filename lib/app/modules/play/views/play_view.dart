@@ -7,8 +7,8 @@ import 'package:movie/app/modules/home/controllers/home_controller.dart';
 import 'package:movie/app/modules/home/views/parse_vip_manage.dart';
 import 'package:movie/app/widget/helper.dart';
 import 'package:movie/app/widget/window_appbar.dart';
-import 'package:movie/mirror/m_utils/m.dart';
-import 'package:movie/mirror/mirror_serialize.dart';
+import 'package:movie/spider/impl/mac_cms.dart';
+import 'package:movie/spider/abstract/spider_serialize.dart';
 import 'package:movie/utils/helper.dart';
 import 'package:movie/widget/simple_html/flutter_html.dart';
 

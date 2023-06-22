@@ -10,10 +10,10 @@ import 'package:movie/app/modules/home/controllers/home_controller.dart';
 import 'package:movie/app/modules/home/views/source_help.dart';
 import 'package:movie/app/modules/play/views/chewie_view.dart';
 import 'package:movie/app/modules/play/views/webview_view.dart';
-import 'package:movie/impl/movie.dart';
+import 'package:movie/spider/abstract/spider_movie.dart';
 import 'package:movie/isar/schema/parse_schema.dart';
-import 'package:movie/mirror/m_utils/m.dart';
-import 'package:movie/mirror/mirror_serialize.dart';
+import 'package:movie/spider/impl/mac_cms.dart';
+import 'package:movie/spider/abstract/spider_serialize.dart';
 import 'package:movie/shared/enum.dart';
 import 'package:movie/utils/helper.dart';
 
@@ -98,7 +98,7 @@ class PlayController extends GetxController {
 
   HomeController home = Get.find<HomeController>();
 
-  MovieImpl get currentMovieInstance {
+  SpiderImpl get currentMovieInstance {
     var itemAs = home.currentMirrorItem;
     return itemAs;
   }

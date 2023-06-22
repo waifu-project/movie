@@ -10,8 +10,8 @@ import 'package:movie/app/modules/home/controllers/home_controller.dart';
 import 'package:movie/app/modules/home/views/mirror_check.dart';
 import 'package:movie/app/shared/mirror_status_stack.dart';
 import 'package:movie/app/widget/wechat_popmenu.dart';
-import 'package:movie/impl/movie.dart';
-import 'package:movie/mirror/mirror.dart';
+import 'package:movie/spider/abstract/spider_movie.dart';
+import 'package:movie/spider/shared/manage.dart';
 import 'package:movie/utils/http.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
@@ -50,11 +50,11 @@ class MirrorTableView extends StatefulWidget {
 class _MirrorTableViewState extends State<MirrorTableView> {
   final HomeController home = Get.find<HomeController>();
 
-  List<MovieImpl> get _mirrorList {
+  List<SpiderImpl> get _mirrorList {
     return home.mirrorList;
   }
 
-  List<MovieImpl> mirrorList = [];
+  List<SpiderImpl> mirrorList = [];
 
   ScrollController scrollController = ScrollController(
     initialScrollOffset: 0,
@@ -152,7 +152,7 @@ class _MirrorTableViewState extends State<MirrorTableView> {
       case MenuActionType.deleteUnavailable:
         bool status = await showDelUnavailableMirrorDialog();
         if (!status) return;
-        List<String> result = MirrorManage.removeUnavailable(
+        List<String> result = SpiderManage.removeUnavailable(
           __statusMap,
         );
         setState(() {
@@ -163,7 +163,7 @@ class _MirrorTableViewState extends State<MirrorTableView> {
         }
         break;
       case MenuActionType.export:
-        String append = MirrorManage.export(
+        String append = SpiderManage.export(
           full: home.isNsfw,
         );
 
@@ -304,7 +304,7 @@ class _MirrorTableViewState extends State<MirrorTableView> {
                               mirrorList.remove(e);
                             });
                             home.removeMirrorItemSync(e);
-                            MirrorManage.removeItem(e);
+                            SpiderManage.removeItem(e);
                             Get.back();
                           },
                         ),
@@ -338,7 +338,7 @@ class MirrorCard extends StatelessWidget {
 
   final double maxHeight;
 
-  final MovieImpl item;
+  final SpiderImpl item;
 
   final bool current;
 
@@ -353,13 +353,13 @@ class MirrorCard extends StatelessWidget {
   String get _desc => item.meta.desc;
 
   /// [current] 当前的不能删除
-  /// [MirrorManage.builtin] 内建的源不可删除
+  /// [SpiderManage.builtin] 内建的源不可删除
   bool get enabled {
-    bool isBuiltin = MirrorManage.builtin.any((element) => element == item);
+    bool isBuiltin = SpiderManage.builtin.any((element) => element == item);
     return !current && !isBuiltin;
   }
 
-  /// 如果是 [MovieImpl.isNsfw] => [Colors.red]
+  /// 如果是 [SpiderImpl.isNsfw] => [Colors.red]
   /// 如果是 [current] => [Colors.blue] (优先级高一点)
   Color get _color {
     if (current) return Colors.blue;

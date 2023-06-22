@@ -9,9 +9,9 @@ import 'package:movie/app/extension.dart';
 import 'package:movie/app/modules/home/views/home_config.dart';
 import 'package:movie/app/widget/k_error_stack.dart';
 import 'package:movie/app/widget/window_appbar.dart';
-import 'package:movie/mirror/m_utils/m.dart';
-import 'package:movie/mirror/m_utils/source_utils.dart';
-import 'package:movie/mirror/mirror.dart';
+import 'package:movie/spider/impl/mac_cms.dart';
+import 'package:movie/spider/utils/source.dart';
+import 'package:movie/spider/shared/manage.dart';
 import 'package:movie/shared/enum.dart';
 import 'package:movie/utils/helper.dart';
 import 'package:movie/utils/http.dart';
@@ -252,7 +252,7 @@ class _SourceHelpTableState extends State<SourceHelpTable> {
       var _diff = _easyData[0] as int;
       if (_diff > 0) {
         var newListData = _easyData[1] as dynamic;
-        await MirrorManage.mergeMirror(newListData);
+        await SpiderManage.mergeSpider(newListData);
       }
       var diffMsg = "本次共合并$_diff个源!";
       if (_diff <= 0) {

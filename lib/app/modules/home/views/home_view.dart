@@ -9,7 +9,7 @@ import 'package:movie/app/modules/home/views/home_config.dart';
 import 'package:movie/app/modules/home/views/index_home_view.dart';
 import 'package:movie/app/modules/home/views/search_view.dart';
 import 'package:movie/app/modules/home/views/settings_view.dart';
-import 'package:movie/impl/movie.dart';
+import 'package:movie/spider/abstract/spider_movie.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 
 import '../controllers/home_controller.dart';
@@ -51,7 +51,7 @@ class HomeView extends GetView<HomeController> {
       ? const Color.fromRGBO(0, 0, 0, .63)
       : const Color.fromRGBO(255, 255, 255, .63);
 
-  List<MovieImpl> get mirror => home.mirrorList;
+  List<SpiderImpl> get mirror => home.mirrorList;
 
   int get mirrorIndex => home.mirrorIndex;
 

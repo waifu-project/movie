@@ -21,6 +21,7 @@ jobs:
           cache: true
       - name: Install project dependencies
         run: |
+          ./script/fetch_git_info.ps1
           flutter pub get
           flutter pub run build_runner build
       - name: Enable windows build
@@ -64,6 +65,7 @@ jobs:
       - name: Build
         run: |
           python3 script/linux_apply_font.py
+          bash script/fetch_git_info.sh
           flutter build linux --release
       - name: Create tarball
         run: |
@@ -91,10 +93,12 @@ jobs:
           flutter-version: ${{ env.FLUTTER_VERSION }}
           cache: true
           channel: "stable"
-      - run: flutter pub get
-      - run: flutter pub run build_runner build
-      - run: flutter pub deps
-      - run: flutter build apk --target-platform android-arm,android-arm64,android-x64 --split-per-abi
+      - run: |
+          bash script/fetch_git_info.sh
+          flutter pub get
+          flutter pub run build_runner build
+          flutter pub deps
+          flutter build apk --target-platform android-arm,android-arm64,android-x64 --split-per-abi
 
       # build all arch
       - run: flutter build apk --release

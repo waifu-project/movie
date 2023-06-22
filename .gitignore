@@ -54,3 +54,4 @@ node_modules/
 fonts/*.ttf
 
 *.g.dart
+git_info.dart

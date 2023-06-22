@@ -13,6 +13,7 @@ import 'package:movie/app/modules/home/views/parse_vip_manage.dart';
 import 'package:movie/app/modules/home/views/source_help.dart';
 import 'package:movie/app/widget/window_appbar.dart';
 import 'package:movie/config.dart';
+import 'package:movie/git_info.dart';
 import 'package:movie/isar/repo.dart';
 import 'package:movie/mirror/m_utils/source_utils.dart';
 import 'package:movie/mirror/mirror.dart';
@@ -149,7 +150,6 @@ class _SettingsViewState extends State<SettingsView> {
       _nShowNSFW = newVal;
     });
   }
-
 
   final TextEditingController _editingController = TextEditingController();
 
@@ -530,7 +530,14 @@ class _SettingsViewState extends State<SettingsView> {
             CSButtonType.DEFAULT,
             "Licenses",
             () {
-              Get.to(() => cupertinoLicensePage);
+              showCupertinoModalBottomSheet(
+                context: context,
+                builder: (_) => SizedBox(
+                  width: double.infinity,
+                  height: Get.height * .72,
+                  child: cupertinoLicensePage,
+                ),
+              );
             },
           ),
           const SizedBox(
@@ -546,55 +553,13 @@ class _SettingsViewState extends State<SettingsView> {
                 });
               }
             },
-            child: const CSDescription(
-              "@陈大大哦了",
-            ),
-          ),
-          MouseRegion(
-            cursor: SystemMouseCursors.click,
-            child: GestureDetector(
-              onTap: () {
-                LaunchURL(GITHUB_OPEN);
-              },
-              child: Padding(
-                padding: const EdgeInsets.all(12),
-                child: DecoratedBox(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(12),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.5),
-                        spreadRadius: 5,
-                        blurRadius: 7,
-                        offset:
-                            const Offset(0, 3), // changes position of shadow
-                      ),
-                    ],
-                  ),
-                  child: Row(
-                    children: [
-                      const SizedBox(
-                        width: 12,
-                      ),
-                      Image.asset(
-                        "assets/images/github_logo.png",
-                        width: 81,
-                      ),
-                      const SizedBox(
-                        width: 12,
-                      ),
-                      const Text(
-                        "开源地址ヾ(≧O≦)〃",
-                        style: TextStyle(
-                          color: Colors.blue,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
+            child: Builder(builder: (context) {
+              var firstWriteYear = '2020';
+              String currentYearString = DateTime.now().year.toString();
+              var text =
+                  '© YOYO播放器 $firstWriteYear-$currentYearString $gitTag($gitCommit)';
+              return CSDescription(text);
+            }),
           ),
         ],
       ),

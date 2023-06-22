@@ -154,30 +154,6 @@ class XHttp {
     };
   }
 
-  /// error统一处理
-  static void handleError(DioError e) {
-    switch (e.type) {
-      case DioErrorType.connectionTimeout:
-        debugPrint("连接超时");
-        break;
-      case DioErrorType.sendTimeout:
-        debugPrint("请求超时");
-        break;
-      case DioErrorType.receiveTimeout:
-        debugPrint("响应超时");
-        break;
-      case DioErrorType.badResponse:
-        debugPrint("出现异常");
-        break;
-      case DioErrorType.cancel:
-        debugPrint("请求取消");
-        break;
-      default:
-        debugPrint("未知错误");
-        break;
-    }
-  }
-
   /// get请求
   static Future get(String url, [Map<String, dynamic>? params]) async {
     Response response;

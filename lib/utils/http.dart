@@ -76,6 +76,7 @@ class XHttp {
         .add(DioCacheInterceptor(options: kHttpCacheMiddlewareOptions));
 
     /// https://pub.dev/packages/awesome_dio_interceptor
+    // ignore: dead_code
     if (kDebugMode) {
       dio.interceptors.add(
         AwesomeDioInterceptor(

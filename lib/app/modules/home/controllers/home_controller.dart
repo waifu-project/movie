@@ -31,6 +31,18 @@ enum UpdateSearchHistoryType {
   clean
 }
 
+Function _showLoading(String msg) {
+  EasyLoading.show(
+    status: msg,
+    indicator: Image.asset(
+      "assets/loading.gif",
+      width: 120,
+      height: 120,
+    ),
+  );
+  return EasyLoading.dismiss;
+}
+
 class HomeController extends GetxController with WidgetsBindingObserver {
   late Size windowLastSize;
 
@@ -403,10 +415,19 @@ class HomeController extends GetxController with WidgetsBindingObserver {
       onceCategory = id;
     }
     if (isFirst) {
+      var dispose = _showLoading("加载分类中");
+      var isNext = !currentHasCategoryer &&
+          !mirrorCategoryPool.fetchCountAlreadyMax(currentMirrorItemId);
+
       /// NOTE(d1y): 不存在分类并且请求次数没有超过阈值
-      if (!currentHasCategoryer &&
-          !mirrorCategoryPool.fetchCountAlreadyMax(currentMirrorItemId)) {
-        onceCategory = await syncCurrentCategoryer() ?? "";
+      if (isNext) {
+        try {
+          onceCategory = await syncCurrentCategoryer() ?? "";
+        } catch (e) {
+          debugPrint(e.toString());
+        } finally {
+          dispose();
+        }
       }
     }
 
@@ -421,19 +442,12 @@ class HomeController extends GetxController with WidgetsBindingObserver {
 
     try {
       if (isFirst) {
-        EasyLoading.show( // 缓存过不需要加载动画🤡
-          status: "加载中",
-          indicator: Image.asset(
-            "assets/loading.gif",
-            width: 120,
-            height: 120,
-          ),
-        );
+        _showLoading("加载内容中");
         isLoading = !missIsLoading;
         page = 1;
         update();
       }
-      debugPrint("handle axaj get page: $page, $limit");
+      debugPrint("get home data: $page, $limit");
       List<MirrorOnceItemSerialize> data = await currentMirrorItem.getHome(
         page: page,
         limit: limit,

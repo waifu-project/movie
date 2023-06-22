@@ -43,6 +43,13 @@ Linux 下打包的二进制相对于其他平台会大 `15mb`, 由于在不同Li
 
 [![](https://img.shields.io/badge/-点我下载-blue?logo=github)](https://github.com/waifu-project/movie/releases/latest/download/yy-linux-x86_64.tar.gz)
 
+Archlinux 需要安装两个包
+
+```bash
+yay -S webkit2gtk-4.1
+yay -S xdg-user-dir xdg-utils
+```
+
 TODO: 支持打包出 `appimage`
 
 TODO: 支持 `AUR(archlinux)` 安装

@@ -4,7 +4,6 @@ import 'dart:async' show Future;
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:get/get.dart';
 import 'package:movie/app/modules/home/controllers/home_controller.dart';
-import 'package:movie/app/widget/window_appbar.dart';
 import 'package:movie/widget/simple_html/flutter_html.dart';
 
 import 'settings_view.dart';
@@ -91,28 +90,8 @@ class _NsfwTableViewState extends State<NsfwTableView> {
         color: currTextColor,
       ),
       child: CupertinoPageScaffold(
-        navigationBar: CupertinoEasyAppBar(
-          parentContext: context,
-          child: Column(
-            children: [
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  const CupertinoNavigationBarBackButton(),
-                  Expanded(
-                      child: Text(
-                    '开启NSFW',
-                    style: TextStyle(
-                      color: currTextColor,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  )),
-                ],
-              ),
-              const Divider(),
-            ],
-          ),
+        navigationBar: const CupertinoNavigationBar(
+          previousPageTitle: '开启NSFW',
         ),
         child: SafeArea(
           child: SingleChildScrollView(

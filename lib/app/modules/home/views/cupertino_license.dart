@@ -14,7 +14,7 @@ CustomLicensePage cupertinoLicensePage = CustomLicensePage((
   return CupertinoPageScaffold(
     navigationBar: CupertinoNavigationBar(
       backgroundColor: Get.isDarkMode ? Colors.black54 : Colors.white,
-      leading: const CupertinoNavigationBarBackButton(),
+      previousPageTitle: 'LICENSE',
     ),
     child: body(licenseData, context),
   );

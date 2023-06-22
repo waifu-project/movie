@@ -50,16 +50,19 @@ class CupertinoEasyAppBar extends StatefulWidget
     Key? key,
     this.backgroundColor,
     this.child,
+    this.parentContext,
   }) : super(key: key);
 
   final Color? backgroundColor;
   final Widget? child;
+  final BuildContext? parentContext;
 
   @override
   bool shouldFullyObstruct(BuildContext context) {
+    var _context = parentContext ?? context;
     Color? easy = CupertinoDynamicColor.maybeResolve(
       this.backgroundColor,
-      context,
+      _context,
     );
     Color? themeOf = CupertinoTheme.of(context).barBackgroundColor;
     final Color backgroundColor = easy ?? themeOf;
@@ -82,9 +85,6 @@ class CupertinoEasyAppBar extends StatefulWidget
 class _CupertinoEasyAppBarState extends State<CupertinoEasyAppBar> {
   Widget get _child {
     Widget? child = widget.child;
-
-    /// FIXME: 若child为空
-    /// FIXME: 多平台下
     if (child == null) return const SizedBox.shrink();
     Widget target = child;
     if (GetPlatform.isMacOS) {
@@ -110,44 +110,9 @@ class _CupertinoEasyAppBarState extends State<CupertinoEasyAppBar> {
 
   @override
   Widget build(BuildContext context) {
-    /// FIXME: material widget wrapper??
     return Material(child: _child);
   }
 }
-
-// class CupertinoDefaultAppBar extends CupertinoEasyAppBar {
-//   const CupertinoDefaultAppBar({
-//     Key? key,
-//     this.leading,
-//     this.middle,
-//     this.trailing,
-//     this.isBack = true,
-//   }) : super(key: key);
-
-//   final Widget? leading;
-//   final Widget? middle;
-//   final Widget? trailing;
-//   final bool isBack;
-
-//   Widget _easyWrapper(Widget? child) {
-//     if (child == null) return SizedBox.shrink();
-//     return child;
-//   }
-
-//   Widget get _leading {
-//     if (leading != null) return leading as Widget;
-//     if (isBack) return CupertinoNavigationBarBackButton();
-//     return SizedBox.shrink();
-//   }
-
-//   Widget get _trailing => _easyWrapper(trailing);
-
-//   Widget get _middle => _easyWrapper(middle);
-
-//   Widget build(BuildContext context) {
-//     return Row(children: [Text('Fix Me???'),]);
-//   }
-// }
 
 class WindowAppBar extends StatelessWidget implements PreferredSizeWidget {
   const WindowAppBar({super.key, 

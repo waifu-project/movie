@@ -6,6 +6,7 @@ import 'package:flutter_cupertino_settings/flutter_cupertino_settings.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'package:get/get.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:movie/app/extension.dart';
 import 'package:movie/app/modules/home/controllers/home_controller.dart';
 import 'package:movie/app/modules/home/views/parse_vip_manage.dart';
@@ -147,26 +148,8 @@ class _SettingsViewState extends State<SettingsView> {
     setState(() {
       _nShowNSFW = newVal;
     });
-    if (_nShowNSFW >= 10) {
-      showBlurModel();
-    }
   }
 
-  showBlurModel({
-    Duration time = const Duration(seconds: 2),
-  }) {
-    // if (Get.isDialogOpen ?? false) return;
-    Get.dialog(
-      Expanded(
-        child: GestureDetector(
-          behavior: HitTestBehavior.opaque,
-        ),
-      ),
-    );
-    Future.delayed(time, () {
-      Get.back();
-    });
-  }
 
   final TextEditingController _editingController = TextEditingController();
 
@@ -280,7 +263,6 @@ class _SettingsViewState extends State<SettingsView> {
     Get.back();
     showCupertinoDialog(
       builder: (context) => CupertinoAlertDialog(
-        /// FIXME: 部分内容有主题设置, (设置页面小部分设置。)
         content: const Text("已删除缓存, 部分内容重启之后生效!"),
         actions: [
           CupertinoDialogAction(
@@ -439,8 +421,13 @@ class _SettingsViewState extends State<SettingsView> {
                     value: home.isNsfw,
                     onChanged: (bool value) async {
                       if (value) {
-                        GetBackResultType result = await Get.to(
-                          () => const NsfwTableView(),
+                        var result = await showCupertinoModalBottomSheet(
+                          context: context,
+                          builder: (_) => SizedBox(
+                            width: double.infinity,
+                            height: Get.height * .72,
+                            child: const NsfwTableView(),
+                          ),
                         );
                         if (result == GetBackResultType.success) {
                           home.isNsfw = true;
@@ -544,13 +531,6 @@ class _SettingsViewState extends State<SettingsView> {
             "Licenses",
             () {
               Get.to(() => cupertinoLicensePage);
-              // showLicensePage(
-              //   context: context,
-              //   applicationIcon: Image.asset(
-              //     "assets/images/fishtank.png",
-              //     width: Get.width * .25,
-              //   ),
-              // );
             },
           ),
           const SizedBox(

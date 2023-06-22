@@ -11,7 +11,6 @@ import 'package:movie/app/modules/home/controllers/home_controller.dart';
 import 'package:movie/app/modules/home/views/mirror_check.dart';
 import 'package:movie/app/shared/mirror_status_stack.dart';
 import 'package:movie/app/widget/wechat_popmenu.dart';
-import 'package:movie/app/widget/window_appbar.dart';
 import 'package:movie/impl/movie.dart';
 import 'package:movie/mirror/mirror.dart';
 import 'package:movie/utils/http.dart';
@@ -238,43 +237,26 @@ class _MirrorTableViewState extends State<MirrorTableView> {
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
-      navigationBar: CupertinoEasyAppBar(
-        child: Column(
-          children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const CupertinoNavigationBarBackButton(),
-                Expanded(
-                  child: Text(
-                    _title,
-                    style: Theme.of(context).textTheme.titleLarge,
-                  ),
-                ),
-                CustomPopupMenu(
-                  child: Container(
-                    child: const Icon(
-                      CupertinoIcons.command,
-                      size: 24,
-                    ),
-                    padding: const EdgeInsets.all(12),
-                  ),
-                  menuBuilder: () => PopMenuBox(
-                    items: menuItems,
-                    onTap: (MenuActionType value) {
-                      _controller.hideMenu();
-                      handleClickSubMenu(value);
-                    },
-                  ),
-                  pressType: PressType.singleClick,
-                  verticalMargin: -10,
-                  controller: _controller,
-                ),
-              ],
+      navigationBar: CupertinoNavigationBar(
+        previousPageTitle: _title,
+        trailing: CustomPopupMenu(
+          child: Container(
+            child: const Icon(
+              CupertinoIcons.command,
+              size: 24,
             ),
-            const Divider()
-          ],
+            padding: const EdgeInsets.all(12),
+          ),
+          menuBuilder: () => PopMenuBox(
+            items: menuItems,
+            onTap: (MenuActionType value) {
+              _controller.hideMenu();
+              handleClickSubMenu(value);
+            },
+          ),
+          pressType: PressType.singleClick,
+          verticalMargin: -10,
+          controller: _controller,
         ),
       ),
       child: SafeArea(
@@ -452,7 +434,7 @@ class MirrorCard extends StatelessWidget {
                       fit: BoxFit.cover,
                       width: 60,
                       placeholder: (context, url) => const Center(
-                        child: SizedBox.shrink()
+                        child: SizedBox.shrink(),
                       ),
                       errorWidget: (
                         context,

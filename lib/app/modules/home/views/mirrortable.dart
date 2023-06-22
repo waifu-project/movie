@@ -441,13 +441,16 @@ class MirrorCard extends StatelessWidget {
                                 maxLines: 2,
                                 overflow: TextOverflow.ellipsis,
                               ),
-                        MovieStatusWidget(
-                          status: item.meta.status
+                        Builder(builder: (context) {
+                          var status = item.meta.status
                               ? MovieStatusType.available
-                              : MovieStatusType.unavailable,
-                          hash: item.meta.id,
-                          hashTable: hashTable,
-                        ),
+                              : MovieStatusType.unavailable;
+                          var cacheStatus = hashTable[item.meta.id] ?? true;
+                          return MovieStatusWidget(
+                            status: status,
+                            cacheStatus: cacheStatus,
+                          );
+                        }),
                       ],
                     ),
                   ),
@@ -503,17 +506,11 @@ class MovieStatusWidget extends StatelessWidget {
   const MovieStatusWidget({
     Key? key,
     this.status = MovieStatusType.available,
-
-    /// FIXME: 离谱, 为什么不直接传递 `bool` => [hashTable[hash]]
-    /// 而是要整这种绝活??
-    required this.hashTable,
-    required this.hash,
+    required this.cacheStatus,
   }) : super(key: key);
 
   final MovieStatusType status;
-  final String hash;
-  final Map<String, bool> hashTable;
-
+  final bool cacheStatus;
   String get _text {
     return _type.text;
   }
@@ -530,13 +527,9 @@ class MovieStatusWidget extends StatelessWidget {
   }
 
   MovieStatusType get _type {
-    var cacheStatus = hashTable[hash];
-    if (cacheStatus != null) {
-      return cacheStatus
-          ? MovieStatusType.available
-          : MovieStatusType.unavailable;
-    }
-    return status;
+    return cacheStatus
+        ? MovieStatusType.available
+        : MovieStatusType.unavailable;
   }
 
   @override

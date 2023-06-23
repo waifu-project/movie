@@ -12,7 +12,7 @@ class MirrorStatusStack {
 
   Map<String, bool> get getStacks => _stacks;
 
-  final List<SpiderImpl> _datas = SpiderManage.extend;
+  final List<ISpider> _datas = SpiderManage.extend;
 
   bool? getStack(String stack) {
     return _stacks[stack];

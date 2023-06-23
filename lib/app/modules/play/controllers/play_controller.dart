@@ -98,7 +98,7 @@ class PlayController extends GetxController {
 
   HomeController home = Get.find<HomeController>();
 
-  SpiderImpl get currentMovieInstance {
+  ISpider get currentMovieInstance {
     var itemAs = home.currentMirrorItem;
     return itemAs;
   }

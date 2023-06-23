@@ -17,14 +17,14 @@ class SpiderManage {
   SpiderManage._internal();
 
   /// 扩展的源
-  static List<SpiderImpl> extend = [];
+  static List<ISpider> extend = [];
 
   /// 内建支持的源
   /// 一般是需要自己去实现的源
-  static List<SpiderImpl> builtin = [];
+  static List<ISpider> builtin = [];
 
   /// 合并之后的数据
-  static List<SpiderImpl> get data {
+  static List<ISpider> get data {
     return [...extend, ...builtin];
   }
 
@@ -47,7 +47,7 @@ class SpiderManage {
   }
 
   /// 删除单个源
-  static removeItem(SpiderImpl item) {
+  static removeItem(ISpider item) {
     debugPrint("删除该源: $item");
     extend.remove(item);
     saveToCache(extend);
@@ -141,7 +141,7 @@ class SpiderManage {
   /// 保存缓存
   /// [该方法只可用来保存第三方源]
   /// 只适用于 [MacCMSSpider]
-  static saveToCache(List<SpiderImpl> saves) {
+  static saveToCache(List<ISpider> saves) {
     List<SourceJsonData> _to = saves
         .map(
           (e) => SourceJsonData(

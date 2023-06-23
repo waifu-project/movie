@@ -179,7 +179,7 @@ class HomeController extends GetxController with WidgetsBindingObserver {
   /// 如果是在源之前的, 则 [index] = [mirrorIndex] - 1
   ///
   /// 如果是在源之后, 则 [index] = [mirrorIndex]
-  removeMirrorItemSync(SpiderImpl item) {
+  removeMirrorItemSync(ISpider item) {
     var _index = mirrorList.indexOf(item);
     if (_index == -1) return;
     var _oldIndex = mirrorIndex;
@@ -196,7 +196,7 @@ class HomeController extends GetxController with WidgetsBindingObserver {
     _mirrorIndex = index;
   }
 
-  SpiderImpl get currentMirrorItem {
+  ISpider get currentMirrorItem {
     return mirrorList[mirrorIndex];
   }
 
@@ -204,7 +204,7 @@ class HomeController extends GetxController with WidgetsBindingObserver {
     return mirrorList.isEmpty;
   }
 
-  List<SpiderImpl> get mirrorList {
+  List<ISpider> get mirrorList {
     if (isNsfw) return SpiderManage.data;
     return SpiderManage.data.where((e) => !e.isNsfw).toList();
   }

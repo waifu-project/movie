@@ -51,7 +51,7 @@ class HomeView extends GetView<HomeController> {
       ? const Color.fromRGBO(0, 0, 0, .63)
       : const Color.fromRGBO(255, 255, 255, .63);
 
-  List<SpiderImpl> get mirror => home.mirrorList;
+  List<ISpider> get mirror => home.mirrorList;
 
   int get mirrorIndex => home.mirrorIndex;
 

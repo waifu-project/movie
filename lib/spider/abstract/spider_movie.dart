@@ -49,7 +49,7 @@ class SpiderQueryCategory {
   }
 }
 
-abstract class SpiderImpl {
+abstract class ISpider {
   /// 是否为R18资源
   /// **Not Safe For Work**
   bool get isNsfw;

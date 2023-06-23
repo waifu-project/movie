@@ -25,7 +25,7 @@ enum ResponseCustomType {
   unknow
 }
 
-class MacCMSSpider extends SpiderImpl {
+class MacCMSSpider extends ISpider {
   final bool nsfw;
   final String jiexiUrl;
   final String name;

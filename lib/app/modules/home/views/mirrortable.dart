@@ -50,11 +50,11 @@ class MirrorTableView extends StatefulWidget {
 class _MirrorTableViewState extends State<MirrorTableView> {
   final HomeController home = Get.find<HomeController>();
 
-  List<SpiderImpl> get _mirrorList {
+  List<ISpider> get _mirrorList {
     return home.mirrorList;
   }
 
-  List<SpiderImpl> mirrorList = [];
+  List<ISpider> mirrorList = [];
 
   ScrollController scrollController = ScrollController(
     initialScrollOffset: 0,
@@ -338,7 +338,7 @@ class MirrorCard extends StatelessWidget {
 
   final double maxHeight;
 
-  final SpiderImpl item;
+  final ISpider item;
 
   final bool current;
 
@@ -359,7 +359,7 @@ class MirrorCard extends StatelessWidget {
     return !current && !isBuiltin;
   }
 
-  /// 如果是 [SpiderImpl.isNsfw] => [Colors.red]
+  /// 如果是 [ISpider.isNsfw] => [Colors.red]
   /// 如果是 [current] => [Colors.blue] (优先级高一点)
   Color get _color {
     if (current) return Colors.blue;

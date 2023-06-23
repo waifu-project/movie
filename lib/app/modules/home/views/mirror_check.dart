@@ -32,7 +32,7 @@ class MirrorCheckView extends StatefulWidget {
     required this.list,
   }) : super(key: key);
 
-  final List<SpiderImpl> list;
+  final List<ISpider> list;
 
   @override
   State<MirrorCheckView> createState() => _MirrorCheckViewState();
@@ -53,7 +53,7 @@ class _MirrorCheckViewState extends State<MirrorCheckView> {
 
   bool running = false;
 
-  List<SpiderImpl> get listStack => widget.list;
+  List<ISpider> get listStack => widget.list;
 
   int get listStackLen => listStack.length;
 

@@ -41,6 +41,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.11.0"
+  auto_injector:
+    dependency: "direct main"
+    description:
+      name: auto_injector
+      sha256: "8f60170beec439e9a7c3686661fcc7aac84e4ee47feb5a830dbbf8735f8f6ab5"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.3"
   awesome_dio_interceptor:
     dependency: "direct main"
     description:
@@ -583,6 +591,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.13.6"
+  http_methods:
+    dependency: transitive
+    description:
+      name: http_methods
+      sha256: "6bccce8f1ec7b5d701e7921dca35e202d425b57e317ba1a37f2638590e29e566"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.1"
   http_multi_server:
     dependency: transitive
     description:
@@ -951,6 +967,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.4.1"
+  shelf_router:
+    dependency: transitive
+    description:
+      name: shelf_router
+      sha256: f5e5d492440a7fb165fe1e2e1a623f31f734d3370900070b2b1e0d0428d59864
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.4"
   shelf_web_socket:
     dependency: transitive
     description:
@@ -1284,6 +1308,15 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.4.0"
+  webplayer_embedded:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: HEAD
+      resolved-ref: "630a7c78cbb54f35edf84537d0d8b5fbd42ac3bb"
+      url: "https://github.com/d1y/webplayer_embedded"
+    source: git
+    version: "0.0.1"
   webview_flutter:
     dependency: "direct main"
     description:
@@ -1373,5 +1406,5 @@ packages:
     source: hosted
     version: "3.1.2"
 sdks:
-  dart: ">=3.0.0 <4.0.0"
+  dart: ">=3.0.3 <4.0.0"
   flutter: ">=3.7.0"

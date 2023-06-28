@@ -47,6 +47,8 @@ extension ISettingMixin on Object {
       return curr.mirrorTextarea;
     } else if (key == SettingsAllKey.showPlayTips) {
       return curr.showPlayTips;
+    } else if (key == SettingsAllKey.webviewPlayType) {
+      return curr.webviewPlayType;
     }
     return curr.id;
   }
@@ -72,6 +74,8 @@ extension ISettingMixin on Object {
       curr.mirrorTextarea = value;
     } else if (key == SettingsAllKey.showPlayTips) {
       curr.showPlayTips = value;
+    } else if (key == SettingsAllKey.webviewPlayType) {
+      curr.webviewPlayType = value;
     } else {
       return;
     }

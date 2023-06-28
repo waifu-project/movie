@@ -34,7 +34,8 @@ enum SettingsAllKey {
   isNsfw,
   mirrorIndex,
   mirrorTextarea,
-  showPlayTips
+  showPlayTips,
+  webviewPlayType,
 }
 
 /// 镜像源状态

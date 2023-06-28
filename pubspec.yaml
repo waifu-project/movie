@@ -63,7 +63,10 @@ dependencies:
     # git:
     #   url: https://github.com/d1y/command_palette
     #   branch: d1y
+  webplayer_embedded:
+    git: https://github.com/d1y/webplayer_embedded
 
+  auto_injector: ^1.0.2
 
 dev_dependencies:
 

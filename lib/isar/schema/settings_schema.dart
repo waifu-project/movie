@@ -1,5 +1,6 @@
 import 'package:isar/isar.dart';
 import 'package:movie/shared/enum.dart';
+import 'package:webplayer_embedded/webplayer_embedded.dart';
 
 part 'settings_schema.g.dart';
 
@@ -30,4 +31,7 @@ class SettingsIsarModel {
 
   /// 显示播放前的提示(告知用户不要相信广告!)
   bool showPlayTips = true;
+
+  @Enumerated(EnumType.ordinal)
+  IWebPlayerEmbeddedType webviewPlayType = IWebPlayerEmbeddedType.p2pHLS;
 }

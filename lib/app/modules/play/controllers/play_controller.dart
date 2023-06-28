@@ -10,12 +10,26 @@ import 'package:movie/app/modules/home/controllers/home_controller.dart';
 import 'package:movie/app/modules/home/views/source_help.dart';
 import 'package:movie/app/modules/play/views/chewie_view.dart';
 import 'package:movie/app/modules/play/views/webview_view.dart';
+import 'package:movie/shared/auto_injector.dart';
 import 'package:movie/spider/abstract/spider_movie.dart';
 import 'package:movie/isar/schema/parse_schema.dart';
 import 'package:movie/spider/impl/mac_cms.dart';
 import 'package:movie/spider/abstract/spider_serialize.dart';
 import 'package:movie/shared/enum.dart';
 import 'package:movie/utils/helper.dart';
+import 'package:webplayer_embedded/webplayer_embedded.dart';
+
+// https://www.bilibili.com/video/BV1cN411d73g
+//
+// 嗷！我们是斗鱼直播间6324抽象工作室，
+// 我是抽象工作室李赣，
+// 我是抽象工作室的大师兄，
+// 我是抽象工作室的劳改犯。
+// 在新的一年里，
+// 抽象工作室祝广大斗鱼水友新年快乐。
+//
+// 如果能够重来, 你还会在那天下午打开一个房间号为 6324 的直播间吗?
+const kWebPlayerEmbeddedPort = 6324;
 
 const _kWindowsWebviewRuntimeLink =
     "https://developer.microsoft.com/en-us/microsoft-edge/webview2";
@@ -96,6 +110,8 @@ String easyGenParseVipUrl(String raw, ParseIsarModel model) {
 class PlayController extends GetxController {
   MirrorOnceItemSerialize movieItem = Get.arguments;
 
+  WebPlayerEmbedded webPlayerEmbedded = autoInjector.get<WebPlayerEmbedded>();
+
   HomeController home = Get.find<HomeController>();
 
   ISpider get currentMovieInstance {
@@ -150,7 +166,11 @@ class PlayController extends GetxController {
   String playTips = "";
 
   m3u82Iframe(String m3u8) {
-    return "https://dplayerx.com/m3u8.php?url=$m3u8";
+    var type = getSettingAsKeyIdent<IWebPlayerEmbeddedType>(
+      SettingsAllKey.webviewPlayType,
+    );
+    var url = webPlayerEmbedded.generatePlayerUrl(type, m3u8);
+    return url;
   }
 
   String webviewShowMessage = "请勿相信广告";
@@ -262,7 +282,12 @@ class PlayController extends GetxController {
       }
 
       /// `MP4` 理论上来说不需要操作就可以直接喂给浏览器?
-      if (typeIsM3u8) url = m3u82Iframe(url);
+      if (typeIsM3u8) {
+        if (!(await webPlayerEmbedded.checkRunning())) {
+          await webPlayerEmbedded.createServer(port: kWebPlayerEmbeddedPort);
+        }
+        url = m3u82Iframe(url);
+      }
       Webview webview = await WebviewWindow.create();
 
       /// (不需要解析)白嫖的第三方资源会自动跳转广告网站, 这个方法将延迟删除广告

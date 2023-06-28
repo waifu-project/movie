@@ -6,6 +6,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:movie/config.dart';
 import 'package:movie/isar/repo.dart';
+import 'package:movie/shared/auto_injector.dart';
 import 'package:movie/spider/shared/manage.dart';
 import 'package:movie/shared/enum.dart';
 import 'package:movie/utils/helper.dart';
@@ -35,6 +36,7 @@ Future<ThemeMode> runBefore() async {
   await XHttp.init();
   await IsarRepository().init();
   await SpiderManage.init();
+  registerAutoInjector();
   var currTheme = IsarRepository().settingsSingleModel.themeMode;
   Brightness wrapperIfDark = Brightness.light;
   if (currTheme.isDark) {

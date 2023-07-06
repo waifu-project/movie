@@ -14,7 +14,7 @@
 ![](https://img.shields.io/badge/Android-3DDC84?style=for-the-badge&logo=android&logoColor=white)
 
 支持自定义源, 可自行添加源
-欢迎加入TG裙交流(有源分享): https://t.me/+xub6INGSHqczN2Jl
+<!-- 欢迎加入TG裙交流(有源分享): https://t.me/+xub6INGSHqczN2Jl -->
 
 <!-- [Re: 从零开始的开发日志](docs/dev.md)
 

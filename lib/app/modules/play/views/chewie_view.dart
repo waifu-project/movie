@@ -92,7 +92,7 @@ class _ChewieViewState extends State<ChewieView> {
       placeholder: placeholderWidget,
       additionalOptions: (_) => [
         OptionItem(
-          onTap: () async {
+          onTap: (cx) async {
             Get.back();
             if (playUrl.isEmpty) return;
             await FlutterClipboard.copy(playUrl);

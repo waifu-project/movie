@@ -31,13 +31,5 @@
     "use_new_terminal": true,
     "allow_concurrent_runs": false,
     "reveal": "always"
-  },
-  {
-    "label": "flutter test",
-    "command": "flutter",
-    "args": [ "test" ],
-    "use_new_terminal": true,
-    "allow_concurrent_runs": false,
-    "reveal": "always"
   }
 ]

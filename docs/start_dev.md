@@ -18,6 +18,7 @@ cd movie
 bash script/fetch_git_info.sh
 flutter pub get .
 flutter pub run build_runner build
+# brew install cocoapods
 flutter run
 ```
 

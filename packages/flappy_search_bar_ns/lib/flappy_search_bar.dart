@@ -125,7 +125,7 @@ class SearchBarController<T> {
 }
 
 /// Signature for a function that creates [ScaledTile] for a given index.
-typedef ScaledTile IndexedScaledTileBuilder(int index);
+typedef IndexedScaledTileBuilder = ScaledTile Function(int index);
 
 class SearchBar<T> extends StatefulWidget {
   /// Future returning searched items
@@ -216,7 +216,7 @@ class SearchBar<T> extends StatefulWidget {
   /// Set a padding on the list
   final EdgeInsetsGeometry listPadding;
 
-  SearchBar({
+  const SearchBar({
     Key? key,
     required this.onSearch,
     required this.onItemFound,
@@ -303,7 +303,7 @@ class _SearchBarState<T> extends State<SearchBar<T?>>
     });
   }
 
-  _onTextChanged(String newText) async {
+  Future<void> _onTextChanged(String newText) async {
     if (_debounce?.isActive ?? false) {
       _debounce!.cancel();
     }
@@ -381,7 +381,7 @@ class _SearchBarState<T> extends State<SearchBar<T?>>
       children: <Widget>[
         Padding(
           padding: widget.searchBarPadding,
-          child: Container(
+          child: SizedBox(
             height: 80,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -397,6 +397,9 @@ class _SearchBarState<T> extends State<SearchBar<T?>>
                     child: Padding(
                       padding: widget.searchBarStyle.padding,
                       child: Theme(
+                        data: Theme.of(context).copyWith(
+                          primaryColor: widget.iconActiveColor,
+                        ),
                         child: TextField(
                           controller: _searchQueryController,
                           // onChanged: _onTextChanged,
@@ -409,9 +412,6 @@ class _SearchBarState<T> extends State<SearchBar<T?>>
                             hintText: widget.hintText,
                             hintStyle: widget.hintStyle,
                           ),
-                        ),
-                        data: Theme.of(context).copyWith(
-                          primaryColor: widget.iconActiveColor,
                         ),
                       ),
                     ),

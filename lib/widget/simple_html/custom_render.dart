@@ -38,7 +38,9 @@ CustomRenderMatcher dataUriMatcher(
         {String? encoding = 'base64', String? mime}) =>
     (context) {
       if (context.tree.element?.attributes == null ||
-          _src(context.tree.element!.attributes.cast()) == null) return false;
+          _src(context.tree.element!.attributes.cast()) == null) {
+        return false;
+      }
       final dataUri = _dataUriFormat
           .firstMatch(_src(context.tree.element!.attributes.cast())!);
       return dataUri != null &&
@@ -54,7 +56,9 @@ CustomRenderMatcher networkSourceMatcher({
 }) =>
     (context) {
       if (context.tree.element?.attributes.cast() == null ||
-          _src(context.tree.element!.attributes.cast()) == null) return false;
+          _src(context.tree.element!.attributes.cast()) == null) {
+        return false;
+      }
       try {
         final src = Uri.parse(_src(context.tree.element!.attributes.cast())!);
         return schemas.contains(src.scheme) &&

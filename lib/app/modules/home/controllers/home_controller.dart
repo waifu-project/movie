@@ -96,7 +96,7 @@ class HomeController extends GetxController
 
   SourceSpiderQueryCategory? currentCategoryerNow = kAllCategoryData;
 
-  setCurrentCategoryerNow(SourceSpiderQueryCategory category) {
+  void setCurrentCategoryerNow(SourceSpiderQueryCategory category) {
     currentCategoryerNow = category;
     updateHomeData(isFirst: true);
     update();
@@ -111,7 +111,7 @@ class HomeController extends GetxController
     updateSetting(SettingsAllKey.iosCanBeUseSystemBrowser, newVal);
   }
 
-  updateIOSCanBeUseSystemBrowser() {
+  void updateIOSCanBeUseSystemBrowser() {
     var val =
         getSettingAsKeyIdent<bool>(SettingsAllKey.iosCanBeUseSystemBrowser);
     iosCanBeUseSystemBrowser = val;
@@ -176,7 +176,7 @@ class HomeController extends GetxController
 
   /// 清理缓存
   /// => 重启之后部分设置才会生效
-  easyCleanCacheHook() {
+  void easyCleanCacheHook() {
     _isNsfw = false;
     _cacheMirrorIndex = -1;
     mirrorCategoryPool.clean();
@@ -195,7 +195,7 @@ class HomeController extends GetxController
   /// 如果是在源之前的, 则 [index] = [mirrorIndex] - 1
   ///
   /// 如果是在源之后, 则 [index] = [mirrorIndex]
-  removeMirrorItemSync(ISpiderAdapter item) {
+  void removeMirrorItemSync(ISpiderAdapter item) {
     var index = mirrorList.indexOf(item);
     if (index == -1) return;
     var oldIndex = mirrorIndex;
@@ -208,7 +208,7 @@ class HomeController extends GetxController
     update();
   }
 
-  updateMirrorIndex(int index) {
+  void updateMirrorIndex(int index) {
     _mirrorIndex = index;
   }
 
@@ -241,7 +241,7 @@ class HomeController extends GetxController
     initialRefresh: false,
   );
 
-  showMirrorModel(BuildContext context) {
+  void showMirrorModel(BuildContext context) {
     showCupertinoModalBottomSheet(
       context: context,
       builder: (_) => SizedBox(
@@ -274,7 +274,7 @@ class HomeController extends GetxController
 
   double cacheMirrorTableScrollControllerOffset = 0;
 
-  updateCacheMirrorTableScrollControllerOffset(double newVal) {
+  void updateCacheMirrorTableScrollControllerOffset(double newVal) {
     cacheMirrorTableScrollControllerOffset = newVal;
     update();
   }
@@ -294,7 +294,7 @@ class HomeController extends GetxController
   /// ```
   /// // 每个卡片 69 * index
   /// ```
-  initCacheMirrorTableScrollControllerOffset() {
+  void initCacheMirrorTableScrollControllerOffset() {
     double h = Get.height - kToolbarHeight;
 
     double offset = mirrorIndex * 69.0;
@@ -309,7 +309,7 @@ class HomeController extends GetxController
     }
   }
 
-  initMovieParseVipList() {
+  void initMovieParseVipList() {
     var data = parseAs.where(distinct: false).findAllSync();
     _parseVipList = data;
     update();
@@ -341,7 +341,7 @@ class HomeController extends GetxController
     return isOK;
   }
 
-  removeMovieParseVipOnce(int index) {
+  void removeMovieParseVipOnce(int index) {
     _parseVipList.removeAt(index);
 
     // TODO: 实现正确的索引而不是每次都重置
@@ -353,7 +353,7 @@ class HomeController extends GetxController
     parseAs.putAllSync(_parseVipList);
   }
 
-  setDefaultMovieParseVipIndex(int index) {
+  void setDefaultMovieParseVipIndex(int index) {
     if (_parseVipList.length <= index) return;
     _currentParseVipIndex = index;
     update();
@@ -373,12 +373,12 @@ class HomeController extends GetxController
     super.onInit();
   }
 
-  updateWindowLastSize() {
+  void updateWindowLastSize() {
     windowLastSize = View.of(Get.context!).physicalSize;
     update();
   }
 
-  updateMacosPlayUseIINAState() {
+  void updateMacosPlayUseIINAState() {
     _macosPlayUseIINA =
         getSettingAsKeyIdent<bool>(SettingsAllKey.macosPlayUseIINA);
     update();
@@ -386,7 +386,7 @@ class HomeController extends GetxController
 
   String indexHomeLoadDataErrorMessage = "";
 
-  updateNsfwSetting() {
+  void updateNsfwSetting() {
     _isNsfw = getSettingAsKeyIdent<bool>(SettingsAllKey.isNsfw);
     update();
   }
@@ -430,7 +430,7 @@ class HomeController extends GetxController
 
   /// [isFirst] 初始化加载数据需要将 [isLoading] => true
   /// [missIsLoading] 某些特殊情况下不需要设置 [isLoading] => true
-  updateHomeData({bool isFirst = false, missIsLoading = false}) async {
+  Future<void> updateHomeData({bool isFirst = false, missIsLoading = false}) async {
     /// 如果都没有源, 则不需要加载数据
     /// => +_+ 还玩个球啊
     if (mirrorListIsEmpty) return;
@@ -559,7 +559,7 @@ class HomeController extends GetxController
   }
 
   void clearCache() async {
-    await SpiderManage.cleanAll();
+    SpiderManage.cleanAll();
     easyCleanCacheHook();
     IsarRepository().safeWrite(() {
       isarInstance.clearSync();

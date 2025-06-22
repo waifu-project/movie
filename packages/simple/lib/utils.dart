@@ -3,7 +3,7 @@ import 'package:flutter/widgets.dart';
 const kScrollDuration = Duration(milliseconds: 420);
 const kScrollSize = 240;
 
-scrollUp(ScrollController cx) {
+void scrollUp(ScrollController cx) {
   var curr = cx.offset;
   if (curr == 0) return;
   var exec = curr - kScrollSize;
@@ -11,7 +11,7 @@ scrollUp(ScrollController cx) {
   cx.animateTo(exec, duration: kScrollDuration, curve: Curves.ease);
 }
 
-scrollDown(ScrollController cx) {
+void scrollDown(ScrollController cx) {
   var curr = cx.offset;
   var max = cx.position.maxScrollExtent;
   if (curr == max) return;

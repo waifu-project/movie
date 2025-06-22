@@ -64,14 +64,14 @@ class _NsfwTableViewState extends State<NsfwTableView> {
     super.dispose();
   }
 
-  loadHtmlCode() async {
+  Future<void> loadHtmlCode() async {
     var data = await loadNsfwAsset();
     setState(() {
       html = data;
     });
   }
 
-  handleOpen() {
+  void handleOpen() {
     Get.back(
       result: GetBackResultType.success,
     );

@@ -38,7 +38,7 @@ class _ParseVipManagePageViewState extends State<ParseVipManagePageView> {
     super.initState();
   }
 
-  easyAddVipParseModel() async {
+  Future<void> easyAddVipParseModel() async {
     var futureWith = await showCupertinoModalBottomSheet<ParseIsarModel>(
       context: context,
       builder: (BuildContext context) => ParseVipAddDialog(
@@ -62,17 +62,17 @@ class _ParseVipManagePageViewState extends State<ParseVipManagePageView> {
     setState(() {});
   }
 
-  easyRemoveOnceVipParseModel(int index) {
+  void easyRemoveOnceVipParseModel(int index) {
     home.removeMovieParseVipOnce(index);
     setState(() {});
   }
 
-  easySetDefaultOnceVipParseModal(int index) {
+  void easySetDefaultOnceVipParseModal(int index) {
     home.setDefaultMovieParseVipIndex(index);
     setState(() {});
   }
 
-  easyShowHelp() {
+  void easyShowHelp() {
     showEasyCupertinoDialog(
       title: '帮助',
       content: '''某些白名单播放链接(例如.爱奇艺,腾讯)需要解析才可以播放''',
@@ -267,7 +267,7 @@ class _ParseVipAddDialogState extends State<ParseVipAddDialog> {
   String url = '';
   final _formKey = GlobalKey<FormState>();
 
-  submit() async {
+  Future<void> submit() async {
     bool isNext = _formKey.currentState!.validate();
     if (!isNext) return;
     var model = ParseIsarModel(
@@ -277,7 +277,7 @@ class _ParseVipAddDialogState extends State<ParseVipAddDialog> {
     Get.back<ParseIsarModel>(result: model);
   }
 
-  handleImportFile() async {
+  Future<void> handleImportFile() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
       allowMultiple: true,
       type: FileType.custom,

@@ -17,7 +17,7 @@ import 'package:xi/xi.dart';
 
 const scrollSize = 240;
 
-shortcutCallback<T extends Intent>(int curr, VoidCallback cb) {
+CallbackAction<Intent> shortcutCallback<T extends Intent>(int curr, VoidCallback cb) {
   return CallbackAction(onInvoke: (_) {
     if (curr != 0) return;
     cb();
@@ -52,7 +52,7 @@ class _IndexHomeViewState extends State<IndexHomeView>
   /// 错误日志最大展示行数
   int get errorMsgMaxLines => 12;
 
-  handleClickItem(VideoDetail subItem, HomeController cx) async {
+  Future<void> handleClickItem(VideoDetail subItem, HomeController cx) async {
     var data = subItem;
     if (subItem.videos.isEmpty) {
       var id = subItem.id;
@@ -130,7 +130,7 @@ class _IndexHomeViewState extends State<IndexHomeView>
     return controller.currentCategoryer.indexOf(now);
   }
 
-  switchCategory(SourceSpiderQueryCategory curr) {
+  void switchCategory(SourceSpiderQueryCategory curr) {
     if (curr == controller.currentCategoryerNow) {
       return;
     }
@@ -212,7 +212,9 @@ class _IndexHomeViewState extends State<IndexHomeView>
                   shortcutCallback(controller.currentBarIndex, () {
                 if (categoryIsEmpty ||
                     currCategoryIndex ==
-                        controller.currentCategoryer.length - 1) return;
+                        controller.currentCategoryer.length - 1) {
+                  return;
+                }
                 var cx = controller.currentCategoryer[currCategoryIndex + 1];
                 switchCategory(cx);
               }),

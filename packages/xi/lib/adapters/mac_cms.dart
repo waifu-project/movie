@@ -43,7 +43,7 @@ class MacCMSSpider extends ISpiderAdapter {
     required this.api_path,
   });
 
-  createUrl({
+  String createUrl({
     required String suffix,
   }) {
     return root_url + suffix;
@@ -240,7 +240,7 @@ class MacCMSSpider extends ISpiderAdapter {
     return _parseCategoryXML(data);
   }
 
-  _parseDetailJSON(dynamic data) {
+  dynamic _parseDetailJSON(dynamic data) {
     if (data is! String) {
       throw AsyncError(
         _responseParseFail,
@@ -257,7 +257,7 @@ class MacCMSSpider extends ISpiderAdapter {
     return list[0];
   }
 
-  _parseDetailXML(dynamic data) {
+  VideoDetail _parseDetailXML(dynamic data) {
     var x2j = Xml2Json();
     x2j.parse(data);
     var _json = x2j.toBadgerfish();
@@ -290,7 +290,7 @@ class MacCMSSpider extends ISpiderAdapter {
     return cards[0];
   }
 
-  _parseSearchJSON(dynamic data) {
+  dynamic _parseSearchJSON(dynamic data) {
     if (data is! String) {
       throw AsyncError(
         _responseParseFail,
@@ -300,7 +300,7 @@ class MacCMSSpider extends ISpiderAdapter {
     return _getJSONList(data);
   }
 
-  _parseSearchXML(dynamic data) {
+  List<VideoDetail> _parseSearchXML(dynamic data) {
     var x2j = Xml2Json();
     x2j.parse(data);
     var _json = x2j.toBadgerfish();
@@ -390,7 +390,7 @@ class MacCMSSpider extends ISpiderAdapter {
     return _getJSONList(data);
   }
 
-  _getJSONList(dynamic jsonData) {
+  List<VideoDetail> _getJSONList(dynamic jsonData) {
     var json = jsonDecode(jsonData);
     var list = json['list']; //;
     var result = <VideoDetail>[];
@@ -405,7 +405,7 @@ class MacCMSSpider extends ISpiderAdapter {
     return result;
   }
 
-  __parseListItem(dynamic item) {
+  VideoDetail __parseListItem(dynamic item) {
     var videos = <VideoInfo>[];
     // 参考格式: vod_play_from":"ukyun$$$ukm3u8","vod_play_server":"no$$$no","vod_play_note":"$$$","vod_play_url": "xxxx$$$xxxxx"
     String vodFrom = item["vod_play_from"];

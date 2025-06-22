@@ -28,7 +28,7 @@ class CSButton extends CSWidget {
   CSButton(
     this.buttonType,
     this.text,
-    this.pressed, {
+    this.pressed, {Key? key, 
     CSWidgetStyle style = CS_DEFAULT_STYLE,
     this.fontSize = CS_TITLE_FONT_SIZE,
   }) : super(
@@ -53,7 +53,7 @@ class CSButton extends CSWidget {
               ),
             ],
           ),
-          style: style,
+           key: key, style: style,
         );
 }
 

@@ -14,7 +14,7 @@ enum ScreenDirction {
 /// 切换屏幕方向
 /// [action] 操作的方向
 /// [beforeTime] 在执行该操作时, 猜测若有其他异步操作, 会卡死 `Flutter Engine`
-execScreenDirction(
+void execScreenDirction(
   ScreenDirction action, [
   beforeTime = const Duration(seconds: 1),
 ]) {

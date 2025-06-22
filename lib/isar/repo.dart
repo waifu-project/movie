@@ -24,11 +24,11 @@ class IsarRepository {
     init();
   }
 
-  safeWrite(VoidCallback fn) {
+  void safeWrite(VoidCallback fn) {
     isar.writeTxnSync(() async => fn());
   }
 
-  safeRead(VoidCallback fn) {
+  void safeRead(VoidCallback fn) {
     isar.txn(() async => fn);
   }
 
@@ -50,13 +50,13 @@ class IsarRepository {
   }
 
   @Deprecated("调试模式, 后续请删除")
-  fake(Isar isar) {
+  void fake(Isar isar) {
     isar.writeTxnSync(() {
       isar.settingsIsarModels.clearSync();
     });
   }
 
-  _initDB(Isar isar) {
+  void _initDB(Isar isar) {
     // _fake(isar);
     if (isar.settingsIsarModels.countSync() <= 0) {
       debugPrint("[logger] 初始化设置");

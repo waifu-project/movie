@@ -34,7 +34,7 @@ const double CS_CHECK_SIZE = 20.0;
 const double CS_CHEVRON_SIZE = 17.0;
 
 /// Event for [CSSelection]
-typedef void SelectionCallback(int selected);
+typedef SelectionCallback = void Function(int selected);
 
 TextStyle basicTextStyle(BuildContext context) =>
     (kIsWeb
@@ -49,11 +49,11 @@ class CupertinoSettings extends StatelessWidget {
   final bool shrinkWrap;
   final ScrollController? scrollController;
 
-  const CupertinoSettings({
+  const CupertinoSettings({Key? key, 
     required this.items,
     this.scrollController,
     this.shrinkWrap = false,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

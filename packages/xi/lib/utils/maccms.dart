@@ -18,7 +18,7 @@ class PlayListData {
 /// - name: 源分类集合
 /// - url: 多个视频播放地址, 通过 `.split("#").split("$")`
 ///        > 其中 [0] 为名称, [1] 为视频地址
-videoInfo2PlayListData(List<VideoInfo> cx) {
+List<PlayListData> videoInfo2PlayListData(List<VideoInfo> cx) {
   List<PlayListData> result = [];
   for (var element in cx) {
     var url = element.url;

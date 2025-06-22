@@ -56,12 +56,12 @@ class XHttp {
     receiveTimeout: const Duration(seconds: 13),
   ));
 
-  static setDefaultTImeout() {
+  static void setDefaultTImeout() {
     dio.options.connectTimeout = kConnectTimeout;
     dio.options.receiveTimeout = kReceiveTimeout;
   }
 
-  static setTimeout(int connect, int receive) {
+  static void setTimeout(int connect, int receive) {
     dio.options.connectTimeout = Duration(seconds: connect);
     dio.options.receiveTimeout = Duration(seconds: receive);
   }

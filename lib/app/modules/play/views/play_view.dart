@@ -50,7 +50,7 @@ class _PlayViewState extends State<PlayView> {
     return videoInfo2PlayListData(play.movieItem.videos);
   }
 
-  get tabviewData {
+  Map<int, Widget> get tabviewData {
     Map<int, Widget> result = {};
     playlist.asMap().forEach((key, value) {
       result[key] = Text(value.title);
@@ -71,7 +71,7 @@ class _PlayViewState extends State<PlayView> {
     super.initState();
   }
 
-  handlePlay(int tabIndex, int index) async {
+  Future<void> handlePlay(int tabIndex, int index) async {
     var cx = playlist[tabIndex].datas[index];
     if (!await play.handleTapPlayerButtom(cx)) return;
     Future.delayed(const Duration(milliseconds: 420), () {

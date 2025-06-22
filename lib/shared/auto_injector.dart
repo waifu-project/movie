@@ -3,7 +3,7 @@ import 'package:webplayer_embedded/webplayer_embedded.dart';
 
 final autoInjector = AutoInjector();
 
-registerAutoInjector() {
+void registerAutoInjector() {
   autoInjector.addSingleton(WebPlayerEmbedded.new);
   autoInjector.commit();
 }

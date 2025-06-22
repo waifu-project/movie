@@ -59,7 +59,7 @@ class _ChewieViewState extends State<ChewieView> {
   String playUrl = "";
   String cover = "";
 
-  init() {
+  void init() {
     setState(() {
       videoPlayerController = VideoPlayerController.networkUrl(
         Uri.parse(playUrl),

@@ -147,7 +147,7 @@ class PlayController extends GetxController {
 
   int tabIndex = 0;
 
-  changeTabIndex(dynamic i) {
+  void changeTabIndex(dynamic i) {
     tabIndex = i;
     update();
   }
@@ -164,7 +164,7 @@ class PlayController extends GetxController {
 
   String playTips = "";
 
-  m3u82Iframe(String m3u8) {
+  String m3u82Iframe(String m3u8) {
     var type = getSettingAsKeyIdent<IWebPlayerEmbeddedType>(
       SettingsAllKey.webviewPlayType,
     );
@@ -328,13 +328,13 @@ class PlayController extends GetxController {
     return true;
   }
 
-  loadAsset() async {
+  Future<void> loadAsset() async {
     var tips = await rootBundle.loadString('assets/data/play_tips.txt');
     playTips = tips;
     update();
   }
 
-  showPlayTips() {
+  void showPlayTips() {
     var ctx = Get.context;
     if (ctx == null) return;
     showCupertinoDialog(

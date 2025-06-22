@@ -18,14 +18,14 @@ class MirrorStatusStack {
     return _stacks[stack];
   }
 
-  pushStatus(String sourceKey, bool status, {bool canSave = false}) {
+  void pushStatus(String sourceKey, bool status, {bool canSave = false}) {
     _stacks[sourceKey] = status;
     if (canSave) {
       flash();
     }
   }
 
-  flash() {
+  void flash() {
     List<SourceJsonData> data = _datas.map((e) {
       bool status = e.meta.status;
       String id = e.meta.id;
@@ -49,7 +49,7 @@ class MirrorStatusStack {
     SpiderManage.mergeSpider(data);
   }
 
-  clean() {
+  void clean() {
     _stacks.clear();
   }
 }

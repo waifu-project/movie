@@ -51,7 +51,7 @@ class _SearchViewState extends State<SearchView>
     });
   }
 
-  loadSearchHistory() async {
+  Future<void> loadSearchHistory() async {
     var data = historyAs.where(distinct: false).findAllSync();
     setState(() {
       _searchHistory = data.map((e) => e.content).toList();
@@ -70,7 +70,7 @@ class _SearchViewState extends State<SearchView>
   }
 
   /// 操作历史记录
-  handleUpdateSearchHistory(
+  void handleUpdateSearchHistory(
     String text, {
     type = UpdateSearchHistoryType.add,
   }) {
@@ -114,7 +114,7 @@ class _SearchViewState extends State<SearchView>
   TextEditingController textEditingController =
       TextEditingController(text: "1");
 
-  changeTextEditingController(int text) {
+  void changeTextEditingController(int text) {
     textEditingController.text = text.toString();
   }
 
@@ -447,7 +447,7 @@ class _SearchViewState extends State<SearchView>
   /// [isInit] 是否是初始化, 将 [page] => 1
   ///
   /// [title] 如果未设置内容默认走缓存 [cacheSearchText]
-  handleStandSearch({
+  void handleStandSearch({
     String? title,
     bool isInit = true,
   }) {

@@ -32,7 +32,7 @@ extension ISettingMixin on Object {
   /// disgustingε(┬┬﹏┬┬)3
   ///
   /// (っ ̯ -｡)
-  getSettingAsKey(SettingsAllKey key) {
+  Object getSettingAsKey(SettingsAllKey key) {
     var curr = settingAsValue;
     if (key == SettingsAllKey.themeMode) {
       return curr.themeMode;
@@ -59,7 +59,7 @@ extension ISettingMixin on Object {
   /// disgustingε(┬┬﹏┬┬)3
   ///
   /// (っ ̯ -｡)
-  updateSetting(SettingsAllKey key, dynamic value) {
+  void updateSetting(SettingsAllKey key, dynamic value) {
     var curr = settingAsValue;
     if (key == SettingsAllKey.themeMode) {
       curr.themeMode = value;
@@ -87,13 +87,13 @@ extension ISettingMixin on Object {
 }
 
 extension Mixxxx on String {
-  openURL() async {
+  Future<void> openURL() async {
     await canLaunchUrlString(this)
         ? await launchUrlString(this)
         : throw 'Could not launch $this';
   }
 
-  openToIINA() async {
+  Future openToIINA() async {
     return 'iina://weblink?url=$this&new_window=1'.openURL();
   }
 }

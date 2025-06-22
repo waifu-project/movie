@@ -12,7 +12,7 @@ RegExp _ipv4Maybe = RegExp(r'^(\d?\d?\d)\.(\d?\d?\d)\.(\d?\d?\d)\.(\d?\d?\d)$');
 RegExp _ipv6 =
     RegExp(r'^::|^::1|^([a-fA-F0-9]{1,4}::?){1,7}([a-fA-F0-9]{1,4})$');
 
-shift(List l) {
+dynamic shift(List l) {
   if (l.isNotEmpty) {
     var first = l.first;
     l.removeAt(0);

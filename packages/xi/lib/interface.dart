@@ -31,10 +31,10 @@ class VideoSize {
   final double size;
 
   /// 格式化视频大小
-  get humanSize {}
+  void get humanSize {}
 
   /// 格式化视频时间
-  get humanDuration {}
+  void get humanDuration {}
 
   const VideoSize({
     this.x = 0,

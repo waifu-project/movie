@@ -18,7 +18,7 @@ class ParseIsarModel {
   }
 }
 
-movieParseModelFromJson(String json) {
+dynamic movieParseModelFromJson(String json) {
   var map = jsonDecode(json);
   var name = map['name'] ?? "";
   var url = map['url'] ?? "";

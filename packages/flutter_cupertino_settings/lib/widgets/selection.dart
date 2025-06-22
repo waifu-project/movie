@@ -18,12 +18,12 @@ class CSSelection<T> extends StatelessWidget {
   final T? currentSelection;
   final double fontSize;
 
-  const CSSelection({
+  const CSSelection({Key? key, 
     required this.items,
     required this.onSelected,
     this.currentSelection,
     this.fontSize = CS_TITLE_FONT_SIZE,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

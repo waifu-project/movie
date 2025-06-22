@@ -25,7 +25,7 @@ class _WebviewViewState extends State<WebviewView> {
     super.initState();
   }
 
-  init() {
+  void init() {
     // https://github.com/flutter/packages/blob/853c6773177a32be019c55c2ff45c9908196dadd/packages/webview_flutter/webview_flutter/example/lib/simple_example.dart#L27C5-L48C40
     controller = WebViewController()
       ..setJavaScriptMode(JavaScriptMode.unrestricted)

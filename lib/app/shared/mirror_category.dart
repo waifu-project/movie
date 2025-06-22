@@ -20,21 +20,21 @@ class MirrorCategoryPool {
     return count >= kMirrorCategoryTryCountMax;
   }
 
-  fetchCountPP(String key) {
+  void fetchCountPP(String key) {
     int count = fetchCounter[key] ?? 0;
     fetchCounter[key] = count + 1;
   }
 
-  cleanCounter() {
+  void cleanCounter() {
     fetchCounter = {};
   }
   //===============================
 
-  clean() {
+  void clean() {
     stacks = {};
   }
 
-  put(String key, List<SourceSpiderQueryCategory> data) {
+  void put(String key, List<SourceSpiderQueryCategory> data) {
     stacks[key] = data;
   }
 

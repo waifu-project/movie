@@ -83,7 +83,7 @@ class _CustomPopupMenuState extends State<CustomPopupMenu> {
   CustomPopupMenuController? _controller;
   bool _canResponse = true;
 
-  _showMenu() {
+  void _showMenu() {
     Widget arrow = ClipPath(
       clipper: _ArrowClipper(),
       child: Container(
@@ -173,14 +173,14 @@ class _CustomPopupMenuState extends State<CustomPopupMenu> {
     }
   }
 
-  _hideMenu() {
+  void _hideMenu() {
     if (_overlayEntry != null) {
       _overlayEntry?.remove();
       _overlayEntry = null;
     }
   }
 
-  _updateView() {
+  void _updateView() {
     bool menuIsShowing = _controller?.menuIsShowing ?? false;
     widget.menuOnChange?.call(menuIsShowing);
     if (menuIsShowing) {

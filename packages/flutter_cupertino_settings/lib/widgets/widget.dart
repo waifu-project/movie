@@ -13,13 +13,13 @@ class CSWidget extends StatelessWidget {
   final bool showTopBorder;
 
   const CSWidget(
-    this.widget, {
+    this.widget, {Key? key, 
     this.alignment,
     this.height = CS_ITEM_HEIGHT,
     this.style = CS_DEFAULT_STYLE,
     this.addPaddingToBorder = false,
     this.showTopBorder = false,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

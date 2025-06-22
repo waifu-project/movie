@@ -61,7 +61,7 @@ class _MirrorCheckViewState extends State<MirrorCheckView> {
 
   List<String> currCacheID = [];
 
-  runTasks() async {
+  Future<void> runTasks() async {
     running = true;
     setState(() {});
     executor = Executor(concurrency: 12);
@@ -106,7 +106,7 @@ class _MirrorCheckViewState extends State<MirrorCheckView> {
     setState(() {});
   }
 
-  handleTapAction() {
+  void handleTapAction() {
     if (running) {
       executor?.close();
       running = false;
@@ -137,7 +137,7 @@ class _MirrorCheckViewState extends State<MirrorCheckView> {
     return "成功: $_success, 失败: $_fail";
   }
 
-  beforeHook() {
+  void beforeHook() {
     running = true;
     setState(() {});
     runTasks();
@@ -160,7 +160,7 @@ class _MirrorCheckViewState extends State<MirrorCheckView> {
     executor?.close();
   }
 
-  handleClickMenu(MirrorTabButtonStatus action) {
+  void handleClickMenu(MirrorTabButtonStatus action) {
     switch (action) {
       case MirrorTabButtonStatus.cancel:
         running = false;
@@ -182,7 +182,7 @@ class _MirrorCheckViewState extends State<MirrorCheckView> {
 
   String _currentStatusText = "";
 
-  updateCurrentStatusText(String text) {
+  void updateCurrentStatusText(String text) {
     _currentStatusText = text;
     setState(() {});
   }

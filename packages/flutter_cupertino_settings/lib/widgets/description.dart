@@ -3,7 +3,7 @@ part of flutter_cupertino_settings;
 class CSDescription extends StatelessWidget {
   final String description;
 
-  const CSDescription(this.description);
+  const CSDescription(this.description, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

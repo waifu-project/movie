@@ -8,7 +8,7 @@ class CSControl extends CSWidget {
   final Widget? contentWidget;
   final double fontSize;
 
-  CSControl({
+  CSControl({Key? key, 
     this.nameWidget,
     this.contentWidget,
     CSWidgetStyle style = CS_DEFAULT_STYLE,
@@ -20,7 +20,7 @@ class CSControl extends CSWidget {
             contentWidget: contentWidget,
             nameWidget: nameWidget,
           ),
-          style: style,
+           key: key, style: style,
           addPaddingToBorder: addPaddingToBorder,
         );
 }

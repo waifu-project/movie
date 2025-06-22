@@ -1,4 +1,4 @@
-library xi;
+library;
 
 export 'package:dio/dio.dart';
 export 'package:jsonc/jsonc.dart';

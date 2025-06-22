@@ -31,7 +31,7 @@ class _SourceHelpTableState extends State<SourceHelpTable> {
 
   final home = Get.find<HomeController>();
 
-  loadMirrorListApi() async {
+  Future<void> loadMirrorListApi() async {
     setState(() {
       _isLoadingFromAJAX = true;
     });
@@ -88,7 +88,7 @@ class _SourceHelpTableState extends State<SourceHelpTable> {
     return "我知道了";
   }
 
-  handleCopyText(
+  Future<void> handleCopyText(
       {AssetSourceItemJSONData? item, bool canCopyAll = false}) async {
     List<AssetSourceItemJSONData> actions = mirrors;
     if (!canCopyAll && item != null) actions = [item];
@@ -135,7 +135,7 @@ class _SourceHelpTableState extends State<SourceHelpTable> {
     );
   }
 
-  updateExtendMirrorList(List<String> result) {
+  void updateExtendMirrorList(List<String> result) {
     var old =
         getSettingAsKeyIdent<String>(SettingsAllKey.mirrorTextarea).trim();
     var lines = old.split('\n').where((element) {
@@ -163,7 +163,7 @@ class _SourceHelpTableState extends State<SourceHelpTable> {
   }
 
   /// 导入文件
-  handleImportFiles() async {
+  Future<void> handleImportFiles() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
       allowMultiple: true,
       type: FileType.custom,
@@ -255,7 +255,7 @@ class _SourceHelpTableState extends State<SourceHelpTable> {
       var diff = easyData[0] as int;
       if (diff > 0) {
         var newListData = easyData[1] as dynamic;
-        await SpiderManage.mergeSpider(newListData);
+        SpiderManage.mergeSpider(newListData);
       }
       var diffMsg = "本次共合并$diff个源!";
       if (diff <= 0) {
@@ -454,7 +454,7 @@ class _SourceHelpTableState extends State<SourceHelpTable> {
   }
 }
 
-showEasyCupertinoDialog({
+void showEasyCupertinoDialog({
   String? title,
   dynamic content,
   VoidCallback? onDone,

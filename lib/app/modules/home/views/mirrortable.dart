@@ -63,7 +63,7 @@ class _MirrorTableViewState extends State<MirrorTableView> {
     return home.cacheMirrorTableScrollControllerOffset;
   }
 
-  updateCacheMirrorTableScrollControllerOffset([bool isFirst = true]) {
+  void updateCacheMirrorTableScrollControllerOffset([bool isFirst = true]) {
     if (isFirst && cacheMirrorTableScrollControllerOffset <= 0) return;
     Future.delayed(const Duration(milliseconds: 200), () {
       if (scrollController.hasClients) {
@@ -88,7 +88,7 @@ class _MirrorTableViewState extends State<MirrorTableView> {
     });
   }
 
-  updateMirrorStatusMap() {
+  void updateMirrorStatusMap() {
     __statusMap = MirrorStatusStack().getStacks;
     setState(() {});
   }
@@ -127,7 +127,7 @@ class _MirrorTableViewState extends State<MirrorTableView> {
 
   Map<String, bool> __statusMap = {};
 
-  handleClickSubMenu(MenuActionType action) async {
+  Future<void> handleClickSubMenu(MenuActionType action) async {
     switch (action) {
       case MenuActionType.check:
         XHttp.setTimeout(24, 24);
@@ -191,8 +191,8 @@ class _MirrorTableViewState extends State<MirrorTableView> {
     }
   }
 
-  showDelUnavailableMirrorDialog() async {
-    var completer = Completer();
+  Future<bool> showDelUnavailableMirrorDialog() async {
+    var completer = Completer<bool>();
     showCupertinoDialog(
       builder: (BuildContext context) => CupertinoAlertDialog(
         title: const Text('提示'),

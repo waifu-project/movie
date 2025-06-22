@@ -14,7 +14,7 @@ class CSLink extends StatelessWidget {
   final Widget? trailing;
   final CellType cellType;
 
-  const CSLink({
+  const CSLink({Key? key, 
     required this.title,
     this.onPressed,
     this.subtitle,
@@ -26,7 +26,7 @@ class CSLink extends StatelessWidget {
     this.showTopBorder = false,
     this.trailing,
     this.cellType = CellType.defaultStyle,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

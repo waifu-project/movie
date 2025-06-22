@@ -9,14 +9,14 @@ class CSSecret extends StatefulWidget {
   final bool addPaddingToBorder;
   final String obscuringCharacter;
 
-  CSSecret(
+  const CSSecret(
     this.text,
-    this.secret, {
+    this.secret, {Key? key, 
     this.style = CS_DEFAULT_STYLE,
     this.fontSize = CS_TITLE_FONT_SIZE,
     this.addPaddingToBorder = true,
     this.obscuringCharacter = '•',
-  });
+  }) : super(key: key);
 
   @override
   _CSSecretState createState() => _CSSecretState();

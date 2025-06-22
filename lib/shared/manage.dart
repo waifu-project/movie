@@ -27,7 +27,7 @@ class SpiderManage {
   }
 
   /// 初始化
-  static init() async {
+  static Future<void> init() async {
     final data = IsarRepository().mirrorAs.where(distinct: false).findAllSync();
     var result = data.map((item) {
       return MacCMSSpider(
@@ -71,13 +71,13 @@ class SpiderManage {
   }
 
   /// 删除单个源
-  static removeItem(ISpiderAdapter item) {
+  static void removeItem(ISpiderAdapter item) {
     extend.remove(item);
     saveToCache(extend);
   }
 
   /// 删除 [List<String> id] 中的源
-  static remoteItemFromIDS(List<String> id) {
+  static void remoteItemFromIDS(List<String> id) {
     extend.removeWhere((e) => id.contains(e.meta.id));
     saveToCache(extend);
   }
@@ -150,7 +150,7 @@ class SpiderManage {
   }
 
   /// 删除所有源
-  static cleanAll({bool saveToCahe = false}) {
+  static void cleanAll({bool saveToCahe = false}) {
     extend = [];
     if (saveToCahe) {
       mergeSpider([]);
@@ -160,7 +160,7 @@ class SpiderManage {
   /// 保存缓存
   /// [该方法只可用来保存第三方源]
   /// 只适用于 [MacCMSSpider]
-  static saveToCache(List<ISpiderAdapter> saves) {
+  static void saveToCache(List<ISpiderAdapter> saves) {
     List<SourceJsonData> to = saves
         .map(
           (e) => SourceJsonData(
@@ -180,7 +180,7 @@ class SpiderManage {
     mergeSpider(to);
   }
 
-  static mergeSpider(List<SourceJsonData> data) {
+  static void mergeSpider(List<SourceJsonData> data) {
     var output = data.map((item) {
       var api = MirrorApiIsardModel();
       api.root = item.api?.root ?? "";

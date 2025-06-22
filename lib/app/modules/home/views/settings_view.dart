@@ -123,7 +123,7 @@ class _SettingsViewState extends State<SettingsView> {
     super.dispose();
   }
 
-  updateNSFW(bool flag, {bool onlyUpdate = false}) {
+  void updateNSFW(bool flag, {bool onlyUpdate = false}) {
     home.isNsfw = flag;
     if (!onlyUpdate) {
       showNSFW = flag;
@@ -131,7 +131,7 @@ class _SettingsViewState extends State<SettingsView> {
     home.update();
   }
 
-  addMirrorMangerTextareaLister() {
+  void addMirrorMangerTextareaLister() {
     editingControllerValue =
         getSettingAsKeyIdent<String>(SettingsAllKey.mirrorTextarea);
     _editingController.addListener(() {
@@ -139,7 +139,7 @@ class _SettingsViewState extends State<SettingsView> {
     });
   }
 
-  loadSourceHelp() async {
+  Future<void> loadSourceHelp() async {
     var data = await loadAsset();
     setState(() {
       sourceHelpText = data;
@@ -176,7 +176,7 @@ class _SettingsViewState extends State<SettingsView> {
     _editingController.text = newVal;
   }
 
-  handleDiglogTap(HandleDiglogTapType type) async {
+  Future<void> handleDiglogTap(HandleDiglogTapType type) async {
     switch (type) {
       case HandleDiglogTapType.clean:
         editingControllerValue = "";
@@ -267,7 +267,7 @@ class _SettingsViewState extends State<SettingsView> {
     home.macosPlayUseIINA = newVal;
   }
 
-  handleCleanCache() {
+  void handleCleanCache() {
     home.clearCache();
     home.confirmAlert(
       "已删除缓存, 部分内容重启之后生效!",

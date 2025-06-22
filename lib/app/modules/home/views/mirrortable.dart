@@ -366,8 +366,8 @@ class MirrorCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Color borderColor = context.isDarkMode
-        ? Colors.white.withOpacity(.1)
-        : Colors.black.withOpacity(.1);
+        ? Colors.white.withValues(alpha: .1)
+        : Colors.black.withValues(alpha: .1);
     Color textColor = _color(context.isDarkMode);
 
     return ConstrainedBox(

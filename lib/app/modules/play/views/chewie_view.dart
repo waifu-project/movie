@@ -151,7 +151,7 @@ class _ChewieViewState extends State<ChewieView> {
         child: Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(24),
-            color: Colors.black.withOpacity(.42),
+            color: Colors.black.withValues(alpha: .42),
           ),
           padding: const EdgeInsets.symmetric(
             horizontal: 18,
@@ -185,7 +185,7 @@ class _ChewieViewState extends State<ChewieView> {
                   Text(
                     errorMessage,
                     style: TextStyle(
-                      color: Colors.white.withOpacity(.72),
+                      color: Colors.white.withValues(alpha: .72),
                       fontSize: 10,
                     ),
                   ),

@@ -258,7 +258,7 @@ class _MirrorCheckViewState extends State<MirrorCheckView> {
                             vertical: 12,
                           ),
                           decoration: BoxDecoration(
-                            color: bgColor.withOpacity(.2),
+                            color: bgColor.withValues(alpha: .2),
                             borderRadius: BorderRadius.circular(6),
                           ),
                           child: Text(

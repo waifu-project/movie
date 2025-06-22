@@ -222,7 +222,7 @@ class _SettingsViewState extends State<SettingsView> {
               ),
             ),
           ),
-          barrierColor: CupertinoColors.black.withOpacity(.9),
+          barrierColor: CupertinoColors.black.withValues(alpha: .9),
         );
         var data = await SourceUtils.runTaks(target);
         Get.back();

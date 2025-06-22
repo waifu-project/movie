@@ -227,7 +227,7 @@ class _CommandPaletteInnerState extends State<_CommandPaletteInner> {
               .applyDefaults(Theme.of(context).inputDecorationTheme),
       prefixNestedActions: styleToCopy.prefixNestedActions,
       instructionColor: styleToCopy.instructionColor ??
-          newActionLabelTextStyle?.color?.withOpacity(.84),
+          newActionLabelTextStyle?.color?.withValues(alpha: .84),
       barrierFilter: styleToCopy.barrierFilter,
     );
 

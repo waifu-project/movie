@@ -79,7 +79,7 @@ class _IndexHomeViewState extends State<IndexHomeView>
             ],
           ),
         ),
-        barrierColor: CupertinoColors.inactiveGray.withOpacity(.9),
+        barrierColor: CupertinoColors.inactiveGray.withValues(alpha: .9),
       );
       data = await controller.currentMirrorItem.getDetail(id);
       Get.back();

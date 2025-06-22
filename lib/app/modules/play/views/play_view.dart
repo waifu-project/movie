@@ -265,7 +265,7 @@ class _PlayViewState extends State<PlayView> {
                                   ? BoxDecoration(
                                       border: Border(
                                         bottom: BorderSide(
-                                          color: Colors.grey.withOpacity(.2),
+                                          color: Colors.grey.withValues(alpha: .2),
                                           width: 1,
                                         ),
                                       ),
@@ -294,7 +294,7 @@ class _PlayViewState extends State<PlayView> {
                                           : (context.isDarkMode
                                                   ? Colors.white
                                                   : Colors.black)
-                                              .withOpacity(.42);
+                                              .withValues(alpha: .42);
                                       return GestureDetector(
                                         onTap: () {
                                           play.changeTabIndex(index);

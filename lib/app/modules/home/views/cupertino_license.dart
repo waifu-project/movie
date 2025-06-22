@@ -55,7 +55,7 @@ Widget body(
                     borderRadius: BorderRadius.circular(12),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.grey.withOpacity(0.5),
+                        color: Colors.grey.withValues(alpha: .5),
                         spreadRadius: 5,
                         blurRadius: 7,
                         offset:

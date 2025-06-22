@@ -64,16 +64,11 @@ Widget body(
                     ],
                   ),
                   child: Row(
+                    spacing: 12,
                     children: [
-                      const SizedBox(
-                        width: 12,
-                      ),
                       Image.asset(
                         "assets/images/github_logo.png",
                         width: 81,
-                      ),
-                      const SizedBox(
-                        width: 12,
                       ),
                       const Text(
                         "开源地址ヾ(≧O≦)〃",

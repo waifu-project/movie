@@ -33,6 +33,7 @@ class _MovieCardItemState extends State<MovieCardItem> {
         width: double.infinity,
         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
         child: Column(
+          spacing: 9,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Expanded(
@@ -51,7 +52,6 @@ class _MovieCardItemState extends State<MovieCardItem> {
                 ),
               ),
             ),
-            const SizedBox(height: 9),
             Text(
               widget.title,
               maxLines: 1,

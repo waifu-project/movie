@@ -510,6 +510,7 @@ class _PlayViewState extends State<PlayView> {
   Widget get emptyPlaylistWidget {
     return Center(
       child: Column(
+        spacing: 12,
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
@@ -517,9 +518,6 @@ class _PlayViewState extends State<PlayView> {
             CupertinoIcons.tornado,
             size: 42,
             color: CupertinoColors.systemBlue,
-          ),
-          const SizedBox(
-            height: 12,
           ),
           Text(
             "暂无播放链接",

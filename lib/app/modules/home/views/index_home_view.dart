@@ -63,14 +63,12 @@ class _IndexHomeViewState extends State<IndexHomeView>
       Get.dialog(
         Center(
           child: Column(
+            spacing: 12,
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const CircularProgressIndicator(
                 color: CupertinoColors.systemBlue,
-              ),
-              const SizedBox(
-                height: 12,
               ),
               Text(
                 "加载中",
@@ -283,22 +281,18 @@ class _IndexHomeViewState extends State<IndexHomeView>
                           enablePullUp: indexEnablePullUp,
                           header: const WaterDropHeader(
                             refresh: Row(
+                              spacing: 12,
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 CupertinoActivityIndicator(),
-                                SizedBox(
-                                  width: 12,
-                                ),
                                 Text("加载中"),
                               ],
                             ),
                             complete: Row(
+                              spacing: 12,
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Icon(CupertinoIcons.smiley),
-                                SizedBox(
-                                  width: 12,
-                                ),
                                 Text("加载完成"),
                               ],
                             ),
@@ -370,17 +364,18 @@ class _IndexHomeViewState extends State<IndexHomeView>
                                   );
                                 }
                                 return Center(
-                                    child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Image.asset(
-                                      "assets/images/error.png",
-                                      width: Get.width * .24,
-                                    ),
-                                    const SizedBox(height: 24),
-                                    const Text("当前请求列表为空"),
-                                  ],
-                                ));
+                                  child: Column(
+                                    spacing: 24,
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Image.asset(
+                                        "assets/images/error.png",
+                                        width: Get.width * .24,
+                                      ),
+                                      const Text("当前请求列表为空"),
+                                    ],
+                                  ),
+                                );
                               }
                               return WaterfallFlow.builder(
                                 controller: ScrollController(),

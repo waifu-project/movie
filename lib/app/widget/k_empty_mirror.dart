@@ -32,6 +32,7 @@ class KEmptyMirror extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Column(
+        spacing: 12,
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
@@ -40,17 +41,11 @@ class KEmptyMirror extends StatelessWidget {
             fit: BoxFit.cover,
             width: _width,
           ),
-          const SizedBox(
-            height: 12,
-          ),
           Text(
             '无数据源 :(',
             style: TextStyle(
               color: !context.isDarkMode ? Colors.black : Colors.white,
             ),
-          ),
-          const SizedBox(
-            height: 12,
           ),
           GestureDetector(
             child: MouseRegion(

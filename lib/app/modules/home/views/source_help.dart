@@ -264,14 +264,12 @@ class _SourceHelpTableState extends State<SourceHelpTable> {
       easyMessage += '\n$diffMsg';
       showEasyCupertinoDialog(
         content: Column(
+          spacing: 24,
           children: [
             const Icon(
               CupertinoIcons.hand_thumbsup,
               size: 51,
               color: CupertinoColors.systemBlue,
-            ),
-            const SizedBox(
-              height: 24,
             ),
             Text(easyMessage),
           ],
@@ -307,6 +305,7 @@ class _SourceHelpTableState extends State<SourceHelpTable> {
   Widget get _mirrorEmptyStateWidget {
     return Center(
       child: Column(
+        spacing: 24,
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
@@ -316,9 +315,6 @@ class _SourceHelpTableState extends State<SourceHelpTable> {
             }
             return const Icon(CupertinoIcons.zzz);
           }),
-          const SizedBox(
-            height: 24,
-          ),
           Text(
             _wrapperAjaxStatusLable,
           )
@@ -355,13 +351,11 @@ class _SourceHelpTableState extends State<SourceHelpTable> {
                       ),
                       onPressed: handleImportFiles,
                       child: Row(
+                        spacing: 3,
                         children: [
                           const Icon(
                             CupertinoIcons.arrow_down_square_fill,
                             color: CupertinoColors.white,
-                          ),
-                          const SizedBox(
-                            width: 3,
                           ),
                           Text(
                             "导入文件",

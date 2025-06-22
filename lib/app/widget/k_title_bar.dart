@@ -18,6 +18,7 @@ class KTitleBar extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           Column(
+            spacing: 8,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
@@ -25,9 +26,6 @@ class KTitleBar extends StatelessWidget {
                 style: const TextStyle(
                   fontSize: 24,
                 ),
-              ),
-              const SizedBox(
-                height: 8,
               ),
               Container(
                 height: 4,

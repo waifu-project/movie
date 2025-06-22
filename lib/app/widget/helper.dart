@@ -19,13 +19,13 @@ Widget kErrorImage = ClipRRect(
     ),
     child: Center(
       child: Column(
+        spacing: 6,
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(
             Icons.cloud_off,
             size: 42,
           ),
-          SizedBox(height: 6),
           Text("加载失败")
         ],
       ),

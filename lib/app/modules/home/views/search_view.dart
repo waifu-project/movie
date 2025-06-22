@@ -313,6 +313,7 @@ class _SearchViewState extends State<SearchView>
               ),
               emptyWidget: Center(
                 child: Column(
+                  spacing: 12,
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
@@ -320,9 +321,6 @@ class _SearchViewState extends State<SearchView>
                       "assets/images/error.png",
                       fit: BoxFit.cover,
                       width: _kEmptyMirrorWidth,
-                    ),
-                    const SizedBox(
-                      height: 12,
                     ),
                     const Text(
                       '没有找到相关视频 :(',
@@ -365,6 +363,7 @@ class _SearchViewState extends State<SearchView>
                   ),
                   child: SingleChildScrollView(
                     child: Column(
+                      spacing: searchHistory.isEmpty ? 8 : 12,
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -392,9 +391,6 @@ class _SearchViewState extends State<SearchView>
                               icon: const Icon(CupertinoIcons.clear),
                             ),
                           ],
-                        ),
-                        SizedBox(
-                          height: searchHistory.isEmpty ? 8 : 12,
                         ),
                         Builder(builder: (context) {
                           if (searchHistory.isEmpty) {

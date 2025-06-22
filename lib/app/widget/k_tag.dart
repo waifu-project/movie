@@ -44,6 +44,7 @@ class KTag extends StatelessWidget {
       padding: padding,
       margin: margin,
       child: Row(
+        spacing: 3,
         mainAxisSize: MainAxisSize.min,
         children: [
           InkWell(
@@ -51,9 +52,6 @@ class KTag extends StatelessWidget {
               onTap(KTagTapEventType.content);
             },
             child: child,
-          ),
-          const SizedBox(
-            width: 3,
           ),
           InkWell(
             onTap: () {

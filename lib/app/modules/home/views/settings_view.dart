@@ -197,14 +197,12 @@ class _SettingsViewState extends State<SettingsView> {
             behavior: HitTestBehavior.opaque,
             child: Center(
               child: Column(
+                spacing: 42,
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   const CircularProgressIndicator(
                     valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
-                  ),
-                  const SizedBox(
-                    height: 42,
                   ),
                   CupertinoButton.filled(
                     child: const Text(

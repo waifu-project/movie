@@ -150,13 +150,11 @@ class _ParseVipManagePageViewState extends State<ParseVipManagePageView> {
     return Center(
       child: SingleChildScrollView(
         child: Column(
+          spacing: 24,
           children: [
             Image.asset(
               "assets/images/error.png",
               width: Get.width * .33,
-            ),
-            const SizedBox(
-              height: 24,
             ),
             const Text("暂无解析接口 :("),
           ],

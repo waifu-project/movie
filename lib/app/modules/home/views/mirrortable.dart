@@ -410,6 +410,7 @@ class MirrorCard extends StatelessWidget {
                   const SizedBox(width: 12),
                   Expanded(
                     child: Column(
+                      spacing: _desc.isEmpty ? 0 : 3,
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -421,9 +422,6 @@ class MirrorCard extends StatelessWidget {
                             decoration: TextDecoration.none,
                             fontWeight: FontWeight.w300,
                           ),
-                        ),
-                        SizedBox(
-                          height: _desc.isEmpty ? 0 : 3,
                         ),
                         _desc.isEmpty
                             ? const SizedBox.shrink()
@@ -531,6 +529,7 @@ class MovieStatusWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
+      spacing: 6,
       children: [
         Container(
           width: 8,
@@ -539,9 +538,6 @@ class MovieStatusWidget extends StatelessWidget {
             borderRadius: BorderRadius.circular(12),
             color: _color,
           ),
-        ),
-        const SizedBox(
-          width: 6,
         ),
         Text(
           _text,

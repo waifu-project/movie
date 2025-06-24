@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.15)
 project(movie LANGUAGES CXX)
 
-set(BINARY_NAME "movie")
+set(BINARY_NAME "小猫影视")
 
 cmake_policy(SET CMP0063 NEW)
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env zsh
 
-echo "start build yoyo.app"
+echo "start build 小猫影视.app"
 flutter build macos --release
-echo "cp yoyo.app to /Applications"
-cp -rf build/macos/Build/Products/Release/yoyo.app /Applications
+echo "cp 小猫影视.app to /Applications"
+cp -rf build/macos/Build/Products/Release/小猫影视.app /Applications

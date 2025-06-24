@@ -6,4 +6,4 @@ mkdir Payload
 cd Payload
 ln -s ../Runner.app
 cd ..
-zip -r yoyo.ipa Payload
+zip -r 小猫影视.ipa Payload

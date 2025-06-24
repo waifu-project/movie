@@ -89,33 +89,31 @@ dependencies:
 dev_dependencies:
   flutter_lints: ^6.0.0
 
-  # flutter_launcher_name 与 flutter_launcher_icons 冲突
-  # flutter_launcher_name:
-  #   git:
-  #     url: https://github.com/Dhanabhon/flutter_launcher_name
+  flutter_launcher_name:
+    git:
+      url: https://github.com/Dhanabhon/flutter_launcher_name
 
   flutter_launcher_icons: ^0.14.4
 
-  # icons_launcher: ^2.0.4
+  icons_launcher: ^3.0.1
 
   flutter_native_splash: ^2.3.0
 
-  # isar_generator: ^3.1.0+1
   isar_generator:
     hosted:
       name: isar_generator
       url: https://pub.isar-community.dev/
     version: ^3.1.8
+  # isar_generator: ^3.1.0+1
 
   build_runner: ^2.4.4
-  # icons_launcher: ^1.1.7
 
   # flutter pub run change_app_package_name:main io.github.d1y.catmovie
   change_app_package_name: ^1.5.0
 
 # flutter pub run flutter_launcher_name:main
 flutter_launcher_name:
-  name: "yoyo"
+  name: "小猫影视"
 
 # flutter pub run flutter_native_splash:create
 flutter_native_splash:

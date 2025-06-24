@@ -70,7 +70,7 @@ void main() async {
   ThemeMode currentThemeMode = await runBefore();
   runApp(
     GetMaterialApp(
-      title: "yoyo",
+      title: "小猫影视",
       scrollBehavior: DragonScrollBehavior(),
       initialRoute: AppPages.INITIAL,
       getPages: AppPages.routes,

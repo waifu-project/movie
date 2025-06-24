@@ -92,10 +92,10 @@ BEGIN
             VALUE "CompanyName", "io.github.d1y" "\0"
             VALUE "FileDescription", "A new Flutter project." "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "catmovie" "\0"
+            VALUE "InternalName", "小猫影视" "\0"
             VALUE "LegalCopyright", "Copyright (C) 2021-2025 io.github.d1y. All rights reserved." "\0"
-            VALUE "OriginalFilename", "catmovie.exe" "\0"
-            VALUE "ProductName", "catmovie" "\0"
+            VALUE "OriginalFilename", "小猫影视.exe" "\0"
+            VALUE "ProductName", "小猫影视" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

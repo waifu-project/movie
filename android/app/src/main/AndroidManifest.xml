@@ -15,7 +15,7 @@
     </queries>
 
     <application
-        android:label="yoyo"
+        android:label="小猫影视"
         android:name="${applicationName}"
         android:icon="@mipmap/launcher_icon">
         <activity

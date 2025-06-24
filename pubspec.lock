@@ -508,6 +508,15 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.14.4"
+  flutter_launcher_name:
+    dependency: "direct dev"
+    description:
+      path: "."
+      ref: HEAD
+      resolved-ref: "40ce43ad63452703939a07449ceb338f0a29a67c"
+      url: "https://github.com/Dhanabhon/flutter_launcher_name"
+    source: git
+    version: "0.0.4"
   flutter_lints:
     dependency: "direct dev"
     description:
@@ -633,6 +642,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.1.2"
+  icons_launcher:
+    dependency: "direct dev"
+    description:
+      name: icons_launcher
+      sha256: "2949eef3d336028d89133f69ef221d877e09deed04ebd8e738ab4a427850a7a2"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.0.1"
   image:
     dependency: transitive
     description:

@@ -17,7 +17,8 @@ import 'package:xi/xi.dart';
 
 const scrollSize = 240;
 
-CallbackAction<Intent> shortcutCallback<T extends Intent>(int curr, VoidCallback cb) {
+CallbackAction<Intent> shortcutCallback<T extends Intent>(
+    int curr, VoidCallback cb) {
   return CallbackAction(onInvoke: (_) {
     if (curr != 0) return;
     cb();
@@ -116,7 +117,7 @@ class _IndexHomeViewState extends State<IndexHomeView>
     try {
       return controller.currentMirrorItem.meta.name;
     } catch (e) {
-      return "yoyo";
+      return "小猫影视";
     }
   }
 

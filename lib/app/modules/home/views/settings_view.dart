@@ -557,7 +557,7 @@ class _SettingsViewState extends State<SettingsView> {
               var firstWriteYear = '2020';
               String currentYearString = DateTime.now().year.toString();
               var text =
-                  '© YOYO播放器 $firstWriteYear-$currentYearString $gitTag($gitCommit)';
+                  '© 小猫影视 $firstWriteYear-$currentYearString $gitTag($gitCommit)';
               return CSDescription(text);
             }),
           ),

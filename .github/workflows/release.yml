@@ -40,7 +40,7 @@ jobs:
           name: windows
           path: build/windows/x64/runner/Release/小猫影视-windows.zip
 
-  build-linux-x86_64:
+  build-linux:
     runs-on: ubuntu-22.04
 
     env:
@@ -137,15 +137,22 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: windows
-
+      # https://github.com/softprops/action-gh-release/issues/288
+      - name: Rename CJK name
+        run: |
+          cp build/ios/iphoneos/小猫影视.ipa catmovie.ipa
+          cp build/app/outputs/flutter-apk/小猫影视.apk catmovie.apk
+          cp build/macos/Build/Products/Release/小猫影视-mac.zip catmovie-mac.zip
+          cp 小猫影视-linux-x86_64.tar.gz catmovie-linux-x86_64.tar.gz
+          cp 小猫影视-windows.zip catmovie-windows.zip
       - uses: softprops/action-gh-release@v2
         with:
           body_path: release-notes.txt
           files: |
-            build/ios/iphoneos/小猫影视.ipa
-            build/app/outputs/flutter-apk/小猫影视.apk
-            build/macos/Build/Products/Release/小猫影视-mac.zip
-            小猫影视-linux-x86_64.tar.gz
-            小猫影视-windows.zip
+            catmovie.ipa
+            catmovie.apk
+            catmovie-mac.zip
+            catmovie-linux-x86_64.tar.gz
+            catmovie-windows.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

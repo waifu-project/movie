@@ -89,13 +89,13 @@ BEGIN
     BEGIN
         BLOCK "040904e4"
         BEGIN
-            VALUE "CompanyName", "io.github.d1y.movie" "\0"
+            VALUE "CompanyName", "io.github.d1y" "\0"
             VALUE "FileDescription", "A new Flutter project." "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "movie" "\0"
-            VALUE "LegalCopyright", "Copyright (C) 2021-2022 io.github.d1y.movie. All rights reserved." "\0"
-            VALUE "OriginalFilename", "movie.exe" "\0"
-            VALUE "ProductName", "movie" "\0"
+            VALUE "InternalName", "catmovie" "\0"
+            VALUE "LegalCopyright", "Copyright (C) 2021-2025 io.github.d1y. All rights reserved." "\0"
+            VALUE "OriginalFilename", "catmovie.exe" "\0"
+            VALUE "ProductName", "catmovie" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

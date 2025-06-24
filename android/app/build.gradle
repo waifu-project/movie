@@ -24,7 +24,7 @@ if (flutterVersionName == null) {
 }
 
 android {
-    namespace = "io.github.d1y.movie.movie"
+    namespace = "io.github.d1y.catmovie"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -40,7 +40,7 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "io.github.d1y.movie.movie"
+        applicationId = "io.github.d1y.catmovie"
         // You can update the following values to match your application needs.
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
         minSdk = flutter.minSdkVersion

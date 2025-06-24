@@ -34,7 +34,7 @@ PODS:
     - DKImagePickerController/PhotoGallery
     - Flutter
   - Flutter (1.0.0)
-  - flutter_native_splash (0.0.1):
+  - flutter_native_splash (2.4.3):
     - Flutter
   - isar_flutter_libs (1.0.0):
     - Flutter
@@ -50,7 +50,7 @@ PODS:
   - SDWebImage/Core (5.19.2)
   - share_plus (0.0.1):
     - Flutter
-  - sqflite (0.0.3):
+  - sqflite_darwin (0.0.4):
     - Flutter
     - FlutterMacOS
   - SwiftyGif (5.4.5)
@@ -63,6 +63,7 @@ PODS:
     - Flutter
   - webview_flutter_wkwebview (0.0.1):
     - Flutter
+    - FlutterMacOS
 
 DEPENDENCIES:
   - file_picker (from `.symlinks/plugins/file_picker/ios`)
@@ -73,11 +74,11 @@ DEPENDENCIES:
   - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
   - protocol_handler_ios (from `.symlinks/plugins/protocol_handler_ios/ios`)
   - share_plus (from `.symlinks/plugins/share_plus/ios`)
-  - sqflite (from `.symlinks/plugins/sqflite/darwin`)
+  - sqflite_darwin (from `.symlinks/plugins/sqflite_darwin/darwin`)
   - url_launcher_ios (from `.symlinks/plugins/url_launcher_ios/ios`)
   - video_player_avfoundation (from `.symlinks/plugins/video_player_avfoundation/darwin`)
   - wakelock_plus (from `.symlinks/plugins/wakelock_plus/ios`)
-  - webview_flutter_wkwebview (from `.symlinks/plugins/webview_flutter_wkwebview/ios`)
+  - webview_flutter_wkwebview (from `.symlinks/plugins/webview_flutter_wkwebview/darwin`)
 
 SPEC REPOS:
   trunk:
@@ -103,8 +104,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/protocol_handler_ios/ios"
   share_plus:
     :path: ".symlinks/plugins/share_plus/ios"
-  sqflite:
-    :path: ".symlinks/plugins/sqflite/darwin"
+  sqflite_darwin:
+    :path: ".symlinks/plugins/sqflite_darwin/darwin"
   url_launcher_ios:
     :path: ".symlinks/plugins/url_launcher_ios/ios"
   video_player_avfoundation:
@@ -112,27 +113,27 @@ EXTERNAL SOURCES:
   wakelock_plus:
     :path: ".symlinks/plugins/wakelock_plus/ios"
   webview_flutter_wkwebview:
-    :path: ".symlinks/plugins/webview_flutter_wkwebview/ios"
+    :path: ".symlinks/plugins/webview_flutter_wkwebview/darwin"
 
 SPEC CHECKSUMS:
   DKImagePickerController: 946cec48c7873164274ecc4624d19e3da4c1ef3c
   DKPhotoGallery: b3834fecb755ee09a593d7c9e389d8b5d6deed60
-  file_picker: 09aa5ec1ab24135ccd7a1621c46c84134bfd6655
+  file_picker: a0560bc09d61de87f12d246fc47d2119e6ef37be
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
-  flutter_native_splash: edf599c81f74d093a4daf8e17bd7a018854bc778
-  isar_flutter_libs: b69f437aeab9c521821c3f376198c4371fa21073
-  package_info_plus: 58f0028419748fad15bf008b270aaa8e54380b1c
-  path_provider_foundation: 2b6b4c569c0fb62ec74538f866245ac84301af46
-  protocol_handler_ios: a5db8abc38526ee326988b808be621e5fd568990
+  flutter_native_splash: c32d145d68aeda5502d5f543ee38c192065986cf
+  isar_flutter_libs: bc909e72c3d756c2759f14c8776c13b5b0556e26
+  package_info_plus: af8e2ca6888548050f16fa2f1938db7b5a5df499
+  path_provider_foundation: 080d55be775b7414fd5a5ef3ac137b97b097e564
+  protocol_handler_ios: 59f23ee71f3ec602d67902ca7f669a80957888d5
   SDWebImage: dfe95b2466a9823cf9f0c6d01217c06550d7b29a
-  share_plus: 8875f4f2500512ea181eef553c3e27dba5135aad
-  sqflite: 673a0e54cc04b7d6dba8d24fb8095b31c3a99eec
+  share_plus: 50da8cb520a8f0f65671c6c6a99b3617ed10a58a
+  sqflite_darwin: 20b2a3a3b70e43edae938624ce550a3cbf66a3d0
   SwiftyGif: 706c60cf65fa2bc5ee0313beece843c8eb8194d4
-  url_launcher_ios: 5334b05cef931de560670eeae103fd3e431ac3fe
-  video_player_avfoundation: 7c6c11d8470e1675df7397027218274b6d2360b3
-  wakelock_plus: 78ec7c5b202cab7761af8e2b2b3d0671be6c4ae1
-  webview_flutter_wkwebview: be0f0d33777f1bfd0c9fdcb594786704dbf65f36
+  url_launcher_ios: 694010445543906933d732453a59da0a173ae33d
+  video_player_avfoundation: 2cef49524dd1f16c5300b9cd6efd9611ce03639b
+  wakelock_plus: e29112ab3ef0b318e58cfa5c32326458be66b556
+  webview_flutter_wkwebview: 1821ceac936eba6f7984d89a9f3bcb4dea99ebb2
 
 PODFILE CHECKSUM: 775997f741c536251164e3eacf6e34abf2eb7a17
 
-COCOAPODS: 1.15.2
+COCOAPODS: 1.16.2

@@ -110,6 +110,9 @@ dev_dependencies:
   build_runner: ^2.4.4
   # icons_launcher: ^1.1.7
 
+  # flutter pub run change_app_package_name:main io.github.d1y.catmovie
+  change_app_package_name: ^1.5.0
+
 # flutter pub run flutter_launcher_name:main
 flutter_launcher_name:
   name: "yoyo"

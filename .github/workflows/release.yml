@@ -32,19 +32,19 @@ jobs:
         uses: thedoctor0/zip-release@master
         with:
           type: 'zip'
-          filename: 小猫影视-windows.zip
+          filename: catmovie-windows.zip
           directory: build/windows/x64/runner/Release
       - name: Upload assets
         uses: actions/upload-artifact@v4
         with:
           name: windows
-          path: build/windows/x64/runner/Release/小猫影视-windows.zip
+          path: build/windows/x64/runner/Release/catmovie-windows.zip
 
   build-linux:
     runs-on: ubuntu-22.04
 
     env:
-      TARBALL_NAME: 小猫影视-linux-x86_64.tar.gz
+      TARBALL_NAME: catmovie-linux-x86_64.tar.gz
 
     steps:
       - uses: actions/checkout@v4
@@ -111,7 +111,7 @@ jobs:
           flutter pub run build_runner build
           flutter pub deps
           flutter build apk --release -v
-          cp build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/小猫影视.apk
+          cp build/app/outputs/flutter-apk/app-release.apk catmovie.apk
 
       - name: Build iOS ipa
         run: |
@@ -121,39 +121,31 @@ jobs:
           cd Payload
           ln -s ../Runner.app
           cd ..
-          zip -r 小猫影视.ipa Payload
+          zip -r catmovie.ipa Payload
 
       - name: Build macOS
         run: |
           flutter config --enable-macos-desktop
           flutter build macos --release -v
           cd build/macos/Build/Products/Release
-          zip -r 小猫影视-mac.zip 小猫影视.app/*
-
-      - uses: actions/download-artifact@v4
-        with:
-          name: x86_64_linux
+          zip -r catmovie-mac.zip 小猫影视.app/*
 
       - uses: actions/download-artifact@v4
         with:
           name: windows
-      # https://github.com/softprops/action-gh-release/issues/288
-      - name: Rename CJK name
-        run: |
-          cp build/ios/iphoneos/小猫影视.ipa catmovie.ipa
-          cp build/app/outputs/flutter-apk/小猫影视.apk catmovie.apk
-          cp build/macos/Build/Products/Release/小猫影视-mac.zip catmovie-mac.zip
-          cp 小猫影视-linux-x86_64.tar.gz catmovie-linux-x86_64.tar.gz
-          cp 小猫影视-windows.zip catmovie-windows.zip
+      - uses: actions/download-artifact@v4
+        with:
+          name: x86_64_linux
+
       - uses: softprops/action-gh-release@v2
         with:
           body_path: release-notes.txt
           prerelease: true
           files: |
-            catmovie.ipa
-            catmovie.apk
-            catmovie-mac.zip
-            catmovie-linux-x86_64.tar.gz
             catmovie-windows.zip
+            catmovie-linux-x86_64.tar.gz
+            catmovie.apk
+            catmovie.ipa
+            catmovie-mac.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -25,10 +25,6 @@ jobs:
           ./script/fetch_git_info.ps1
           flutter pub get
           flutter pub run build_runner build
-      - name: Install Visual C++ Redistributabl # GPT
-        run: |
-          Invoke-WebRequest -Uri "https://aka.ms/vs/17/release/vc_redist.x64.exe" -OutFile "vc_redist.x64.exe"
-          Start-Process -FilePath .\vc_redist.x64.exe -ArgumentList "/install", "/quiet", "/norestart" -Wait
       - name: Enable windows build
         run: flutter config --enable-windows-desktop
       - name: Build windows

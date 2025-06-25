@@ -7,6 +7,9 @@ set(BINARY_NAME "catmovie")
 # 设置一个变量来保存中文名称，用于显示在资源文件中
 set(APP_DISPLAY_NAME "小猫影视")
 
+# 强制静态链接 CRT
+set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+
 cmake_policy(SET CMP0063 NEW)
 
 set(CMAKE_INSTALL_RPATH "$ORIGIN/lib")

@@ -1,4 +1,5 @@
 # yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
+name: build and release
 on:
   push:
     tags:
@@ -145,7 +146,7 @@ jobs:
             catmovie-windows.zip
             catmovie-linux-x86_64.tar.gz
             catmovie.apk
-            catmovie.ipa
-            catmovie-mac.zip
+            build/ios/iphoneos/catmovie.ipa
+            build/macos/Build/Products/Release/catmovie-mac.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

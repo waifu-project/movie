@@ -1,7 +1,11 @@
 cmake_minimum_required(VERSION 3.15)
 project(movie LANGUAGES CXX)
 
-set(BINARY_NAME "小猫影视")
+# 使用 ASCII 名称作为二进制名称
+set(BINARY_NAME "catmovie")
+
+# 设置一个变量来保存中文名称，用于显示在资源文件中
+set(APP_DISPLAY_NAME "小猫影视")
 
 cmake_policy(SET CMP0063 NEW)
 
@@ -93,3 +97,14 @@ install(DIRECTORY "${PROJECT_BUILD_DIR}/${FLUTTER_ASSET_DIR_NAME}"
 install(FILES "${AOT_LIBRARY}" DESTINATION "${INSTALL_BUNDLE_DATA_DIR}"
   CONFIGURATIONS Profile;Release
   COMPONENT Runtime)
+
+# 添加后处理脚本，重命名生成的 EXE 文件为中文名称
+if(CMAKE_BUILD_TYPE STREQUAL "Release")
+  install(CODE "
+    execute_process(
+      COMMAND \"${CMAKE_COMMAND}\" -E copy 
+              \"${CMAKE_INSTALL_PREFIX}/${BINARY_NAME}.exe\" 
+              \"${CMAKE_INSTALL_PREFIX}/${APP_DISPLAY_NAME}.exe\"
+    )
+  " COMPONENT Runtime)
+endif()

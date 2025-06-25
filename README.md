@@ -2,7 +2,8 @@
   <img src="design/logo_round.png" width="120">
 </div>
 
-## yoyo
+## 小猫影视
+
 支持自定义源的轻量级视频播放器
 
 使用 `Flutter` 构建, 支持 `Android` | `Windows` | `Macos` | `iOS` | `Linux`(浅浅的画个饼O(∩_∩)O)

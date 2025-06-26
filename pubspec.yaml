@@ -93,8 +93,7 @@ dev_dependencies:
     git:
       url: https://github.com/Dhanabhon/flutter_launcher_name
 
-  flutter_launcher_icons: ^0.14.4
-
+  # flutter_launcher_icons: ^0.14.4
   icons_launcher: ^3.0.1
 
   flutter_native_splash: ^2.3.0
@@ -139,27 +138,17 @@ flutter:
 
 # flutter pub run icons_launcher:create
 icons_launcher:
-  image_path: 'design/logo.png'
+  image_path: 'design/logo_round.png'
   platforms:
-    # android:
-    #   enable: true
-    # ios:
-    #   enable: true
+    android:
+      enable: true
+    ios:
+      enable: true
+      # iOS不支持透明
+      image_path: 'design/logo_full.png'
     macos:
       enable: true
-      image_path: 'design/logo_round.png'
     windows:
       enable: true
     linux:
-      enable: true
-
-
-# flutter pub run flutter_launcher_icons:main
-flutter_icons:
-  android: "launcher_icon"
-  ios: true
-  image_path: design/logo.png
-  image_path_macos: design/logo.png
-  macos:
-    generate: true
-    image_path: design/logo.png
+      enable: false

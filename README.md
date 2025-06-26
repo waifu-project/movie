@@ -1,6 +1,4 @@
-<div align="center" style="display: flex">
-  <img src="design/logo_round.png" width="120">
-</div>
+![](design/logo.png)
 
 ## 小猫影视
 

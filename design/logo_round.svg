@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='utf-8'?>
+<svg xmlns="http://www.w3.org/2000/svg" height="224px" version="1.1" viewBox="0,0,224,224" width="224px">
+  <defs>
+    <linearGradient id="grad1" x1="0%" x2="0%" y1="0%" y2="100%">
+      <stop offset="0%" stop-color="#345d9d" />
+      <stop offset="100%" stop-color="#0b1f36" />
+    </linearGradient>
+  </defs>
+  <rect fill="url(#grad1)" height="200px" rx="40" ry="40" width="200px" x="12" y="12" />
+  <ellipse cx="112" cy="116" fill="white" rx="50" ry="45" />
+  <polygon fill="white" points="72,96 87,56 102,96" />
+  <polygon fill="white" points="122,96 137,56 152,96" />
+  <circle cx="92" cy="116" fill="#0b1f36" r="6" />
+  <circle cx="132" cy="116" fill="#0b1f36" r="6" />
+  <path d="M102,131 Q112,141 122,131" fill="none" stroke="#0b1f36" stroke-linecap="round" stroke-width="3" />
+</svg>

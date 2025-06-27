@@ -96,7 +96,7 @@ dev_dependencies:
   # flutter_launcher_icons: ^0.14.4
   icons_launcher: ^3.0.1
 
-  flutter_native_splash: ^2.3.0
+  # flutter_native_splash: ^2.4.6
 
   isar_generator:
     hosted:
@@ -115,11 +115,11 @@ flutter_launcher_name:
   name: "小猫影视"
 
 # flutter pub run flutter_native_splash:create
-flutter_native_splash:
-  image: design/logo_trans.png
-  color: "#FF5733"
-  ios: true
-  android: true
+# flutter_native_splash:
+#   image: 'design/logo_trans.png'
+#   color: "#FF5733"
+#   ios: true
+#   android: true
 
 flutter:
   uses-material-design: true

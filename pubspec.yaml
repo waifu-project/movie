@@ -1,5 +1,5 @@
 # yaml-language-server: $schema=https://json.schemastore.org/pubspec.json
-name: movie
+name: catmovie
 version: 2.5.0
 publish_to: none
 description: 支持扩展播放源的播放器

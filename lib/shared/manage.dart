@@ -1,13 +1,13 @@
 import 'dart:convert';
 
 import 'package:isar/isar.dart';
-import 'package:movie/app/extension.dart';
-import 'package:movie/builtin/maccms/maccms.dart';
+import 'package:catmovie/app/extension.dart';
+import 'package:catmovie/builtin/maccms/maccms.dart';
 import 'package:xi/adapters/mac_cms.dart';
 import 'package:xi/xi.dart';
-import 'package:movie/isar/repo.dart';
-import 'package:movie/isar/schema/mirror_schema.dart';
-import 'package:movie/shared/enum.dart';
+import 'package:catmovie/isar/repo.dart';
+import 'package:catmovie/isar/schema/mirror_schema.dart';
+import 'package:catmovie/shared/enum.dart';
 
 import 'package:xi/models/mac_cms/source_data.dart';
 

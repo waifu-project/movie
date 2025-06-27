@@ -1,4 +1,4 @@
-import 'package:movie/shared/manage.dart';
+import 'package:catmovie/shared/manage.dart';
 import 'package:xi/adapters/mac_cms.dart';
 import 'package:xi/xi.dart';
 import 'package:xi/models/mac_cms/source_data.dart';

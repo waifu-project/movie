@@ -9,16 +9,16 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'package:get/get.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
-import 'package:movie/app/extension.dart';
-import 'package:movie/app/modules/home/controllers/home_controller.dart';
-import 'package:movie/app/modules/home/views/parse_vip_manage.dart';
-import 'package:movie/app/modules/home/views/source_help.dart';
-import 'package:movie/app/shared/bus.dart';
-import 'package:movie/app/widget/window_appbar.dart';
-import 'package:movie/git_info.dart';
-import 'package:movie/shared/enum.dart';
-import 'package:movie/shared/manage.dart';
-import 'package:movie/app/modules/home/views/cupertino_license.dart';
+import 'package:catmovie/app/extension.dart';
+import 'package:catmovie/app/modules/home/controllers/home_controller.dart';
+import 'package:catmovie/app/modules/home/views/parse_vip_manage.dart';
+import 'package:catmovie/app/modules/home/views/source_help.dart';
+import 'package:catmovie/app/shared/bus.dart';
+import 'package:catmovie/app/widget/window_appbar.dart';
+import 'package:catmovie/git_info.dart';
+import 'package:catmovie/shared/enum.dart';
+import 'package:catmovie/shared/manage.dart';
+import 'package:catmovie/app/modules/home/views/cupertino_license.dart';
 import 'package:xi/utils/helper.dart';
 import 'package:xi/utils/source.dart';
 

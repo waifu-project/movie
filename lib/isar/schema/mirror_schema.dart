@@ -1,5 +1,5 @@
 import 'package:isar/isar.dart';
-import 'package:movie/shared/enum.dart';
+import 'package:catmovie/shared/enum.dart';
 
 part 'mirror_schema.g.dart';
 

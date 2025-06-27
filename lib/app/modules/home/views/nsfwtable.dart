@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'dart:async' show Future;
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:get/get.dart';
-import 'package:movie/app/modules/home/controllers/home_controller.dart';
-import 'package:movie/widget/simple_html/flutter_html.dart';
+import 'package:catmovie/app/modules/home/controllers/home_controller.dart';
+import 'package:catmovie/widget/simple_html/flutter_html.dart';
 
 import 'settings_view.dart';
 

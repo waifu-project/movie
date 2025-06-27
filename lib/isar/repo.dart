@@ -1,9 +1,9 @@
 import 'package:flutter/foundation.dart';
 import 'package:isar/isar.dart';
-import 'package:movie/isar/schema/history_schema.dart';
-import 'package:movie/isar/schema/mirror_schema.dart';
-import 'package:movie/isar/schema/parse_schema.dart';
-import 'package:movie/isar/schema/settings_schema.dart';
+import 'package:catmovie/isar/schema/history_schema.dart';
+import 'package:catmovie/isar/schema/mirror_schema.dart';
+import 'package:catmovie/isar/schema/parse_schema.dart';
+import 'package:catmovie/isar/schema/settings_schema.dart';
 import 'package:path_provider/path_provider.dart';
 
 // isar auto generated *.g.dart do you want add .gitignore?

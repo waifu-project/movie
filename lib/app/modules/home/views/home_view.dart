@@ -5,11 +5,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
-import 'package:movie/app/extension.dart';
-import 'package:movie/app/modules/home/views/index_home_view.dart';
-import 'package:movie/app/modules/home/views/search_view.dart';
-import 'package:movie/app/modules/home/views/settings_view.dart';
-import 'package:movie/shared/enum.dart';
+import 'package:catmovie/app/extension.dart';
+import 'package:catmovie/app/modules/home/views/index_home_view.dart';
+import 'package:catmovie/app/modules/home/views/search_view.dart';
+import 'package:catmovie/app/modules/home/views/settings_view.dart';
+import 'package:catmovie/shared/enum.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 import 'package:xi/xi.dart';
 

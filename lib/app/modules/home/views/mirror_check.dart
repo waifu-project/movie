@@ -2,7 +2,7 @@ import 'package:executor/executor.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:movie/app/shared/mirror_status_stack.dart';
+import 'package:catmovie/app/shared/mirror_status_stack.dart';
 import 'package:xi/xi.dart';
 
 // 这里的代码借鉴(抄袭)了:

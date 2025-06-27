@@ -1,5 +1,5 @@
 import 'package:isar/isar.dart';
-import 'package:movie/shared/enum.dart';
+import 'package:catmovie/shared/enum.dart';
 import 'package:webplayer_embedded/webplayer_embedded.dart';
 
 part 'settings_schema.g.dart';

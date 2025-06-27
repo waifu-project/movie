@@ -2,10 +2,10 @@
 
 import 'package:get/get.dart';
 
-import 'package:movie/app/modules/home/bindings/home_binding.dart';
-import 'package:movie/app/modules/home/views/home_view.dart';
-import 'package:movie/app/modules/play/bindings/play_binding.dart';
-import 'package:movie/app/modules/play/views/play_view.dart';
+import 'package:catmovie/app/modules/home/bindings/home_binding.dart';
+import 'package:catmovie/app/modules/home/views/home_view.dart';
+import 'package:catmovie/app/modules/play/bindings/play_binding.dart';
+import 'package:catmovie/app/modules/play/views/play_view.dart';
 
 part 'app_routes.dart';
 

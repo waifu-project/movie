@@ -1,10 +1,10 @@
 import 'package:isar/isar.dart';
-import 'package:movie/isar/repo.dart';
-import 'package:movie/isar/schema/history_schema.dart';
-import 'package:movie/isar/schema/mirror_schema.dart';
-import 'package:movie/isar/schema/parse_schema.dart';
-import 'package:movie/isar/schema/settings_schema.dart';
-import 'package:movie/shared/enum.dart';
+import 'package:catmovie/isar/repo.dart';
+import 'package:catmovie/isar/schema/history_schema.dart';
+import 'package:catmovie/isar/schema/mirror_schema.dart';
+import 'package:catmovie/isar/schema/parse_schema.dart';
+import 'package:catmovie/isar/schema/settings_schema.dart';
+import 'package:catmovie/shared/enum.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 /// remove this(mixin object 杀伤力太大)

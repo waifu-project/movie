@@ -5,17 +5,17 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:movie/app/extension.dart';
-import 'package:movie/app/modules/home/controllers/home_controller.dart';
-import 'package:movie/app/modules/home/views/source_help.dart';
-import 'package:movie/app/modules/play/views/chewie_view.dart';
-import 'package:movie/app/modules/play/views/webview_view.dart';
-import 'package:movie/shared/auto_injector.dart';
+import 'package:catmovie/app/extension.dart';
+import 'package:catmovie/app/modules/home/controllers/home_controller.dart';
+import 'package:catmovie/app/modules/home/views/source_help.dart';
+import 'package:catmovie/app/modules/play/views/chewie_view.dart';
+import 'package:catmovie/app/modules/play/views/webview_view.dart';
+import 'package:catmovie/shared/auto_injector.dart';
 import 'package:xi/adapters/mac_cms.dart';
 import 'package:xi/interface.dart';
 import 'package:xi/xi.dart';
-import 'package:movie/isar/schema/parse_schema.dart';
-import 'package:movie/shared/enum.dart';
+import 'package:catmovie/isar/schema/parse_schema.dart';
+import 'package:catmovie/shared/enum.dart';
 import 'package:webplayer_embedded/webplayer_embedded.dart';
 
 // https://www.bilibili.com/video/BV1cN411d73g

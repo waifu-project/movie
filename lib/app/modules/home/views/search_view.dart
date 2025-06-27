@@ -8,16 +8,16 @@ import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 import 'package:isar/isar.dart';
-import 'package:movie/app/extension.dart';
-import 'package:movie/app/modules/home/controllers/home_controller.dart';
-import 'package:movie/app/routes/app_pages.dart';
-import 'package:movie/app/widget/helper.dart';
-import 'package:movie/app/widget/k_empty_mirror.dart';
-import 'package:movie/app/widget/k_error_stack.dart';
-import 'package:movie/app/widget/k_pagination.dart';
-import 'package:movie/app/widget/k_tag.dart';
-import 'package:movie/app/widget/window_appbar.dart';
-import 'package:movie/isar/schema/history_schema.dart';
+import 'package:catmovie/app/extension.dart';
+import 'package:catmovie/app/modules/home/controllers/home_controller.dart';
+import 'package:catmovie/app/routes/app_pages.dart';
+import 'package:catmovie/app/widget/helper.dart';
+import 'package:catmovie/app/widget/k_empty_mirror.dart';
+import 'package:catmovie/app/widget/k_error_stack.dart';
+import 'package:catmovie/app/widget/k_pagination.dart';
+import 'package:catmovie/app/widget/k_tag.dart';
+import 'package:catmovie/app/widget/window_appbar.dart';
+import 'package:catmovie/isar/schema/history_schema.dart';
 import 'package:xi/xi.dart';
 
 class SearchView extends StatefulWidget {

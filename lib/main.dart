@@ -4,14 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'package:get/get.dart';
-import 'package:movie/isar/repo.dart';
-import 'package:movie/shared/auto_injector.dart';
+import 'package:catmovie/isar/repo.dart';
+import 'package:catmovie/shared/auto_injector.dart';
 import 'package:protocol_handler/protocol_handler.dart';
 import 'package:window_manager/window_manager.dart';
 import 'package:xi/utils/helper.dart';
 import 'package:xi/utils/http.dart';
 import 'shared/manage.dart';
-import 'package:movie/shared/enum.dart';
+import 'package:catmovie/shared/enum.dart';
 
 import 'app/routes/app_pages.dart';
 

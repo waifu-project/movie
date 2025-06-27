@@ -1,7 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:movie/app/widget/helper.dart';
+import 'package:catmovie/app/widget/helper.dart';
 
 class MovieCardItem extends StatefulWidget {
   final String imageUrl;

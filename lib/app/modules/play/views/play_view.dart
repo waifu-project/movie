@@ -4,11 +4,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:movie/app/modules/home/controllers/home_controller.dart';
-import 'package:movie/app/modules/home/views/parse_vip_manage.dart';
-import 'package:movie/app/widget/helper.dart';
-import 'package:movie/app/widget/window_appbar.dart';
-import 'package:movie/widget/simple_html/flutter_html.dart';
+import 'package:catmovie/app/modules/home/controllers/home_controller.dart';
+import 'package:catmovie/app/modules/home/views/parse_vip_manage.dart';
+import 'package:catmovie/app/widget/helper.dart';
+import 'package:catmovie/app/widget/window_appbar.dart';
+import 'package:catmovie/widget/simple_html/flutter_html.dart';
 import 'package:simple/x.dart';
 import 'package:xi/xi.dart';
 

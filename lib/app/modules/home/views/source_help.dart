@@ -5,13 +5,13 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:movie/app/extension.dart';
-import 'package:movie/app/modules/home/controllers/home_controller.dart';
-import 'package:movie/app/widget/k_error_stack.dart';
-import 'package:movie/app/widget/window_appbar.dart';
-import 'package:movie/shared/manage.dart';
+import 'package:catmovie/app/extension.dart';
+import 'package:catmovie/app/modules/home/controllers/home_controller.dart';
+import 'package:catmovie/app/widget/k_error_stack.dart';
+import 'package:catmovie/app/widget/window_appbar.dart';
+import 'package:catmovie/shared/manage.dart';
 import 'package:xi/adapters/mac_cms.dart';
-import 'package:movie/shared/enum.dart';
+import 'package:catmovie/shared/enum.dart';
 import 'package:xi/xi.dart';
 
 const fetchMirrorAPI =

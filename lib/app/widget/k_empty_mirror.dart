@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:movie/app/modules/home/controllers/home_controller.dart';
+import 'package:catmovie/app/modules/home/controllers/home_controller.dart';
 
 class KEmptyMirror extends StatelessWidget {
   const KEmptyMirror({

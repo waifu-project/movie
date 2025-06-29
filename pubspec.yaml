@@ -63,13 +63,16 @@ dependencies:
     path: packages/flutter_cupertino_settings
   flappy_search_bar:
     path: packages/flappy_search_bar_ns # https://github.com/d1y/flappy_search_bar_ns
-  command_palette:
-    path: packages/command_palette # https://github.com/d1y/command_palette
   simple:
     path: packages/simple
   xi:
     path: packages/xi
 
+  command_palette:
+    git:
+      url: https://github.com/d1y/command_palette
+      branch: d1y
+      ref: c9cf207fccd07ecaa6de0f7ea898046ffa26ff3a
   webplayer_embedded:
     git: https://github.com/d1y/webplayer_embedded
   bitsdojo_window:

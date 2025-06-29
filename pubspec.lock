@@ -269,10 +269,12 @@ packages:
   command_palette:
     dependency: "direct main"
     description:
-      path: "packages/command_palette"
-      relative: true
-    source: path
-    version: "0.7.3"
+      path: "."
+      ref: c9cf207fccd07ecaa6de0f7ea898046ffa26ff3a
+      resolved-ref: c9cf207fccd07ecaa6de0f7ea898046ffa26ff3a
+      url: "https://github.com/d1y/command_palette"
+    source: git
+    version: "0.7.6"
   convert:
     dependency: transitive
     description:

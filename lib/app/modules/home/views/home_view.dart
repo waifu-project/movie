@@ -66,7 +66,9 @@ class HomeView extends GetView<HomeController> {
               contentPadding: EdgeInsets.all(16),
             ),
           ),
-          showInstructions: true,
+          instructionConfig: CommandPaletteInstructionConfig(
+            showInstructions: false,
+          ),
         ),
         onTabSwitch: controller.switchTabview,
         onClose: () {

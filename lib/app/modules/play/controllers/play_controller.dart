@@ -168,7 +168,10 @@ class PlayController extends GetxController {
     var type = getSettingAsKeyIdent<IWebPlayerEmbeddedType>(
       SettingsAllKey.webviewPlayType,
     );
-    var url = webPlayerEmbedded.generatePlayerUrl(type, m3u8);
+    // TODO: support custom danmu api
+    var danmu = "https://api.danmu.icu/?ac=dm&url=";
+    var url = webPlayerEmbedded.generatePlayerUrl(type, m3u8, danmu: danmu);
+    debugPrint("url is $url");
     return url;
   }
 

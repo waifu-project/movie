@@ -39,7 +39,7 @@ extension AnyInjectHttpCacheOptions on Object {
 var kHttpCacheMiddlewareOptions = CacheOptions(
   store: MemCacheStore(),
   policy: CachePolicy.forceCache,
-  hitCacheOnErrorExcept: [401, 403],
+  hitCacheOnErrorCodes: const [401, 403],
   maxStale: kHttpCacheTime,
   priority: CachePriority.normal,
   cipher: null,

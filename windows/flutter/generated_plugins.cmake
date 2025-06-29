@@ -7,7 +7,7 @@ list(APPEND FLUTTER_PLUGIN_LIST
   desktop_webview_window
   isar_flutter_libs
   protocol_handler_windows
-  screen_retriever
+  screen_retriever_windows
   share_plus
   url_launcher_windows
   window_manager

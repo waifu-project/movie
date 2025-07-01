@@ -1,6 +1,7 @@
 #!/usr/bin/env zsh
 
 echo "start build 小猫影视.app"
+dart run script/add_builtin.dart > lib/builtin/maccms/maccms.dart
 flutter build macos --release
 echo "cp 小猫影视.app to /Applications"
 cp -rf build/macos/Build/Products/Release/小猫影视.app /Applications

@@ -25,6 +25,7 @@ jobs:
           ./script/fetch_git_info.ps1
           flutter pub get
           flutter pub run build_runner build
+          dart run script/add_builtin.dart > lib/builtin/maccms/maccms.dart
       - name: Enable windows build
         run: flutter config --enable-windows-desktop
       - name: Build windows
@@ -67,6 +68,7 @@ jobs:
         run: |
           python3 script/linux_apply_font.py
           bash script/fetch_git_info.sh
+          dart run script/add_builtin.dart > lib/builtin/maccms/maccms.dart
           flutter build linux --release -v
       - name: Create tarball
         run: |
@@ -104,13 +106,13 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build android apk(muitple archs)
+      - name: Build android apk
         # flutter build apk --target-platform android-arm,android-arm64,android-x64 --split-per-abi
         run: |
           bash script/fetch_git_info.sh
           flutter pub get
           flutter pub run build_runner build
-          flutter pub deps
+          dart run script/add_builtin.dart > lib/builtin/maccms/maccms.dart
           flutter build apk --release -v
           cp build/app/outputs/flutter-apk/app-release.apk catmovie.apk
 

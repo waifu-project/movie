@@ -1,5 +1,7 @@
 #!/usr/bin/env zsh
 
+echo "start build 小猫影视.ipa"
+dart run script/add_builtin.dart > lib/builtin/maccms/maccms.dart
 flutter build ios --release --no-codesign
 cd build/ios/iphoneos
 mkdir Payload

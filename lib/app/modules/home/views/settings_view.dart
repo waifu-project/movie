@@ -22,8 +22,6 @@ import 'package:catmovie/app/modules/home/views/cupertino_license.dart';
 import 'package:xi/utils/helper.dart';
 import 'package:xi/utils/source.dart';
 
-import 'nsfwtable.dart';
-
 enum GetBackResultType {
   /// 失败
   fail,
@@ -415,36 +413,18 @@ class _SettingsViewState extends State<SettingsView> {
                   ),
                 )
               : const SizedBox.shrink(),
-          showNSFW
-              ? CSControl(
-                  nameWidget: const Text('NSFW'),
-                  contentWidget: CupertinoSwitch(
-                    value: home.isNsfw,
-                    onChanged: (bool value) async {
-                      if (value) {
-                        var result = await showCupertinoModalBottomSheet(
-                          context: context,
-                          builder: (_) => SizedBox(
-                            width: double.infinity,
-                            height: Get.height * .72,
-                            child: const NsfwTableView(),
-                          ),
-                        );
-                        if (result == GetBackResultType.success) {
-                          updateNSFW(true);
-                          return;
-                        }
-                      }
-                      updateNSFW(false);
-                    },
-                  ),
-                  style: const CSWidgetStyle(
-                    icon: Icon(
-                      Icons.stop_screen_share,
-                    ),
-                  ),
-                )
-              : const SizedBox.shrink(),
+          CSControl(
+            nameWidget: const Text('成人模式'),
+            contentWidget: CupertinoSwitch(
+              value: home.isNsfw,
+              onChanged: (bool value) {
+                updateNSFW(value);
+              },
+            ),
+            style: const CSWidgetStyle(
+              icon: Icon(CupertinoIcons.hammer_fill),
+            ),
+          ),
           if (GetPlatform.isMacOS)
             CSControl(
               nameWidget: const Text('播放使用IINA(默认内置播放器)'),

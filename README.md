@@ -1,6 +1,6 @@
 <img src="design/logo_round.svg" width="120" />
 
-## 小猫影视
+## 小猫影视 🐈
 
 自带线路的轻量级播放器🧌
 
@@ -13,7 +13,7 @@
 ![](https://img.shields.io/badge/Android-3DDC84?style=flat&logo=android&logoColor=white)
 
 官方源参考: https://github.com/waifu-project/movie/issues/45
-> 也支持自定义源, 可自行添加源, 参考: [源制作.md](./docs//源制作.md)
+> 也支持自定义源, 可自行添加源, 参考: [源制作.md](./docs/create_source.md)
 
 <img src="https://github.com/user-attachments/assets/cc99ceca-bc11-4fcd-84d6-16b07d155c5a" width="420" />
 
@@ -21,7 +21,7 @@
 
 #### **Macos**
 
-`macOS` 可以使用 [Homebrew](https://brew.sh) 快速安装, 也可自行下载安装
+`macOS` 可以使用 [homebrew](https://brew.sh) 快速安装, 也可自行下载安装
 
 [![](https://img.shields.io/badge/-点我下载-blue?logo=github)](https://github.com/waifu-project/movie/releases/latest/download/catmovie-mac.zip
 )
@@ -62,24 +62,18 @@ yay -S xdg-user-dir xdg-utils
 
 - [Sideloadly](https://sideloadly.io)
 - [TrollStore](https://github.com/opa334/TrollStore)
-- [NB助手(推荐)](https://nbtool8.com) 签名安装
+- [NB助手](https://nbtool8.com)
 
 > [!NOTE]
-> 巨魔一键安装链接🔗:
-> 
 > apple-magnifier://install?url=https://github.com/waifu-project/movie/releases/latest/download/catmovie.ipa
 
 [![](https://img.shields.io/badge/-点我下载-blue?logo=github)](https://github.com/waifu-project/movie/releases/latest/download/catmovie.ipa)
 
-## 提示🥳
+### 文档 📜
 
-### 桌面端有键盘快捷键吗?
-
-有啊, 参见 [docs/keyboard.md](./docs/keyboard.md)
-
-### 怎么样获得最好的使用(播放)体验?
-
-> 目前不打算在播放体验上花功夫, 大部分的逻辑会走系统 `webview`
-
-- `macOS` 推荐使用 [IINA](https://iina.io) 来播放视频
-- `iOS` 推荐使用内置浏览器来播放视频
+- [制作源](./docs/create_source.md)
+- [键盘快捷键](./docs/keyboard.md) 
+- [解析VIP视频](./docs/parse_vip.md)
+- [URL Scheme](./docs/protocol.md)
+- [贡献代码](./docs/PR.md)
+- [调试代码](./docs/start_dev.md)

@@ -226,7 +226,9 @@ class HomeController extends GetxController
   }
 
   List<ISpiderAdapter> get mirrorList {
-    if (isNsfw) return SpiderManage.data;
+    if (isNsfw) {
+      return SpiderManage.data.where((e) => e.isNsfw).toList();
+    }
     return SpiderManage.data.where((e) => !e.isNsfw).toList();
   }
 
@@ -245,7 +247,7 @@ class HomeController extends GetxController
     showCupertinoModalBottomSheet(
       context: context,
       builder: (_) => SizedBox(
-        height: Get.height * .92,
+        height: Get.height * .88,
         width: double.infinity,
         child: const MirrorTableView(),
       ),
@@ -430,7 +432,8 @@ class HomeController extends GetxController
 
   /// [isFirst] 初始化加载数据需要将 [isLoading] => true
   /// [missIsLoading] 某些特殊情况下不需要设置 [isLoading] => true
-  Future<void> updateHomeData({bool isFirst = false, missIsLoading = false}) async {
+  Future<void> updateHomeData(
+      {bool isFirst = false, missIsLoading = false}) async {
     /// 如果都没有源, 则不需要加载数据
     /// => +_+ 还玩个球啊
     if (mirrorListIsEmpty) return;
@@ -751,12 +754,6 @@ class HomeController extends GetxController
         if (!flag) break;
         isNsfw = enable;
         $bus.fire(SettingEvent(nsfw: enable));
-        // show simple toast
-        // await confirmAlert(
-        //   "已更新nsfw设置",
-        //   showCancel: false,
-        //   confirmText: "我知道了",
-        // );
         break;
       // case "search":
       default:

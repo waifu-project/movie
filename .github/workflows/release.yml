@@ -26,6 +26,8 @@ jobs:
           flutter pub get
           flutter pub run build_runner build
           dart run script/add_builtin.dart > lib/builtin/maccms/maccms.dart
+          $env:version = "${{ github.ref_name }}" -replace "^release-v", ""
+          dart run script/replace_version.dart
       - name: Build windows
         run: |
           flutter config --enable-windows-desktop
@@ -76,6 +78,8 @@ jobs:
           python3 script/linux_apply_font.py
           bash script/fetch_git_info.sh
           dart run script/add_builtin.dart > lib/builtin/maccms/maccms.dart
+          export version=$(echo "${{ github.ref_name }}" | sed 's/^release-v//')
+          dart run script/replace_version.dart
           flutter build linux --release -v
       - name: Create tarball
         run: |
@@ -120,6 +124,8 @@ jobs:
           flutter pub get
           flutter pub run build_runner build
           dart run script/add_builtin.dart > lib/builtin/maccms/maccms.dart
+          export version=$(echo "${{ github.ref_name }}" | sed 's/^release-v//')
+          dart run script/replace_version.dart
           flutter build apk --release -v
           cp build/app/outputs/flutter-apk/app-release.apk catmovie.apk
 

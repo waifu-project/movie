@@ -2,7 +2,6 @@
 <assembly xmlns="urn:schemas-microsoft-com:asm.v1" manifestVersion="1.0">
   <application xmlns="urn:schemas-microsoft-com:asm.v3">
     <windowsSettings>
-      <ms:AppUserModelID xmlns:ms="http://schemas.microsoft.com/SMI/2005/WindowsSettings">io.github.d1y.catmovie</ms:AppUserModelID>
       <dpiAwareness xmlns="http://schemas.microsoft.com/SMI/2016/WindowsSettings">PerMonitorV2</dpiAwareness>
     </windowsSettings>
   </application>

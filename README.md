@@ -48,8 +48,6 @@ yay -S xdg-user-dir xdg-utils
 
 #### **Windows**
 
-> FIXME: Windows现在无法运行
-
 [![](https://img.shields.io/badge/-点我下载-blue?logo=github)](https://github.com/waifu-project/movie/releases/latest/download/catmovie-windows.zip)
 
 #### **Android**

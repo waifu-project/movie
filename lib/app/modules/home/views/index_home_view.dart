@@ -141,9 +141,11 @@ class _IndexHomeViewState extends State<IndexHomeView>
   @override
   Widget build(BuildContext context) {
     super.build(context);
+    bool isDesktop = MediaQuery.sizeOf(context).width > 600;
     return GetBuilder<HomeController>(
       builder: (homeview) => Scaffold(
-        appBar: WindowAppBar(
+        backgroundColor: Colors.transparent,
+        appBar: isDesktop ? null : WindowAppBar(
           iosBackStyle: true,
           title: Padding(
             padding: const EdgeInsets.symmetric(
@@ -232,12 +234,14 @@ class _IndexHomeViewState extends State<IndexHomeView>
               child: KBody(
                 child: Column(
                   children: [
+                    SizedBox(height: 12),
                     AnimatedContainer(
                       width: double.infinity,
                       height: !categoryIsEmpty ? 42 : 0,
                       duration: const Duration(
                         milliseconds: 420,
                       ),
+                      color: Colors.transparent,
                       curve: Curves.decelerate,
                       child: ListView.builder(
                         itemCount: controller.currentCategoryer.length,
@@ -255,7 +259,7 @@ class _IndexHomeViewState extends State<IndexHomeView>
                               padding: const EdgeInsets.symmetric(
                                 horizontal: 24.0,
                               ),
-                              color: isCurr ? CupertinoColors.systemBlue : null,
+                              color: isCurr ? Theme.of(context).primaryColor : null,
                               child: Text(
                                 curr.name,
                                 style: TextStyle(
@@ -276,6 +280,7 @@ class _IndexHomeViewState extends State<IndexHomeView>
                         }),
                       ),
                     ),
+                    SizedBox(height: 12),
                     Expanded(
                       child: Builder(builder: (context) {
                         if (controller.mirrorListIsEmpty) {

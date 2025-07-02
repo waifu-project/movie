@@ -52,6 +52,8 @@ class HomeView extends GetView<HomeController> {
     Color color = isDark
         ? const Color.fromRGBO(0, 0, 0, .63)
         : const Color.fromRGBO(255, 255, 255, .63);
+
+    bool isDesktop = MediaQuery.sizeOf(context).width > 600;
     return GetBuilder<HomeController>(
       builder: (homeview) => CommandPalette(
         focusNode: controller.focusNode,
@@ -114,64 +116,114 @@ class HomeView extends GetView<HomeController> {
           )
         ],
         child: Scaffold(
-          backgroundColor: Colors.transparent,
-          body: PageView.builder(
-            controller: homeview.currentBarController,
-            itemBuilder: (context, index) {
-              return _views[index];
-            },
-            itemCount: _views.length,
-            physics: const NeverScrollableScrollPhysics(),
-            onPageChanged: (index) {
-              // fix ios keyboard auto up
-              var currentFocus = FocusScope.of(context);
-              currentFocus.unfocus();
-              controller.focusNode.requestFocus();
-              homeview.changeCurrentBarIndex(index);
-            },
-          ),
-          bottomNavigationBar: BottomAppBar(
-            elevation: 0,
-            color: homeview.currentBarIndex == 2 ? Colors.transparent : color,
-            padding: EdgeInsets.zero,
-            child: GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              child: SizedBox(
-                height: 63,
-                child: ClipRect(
-                  child: BackdropFilter(
-                    filter: ImageFilter.blur(sigmaX: 40, sigmaY: 40),
-                    child: Center(
-                      child: ConstrainedBox(
-                        constraints: const BoxConstraints(
-                          maxWidth: 360,
-                        ),
-                        child: SalomonBottomBar(
-                          itemPadding: const EdgeInsets.symmetric(
-                            vertical: 9,
-                            horizontal: 18,
-                          ),
-                          currentIndex: homeview.currentBarIndex,
-                          onTap: (int i) {
-                            homeview.changeCurrentBarIndex(i);
+          // backgroundColor: Colors.transparent,
+          body: Row(
+            children: [
+              if (isDesktop) Container(
+                // width: 120,
+                height: double.infinity,
+                decoration: BoxDecoration(
+                  color: Color.fromRGBO(246, 247, 248, 1),
+                ),
+                padding: EdgeInsets.symmetric(
+                  vertical: 12,
+                  horizontal: 24,
+                ),
+                child: Column(
+                  spacing: 24,
+                  children: [
+                    SizedBox(height: 12),
+                    ..._tabs.map((item) {
+                      int index = _tabs.indexOf(item);
+                      bool isCurr = index == controller.currentBarIndex;
+                      Color color = isCurr ? Theme.of(context).primaryColor : Colors.black;
+                      return MouseRegion(
+                        cursor: SystemMouseCursors.click,
+                        child: GestureDetector(
+                          onTap: () {
+                            homeview.changeCurrentBarIndex(index);
                           },
-                          items: _tabs
-                              .map(
-                                (e) => SalomonBottomBarItem(
-                                  icon: Icon(e['icon']),
-                                  title: Text(e['title']),
-                                  selectedColor: e['color'],
+                          child: Column(
+                            spacing: 6,
+                            children: [
+                              Icon(item['icon'], color: color),
+                              Text(
+                                item['title'],
+                                style: TextStyle(color: color),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    }),
+                  ],
+                ),
+              ),
+              Expanded(
+                child: PageView.builder(
+                  controller: homeview.currentBarController,
+                  itemBuilder: (context, index) {
+                    return _views[index];
+                  },
+                  itemCount: _views.length,
+                  physics: const NeverScrollableScrollPhysics(),
+                  onPageChanged: (index) {
+                    // fix ios keyboard auto up
+                    var currentFocus = FocusScope.of(context);
+                    currentFocus.unfocus();
+                    controller.focusNode.requestFocus();
+                    homeview.changeCurrentBarIndex(index);
+                  },
+                ),
+              ),
+            ],
+          ),
+          bottomNavigationBar: isDesktop
+              ? null
+              : BottomAppBar(
+                  elevation: 0,
+                  color: homeview.currentBarIndex == 2
+                      ? Colors.transparent
+                      : color,
+                  padding: EdgeInsets.zero,
+                  child: GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    child: SizedBox(
+                      height: 63,
+                      child: ClipRect(
+                        child: BackdropFilter(
+                          filter: ImageFilter.blur(sigmaX: 40, sigmaY: 40),
+                          child: Center(
+                            child: ConstrainedBox(
+                              constraints: const BoxConstraints(
+                                maxWidth: 360,
+                              ),
+                              child: SalomonBottomBar(
+                                itemPadding: const EdgeInsets.symmetric(
+                                  vertical: 9,
+                                  horizontal: 18,
                                 ),
-                              )
-                              .toList(),
+                                currentIndex: homeview.currentBarIndex,
+                                onTap: (int i) {
+                                  homeview.changeCurrentBarIndex(i);
+                                },
+                                items: _tabs
+                                    .map(
+                                      (e) => SalomonBottomBarItem(
+                                        icon: Icon(e['icon']),
+                                        title: Text(e['title']),
+                                        selectedColor: e['color'],
+                                      ),
+                                    )
+                                    .toList(),
+                              ),
+                            ),
+                          ),
                         ),
                       ),
                     ),
                   ),
                 ),
-              ),
-            ),
-          ),
           extendBody: true,
         ),
       ),

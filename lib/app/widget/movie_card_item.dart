@@ -22,7 +22,6 @@ class MovieCardItem extends StatefulWidget {
 }
 
 class _MovieCardItemState extends State<MovieCardItem> {
-  bool isHovered = false;
 
   @override
   Widget build(BuildContext context) {

@@ -2,8 +2,9 @@ part of flutter_cupertino_settings;
 
 class CSDescription extends StatelessWidget {
   final String description;
+  final String? fontFamily;
 
-  const CSDescription(this.description, {Key? key}) : super(key: key);
+  const CSDescription(this.description, {Key? key, this.fontFamily}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -14,6 +15,7 @@ class CSDescription extends StatelessWidget {
         description,
         style: basicTextStyle(context).copyWith(
           color: CupertinoColors.secondaryLabel.resolveFrom(context),
+          fontFamily: fontFamily,
           fontSize: CS_DESCRIPTION_FONT_SIZE,
           height: 1.1,
         ),

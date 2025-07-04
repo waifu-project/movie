@@ -137,6 +137,11 @@ flutter:
     - assets/data/play_tips.txt
     - assets/images/github_logo.png
     - assets/images/error.png
+  
+  fonts:
+    - family: pm
+      fonts:
+        - asset: fonts/庞门正道细线体/庞门正道细线体.ttf
 
 ##HERE
 

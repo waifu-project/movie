@@ -153,6 +153,7 @@ class _IndexHomeViewState extends State<IndexHomeView>
               currentTitle,
               textAlign: TextAlign.center,
               style: const TextStyle(
+                fontFamily: "pm",
                 fontSize: 18,
               ),
             ),

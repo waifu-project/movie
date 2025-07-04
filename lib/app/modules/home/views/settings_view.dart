@@ -542,7 +542,7 @@ class _SettingsViewState extends State<SettingsView> {
               String currentYearString = DateTime.now().year.toString();
               var text =
                   '© 小猫影视 $firstWriteYear-$currentYearString $gitTag($gitCommit)';
-              return CSDescription(text);
+              return CSDescription(text, fontFamily: "pm",);
             }),
           ),
         ],

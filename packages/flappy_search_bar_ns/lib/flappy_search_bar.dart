@@ -406,6 +406,7 @@ class _SearchBarState<T> extends State<SearchBar<T?>>
                           // well need enter to search :)
                           onSubmitted: _onTextChanged,
                           style: widget.textStyle,
+                          textInputAction: TextInputAction.search,
                           decoration: InputDecoration(
                             icon: widget.icon,
                             border: InputBorder.none,

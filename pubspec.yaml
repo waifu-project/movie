@@ -28,7 +28,6 @@ dependencies:
   path_provider: ^2.1.5
   clipboard: ^0.1.3
   wakelock_plus: ^1.3.2
-  desktop_webview_window: ^0.2.3
   url_launcher: ^6.3.1
   flutter_slidable: ^4.0.0
   auto_injector: ^2.1.1
@@ -67,6 +66,12 @@ dependencies:
   xi:
     path: packages/xi
 
+  desktop_webview_window:
+    git:
+      url: https://github.com/waifu-project/flutter-plugins
+      branch: full_support
+      ref: 691a7e3f3d8e1a814efae79a76e8107043f420d4
+      path: packages/desktop_webview_window
   command_palette:
     git:
       url: https://github.com/d1y/command_palette

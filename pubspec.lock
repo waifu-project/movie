@@ -355,11 +355,12 @@ packages:
   desktop_webview_window:
     dependency: "direct main"
     description:
-      name: desktop_webview_window
-      sha256: "57cf20d81689d5cbb1adfd0017e96b669398a669d927906073b0e42fc64111c0"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.2.3"
+      path: "packages/desktop_webview_window"
+      ref: "691a7e3f3d8e1a814efae79a76e8107043f420d4"
+      resolved-ref: "691a7e3f3d8e1a814efae79a76e8107043f420d4"
+      url: "https://github.com/waifu-project/flutter-plugins"
+    source: git
+    version: "0.2.4"
   dio:
     dependency: "direct main"
     description:

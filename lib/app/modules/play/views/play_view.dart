@@ -31,8 +31,6 @@ class _PlayViewState extends State<PlayView> {
   final PlayController play = Get.find<PlayController>();
   final HomeController home = Get.find<HomeController>();
 
-  PlayState playState = const PlayState(-1, -1);
-
   FocusNode focusNode = FocusNode();
 
   ScrollController scrollController = ScrollController();
@@ -72,11 +70,11 @@ class _PlayViewState extends State<PlayView> {
   }
 
   Future<void> handlePlay(int tabIndex, int index) async {
-    var cx = playlist[tabIndex].datas[index];
-    if (!await play.handleTapPlayerButtom(cx)) return;
+    var realPlaylist = playlist[tabIndex].datas;
+    var curr = playlist[tabIndex].datas[index];
+    if (!await play.handleTapPlayerButtom(curr, realPlaylist, tabIndex)) return;
     Future.delayed(const Duration(milliseconds: 420), () {
-      playState = PlayState(tabIndex, index);
-      setState(() {});
+      play.updatePlayState(tabIndex, index);
     });
   }
 
@@ -265,7 +263,8 @@ class _PlayViewState extends State<PlayView> {
                                   ? BoxDecoration(
                                       border: Border(
                                         bottom: BorderSide(
-                                          color: Colors.grey.withValues(alpha: .2),
+                                          color:
+                                              Colors.grey.withValues(alpha: .2),
                                           width: 1,
                                         ),
                                       ),
@@ -382,6 +381,7 @@ class _PlayViewState extends State<PlayView> {
                                               .length;
                                           var text =
                                               len <= 1 ? "播放" : curr.name;
+                                          var playState = play.playState;
                                           if (playState.tabIndex ==
                                                   play.tabIndex &&
                                               index == playState.index) {

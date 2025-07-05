@@ -1,5 +1,7 @@
 import 'dart:async';
+import 'dart:convert';
 
+import 'package:catmovie/app/modules/play/views/play_view.dart';
 import 'package:desktop_webview_window/desktop_webview_window.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -29,6 +31,9 @@ import 'package:webplayer_embedded/webplayer_embedded.dart';
 //
 // 如果能够重来, 你还会在那天下午打开一个房间号为 6324 的直播间吗?
 const kWebPlayerEmbeddedPort = 6324;
+
+// 延迟注入播放列表的时间
+const kDelayExecInjectPlaylistJSCode = Duration(seconds: 1);
 
 const _kWindowsWebviewRuntimeLink =
     "https://developer.microsoft.com/en-us/microsoft-edge/webview2";
@@ -118,6 +123,8 @@ class PlayController extends GetxController {
     return itemAs;
   }
 
+  PlayState playState = const PlayState(-1, -1);
+
   /// 是否为通用解析
   bool get bIsBaseMirrorMovie {
     return currentMovieInstance is MacCMSSpider;
@@ -164,18 +171,46 @@ class PlayController extends GetxController {
 
   String playTips = "";
 
-  String m3u82Iframe(String m3u8) {
+  String url2Iframe(String realUrl) {
     var type = getSettingAsKeyIdent<IWebPlayerEmbeddedType>(
       SettingsAllKey.webviewPlayType,
     );
-    var url = webPlayerEmbedded.generatePlayerUrl(type, m3u8);
-    return url;
+    if (realUrl.endsWith(".m3u8")) {
+      return webPlayerEmbedded.generatePlayerUrl(type, realUrl);
+    }
+    return "http://localhost:$kWebPlayerEmbeddedPort/assets/iframe.html?url=$realUrl";
   }
 
-  String webviewShowMessage = "请勿相信广告";
+  Future<String> injectPlaylistJSCode(List<VideoInfo> playlist) async {
+    String playlistJS = await rootBundle.loadString(
+      'assets/data/playlist.js',
+    );
+    String appendEvalCode = "\nconst \$data = [\n";
+    for (var item in playlist) {
+      appendEvalCode += "{ title:`${item.name}`, url: `${item.url}` },";
+    }
+    appendEvalCode += "]\n";
+    appendEvalCode += "setPlaylist(\$data)\n";
+    var result = """
+document.addEventListener('DOMContentLoaded', function() {
+  $playlistJS
+  $appendEvalCode
+})
+""";
+    return result;
+  }
 
-  Future<bool> handleTapPlayerButtom(VideoInfo e) async {
-    var url = e.url;
+  void updatePlayState(int tabIndex, int index) {
+    playState = PlayState(tabIndex, index);
+    update();
+  }
+
+  Future<bool> handleTapPlayerButtom(
+    VideoInfo curr,
+    List<VideoInfo> playList,
+    int tabIndex,
+  ) async {
+    var url = curr.url;
     url = getPlayUrl(url);
 
     /// NOTE: 解析条件
@@ -223,8 +258,6 @@ class PlayController extends GetxController {
     /// https://github.com/MixinNetwork/flutter-plugins/tree/main/packages/desktop_webview_window
     /// 该插件支持 `windows` | `linux`(<然而[webview.launch]方法不支持:(>) | `macos`
     if (isWindows || isMacos) {
-      final bool typeIsM3u8 = e.type == VideoType.m3u8;
-
       if (isMacos && home.macosPlayUseIINA) {
         url.openToIINA(); // 家人们, 我们就假装安装了
         return true;
@@ -280,30 +313,74 @@ class PlayController extends GetxController {
         }
       }
 
-      /// `MP4` 理论上来说不需要操作就可以直接喂给浏览器?
-      if (typeIsM3u8) {
-        if (!(await webPlayerEmbedded.checkRunning())) {
-          await webPlayerEmbedded.createServer(port: kWebPlayerEmbeddedPort);
+      Webview webview = await WebviewWindow.create(
+        configuration: CreateConfiguration(titleBarHeight: 24, title: ""),
+      );
+
+      void setWebviewActivePlay(VideoInfo curr) {
+        webview.evaluateJavaScript("setActionText(`${curr.name}`)");
+        webview.evaluateJavaScript("setActiveWithPlaylist(`${curr.url}`)");
+      }
+
+      void updatePlayStateWithUrl(String url) {
+        int index = playList.indexWhere(
+          (item) => item.url == url,
+        );
+        if (index >= 0) {
+          updatePlayState(tabIndex, index);
         }
-        url = m3u82Iframe(url);
-      }
-      Webview webview = await WebviewWindow.create();
-
-      /// (不需要解析)白嫖的第三方资源会自动跳转广告网站, 这个方法将延迟删除广告
-      if (!needParse) {
-        int beforeRemoveADTime = 1200;
-        String execCode =
-            "alert('$webviewShowMessage');setTimeout(function() {window.removeEventListener('click', _popwnd_open);}, $beforeRemoveADTime)";
-        webview.addScriptToExecuteOnDocumentCreated(execCode);
       }
 
+      /// `MP4` 理论上来说不需要操作就可以直接喂给浏览器?
+      if (!(await webPlayerEmbedded.checkRunning())) {
+        await webPlayerEmbedded.createServer(
+          port: kWebPlayerEmbeddedPort,
+          onMessage: (msg) {
+            String value = jsonDecode(msg.value);
+            switch (msg.type) {
+              case "switchVideo":
+                updatePlayStateWithUrl(value);
+            }
+          },
+        );
+      }
+      url = url2Iframe(url);
+      debugPrint("webview url: $url");
       webview.launch(url);
+
+      // (不需要解析)白嫖的第三方资源会自动跳转广告网站, 这个方法将延迟删除广告
+      // NOTE(d1y): 果真需要吗?
+      // if (!needParse) {
+      //   int beforeRemoveADTime = 1200;
+      //   String execCode =
+      //       "alert('$webviewShowMessage');setTimeout(function() {window.removeEventListener('click', _popwnd_open);}, $beforeRemoveADTime)";
+      //   webview.addScriptToExecuteOnDocumentCreated(execCode);
+      // }
+
+      webview.setOnUrlRequestCallback((newUrl) {
+        updatePlayStateWithUrl(newUrl);
+        Future.delayed(kDelayExecInjectPlaylistJSCode, () async {
+          var curr = playList.firstWhere((element) => element.url == newUrl);
+          setWebviewActivePlay(curr);
+        });
+        return true;
+      });
+
+      webview.addScriptToExecuteOnDocumentCreated(
+        await injectPlaylistJSCode(playList),
+      );
+
+      if (playList.length >= 2) {
+        Future.delayed(kDelayExecInjectPlaylistJSCode, () async {
+          setWebviewActivePlay(curr);
+        });
+      }
 
       return true;
     }
 
     /// (`m3u8` | `mp4`) 资源
-    var canUseChewieView = e.type == VideoType.m3u8 || e.type == VideoType.mp4;
+    var canUseChewieView = [VideoType.m3u8, VideoType.mp4].contains(curr.type);
 
     /// iOS
     if (home.iosCanBeUseSystemBrowser) {
@@ -311,7 +388,7 @@ class PlayController extends GetxController {
       return true;
     }
 
-    if (e.type == VideoType.iframe) {
+    if (curr.type == VideoType.iframe) {
       Get.to(
         () => const WebviewView(),
         arguments: url,

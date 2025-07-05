@@ -78,7 +78,10 @@ dependencies:
       branch: d1y
       ref: c9cf207fccd07ecaa6de0f7ea898046ffa26ff3a
   webplayer_embedded:
-    git: https://github.com/d1y/webplayer_embedded
+    # git:
+    #   url: https://github.com/d1y/webplayer_embedded
+    #   ref: 38ef252f9f0a240eaccda50977190d17823a6418
+    path: /Users/shiwanbaqianmeng/code/github/webplayer_embedded
   bitsdojo_window:
     git:
       url: https://github.com/bitsdojo/bitsdojo_window
@@ -142,6 +145,7 @@ flutter:
     - assets/data/play_tips.txt
     - assets/images/github_logo.png
     - assets/images/error.png
+    - assets/data/playlist.js
 
 ##HERE
 

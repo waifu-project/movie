@@ -46,7 +46,7 @@ class VideoSize {
 
 // 视频信息
 class VideoInfo {
-  /// 印象中好像没用过
+  /// 名称
   final String name;
 
   /// 视频类型

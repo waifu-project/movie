@@ -750,10 +750,10 @@ packages:
     dependency: transitive
     description:
       name: mime
-      sha256: "801fd0b26f14a4a58ccb09d5892c3fbdeff209594300a542492cf13fba9d247a"
+      sha256: "41a20518f0cb1256669420fdba0cd90d21561e560ac240f26ef8322e45bb7ed6"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.6"
+    version: "2.0.0"
   modal_bottom_sheet:
     dependency: "direct main"
     description:
@@ -1433,11 +1433,9 @@ packages:
   webplayer_embedded:
     dependency: "direct main"
     description:
-      path: "."
-      ref: HEAD
-      resolved-ref: "630a7c78cbb54f35edf84537d0d8b5fbd42ac3bb"
-      url: "https://github.com/d1y/webplayer_embedded"
-    source: git
+      path: "/Users/shiwanbaqianmeng/code/github/webplayer_embedded"
+      relative: false
+    source: path
     version: "0.0.1"
   webview_flutter:
     dependency: "direct main"

@@ -36,6 +36,7 @@ jobs:
         run: |
           $dest = "build\windows\x64\runner\Release\"
           $system = "C:\Windows\System32"
+          cp windows\runner\resources\app_icon.ico $dest\app.ico
           cp $system/msvcp140.dll $dest
           cp $system/vcruntime140.dll $dest
           cp $system/vcruntime140_1.dll $dest

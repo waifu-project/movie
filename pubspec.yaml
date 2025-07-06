@@ -80,7 +80,7 @@ dependencies:
   webplayer_embedded:
     git:
       url: https://github.com/d1y/webplayer_embedded
-      ref: 2aa1e90262d052592074a45b9180ba5a61f90329
+      ref: 4d6339b032caf91aec4120d2b837fb05a494d511
   bitsdojo_window:
     git:
       url: https://github.com/bitsdojo/bitsdojo_window

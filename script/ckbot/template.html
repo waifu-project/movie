@@ -149,6 +149,19 @@
       border-radius: 12px;
       margin: 8px 0;
     }
+    /* 隐藏滚动条但保留滚动功能 */
+    .hide-scrollbar::-webkit-scrollbar {
+      display: none; /* 隐藏 Chrome、Safari 和 Edge 的滚动条 */
+    }
+
+    .hide-scrollbar {
+      -ms-overflow-style: none; /* 隐藏 IE 和 Edge 的滚动条 */
+      scrollbar-width: none; /* 隐藏 Firefox 的滚动条 */
+    }
+
+    [v-cloak] {
+      display: none;
+    }
   </style>
   <script>
     const $data = $$$$
@@ -165,13 +178,13 @@
   </script>
 </head>
 <body>
-  <div id="app">
+  <div id="app" v-cloak>
     <div class="start">
       <p>上次更新时间: <strong style="text-decoration: underline; font-size: 18px">{{ data.now }}</strong></p>
       <p class="status">可用状态: {{ data.correct }}/{{ data.correct + data.err }} </p>
       <p>JSDelivr CDN(可能有缓存): <a href="https://cdn.jsdelivr.net/gh/waifu-project/v1@latest/yoyo.json">https://cdn.jsdelivr.net/gh/waifu-project/v1@latest/yoyo.json</a> </p>
     </div>
-    <div class="card-group">
+    <div class="card-group hide-scrollbar">
       <div class="card" v-for="(value, key) in data.data">
         <div class="header">
           <img class="avatar" :src="value.comment.user.avatar_url" />

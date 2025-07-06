@@ -320,7 +320,7 @@ document.addEventListener('DOMContentLoaded', function() {
       Webview webview = await WebviewWindow.create(
         configuration: CreateConfiguration(
           titleBarHeight: GetPlatform.isMacOS ? 24 : 0,
-          title: "",
+          title: "小猫影视",
         ),
       );
 

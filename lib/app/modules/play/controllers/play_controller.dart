@@ -181,7 +181,10 @@ class PlayController extends GetxController {
     return "http://localhost:$kWebPlayerEmbeddedPort/assets/iframe.html?url=$realUrl";
   }
 
-  Future<String> injectPlaylistJSCode(List<VideoInfo> playlist) async {
+  Future<String> injectPlaylistJSCode(
+    List<VideoInfo> playlist,
+    int withTop,
+  ) async {
     String playlistJS = await rootBundle.loadString(
       'assets/data/playlist.js',
     );
@@ -193,6 +196,7 @@ class PlayController extends GetxController {
     appendEvalCode += "setPlaylist(\$data)\n";
     var result = """
 document.addEventListener('DOMContentLoaded', function() {
+  const paddingTop = $withTop
   $playlistJS
   $appendEvalCode
 })
@@ -314,7 +318,10 @@ document.addEventListener('DOMContentLoaded', function() {
       }
 
       Webview webview = await WebviewWindow.create(
-        configuration: CreateConfiguration(titleBarHeight: 24, title: ""),
+        configuration: CreateConfiguration(
+          titleBarHeight: GetPlatform.isMacOS ? 24 : 0,
+          title: "",
+        ),
       );
 
       void setWebviewActivePlay(VideoInfo curr) {
@@ -368,7 +375,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
       if (playList.length >= 2) {
         webview.addScriptToExecuteOnDocumentCreated(
-          await injectPlaylistJSCode(playList),
+          await injectPlaylistJSCode(playList, GetPlatform.isMacOS ? 32 : 12),
         );
         Future.delayed(kDelayExecInjectPlaylistJSCode, () async {
           setWebviewActivePlay(curr);

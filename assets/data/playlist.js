@@ -12,7 +12,7 @@ style.textContent = `
     position: fixed;
     top: 0;
     left: 0;
-    padding: 32px 0 12px;
+    padding: ${paddingTop}px 0 12px;
     box-sizing: border-box;
     z-index: 9999;
     transition: all .24s;
@@ -26,9 +26,10 @@ style.textContent = `
 
   #reAction {
     position: fixed;
-    top: 24px;
+    top: ${paddingTop}px;
     left: 12px;
-    width: 100vw;
+    width: 24vw;
+    max-width: 120px;
     height: 42px;
     cursor: pointer;
     z-index: 9998;

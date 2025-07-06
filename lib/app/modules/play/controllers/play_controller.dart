@@ -366,11 +366,10 @@ document.addEventListener('DOMContentLoaded', function() {
         return true;
       });
 
-      webview.addScriptToExecuteOnDocumentCreated(
-        await injectPlaylistJSCode(playList),
-      );
-
       if (playList.length >= 2) {
+        webview.addScriptToExecuteOnDocumentCreated(
+          await injectPlaylistJSCode(playList),
+        );
         Future.delayed(kDelayExecInjectPlaylistJSCode, () async {
           setWebviewActivePlay(curr);
         });

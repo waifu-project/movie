@@ -38,6 +38,7 @@ Future<ThemeMode> runBefore() async {
   // For macOS platform needs to declare the scheme in ios/Runner/Info.plist
   await protocolHandler.register('yoyo');
   if (GetPlatform.isDesktop) await windowManager.ensureInitialized();
+  windowManager.setTitle("小猫影视");
 
   await XHttp.init();
   await IsarRepository().init();

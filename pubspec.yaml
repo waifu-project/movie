@@ -69,8 +69,8 @@ dependencies:
   desktop_webview_window:
     git:
       url: https://github.com/waifu-project/flutter-plugins
-      branch: full_support
-      ref: 691a7e3f3d8e1a814efae79a76e8107043f420d4
+      branch: webview_window_icon
+      ref: 474e50a7aa29e5624dcb54f446bce57050f6a49f
       path: packages/desktop_webview_window
   command_palette:
     git:

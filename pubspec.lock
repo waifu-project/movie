@@ -356,8 +356,8 @@ packages:
     dependency: "direct main"
     description:
       path: "packages/desktop_webview_window"
-      ref: "691a7e3f3d8e1a814efae79a76e8107043f420d4"
-      resolved-ref: "691a7e3f3d8e1a814efae79a76e8107043f420d4"
+      ref: "474e50a7aa29e5624dcb54f446bce57050f6a49f"
+      resolved-ref: "474e50a7aa29e5624dcb54f446bce57050f6a49f"
       url: "https://github.com/waifu-project/flutter-plugins"
     source: git
     version: "0.2.4"

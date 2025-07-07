@@ -7,13 +7,18 @@ class KBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Expanded(child: child),
-        const SizedBox(height: 63),
-      ],
+    return Padding(
+      padding: EdgeInsetsGeometry.symmetric(
+        horizontal: 12
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(child: child),
+          const SizedBox(height: 63),
+        ],
+      ),
     );
   }
 }

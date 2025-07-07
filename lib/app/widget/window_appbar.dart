@@ -207,37 +207,37 @@ class WindowAppBar extends StatelessWidget implements PreferredSizeWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
+                SizedBox(width: 12),
                 Expanded(
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: childrens,
                   ),
                 ),
-                Builder(builder: (context) {
-                  if (GetPlatform.isDesktop && !GetPlatform.isMacOS) {
-                    return Macwindowctl(
-                      buttonSize: 12,
-                      blurSize: 24,
-                      focused: true,
-                      buttonReverse: true,
-                      onClick: (action) {
-                        switch (action) {
-                          case MacwindowctlAction.close:
-                            appWindow.close();
-                            break;
-                          case MacwindowctlAction.maximize:
-                            appWindow.maximizeOrRestore();
-                            break;
-                          case MacwindowctlAction.minimize:
-                            appWindow.minimize();
-                            break;
-                          default:
-                        }
-                      },
-                    );
-                  }
-                  return const SizedBox.shrink();
-                }),
+                if (GetPlatform.isDesktop && !GetPlatform.isMacOS)
+                  SizedBox(width: 6),
+                if (GetPlatform.isDesktop && !GetPlatform.isMacOS)
+                  Macwindowctl(
+                    buttonSize: 12,
+                    blurSize: 24,
+                    focused: true,
+                    buttonReverse: true,
+                    onClick: (action) {
+                      switch (action) {
+                        case MacwindowctlAction.close:
+                          appWindow.close();
+                          break;
+                        case MacwindowctlAction.maximize:
+                          appWindow.maximizeOrRestore();
+                          break;
+                        case MacwindowctlAction.minimize:
+                          appWindow.minimize();
+                          break;
+                        default:
+                      }
+                    },
+                  ),
+                SizedBox(width: 6),
               ],
             ),
           ),

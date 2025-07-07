@@ -26,9 +26,8 @@ class _MovieCardItemState extends State<MovieCardItem> {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
+    return GestureDetector(
       onTap: widget.onTap,
-      mouseCursor: SystemMouseCursors.click,
       child: Container(
         width: double.infinity,
         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),

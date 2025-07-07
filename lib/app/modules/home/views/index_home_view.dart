@@ -145,32 +145,60 @@ class _IndexHomeViewState extends State<IndexHomeView>
       builder: (homeview) => Scaffold(
         appBar: WindowAppBar(
           iosBackStyle: true,
-          title: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 9,
-            ),
-            child: Text(
-              currentTitle,
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                fontSize: 18,
+          title: MouseRegion(
+            cursor: SystemMouseCursors.click,
+            child: GestureDetector(
+              onTap: () {
+                homeview.showMirrorModel(context);
+              },
+              child: Row(
+                spacing: 6,
+                children: [
+                  const Icon(
+                    CupertinoIcons.bolt_circle_fill,
+                    color: Colors.white,
+                    size: 24,
+                  ),
+                  Text(
+                    currentTitle,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      fontSize: 16,
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
           actions: [
-            if (!controller.mirrorListIsEmpty)
-              MouseRegion(
-                cursor: SystemMouseCursors.click,
-                child: CupertinoButton(
-                  child: const Icon(
-                    CupertinoIcons.bolt_circle_fill,
-                    color: Colors.white,
-                  ),
-                  onPressed: () {
-                    homeview.showMirrorModel(context);
-                  },
+            MouseRegion(
+              cursor: SystemMouseCursors.click,
+              child: CupertinoButton(
+                padding: EdgeInsets.zero,
+                child: const Icon(
+                  CupertinoIcons.search,
+                  size: 24,
+                  color: Colors.white,
                 ),
+                onPressed: () {
+                  // TODO: impl this
+                },
               ),
+            ),
+            MouseRegion(
+              cursor: SystemMouseCursors.click,
+              child: CupertinoButton(
+                padding: EdgeInsets.zero,
+                child: const Icon(
+                  Icons.history,
+                  size: 24,
+                  color: Colors.white,
+                ),
+                onPressed: () {
+                  // TODO: impl this
+                },
+              ),
+            ),
           ],
         ),
         body: Shortcuts(
@@ -222,7 +250,8 @@ class _IndexHomeViewState extends State<IndexHomeView>
                 var cx = controller.currentCategoryer[currCategoryIndex + 1];
                 switchCategory(cx);
               }),
-              MirrorTableIntent: shortcutCallback(controller.currentBarIndex, (){
+              MirrorTableIntent:
+                  shortcutCallback(controller.currentBarIndex, () {
                 homeview.showMirrorModel(context);
               }),
             },
@@ -255,7 +284,9 @@ class _IndexHomeViewState extends State<IndexHomeView>
                               padding: const EdgeInsets.symmetric(
                                 horizontal: 24.0,
                               ),
-                              color: isCurr ? CupertinoColors.systemBlue : null,
+                              // FIXME: use real primary color
+                              // >> theme_data _colorSchemeLightM3->primary
+                              color: isCurr ? Color(0xFF6750A4) : null,
                               child: Text(
                                 curr.name,
                                 style: TextStyle(
@@ -276,6 +307,7 @@ class _IndexHomeViewState extends State<IndexHomeView>
                         }),
                       ),
                     ),
+                    SizedBox(height: 6),
                     Expanded(
                       child: Builder(builder: (context) {
                         if (controller.mirrorListIsEmpty) {

@@ -1,4 +1,5 @@
 import 'package:command_palette/command_palette.dart';
+import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -244,9 +245,8 @@ class HomeController extends GetxController
 
   bool isLoading = true;
 
-  RefreshController refreshController = RefreshController(
-    initialRefresh: false,
-  );
+  EasyRefreshController easyRefreshController = EasyRefreshController(
+      controlFinishRefresh: true, controlFinishLoad: true);
 
   void showMirrorModel(BuildContext context) {
     showCupertinoModalBottomSheet(
@@ -264,18 +264,21 @@ class HomeController extends GetxController
       page++;
       update();
       await updateHomeData();
-      refreshController.loadComplete();
+      // refreshController.loadComplete();
+      easyRefreshController.finishLoad();
     } catch (e) {
-      refreshController.loadFailed();
+      // refreshController.loadFailed();
     }
   }
 
   void refreshOnRefresh() async {
     try {
       await updateHomeData(isFirst: true, missIsLoading: true);
-      refreshController.refreshCompleted();
+      easyRefreshController.finishRefresh();
+      easyRefreshController.resetFooter();
+      // refreshController.refreshCompleted();
     } catch (e) {
-      refreshController.refreshFailed();
+      // refreshController.refreshFailed();
     }
   }
 
@@ -502,13 +505,8 @@ class HomeController extends GetxController
   }
 
   @override
-  void onReady() {
-    refreshController = RefreshController();
-    super.onReady();
-  }
-
-  @override
   void onClose() {
+    easyRefreshController.dispose();
     WidgetsBinding.instance.removeObserver(this);
     protocolHandler.removeListener(this);
   }

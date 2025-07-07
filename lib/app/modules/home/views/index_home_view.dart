@@ -6,6 +6,7 @@ import 'package:catmovie/app/modules/home/views/onboarding.dart';
 import 'package:catmovie/app/modules/home/views/search.dart';
 import 'package:catmovie/app/widget/zoom.dart';
 import 'package:catmovie/shared/enum.dart';
+import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -19,7 +20,6 @@ import 'package:catmovie/app/widget/k_error_stack.dart';
 import 'package:catmovie/app/widget/movie_card_item.dart';
 import 'package:catmovie/app/widget/window_appbar.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
-import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 import 'package:simple/x.dart';
 import 'package:smooth_list_view/smooth_list_view.dart';
 import 'package:waterfall_flow/waterfall_flow.dart';
@@ -46,8 +46,22 @@ class IndexHomeView extends StatefulWidget {
 class _IndexHomeViewState extends State<IndexHomeView>
     with AutomaticKeepAliveClientMixin, AfterLayoutMixin {
   HomeController controller = Get.find<HomeController>();
-
   ScrollController scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    scrollController.addListener(_onScroll);
+  }
+
+  void _onScroll() {
+    print("已经到底部");
+
+    if (scrollController.position.pixels ==
+        scrollController.position.maxScrollExtent) {
+      print("已经到底部");
+    }
+  }
 
   int get cardCount {
     bool isLandscape = context.isLandscape;
@@ -344,49 +358,37 @@ class _IndexHomeViewState extends State<IndexHomeView>
                             context: context,
                           );
                         }
-                        return SmartRefresher(
-                          enablePullDown: indexEnablePullDown,
-                          enablePullUp: indexEnablePullUp,
-                          header: const WaterDropHeader(
-                            refresh: Row(
-                              spacing: 12,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                CupertinoActivityIndicator(),
-                                Text("加载中"),
-                              ],
-                            ),
-                            complete: Row(
-                              spacing: 12,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(CupertinoIcons.smiley),
-                                Text("加载完成"),
-                              ],
-                            ),
-                          ),
-                          footer: CustomFooter(
-                            builder: (BuildContext context, LoadStatus? mode) {
-                              Widget body;
-                              if (mode == LoadStatus.idle) {
-                                body = const Text("上划加载更多");
-                              } else if (mode == LoadStatus.loading) {
-                                body = const CupertinoActivityIndicator();
-                              } else if (mode == LoadStatus.failed) {
-                                body = const Text("加载失败, 请重试");
-                              } else if (mode == LoadStatus.canLoading) {
-                                body = const Text("释放以加载更多");
-                              } else {
-                                body = const Text("没有更多数据");
-                              }
-                              return Center(
-                                child: body,
-                              );
-                            },
-                          ),
+                        return EasyRefresh(
+                          header: const PhoenixHeader(),
+                          footer: ClassicFooter(
+                              infiniteOffset: 0,
+                              noMoreText: '没有更多数据',
+                              failedText: '加载失败, 请重试',
+                              processingText: '加载中......',
+                              dragText: '上划加载更多',
+                              textStyle: TextStyle(color: Colors.black)),
+                          // footer: Footer(
+                          //   builder: (BuildContext context, LoadStatus? mode) {
+                          //     Widget body;
+                          //     if (mode == LoadStatus.idle) {
+                          //       body = const Text("上划加载更多");
+                          //     } else if (mode == LoadStatus.loading) {
+                          //       body = const CupertinoActivityIndicator();
+                          //     } else if (mode == LoadStatus.failed) {
+                          //       body = const Text("加载失败, 请重试");
+                          //     } else if (mode == LoadStatus.canLoading) {
+                          //       body = const Text("释放以加载更多");
+                          //     } else {
+                          //       body = const Text("没有更多数据");
+                          //     }
+                          //     return Center(
+                          //       child: body,
+                          //     );
+                          //   },
+                          // ),
                           scrollController: scrollController,
-                          controller: homeview.refreshController,
-                          onLoading: homeview.refreshOnLoading,
+                          controller: homeview.easyRefreshController,
+                          onLoad: homeview.refreshOnLoading,
                           onRefresh: homeview.refreshOnRefresh,
                           child: Builder(
                             builder: (_) {
@@ -450,7 +452,6 @@ class _IndexHomeViewState extends State<IndexHomeView>
                               }
                               return WaterfallFlow.builder(
                                 controller: ScrollController(),
-                                physics: const NeverScrollableScrollPhysics(),
                                 shrinkWrap: true,
                                 gridDelegate:
                                     SliverWaterfallFlowDelegateWithFixedCrossAxisCount(

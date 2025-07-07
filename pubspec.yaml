@@ -19,7 +19,7 @@ dependencies:
 
   # https://github.com/peng8350/flutter_pulltorefresh/issues/588
   pull_to_refresh_flutter3: ^2.0.2
-
+  easy_refresh: ^3.4.0
   # cupertino_list_tile: ^0.2.0
   # flutter_html: ^2.1.5
   cached_network_image: ^3.4.1

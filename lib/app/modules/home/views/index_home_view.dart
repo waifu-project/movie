@@ -160,6 +160,7 @@ class _IndexHomeViewState extends State<IndexHomeView>
       return;
     }
     controller.setCurrentCategoryerNow(curr);
+    controller.easyRefreshController.resetFooter();
   }
 
   @override
@@ -360,32 +361,14 @@ class _IndexHomeViewState extends State<IndexHomeView>
                         }
                         return EasyRefresh(
                           header: const PhoenixHeader(),
-                          footer: ClassicFooter(
-                              infiniteOffset: 0,
-                              noMoreText: '没有更多数据',
+                          footer: const ClassicFooter(
+                              noMoreText: '我是有底线的......',
                               failedText: '加载失败, 请重试',
+                              showMessage: false,
                               processingText: '加载中......',
                               dragText: '上划加载更多',
+                              infiniteOffset: 0,
                               textStyle: TextStyle(color: Colors.black)),
-                          // footer: Footer(
-                          //   builder: (BuildContext context, LoadStatus? mode) {
-                          //     Widget body;
-                          //     if (mode == LoadStatus.idle) {
-                          //       body = const Text("上划加载更多");
-                          //     } else if (mode == LoadStatus.loading) {
-                          //       body = const CupertinoActivityIndicator();
-                          //     } else if (mode == LoadStatus.failed) {
-                          //       body = const Text("加载失败, 请重试");
-                          //     } else if (mode == LoadStatus.canLoading) {
-                          //       body = const Text("释放以加载更多");
-                          //     } else {
-                          //       body = const Text("没有更多数据");
-                          //     }
-                          //     return Center(
-                          //       child: body,
-                          //     );
-                          //   },
-                          // ),
                           scrollController: scrollController,
                           controller: homeview.easyRefreshController,
                           onLoad: homeview.refreshOnLoading,

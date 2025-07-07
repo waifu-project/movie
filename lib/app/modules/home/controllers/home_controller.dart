@@ -15,8 +15,6 @@ import 'package:catmovie/shared/manage.dart';
 import 'package:catmovie/isar/schema/parse_schema.dart';
 import 'package:catmovie/shared/enum.dart';
 import 'package:protocol_handler/protocol_handler.dart';
-import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
-
 import 'package:catmovie/app/extension.dart';
 import 'package:window_manager/window_manager.dart';
 import 'package:xi/adapters/mac_cms.dart';
@@ -264,10 +262,9 @@ class HomeController extends GetxController
       page++;
       update();
       await updateHomeData();
-      // refreshController.loadComplete();
-      easyRefreshController.finishLoad();
+      easyRefreshController.finishLoad(homedata.length % 20 == 0 ? IndicatorResult.success : IndicatorResult.noMore);
     } catch (e) {
-      // refreshController.loadFailed();
+      easyRefreshController.finishLoad(IndicatorResult.fail);
     }
   }
 
@@ -276,9 +273,8 @@ class HomeController extends GetxController
       await updateHomeData(isFirst: true, missIsLoading: true);
       easyRefreshController.finishRefresh();
       easyRefreshController.resetFooter();
-      // refreshController.refreshCompleted();
     } catch (e) {
-      // refreshController.refreshFailed();
+      easyRefreshController.finishLoad(IndicatorResult.fail);
     }
   }
 

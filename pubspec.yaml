@@ -139,13 +139,9 @@ flutter:
 
   assets:
     - assets/
-    - assets/data/source_help.txt
-    - assets/images/movie_default.png
-    - assets/images/image_faild.png
-    - assets/data/play_tips.txt
-    - assets/images/github_logo.png
-    - assets/images/error.png
-    - assets/data/playlist.js
+    - assets/data/
+    - assets/images/
+    - assets/icons/
 
 ##HERE
 

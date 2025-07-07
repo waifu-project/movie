@@ -74,7 +74,8 @@ class CupertinoEasyAppBar extends StatefulWidget
   Size get preferredSize {
     double calc = kToolbarHeight;
     if (GetPlatform.isMacOS) {
-      calc += kMacPaddingTop;
+      // calc += 6;
+      // calc += kMacPaddingTop;
     }
     return Size.fromHeight(calc);
   }

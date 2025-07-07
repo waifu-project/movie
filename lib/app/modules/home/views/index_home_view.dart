@@ -145,36 +145,52 @@ class _IndexHomeViewState extends State<IndexHomeView>
     return GetBuilder<HomeController>(
       builder: (homeview) => Scaffold(
         backgroundColor: Colors.transparent,
-        appBar: isDesktop ? null : WindowAppBar(
-          iosBackStyle: true,
-          title: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 9,
-            ),
-            child: Text(
-              currentTitle,
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                fontSize: 18,
-              ),
-            ),
-          ),
-          actions: [
-            if (!controller.mirrorListIsEmpty)
-              MouseRegion(
-                cursor: SystemMouseCursors.click,
-                child: CupertinoButton(
-                  child: const Icon(
-                    CupertinoIcons.bolt_circle_fill,
-                    color: Colors.white,
-                  ),
-                  onPressed: () {
-                    homeview.showMirrorModel(context);
+        appBar: isDesktop
+            ? null
+            : WindowAppBar(
+                iosBackStyle: true,
+                title: GestureDetector(
+                  onTap: () {
+                    if (!controller.mirrorListIsEmpty) {
+                      homeview.showMirrorModel(context);
+                    }
                   },
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                    ),
+                    child: Row(
+                      spacing: 6,
+                      children: [
+                        const Icon(
+                          CupertinoIcons.bolt_circle_fill,
+                          color: Colors.white,
+                        ),
+                        Text(
+                          currentTitle,
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
+                            fontSize: 16,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
+                actions: [
+                  CupertinoButton(
+                    sizeStyle: CupertinoButtonSize.small,
+                    child: Icon(CupertinoIcons.search,
+                        size: 24, color: Colors.white),
+                    onPressed: () {},
+                  ),
+                  CupertinoButton(
+                    sizeStyle: CupertinoButtonSize.small,
+                    child: Icon(Icons.history, size: 24, color: Colors.white),
+                    onPressed: () {},
+                  ),
+                ],
               ),
-          ],
-        ),
         body: Shortcuts(
           shortcuts: {
             // ctrl-p
@@ -224,7 +240,8 @@ class _IndexHomeViewState extends State<IndexHomeView>
                 var cx = controller.currentCategoryer[currCategoryIndex + 1];
                 switchCategory(cx);
               }),
-              MirrorTableIntent: shortcutCallback(controller.currentBarIndex, (){
+              MirrorTableIntent:
+                  shortcutCallback(controller.currentBarIndex, () {
                 homeview.showMirrorModel(context);
               }),
             },
@@ -234,7 +251,7 @@ class _IndexHomeViewState extends State<IndexHomeView>
               child: KBody(
                 child: Column(
                   children: [
-                    SizedBox(height: 12),
+                    // SizedBox(height: 12),
                     AnimatedContainer(
                       width: double.infinity,
                       height: !categoryIsEmpty ? 42 : 0,
@@ -259,7 +276,9 @@ class _IndexHomeViewState extends State<IndexHomeView>
                               padding: const EdgeInsets.symmetric(
                                 horizontal: 24.0,
                               ),
-                              color: isCurr ? Theme.of(context).primaryColor : null,
+                              color: isCurr
+                                  ? Theme.of(context).primaryColor
+                                  : null,
                               child: Text(
                                 curr.name,
                                 style: TextStyle(

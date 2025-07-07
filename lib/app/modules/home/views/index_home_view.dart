@@ -48,21 +48,6 @@ class _IndexHomeViewState extends State<IndexHomeView>
   HomeController controller = Get.find<HomeController>();
   ScrollController scrollController = ScrollController();
 
-  @override
-  void initState() {
-    super.initState();
-    scrollController.addListener(_onScroll);
-  }
-
-  void _onScroll() {
-    print("已经到底部");
-
-    if (scrollController.position.pixels ==
-        scrollController.position.maxScrollExtent) {
-      print("已经到底部");
-    }
-  }
-
   int get cardCount {
     bool isLandscape = context.isLandscape;
     if (GetPlatform.isMobile && !isLandscape) return 3;

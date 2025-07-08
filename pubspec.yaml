@@ -105,6 +105,8 @@ dependencies:
 
   dlna_dart: ^0.1.0
 
+  concurrent_queue: ^1.5.0
+
 dev_dependencies:
   flutter_lints: ^6.0.0
 

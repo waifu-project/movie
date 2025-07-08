@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:isar/isar.dart';
 import 'package:catmovie/isar/repo.dart';
 import 'package:catmovie/isar/schema/history_schema.dart';
@@ -6,6 +8,16 @@ import 'package:catmovie/isar/schema/parse_schema.dart';
 import 'package:catmovie/isar/schema/settings_schema.dart';
 import 'package:catmovie/shared/enum.dart';
 import 'package:url_launcher/url_launcher_string.dart';
+
+extension StringWithColor on String {
+  Color get $color {
+    String hexString = this;
+    final buffer = StringBuffer();
+    if (hexString.length == 6 || hexString.length == 7) buffer.write('ff');
+    buffer.write(hexString.replaceFirst('#', ''));
+    return Color(int.parse(buffer.toString(), radix: 16));
+  }
+}
 
 /// remove this(mixin object 杀伤力太大)
 extension ISettingMixin on Object {

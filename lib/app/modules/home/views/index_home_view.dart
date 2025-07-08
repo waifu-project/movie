@@ -1,3 +1,4 @@
+import 'package:catmovie/app/modules/home/views/search_v2.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -181,7 +182,7 @@ class _IndexHomeViewState extends State<IndexHomeView>
                   color: Colors.white,
                 ),
                 onPressed: () {
-                  // TODO: impl this
+                  Get.to(() => const SearchV2());
                 },
               ),
             ),

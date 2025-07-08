@@ -52,15 +52,18 @@ class _MovieCardItemState extends State<MovieCardItem> {
                 ),
               ),
             ),
-            Text(
-              widget.title,
-              maxLines: 1,
-              style: TextStyle(
-                fontSize: 12,
-                color: context.isDarkMode ? Colors.white : Colors.black,
-              ),
-              overflow: TextOverflow.ellipsis,
-            ),
+            Center(
+              child: Text(
+                widget.title,
+                textAlign: TextAlign.center,
+                maxLines: 1,
+                style: TextStyle(
+                  fontSize: 12,
+                  color: context.isDarkMode ? Colors.white : Colors.black,
+                ),
+                overflow: TextOverflow.ellipsis,
+              )
+            )
           ],
         ),
       ),

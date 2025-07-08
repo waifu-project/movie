@@ -1,14 +1,18 @@
 import 'dart:ui';
 
+import 'package:clipboard/clipboard.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:catmovie/app/modules/home/controllers/home_controller.dart';
 import 'package:catmovie/app/modules/home/views/parse_vip_manage.dart';
 import 'package:catmovie/app/widget/helper.dart';
 import 'package:catmovie/app/widget/window_appbar.dart';
 import 'package:catmovie/widget/simple_html/flutter_html.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:pull_down_button/pull_down_button.dart';
 import 'package:simple/x.dart';
 import 'package:xi/xi.dart';
 
@@ -30,10 +34,8 @@ class PlayView extends StatefulWidget {
 class _PlayViewState extends State<PlayView> {
   final PlayController play = Get.find<PlayController>();
   final HomeController home = Get.find<HomeController>();
-
-  FocusNode focusNode = FocusNode();
-
-  ScrollController scrollController = ScrollController();
+  final FocusNode focusNode = FocusNode();
+  final ScrollController scrollController = ScrollController();
 
   bool get canBeShowParseVipButton {
     return home.parseVipList.isNotEmpty;
@@ -373,26 +375,83 @@ class _PlayViewState extends State<PlayView> {
                                     itemBuilder: (context, index) {
                                       var curr =
                                           playlist[play.tabIndex].datas[index];
-                                      return CupertinoButton.filled(
-                                        padding: EdgeInsets.zero,
-                                        child: Builder(builder: (_) {
-                                          var len = playlist[play.tabIndex]
-                                              .datas
-                                              .length;
-                                          var text =
-                                              len <= 1 ? "播放" : curr.name;
-                                          var playState = play.playState;
-                                          if (playState.tabIndex ==
-                                                  play.tabIndex &&
-                                              index == playState.index) {
-                                            text += "(上次播放)";
-                                          }
-                                          return Text(text);
-                                        }),
-                                        onPressed: () {
-                                          handlePlay(play.tabIndex, index);
-                                        },
-                                      );
+                                      String playUrl = curr.url;
+                                      var isCast = playUrl.endsWith(".m3u8") ||
+                                          playUrl.endsWith(".mp4");
+                                      return Builder(builder: (menuContext) {
+                                        return PullDownButton(
+                                          itemBuilder: (context) {
+                                            return [
+                                              PullDownMenuItem(
+                                                onTap: () async {
+                                                  await FlutterClipboard.copy(
+                                                    playUrl,
+                                                  );
+                                                  EasyLoading.showToast(
+                                                    "复制链接成功",
+                                                    maskType:
+                                                        EasyLoadingMaskType
+                                                            .none,
+                                                  );
+                                                },
+                                                title: '复制链接',
+                                                icon: CupertinoIcons
+                                                    .doc_on_clipboard,
+                                              ),
+                                              if (isCast)
+                                                PullDownMenuItem(
+                                                  title: '投屏播放',
+                                                  subtitle: '仅支持局域网里的设备',
+                                                  onTap: () {
+                                                    showCupertinoModalBottomSheet(
+                                                        context: context,
+                                                        builder: (
+                                                          BuildContext context,
+                                                        ) {
+                                                          // TODO: impl this
+                                                          return SizedBox
+                                                              .shrink();
+                                                        });
+                                                  },
+                                                  icon: CupertinoIcons.tv,
+                                                ),
+                                              // PullDownMenuItem(
+                                              //   onTap: () {},
+                                              //   title: '删除',
+                                              //   isDestructive: true,
+                                              //   icon: CupertinoIcons.delete,
+                                              // ),
+                                            ];
+                                          },
+                                          buttonBuilder: (context, showMenu) {
+                                            return CupertinoButton.filled(
+                                              padding: EdgeInsets.zero,
+                                              child: Builder(builder: (cx) {
+                                                var len =
+                                                    playlist[play.tabIndex]
+                                                        .datas
+                                                        .length;
+                                                var text =
+                                                    len <= 1 ? "播放" : curr.name;
+                                                var playState = play.playState;
+                                                if (playState.tabIndex ==
+                                                        play.tabIndex &&
+                                                    index == playState.index) {
+                                                  text += "(上次播放)";
+                                                }
+                                                return Text(text);
+                                              }),
+                                              onPressed: () {
+                                                handlePlay(
+                                                    play.tabIndex, index);
+                                              },
+                                              onLongPress: () {
+                                                showMenu();
+                                              },
+                                            );
+                                          },
+                                        );
+                                      });
                                     },
                                   ),
                                 );

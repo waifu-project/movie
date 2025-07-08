@@ -970,6 +970,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.5.0"
+  pull_down_button:
+    dependency: "direct main"
+    description:
+      name: pull_down_button
+      sha256: "12cdd8ff187a3150ebdf075e5074299f085579b158d2b4e655ccbafccf95f25b"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.10.2"
   pull_to_refresh_flutter3:
     dependency: "direct main"
     description:

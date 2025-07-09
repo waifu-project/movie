@@ -20,9 +20,14 @@ jobs:
         with:
           channel: 'stable'
           flutter-version: '3.32.4'
+          cache: true
 
       - name: Install dependencies
-        run: flutter pub get
+
+        run: |
+          ./script/fetch_git_info.ps1
+          flutter pub get
+          flutter pub run build_runner build
 
       - name: Analyze code
         run: flutter analyze lib/

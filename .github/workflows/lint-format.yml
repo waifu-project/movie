@@ -25,7 +25,7 @@ jobs:
       - name: Install dependencies
 
         run: |
-          ./script/fetch_git_info.ps1
+          bash script/fetch_git_info.sh
           flutter pub get
           flutter pub run build_runner build
 

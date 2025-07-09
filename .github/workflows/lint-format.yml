@@ -33,4 +33,4 @@ jobs:
         run: flutter analyze lib/
 
       - name: Format check
-        run: flutter format --set-exit-if-changed --output=none lib/
+        run: dart format --set-exit-if-changed --output=none lib/

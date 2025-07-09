@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:catmovie/app/modules/play/views/cast_screen.dart';
 import 'package:clipboard/clipboard.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -405,12 +406,54 @@ class _PlayViewState extends State<PlayView> {
                                                   onTap: () {
                                                     showCupertinoModalBottomSheet(
                                                         context: context,
+                                                        backgroundColor:
+                                                            (context.isDarkMode
+                                                                    ? Colors
+                                                                        .black
+                                                                    : Colors
+                                                                        .white)
+                                                                .withValues(
+                                                                    alpha: .88),
                                                         builder: (
                                                           BuildContext context,
                                                         ) {
-                                                          // TODO: impl this
-                                                          return SizedBox
-                                                              .shrink();
+                                                          return CastScreen(
+                                                            onTapDevice:
+                                                                (cx) async {
+                                                              try {
+                                                                await cx.setUrl(
+                                                                    playUrl);
+                                                                await cx.play();
+                                                                // TODO: 支持控制远程DLNA设备
+                                                                if (context
+                                                                    .mounted)
+                                                                  Navigator.of(
+                                                                          context)
+                                                                      .pop();
+                                                                EasyLoading
+                                                                    .showToast(
+                                                                  "即将开始投屏播放",
+                                                                  toastPosition:
+                                                                      EasyLoadingToastPosition
+                                                                          .bottom,
+                                                                  duration: Duration(
+                                                                      milliseconds:
+                                                                          240),
+                                                                );
+                                                              } catch (e) {
+                                                                EasyLoading
+                                                                    .showToast(
+                                                                  "播放失败",
+                                                                  toastPosition:
+                                                                      EasyLoadingToastPosition
+                                                                          .bottom,
+                                                                  duration: Duration(
+                                                                      milliseconds:
+                                                                          240),
+                                                                );
+                                                              }
+                                                            },
+                                                          );
                                                         });
                                                   },
                                                   icon: CupertinoIcons.tv,

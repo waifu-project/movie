@@ -222,7 +222,8 @@ class _IndexHomeViewState extends State<IndexHomeView>
                 var cx = controller.currentCategoryer[currCategoryIndex + 1];
                 switchCategory(cx);
               }),
-              MirrorTableIntent: shortcutCallback(controller.currentBarIndex, (){
+              MirrorTableIntent:
+                  shortcutCallback(controller.currentBarIndex, () {
                 homeview.showMirrorModel(context);
               }),
             },

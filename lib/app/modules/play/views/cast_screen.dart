@@ -25,7 +25,7 @@ class _CastScreenState extends State<CastScreen> {
   Map<String, DLNADevice> deviceList = {};
 
   Future<void> init() async {
-    m = await searcher.start();
+    m = await searcher.start(reusePort: true);
     m.devices.stream.listen((dlist) {
       dlist.forEach((key, value) {
         cacheDeviceList[key] = value;

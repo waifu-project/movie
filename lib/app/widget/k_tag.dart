@@ -48,12 +48,14 @@ class KTag extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           InkWell(
+            hoverColor: Colors.transparent,
             onTap: () {
               onTap(KTagTapEventType.content);
             },
             child: child,
           ),
           InkWell(
+            hoverColor: Colors.transparent,
             onTap: () {
               onTap(KTagTapEventType.action);
             },

@@ -44,7 +44,6 @@ Future<ThemeMode> runBefore() async {
   await IsarRepository().init();
   await SpiderManage.init();
   registerAutoInjector();
-  EasyLoading.instance.userInteractions = false;
   var currTheme = IsarRepository().settingsSingleModel.themeMode;
   Brightness wrapperIfDark = Brightness.light;
   if (currTheme.isDark) {

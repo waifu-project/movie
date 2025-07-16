@@ -96,9 +96,12 @@ class VideoDetail {
   /// 视频长度大小
   final VideoSize videoInfo;
 
+  Map<String, dynamic> extra;
+
   VideoDetail({
     required this.id,
     required this.title,
+    required this.extra,
     this.desc = "",
     this.likeCount = 0,
     this.viewCount = 0,
@@ -210,7 +213,7 @@ class EmptySpiderAdapter implements ISpiderAdapter {
 
   @override
   Future<VideoDetail> getDetail(String movieId) async {
-    return VideoDetail(id: '', title: '', smallCoverImage: '');
+    return VideoDetail(id: '', title: '', smallCoverImage: '', extra: {});
   }
 
   @override

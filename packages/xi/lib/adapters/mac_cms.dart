@@ -281,6 +281,7 @@ class MacCMSSpider extends ISpiderAdapter {
           title: e.name,
           videos: videos,
           desc: e.des,
+          extra: {},
         );
       },
     ).toList();
@@ -312,6 +313,7 @@ class MacCMSSpider extends ISpiderAdapter {
                 id: e.id ?? "",
                 smallCoverImage: defaultCoverImage,
                 title: e.name?.cdata ?? "",
+                extra: {},
               ),
             )
             .toList() ??
@@ -375,6 +377,7 @@ class MacCMSSpider extends ISpiderAdapter {
           title: e.name,
           videos: videos,
           desc: e.des,
+          extra: {},
         );
       },
     ).toList();
@@ -461,6 +464,7 @@ class MacCMSSpider extends ISpiderAdapter {
       desc: item['vod_blurb'] ?? "",
       smallCoverImage: item['vod_pic'] ?? "",
       videos: videos,
+      extra: {},
     );
     return detail;
   }

@@ -425,11 +425,13 @@ class _PlayViewState extends State<PlayView> {
                                                                     playUrl);
                                                                 await cx.play();
                                                                 // TODO: 支持控制远程DLNA设备
-                                                                if (context
-                                                                    .mounted)
-                                                                  Navigator.of(
-                                                                          context)
-                                                                      .pop();
+                                                                if (!context
+                                                                    .mounted) {
+                                                                  return;
+                                                                }
+                                                                Navigator.of(
+                                                                        context)
+                                                                    .pop();
                                                                 EasyLoading
                                                                     .showToast(
                                                                   "即将开始投屏播放",

@@ -203,7 +203,7 @@ class _SearchV2State extends State<SearchV2> {
                     spacing: 12,
                     children: [
                       // TODO(d1y): 支持选择(过滤)源
-                      Icon(Icons.filter_alt_outlined, size: 26),
+                      // Icon(Icons.filter_alt_outlined, size: 26),
                       Expanded(
                         child: CupertinoTextField(
                           controller: textEditingController,

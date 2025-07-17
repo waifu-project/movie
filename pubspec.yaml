@@ -66,6 +66,9 @@ dependencies:
   xi:
     path: packages/xi
 
+  hide_cursor:
+    git:
+      url: https://github.com/waifu-project/hide_cursor
   desktop_webview_window:
     git:
       url: https://github.com/waifu-project/flutter-plugins
@@ -106,6 +109,12 @@ dependencies:
   dlna_dart: ^0.1.0
 
   concurrent_queue: ^1.5.0
+
+  after_layout: ^1.2.0
+
+  media_kit: ^1.1.11 # Primary package.
+  media_kit_video: ^1.2.5 # For video rendering.
+  media_kit_libs_video: ^1.0.5 # Native video dependencies.
 
 dev_dependencies:
   flutter_lints: ^6.0.0

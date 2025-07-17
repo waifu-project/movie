@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:catmovie/app/modules/home/views/tv.dart';
 import 'package:command_palette/command_palette.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -7,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:catmovie/app/extension.dart';
 import 'package:catmovie/app/modules/home/views/index_home_view.dart';
-import 'package:catmovie/app/modules/home/views/search_view.dart';
 import 'package:catmovie/app/modules/home/views/settings_view.dart';
 import 'package:catmovie/shared/enum.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
@@ -20,7 +20,7 @@ class HomeView extends GetView<HomeController> {
 
   final List<Widget> _views = [
     const IndexHomeView(),
-    const SearchView(),
+    const TVUI(),
     const SettingsView(),
   ];
 
@@ -31,8 +31,8 @@ class HomeView extends GetView<HomeController> {
       "color": Colors.blue,
     },
     {
-      "icon": CupertinoIcons.search,
-      "title": "搜索",
+      "icon": Icons.live_tv_rounded,
+      "title": "电视",
       "color": Colors.orange,
     },
     {
@@ -130,7 +130,7 @@ class HomeView extends GetView<HomeController> {
               homeview.changeCurrentBarIndex(index);
             },
           ),
-          bottomNavigationBar: BottomAppBar(
+          bottomNavigationBar: homeview.showBottomNavigationBar ? BottomAppBar(
             elevation: 0,
             color: homeview.currentBarIndex == 2 ? Colors.transparent : color,
             padding: EdgeInsets.zero,
@@ -171,8 +171,8 @@ class HomeView extends GetView<HomeController> {
                 ),
               ),
             ),
-          ),
-          extendBody: true,
+          ) : null,
+          extendBody: homeview.showBottomNavigationBar,
         ),
       ),
     );

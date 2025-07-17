@@ -37,7 +37,7 @@ enum UpdateSearchHistoryType {
   clean
 }
 
-Function _showLoading(String msg) {
+Function showLoading(String msg) {
   EasyLoading.show(
     status: msg,
     indicator: Image.asset(
@@ -55,6 +55,13 @@ class HomeController extends GetxController
   final FocusNode homeFocusNode = FocusNode();
 
   late Size windowLastSize;
+
+  bool showBottomNavigationBar = true;
+
+  void setBottomNavigationBar(bool newVal) {
+    showBottomNavigationBar = newVal;
+    update();
+  }
 
   var currentBarIndex = 0;
 
@@ -444,7 +451,7 @@ class HomeController extends GetxController
       onceCategory = id;
     }
     if (isFirst) {
-      var dispose = _showLoading("加载分类中");
+      var dispose = showLoading("加载分类中");
       var isNext = !currentHasCategoryer &&
           !mirrorCategoryPool.fetchCountAlreadyMax(currentMirrorItemId);
 
@@ -471,7 +478,7 @@ class HomeController extends GetxController
 
     try {
       if (isFirst) {
-        _showLoading("加载内容中");
+        showLoading("加载内容中");
         isLoading = !missIsLoading;
         page = 1;
         update();

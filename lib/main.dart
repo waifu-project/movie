@@ -6,6 +6,8 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:catmovie/isar/repo.dart';
 import 'package:catmovie/shared/auto_injector.dart';
+import 'package:hide_cursor/hide_cursor.dart';
+import 'package:media_kit/media_kit.dart';
 import 'package:protocol_handler/protocol_handler.dart';
 import 'package:window_manager/window_manager.dart';
 import 'package:xi/utils/helper.dart';
@@ -34,11 +36,20 @@ ThemeData applyTheme({bool isDark = true}) {
 /// 返回当前主题 -> [ThemeMode]
 Future<ThemeMode> runBefore() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Make sure to add the required packages to pubspec.yaml:
+  // * https://github.com/media-kit/media-kit#installation
+  // * https://pub.dev/packages/media_kit#installation
+  MediaKit.ensureInitialized();
+
   // Register a custom protocol
   // For macOS platform needs to declare the scheme in ios/Runner/Info.plist
   await protocolHandler.register('yoyo');
-  if (GetPlatform.isDesktop) await windowManager.ensureInitialized();
-  windowManager.setTitle("小猫影视");
+
+  if (GetPlatform.isDesktop) {
+    await windowManager.ensureInitialized();
+    windowManager.setTitle("小猫影视");
+  }
 
   await XHttp.init();
   await IsarRepository().init();
@@ -58,6 +69,7 @@ Future<ThemeMode> runBefore() async {
 
 void runAfter() {
   if (GetPlatform.isDesktop) {
+    hideCursor.showCursor();
     doWhenWindowReady(() {
       const minSize = Size(420, 420);
       appWindow.minSize = minSize;

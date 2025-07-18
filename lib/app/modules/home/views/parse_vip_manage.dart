@@ -1,15 +1,12 @@
 import 'dart:io';
-
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:catmovie/app/widget/window_appbar.dart';
 import 'package:get/get.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:catmovie/isar/schema/parse_schema.dart';
 import 'package:xi/xi.dart';
-
 import '../controllers/home_controller.dart';
 import 'source_help.dart';
 
@@ -39,9 +36,14 @@ class _ParseVipManagePageViewState extends State<ParseVipManagePageView> {
   }
 
   Future<void> easyAddVipParseModel() async {
-    var futureWith = await showCupertinoModalBottomSheet<ParseIsarModel>(
-      context: context,
-      builder: (BuildContext context) => ParseVipAddDialog(
+    var futureWith = await Get.bottomSheet<ParseIsarModel>(
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(16), topRight: Radius.circular(16))),
+      enableDrag: false,
+      isScrollControlled: true,
+      isDismissible: false,
+      ParseVipAddDialog(
         onImport: (data, statusCounter) {
           home.addMovieParseVip(data);
           setState(() {});
@@ -351,101 +353,106 @@ class _ParseVipAddDialogState extends State<ParseVipAddDialog> {
   Widget build(BuildContext context) {
     return Material(
       child: SizedBox(
-        width: double.infinity,
-        height: 240,
-        child: CupertinoPageScaffold(
-          navigationBar: CupertinoNavigationBar(
-            border: Border(
-              bottom: BorderSide(
-                color: Theme.of(context).dividerColor,
-                width: 0.0, // 0.0 means one physical pixel
-              ),
-            ),
-            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-            leading: GestureDetector(
-              onTap: () {
-                Get.back();
-              },
-              child: const Icon(
-                Icons.close,
-                size: 20,
-                color: CupertinoColors.systemBlue,
-              ),
-            ),
-            trailing: GestureDetector(
-              onTap: handleImportFile,
-              child: const Icon(
-                Icons.add_box,
-                size: 20,
-                color: CupertinoColors.systemBlue,
-              ),
-            ),
-          ),
-          child: SafeArea(
-            child: Center(
-              child: Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: SingleChildScrollView(
-                  child: Form(
-                    key: _formKey,
-                    child: Column(
-                      children: <Widget>[
-                        TextFormField(
-                          style: const TextStyle(
-                            fontSize: 14.0,
+          width: double.infinity,
+          height: 240,
+          child: Container(
+            height: 60,
+            color: Theme.of(context).scaffoldBackgroundColor,
+            child: Column(
+              children: [
+                Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            Get.back();
+                          },
+                          child: const Icon(
+                            Icons.close,
+                            size: 20,
+                            color: CupertinoColors.systemBlue,
                           ),
-                          decoration: const InputDecoration(hintText: '输入名称'),
-                          onChanged: (value) {
-                            name = value;
-                            setState(() {});
-                          },
-                          validator: (value) {
-                            var b = value!.length >= 2;
-                            var msg = b ? null : '名称最少2个字符';
-                            return msg;
-                          },
                         ),
-                        TextFormField(
-                          style: const TextStyle(
-                            fontSize: 14.0,
-                          ),
-                          decoration: const InputDecoration(hintText: '输入URL'),
-                          onChanged: (value) {
-                            url = value;
-                            setState(() {});
-                          },
-                          validator: (value) {
-                            bool bindCheck = isURL(value);
-                            return !bindCheck ? '不是url' : null;
-                          },
-                        ),
-                        const SizedBox(
-                          height: 12.0,
-                        ),
-                        SizedBox(
-                          width: double.infinity,
-                          child: CupertinoButton.filled(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 24.0,
-                            ),
-                            onPressed: submit,
-                            child: const Text(
-                              "添加",
-                              style: TextStyle(
-                                fontSize: 14.0,
-                              ),
-                            ),
+                        GestureDetector(
+                          onTap: handleImportFile,
+                          child: const Icon(
+                            Icons.add_box,
+                            size: 20,
+                            color: CupertinoColors.systemBlue,
                           ),
                         ),
                       ],
+                    )),
+                SafeArea(
+                  child: Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(12.0),
+                      child: SingleChildScrollView(
+                        child: Form(
+                          key: _formKey,
+                          child: Column(
+                            children: <Widget>[
+                              TextFormField(
+                                style: const TextStyle(
+                                  fontSize: 14.0,
+                                ),
+                                decoration:
+                                    const InputDecoration(hintText: '输入名称'),
+                                onChanged: (value) {
+                                  name = value;
+                                  setState(() {});
+                                },
+                                validator: (value) {
+                                  var b = value!.length >= 2;
+                                  var msg = b ? null : '名称最少2个字符';
+                                  return msg;
+                                },
+                              ),
+                              TextFormField(
+                                style: const TextStyle(
+                                  fontSize: 14.0,
+                                ),
+                                decoration:
+                                    const InputDecoration(hintText: '输入URL'),
+                                onChanged: (value) {
+                                  url = value;
+                                  setState(() {});
+                                },
+                                validator: (value) {
+                                  bool bindCheck = isURL(value);
+                                  return !bindCheck ? '不是url' : null;
+                                },
+                              ),
+                              const SizedBox(
+                                height: 12.0,
+                              ),
+                              SizedBox(
+                                width: double.infinity,
+                                child: CupertinoButton.filled(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 24.0,
+                                  ),
+                                  onPressed: submit,
+                                  child: const Text(
+                                    "添加",
+                                    style: TextStyle(
+                                      fontSize: 14.0,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
                     ),
                   ),
                 ),
-              ),
+              ],
             ),
-          ),
-        ),
-      ),
+          )),
     );
   }
 }

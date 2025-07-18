@@ -164,13 +164,6 @@ class _CastScreenState extends State<CastScreen> {
       height: Get.height * .66,
       child: Stack(
         children: [
-          BackdropFilter(
-            filter: ImageFilter.blur(
-              sigmaX: 24,
-              sigmaY: 24,
-            ),
-            child: SizedBox.shrink(),
-          ),
           Positioned.fill(
             child: Column(
               children: [

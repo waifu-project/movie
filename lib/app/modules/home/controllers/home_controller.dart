@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:isar/isar.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:catmovie/app/modules/home/views/mirrortable.dart';
 import 'package:catmovie/app/shared/bus.dart';
 import 'package:catmovie/app/shared/mirror_category.dart';
@@ -244,9 +243,8 @@ class HomeController extends GetxController
   );
 
   void showMirrorModel(BuildContext context) {
-    showCupertinoModalBottomSheet(
-      context: context,
-      builder: (_) => SizedBox(
+    Get.bottomSheet(
+      SizedBox(
         height: Get.height * .88,
         width: double.infinity,
         child: const MirrorTableView(),

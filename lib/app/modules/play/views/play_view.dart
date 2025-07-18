@@ -12,7 +12,6 @@ import 'package:catmovie/app/modules/home/views/parse_vip_manage.dart';
 import 'package:catmovie/app/widget/helper.dart';
 import 'package:catmovie/app/widget/window_appbar.dart';
 import 'package:catmovie/widget/simple_html/flutter_html.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:pull_down_button/pull_down_button.dart';
 import 'package:simple/x.dart';
 import 'package:xi/xi.dart';
@@ -404,8 +403,7 @@ class _PlayViewState extends State<PlayView> {
                                                   title: '投屏播放',
                                                   subtitle: '仅支持局域网里的设备',
                                                   onTap: () {
-                                                    showCupertinoModalBottomSheet(
-                                                        context: context,
+                                                    Get.bottomSheet(
                                                         backgroundColor:
                                                             (context.isDarkMode
                                                                     ? Colors
@@ -414,49 +412,41 @@ class _PlayViewState extends State<PlayView> {
                                                                         .white)
                                                                 .withValues(
                                                                     alpha: .88),
-                                                        builder: (
-                                                          BuildContext context,
-                                                        ) {
-                                                          return CastScreen(
-                                                            onTapDevice:
-                                                                (cx) async {
-                                                              try {
-                                                                await cx.setUrl(
-                                                                    playUrl);
-                                                                await cx.play();
-                                                                // TODO: 支持控制远程DLNA设备
-                                                                if (!context
-                                                                    .mounted) {
-                                                                  return;
-                                                                }
-                                                                Navigator.of(
-                                                                        context)
-                                                                    .pop();
-                                                                EasyLoading
-                                                                    .showToast(
-                                                                  "即将开始投屏播放",
-                                                                  toastPosition:
-                                                                      EasyLoadingToastPosition
-                                                                          .bottom,
-                                                                  duration: Duration(
-                                                                      milliseconds:
-                                                                          240),
-                                                                );
-                                                              } catch (e) {
-                                                                EasyLoading
-                                                                    .showToast(
-                                                                  "播放失败",
-                                                                  toastPosition:
-                                                                      EasyLoadingToastPosition
-                                                                          .bottom,
-                                                                  duration: Duration(
-                                                                      milliseconds:
-                                                                          240),
-                                                                );
-                                                              }
-                                                            },
+                                                        CastScreen(
+                                                      onTapDevice: (cx) async {
+                                                        try {
+                                                          await cx
+                                                              .setUrl(playUrl);
+                                                          await cx.play();
+                                                          // TODO: 支持控制远程DLNA设备
+                                                          if (!context
+                                                              .mounted) {
+                                                            return;
+                                                          }
+                                                          Navigator.of(context)
+                                                              .pop();
+                                                          EasyLoading.showToast(
+                                                            "即将开始投屏播放",
+                                                            toastPosition:
+                                                                EasyLoadingToastPosition
+                                                                    .bottom,
+                                                            duration: Duration(
+                                                                milliseconds:
+                                                                    240),
                                                           );
-                                                        });
+                                                        } catch (e) {
+                                                          EasyLoading.showToast(
+                                                            "播放失败",
+                                                            toastPosition:
+                                                                EasyLoadingToastPosition
+                                                                    .bottom,
+                                                            duration: Duration(
+                                                                milliseconds:
+                                                                    240),
+                                                          );
+                                                        }
+                                                      },
+                                                    ));
                                                   },
                                                   icon: CupertinoIcons.tv,
                                                 ),

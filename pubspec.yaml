@@ -15,7 +15,6 @@ dependencies:
   salomon_bottom_bar: ^3.3.2
   html: ^0.15.6
   webview_flutter: ^4.13.0
-  modal_bottom_sheet: ^3.0.0
 
   # https://github.com/peng8350/flutter_pulltorefresh/issues/588
   pull_to_refresh_flutter3: ^2.0.2

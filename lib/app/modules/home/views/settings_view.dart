@@ -8,7 +8,6 @@ import 'package:flutter_cupertino_settings/flutter_cupertino_settings.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'package:get/get.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:catmovie/app/extension.dart';
 import 'package:catmovie/app/modules/home/controllers/home_controller.dart';
 import 'package:catmovie/app/modules/home/views/parse_vip_manage.dart';
@@ -508,9 +507,8 @@ class _SettingsViewState extends State<SettingsView> {
           ),
           GestureDetector(
             onTap: () {
-              showCupertinoModalBottomSheet(
-                context: context,
-                builder: (_) => SizedBox(
+              Get.bottomSheet(
+                SizedBox(
                   width: double.infinity,
                   height: Get.height * .72,
                   child: cupertinoLicensePage,

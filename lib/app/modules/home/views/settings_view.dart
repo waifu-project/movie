@@ -277,6 +277,7 @@ class _SettingsViewState extends State<SettingsView> with AutomaticKeepAliveClie
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Scaffold(
       appBar: const WindowAppBar(
         title: Text("设置"),

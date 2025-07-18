@@ -45,7 +45,7 @@ class SettingsView extends StatefulWidget {
   createState() => _SettingsViewState();
 }
 
-class _SettingsViewState extends State<SettingsView> {
+class _SettingsViewState extends State<SettingsView> with AutomaticKeepAliveClientMixin {
   final HomeController home = Get.find<HomeController>();
 
   late StreamSubscription $$bus;
@@ -549,4 +549,7 @@ class _SettingsViewState extends State<SettingsView> {
       ),
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

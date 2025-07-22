@@ -87,6 +87,48 @@ type GithubIssueComment struct {
 	Text      []ParseResult
 }
 
+type Set[T comparable] struct {
+	items map[T]struct{}
+}
+
+func NewSet[T comparable]() *Set[T] {
+	return &Set[T]{
+		items: make(map[T]struct{}),
+	}
+}
+
+func (s *Set[T]) Add(value T) {
+	s.items[value] = struct{}{}
+}
+
+func (s *Set[T]) Has(value T) bool {
+	_, exists := s.items[value]
+	return exists
+}
+
+var domains = NewSet[string]()
+
+func getDomainWithURL(urlStr string) (string, error) {
+	u, err := url.Parse(urlStr)
+	if err != nil {
+		return "", fmt.Errorf("解析 URL 失败: %w", err)
+	}
+	if u.Host == "" {
+		u, err = url.Parse("http://" + urlStr)
+		if err != nil {
+			return "", fmt.Errorf("添加 scheme 后解析 URL 失败: %w", err)
+		}
+	}
+	host := u.Host
+	if strings.Contains(host, ":") {
+		host = strings.Split(host, ":")[0]
+	}
+	if strings.HasPrefix(host, "[") && strings.HasSuffix(host, "]") {
+		host = strings.Trim(host, "[]")
+	}
+	return host, nil
+}
+
 func isOKAndResponseType(body string) (ResponseType, error) {
 	var cx = strings.TrimSpace(body)
 	if len(cx) == 0 {
@@ -212,9 +254,20 @@ func runTaskCheck(list []ParseResult, ccTaskCount int) []Result {
 					log.Error("Recovered", "err", r)
 				}
 			}()
-			resp, err := req.Get(item.URL)
 			result.Idx = idx
 			result.Parse = item
+			if domain, err := getDomainWithURL(item.URL); err == nil {
+				if domains.Has(domain) {
+					log.Warn("跳过重复域名", "域名", domain, "链接", item.URL)
+					result.Reason = fmt.Sprintf("跳过重复域名: %s", domain)
+					result.Time = "0.00"
+					cx.Store(idx, result)
+					return
+				} else {
+					domains.Add(domain)
+				}
+			}
+			resp, err := req.Get(item.URL)
 			log.Info("检查资源", "名称", item.Text, "链接", item.URL)
 			if err != nil {
 				log.Error("检查资源失败1", "名称", item.Text, "链接", item.URL, "reason", err)

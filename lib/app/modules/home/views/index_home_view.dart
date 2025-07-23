@@ -1,4 +1,5 @@
 import 'package:catmovie/app/modules/home/views/search_v2.dart';
+import 'package:catmovie/app/widget/zoom.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -146,34 +147,30 @@ class _IndexHomeViewState extends State<IndexHomeView>
       builder: (homeview) => Scaffold(
         appBar: WindowAppBar(
           iosBackStyle: true,
-          title: MouseRegion(
-            cursor: SystemMouseCursors.click,
-            child: GestureDetector(
-              onTap: () {
-                homeview.showMirrorModel(context);
-              },
-              child: Row(
-                spacing: 6,
-                children: [
-                  const Icon(
-                    CupertinoIcons.bolt_circle_fill,
-                    color: Colors.white,
-                    size: 24,
+          title: Zoom(
+            onTap: () {
+            homeview.showMirrorModel(context);
+            },
+            child: Row(
+              spacing: 6,
+              children: [
+                const Icon(
+                  CupertinoIcons.bolt_circle_fill,
+                  color: Colors.white,
+                  size: 24,
+                ),
+                Text(
+                  currentTitle,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    fontSize: 16,
                   ),
-                  Text(
-                    currentTitle,
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      fontSize: 16,
-                    ),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
           actions: [
-            MouseRegion(
-              cursor: SystemMouseCursors.click,
+            Zoom(
               child: CupertinoButton(
                 padding: EdgeInsets.zero,
                 child: const Icon(
@@ -186,8 +183,7 @@ class _IndexHomeViewState extends State<IndexHomeView>
                 },
               ),
             ),
-            MouseRegion(
-              cursor: SystemMouseCursors.click,
+            Zoom(
               child: CupertinoButton(
                 padding: EdgeInsets.zero,
                 child: const Icon(
@@ -276,33 +272,35 @@ class _IndexHomeViewState extends State<IndexHomeView>
                           SourceSpiderQueryCategory curr =
                               controller.currentCategoryer[index];
                           bool isCurr = curr == controller.currentCategoryerNow;
-                          return Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 4.2,
-                              vertical: 6.2,
-                            ),
-                            child: CupertinoButton(
+                          return Zoom(
+                            child: Padding(
                               padding: const EdgeInsets.symmetric(
-                                horizontal: 24.0,
+                                horizontal: 4.2,
+                                vertical: 6.2,
                               ),
-                              // FIXME: use real primary color
-                              // >> theme_data _colorSchemeLightM3->primary
-                              color: isCurr ? Color(0xFF6750A4) : null,
-                              child: Text(
-                                curr.name,
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  color: isCurr
-                                      ? Colors.white
-                                      : Theme.of(context)
-                                          .textTheme
-                                          .labelLarge!
-                                          .color,
+                              child: CupertinoButton(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 24.0,
                                 ),
+                                // FIXME: use real primary color
+                                // >> theme_data _colorSchemeLightM3->primary
+                                color: isCurr ? Color(0xFF6750A4) : null,
+                                child: Text(
+                                  curr.name,
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: isCurr
+                                        ? Colors.white
+                                        : Theme.of(context)
+                                            .textTheme
+                                            .labelLarge!
+                                            .color,
+                                  ),
+                                ),
+                                onPressed: () {
+                                  switchCategory(curr);
+                                },
                               ),
-                              onPressed: () {
-                                switchCategory(curr);
-                              },
                             ),
                           );
                         }),
@@ -380,18 +378,20 @@ class _IndexHomeViewState extends State<IndexHomeView>
                                           const SizedBox(
                                             height: 24,
                                           ),
-                                          CupertinoButton.filled(
-                                            padding: const EdgeInsets.symmetric(
-                                              vertical: 12.0,
-                                              horizontal: 24.0,
-                                            ),
-                                            onPressed: () {
-                                              homeview.updateHomeData(
-                                                  isFirst: true);
-                                            },
-                                            child: const Text(
-                                              "重新加载",
-                                              style: TextStyle(fontSize: 12),
+                                          Zoom(
+                                            child: CupertinoButton.filled(
+                                              padding: const EdgeInsets.symmetric(
+                                                vertical: 12.0,
+                                                horizontal: 24.0,
+                                              ),
+                                              onPressed: () {
+                                                homeview.updateHomeData(
+                                                    isFirst: true);
+                                              },
+                                              child: const Text(
+                                                "重新加载",
+                                                style: TextStyle(fontSize: 12),
+                                              ),
                                             ),
                                           ),
                                           const SizedBox(

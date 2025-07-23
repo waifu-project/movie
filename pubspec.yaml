@@ -118,6 +118,8 @@ dependencies:
   media_kit_video: ^1.2.5 # For video rendering.
   media_kit_libs_video: ^1.0.5 # Native video dependencies.
 
+  bounce_tapper: ^1.1.4
+
 dev_dependencies:
   flutter_lints: ^6.0.0
 

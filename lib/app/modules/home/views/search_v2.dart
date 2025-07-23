@@ -4,6 +4,7 @@ import 'package:catmovie/app/routes/app_pages.dart';
 import 'package:catmovie/app/widget/helper.dart';
 import 'package:catmovie/app/widget/k_tag.dart';
 import 'package:catmovie/app/widget/window_appbar.dart';
+import 'package:catmovie/app/widget/zoom.dart';
 import 'package:catmovie/isar/schema/history_schema.dart';
 import 'package:concurrent_queue/concurrent_queue.dart';
 import 'package:flutter/cupertino.dart';
@@ -248,7 +249,7 @@ class _SearchV2State extends State<SearchV2> {
                           ),
                           suffix: keyword.isEmpty
                               ? null
-                              : GestureDetector(
+                              : Zoom(
                                   onTap: handleClean,
                                   child: Padding(
                                     padding: EdgeInsets.only(right: 12),
@@ -274,21 +275,23 @@ class _SearchV2State extends State<SearchV2> {
                                 ),
                         ),
                       ),
-                      CupertinoButton(
-                        padding: EdgeInsets.zero,
-                        child: Text(
-                          "取消",
-                          style: TextStyle(
-                            color: CupertinoDynamicColor.withBrightness(
-                                color: '#767a82'.$color,
-                                darkColor: '#6f737a'.$color),
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
+                      Zoom(
+                        child: CupertinoButton(
+                          padding: EdgeInsets.zero,
+                          child: Text(
+                            "取消",
+                            style: TextStyle(
+                              color: CupertinoDynamicColor.withBrightness(
+                                  color: '#767a82'.$color,
+                                  darkColor: '#6f737a'.$color),
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
+                          onPressed: () {
+                            Get.back();
+                          },
                         ),
-                        onPressed: () {
-                          Get.back();
-                        },
                       ),
                     ],
                   ),
@@ -334,20 +337,22 @@ class _SearchV2State extends State<SearchV2> {
                     fontSize: 21,
                     color: Get.isDarkMode ? Colors.white : Colors.black),
               ),
-              IconButton(
-                iconSize: 18,
-                tooltip: "删除所有历史记录",
-                padding: const EdgeInsets.symmetric(
-                  vertical: 3,
-                  horizontal: 2,
+              Zoom(
+                child: IconButton(
+                  iconSize: 18,
+                  tooltip: "删除所有历史记录",
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 3,
+                    horizontal: 2,
+                  ),
+                  onPressed: () {
+                    handleUpdateSearchHistory(
+                      "",
+                      type: UpdateSearchHistoryType.clean,
+                    );
+                  },
+                  icon: const Icon(CupertinoIcons.trash),
                 ),
-                onPressed: () {
-                  handleUpdateSearchHistory(
-                    "",
-                    type: UpdateSearchHistoryType.clean,
-                  );
-                },
-                icon: const Icon(CupertinoIcons.trash),
               ),
             ],
           ),
@@ -363,34 +368,36 @@ class _SearchV2State extends State<SearchV2> {
                 spacing: 6,
                 children: searchHistory
                     .map(
-                      (_keyword) => KTag(
-                        backgroundColor:
-                            (Get.isDarkMode ? '#1f2122' : '#dfe2e4').$color,
-                        onTap: (type) {
-                          switch (type) {
-                            case KTagTapEventType.content: // 内容
-                              handleUpdateSearchHistory(
-                                _keyword,
-                                type: UpdateSearchHistoryType.add,
-                              );
-                              keyword = _keyword;
-                              setState(() {});
-                              handleSearch(keyword);
-                              break;
-                            case KTagTapEventType.action: // 操作
-                              handleUpdateSearchHistory(
-                                _keyword,
-                                type: UpdateSearchHistoryType.remove,
-                              );
-                              break;
-                            default:
-                          }
-                        },
-                        child: Text(_keyword,
-                            style: TextStyle(
-                                color: Get.isDarkMode
-                                    ? Colors.white
-                                    : Colors.black)),
+                      (_keyword) => Zoom(
+                        child: KTag(
+                          backgroundColor:
+                              (Get.isDarkMode ? '#1f2122' : '#dfe2e4').$color,
+                          onTap: (type) {
+                            switch (type) {
+                              case KTagTapEventType.content: // 内容
+                                handleUpdateSearchHistory(
+                                  _keyword,
+                                  type: UpdateSearchHistoryType.add,
+                                );
+                                keyword = _keyword;
+                                setState(() {});
+                                handleSearch(keyword);
+                                break;
+                              case KTagTapEventType.action: // 操作
+                                handleUpdateSearchHistory(
+                                  _keyword,
+                                  type: UpdateSearchHistoryType.remove,
+                                );
+                                break;
+                              default:
+                            }
+                          },
+                          child: Text(_keyword,
+                              style: TextStyle(
+                                  color: Get.isDarkMode
+                                      ? Colors.white
+                                      : Colors.black)),
+                        ),
                       ),
                     )
                     .toList(),
@@ -417,7 +424,7 @@ class _SearchV2State extends State<SearchV2> {
                 if (item == currSource) {
                   textColor = Color(0xFF6750A4);
                 }
-                return GestureDetector(
+                return Zoom(
                   onTap: () {
                     currSource = item;
                     setState(() {});
@@ -475,72 +482,75 @@ class _SearchV2State extends State<SearchV2> {
                             arguments: data,
                           );
                         },
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color:
-                                (Get.isDarkMode ? '#1c1c1e' : "#f0f0f0").$color,
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          width: double.infinity,
-                          height: 160,
-                          padding: EdgeInsets.all(12),
-                          child: Row(
-                            spacing: 12,
-                            children: [
-                              Builder(builder: (context) {
-                                String img = item.smallCoverImage;
-                                if (img.isEmpty) return SizedBox.shrink();
-                                return ClipRRect(
-                                  borderRadius: BorderRadius.circular(6.0),
-                                  child: CachedNetworkImage(
-                                    imageUrl: item.smallCoverImage,
-                                    fit: BoxFit.cover,
-                                    width: 100,
-                                    height: double.infinity,
-                                    progressIndicatorBuilder:
-                                        (context, url, progress) => Center(
-                                      child: CircularProgressIndicator(
-                                        value: progress.progress,
+                        child: Zoom(
+                          scaleRatio: .99,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color:
+                                  (Get.isDarkMode ? '#1c1c1e' : "#f0f0f0").$color,
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            width: double.infinity,
+                            height: 160,
+                            padding: EdgeInsets.all(12),
+                            child: Row(
+                              spacing: 12,
+                              children: [
+                                Builder(builder: (context) {
+                                  String img = item.smallCoverImage;
+                                  if (img.isEmpty) return SizedBox.shrink();
+                                  return ClipRRect(
+                                    borderRadius: BorderRadius.circular(6.0),
+                                    child: CachedNetworkImage(
+                                      imageUrl: item.smallCoverImage,
+                                      fit: BoxFit.cover,
+                                      width: 100,
+                                      height: double.infinity,
+                                      progressIndicatorBuilder:
+                                          (context, url, progress) => Center(
+                                        child: CircularProgressIndicator(
+                                          value: progress.progress,
+                                        ),
                                       ),
+                                      errorWidget: (_, __, ___) => kErrorImage,
                                     ),
-                                    errorWidget: (_, __, ___) => kErrorImage,
+                                  );
+                                }),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        item.title,
+                                        style: TextStyle(
+                                          color: Get.isDarkMode
+                                              ? Colors.white
+                                              : Colors.black,
+                                        ),
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                      Builder(builder: (context) {
+                                        dynamic source = item.extra['source'];
+                                        if (source == null) {
+                                          return const SizedBox.shrink();
+                                        }
+                                        return Text(
+                                            (source as SourceItemMeta).name,
+                                            style: TextStyle(
+                                              color: (Get.isDarkMode
+                                                      ? '#a4a4a6'
+                                                      : '#71727a')
+                                                  .$color,
+                                            ));
+                                      }),
+                                    ],
                                   ),
-                                );
-                              }),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      item.title,
-                                      style: TextStyle(
-                                        color: Get.isDarkMode
-                                            ? Colors.white
-                                            : Colors.black,
-                                      ),
-                                      maxLines: 2,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                    Builder(builder: (context) {
-                                      dynamic source = item.extra['source'];
-                                      if (source == null) {
-                                        return const SizedBox.shrink();
-                                      }
-                                      return Text(
-                                          (source as SourceItemMeta).name,
-                                          style: TextStyle(
-                                            color: (Get.isDarkMode
-                                                    ? '#a4a4a6'
-                                                    : '#71727a')
-                                                .$color,
-                                          ));
-                                    }),
-                                  ],
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         ),
                       );

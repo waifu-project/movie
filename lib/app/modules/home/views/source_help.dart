@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:catmovie/app/widget/zoom.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -343,29 +344,31 @@ class _SourceHelpTableState extends State<SourceHelpTable> {
                     padding: const EdgeInsets.only(
                       right: 12,
                     ),
-                    child: CupertinoButton.filled(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 6,
-                      ),
-                      onPressed: handleImportFiles,
-                      child: Row(
-                        spacing: 3,
-                        children: [
-                          const Icon(
-                            CupertinoIcons.arrow_down_square_fill,
-                            color: CupertinoColors.white,
-                          ),
-                          Text(
-                            "导入文件",
-                            style: Theme.of(
-                              context,
-                            ).textTheme.bodyLarge!.copyWith(
-                                  color: CupertinoColors.white,
-                                  fontSize: 12,
-                                ),
-                          ),
-                        ],
+                    child: Zoom(
+                      child: CupertinoButton.filled(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 6,
+                        ),
+                        onPressed: handleImportFiles,
+                        child: Row(
+                          spacing: 3,
+                          children: [
+                            const Icon(
+                              CupertinoIcons.arrow_down_square_fill,
+                              color: CupertinoColors.white,
+                            ),
+                            Text(
+                              "导入文件",
+                              style: Theme.of(
+                                context,
+                              ).textTheme.bodyLarge!.copyWith(
+                                    color: CupertinoColors.white,
+                                    fontSize: 12,
+                                  ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -430,17 +433,19 @@ class _SourceHelpTableState extends State<SourceHelpTable> {
                     }
                     return const SizedBox.shrink();
                   }
-                  return Container(
-                    margin: const EdgeInsets.symmetric(
-                      horizontal: 0,
-                      vertical: 12,
-                    ),
-                    child: CupertinoButton.filled(
-                      borderRadius: BorderRadius.circular(24),
-                      child: const Text("一键添加到本地"),
-                      onPressed: () {
-                        handleCopyText(canCopyAll: true);
-                      },
+                  return Zoom(
+                    child: Container(
+                      margin: const EdgeInsets.symmetric(
+                        horizontal: 0,
+                        vertical: 12,
+                      ),
+                      child: CupertinoButton.filled(
+                        borderRadius: BorderRadius.circular(24),
+                        child: const Text("一键添加到本地"),
+                        onPressed: () {
+                          handleCopyText(canCopyAll: true);
+                        },
+                      ),
                     ),
                   );
                 },

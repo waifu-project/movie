@@ -8,6 +8,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:catmovie/app/extension.dart';
 import 'package:catmovie/app/modules/home/controllers/home_controller.dart';
 import 'package:catmovie/app/widget/window_appbar.dart';
+import 'package:catmovie/app/widget/zoom.dart';
 import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -607,45 +608,47 @@ class TVUIState extends State<TVUI>
                                         ).copyWith(
                                           top: idx == 0 ? 24 : 1,
                                         ),
-                                        child: ListTile(
-                                          dense: true,
-                                          selected: isSelected,
-                                          selectedTileColor: kActiveColor,
-                                          hoverColor: Colors.white
-                                              .withValues(alpha: 0.1),
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(8),
-                                          ),
-                                          title: Text(
-                                            name,
-                                            maxLines: 1,
-                                            overflow: TextOverflow.ellipsis,
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 18,
-                                              fontWeight: isSelected
-                                                  ? FontWeight.w600
-                                                  : FontWeight.normal,
+                                        child: Zoom(
+                                          child: ListTile(
+                                            dense: true,
+                                            selected: isSelected,
+                                            selectedTileColor: kActiveColor,
+                                            hoverColor: Colors.white
+                                                .withValues(alpha: 0.1),
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
                                             ),
+                                            title: Text(
+                                              name,
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 18,
+                                                fontWeight: isSelected
+                                                    ? FontWeight.w600
+                                                    : FontWeight.normal,
+                                              ),
+                                            ),
+                                            onFocusChange: (flag) {
+                                              currGroupName = name;
+                                              currTVIdx = 0;
+                                              setState(() {});
+                                              if (currTVS.isNotEmpty) {
+                                                playURL(currTVS[0].url);
+                                              }
+                                            },
+                                            onTap: () {
+                                              currGroupName = name;
+                                              currTVIdx = 0;
+                                              setState(() {});
+                                              if (currTVS.isNotEmpty) {
+                                                playURL(currTVS[0].url,
+                                                    isCloseDrawer: false);
+                                              }
+                                            },
                                           ),
-                                          onFocusChange: (flag) {
-                                            currGroupName = name;
-                                            currTVIdx = 0;
-                                            setState(() {});
-                                            if (currTVS.isNotEmpty) {
-                                              playURL(currTVS[0].url);
-                                            }
-                                          },
-                                          onTap: () {
-                                            currGroupName = name;
-                                            currTVIdx = 0;
-                                            setState(() {});
-                                            if (currTVS.isNotEmpty) {
-                                              playURL(currTVS[0].url,
-                                                  isCloseDrawer: false);
-                                            }
-                                          },
                                         ),
                                       ),
                                     );
@@ -701,45 +704,47 @@ class TVUIState extends State<TVUI>
                                     ).copyWith(
                                       top: idx == 0 ? 24 : 1,
                                     ),
-                                    child: ListTile(
-                                      dense: true,
-                                      contentPadding: EdgeInsets.only(left: 12),
-                                      selected: isSelected,
-                                      selectedTileColor: kActiveColor,
-                                      hoverColor:
-                                          Colors.white.withValues(alpha: 0.1),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                      title: Text(
-                                        tv.name,
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 16,
-                                          fontWeight: isSelected
-                                              ? FontWeight.w600
-                                              : FontWeight.normal,
+                                    child: Zoom(
+                                      child: ListTile(
+                                        dense: true,
+                                        contentPadding: EdgeInsets.only(left: 12),
+                                        selected: isSelected,
+                                        selectedTileColor: kActiveColor,
+                                        hoverColor:
+                                            Colors.white.withValues(alpha: 0.1),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(8),
                                         ),
-                                      ),
-                                      leading: CachedNetworkImage(
-                                        width: 48,
-                                        height: double.infinity,
-                                        imageUrl: tv.logo!,
-                                        errorWidget: (_, __, ___) => Icon(
-                                          Icons.live_tv,
-                                          size: 32,
+                                        title: Text(
+                                          tv.name,
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 16,
+                                            fontWeight: isSelected
+                                                ? FontWeight.w600
+                                                : FontWeight.normal,
+                                          ),
                                         ),
-                                        placeholder: (_, __) => Center(
-                                          child: CupertinoActivityIndicator(),
+                                        leading: CachedNetworkImage(
+                                          width: 48,
+                                          height: double.infinity,
+                                          imageUrl: tv.logo!,
+                                          errorWidget: (_, __, ___) => Icon(
+                                            Icons.live_tv,
+                                            size: 32,
+                                          ),
+                                          placeholder: (_, __) => Center(
+                                            child: CupertinoActivityIndicator(),
+                                          ),
                                         ),
+                                        onTap: () {
+                                          currTVIdx = idx;
+                                          setState(() {});
+                                          playURL(tv.url);
+                                        },
                                       ),
-                                      onTap: () {
-                                        currTVIdx = idx;
-                                        setState(() {});
-                                        playURL(tv.url);
-                                      },
                                     ),
                                   ),
                                 );
@@ -759,30 +764,32 @@ class TVUIState extends State<TVUI>
   }
 
   Widget _buildLiveSourceButton(PullDownMenuButtonBuilder button) {
-    return PullDownButton(
-      buttonBuilder: button,
-      itemBuilder: (cx) {
-        return liveSourceGroups.sources.map((item) {
-          var selected = currLiveSource == item;
-          var name = item.name;
-          String? subTitle;
-          if (name.contains("/")) {
-            var parts = name.split("/");
-            name = parts[0];
-            subTitle = parts[1];
-          }
-          return PullDownMenuItem.selectable(
-            onTap: () {
-              selectLiveSourceGroup(item);
-            },
-            selected: selected,
-            title: name,
-            subtitle: subTitle,
-            icon: Icons.live_tv,
-            iconColor: CupertinoColors.systemGreen.resolveFrom(context),
-          );
-        }).toList();
-      },
+    return Zoom(
+      child: PullDownButton(
+        buttonBuilder: button,
+        itemBuilder: (cx) {
+          return liveSourceGroups.sources.map((item) {
+            var selected = currLiveSource == item;
+            var name = item.name;
+            String? subTitle;
+            if (name.contains("/")) {
+              var parts = name.split("/");
+              name = parts[0];
+              subTitle = parts[1];
+            }
+            return PullDownMenuItem.selectable(
+              onTap: () {
+                selectLiveSourceGroup(item);
+              },
+              selected: selected,
+              title: name,
+              subtitle: subTitle,
+              icon: Icons.live_tv,
+              iconColor: CupertinoColors.systemGreen.resolveFrom(context),
+            );
+          }).toList();
+        },
+      ),
     );
   }
 
@@ -884,36 +891,40 @@ class TVUIState extends State<TVUI>
                         ),
                       );
                     }),
-                    CupertinoButton(
-                      sizeStyle: CupertinoButtonSize.small,
-                      color: Colors.black.withValues(alpha: .72),
-                      borderRadius: BorderRadius.circular(24),
-                      child: Row(
-                        spacing: 6,
-                        children: [
-                          Icon(CupertinoIcons.ellipsis_circle_fill),
-                          Text("频道"),
-                        ],
+                    Zoom(
+                      child: CupertinoButton(
+                        sizeStyle: CupertinoButtonSize.small,
+                        color: Colors.black.withValues(alpha: .72),
+                        borderRadius: BorderRadius.circular(24),
+                        child: Row(
+                          spacing: 6,
+                          children: [
+                            Icon(CupertinoIcons.ellipsis_circle_fill),
+                            Text("频道"),
+                          ],
+                        ),
+                        onPressed: () {
+                          scaffoldKey.currentState?.openDrawer();
+                        },
                       ),
-                      onPressed: () {
-                        scaffoldKey.currentState?.openDrawer();
-                      },
                     ),
-                    CupertinoButton(
-                      sizeStyle: CupertinoButtonSize.small,
-                      color: Colors.black.withValues(alpha: .72),
-                      borderRadius: BorderRadius.circular(24),
-                      onPressed: () {
-                        homeController.setBottomNavigationBar(
-                          !homeController.showBottomNavigationBar,
-                        );
-                      },
-                      child: Row(
-                        spacing: 6,
-                        children: [
-                          Icon(Icons.open_in_full_rounded),
-                          Text("半全屏"),
-                        ],
+                    Zoom(
+                      child: CupertinoButton(
+                        sizeStyle: CupertinoButtonSize.small,
+                        color: Colors.black.withValues(alpha: .72),
+                        borderRadius: BorderRadius.circular(24),
+                        onPressed: () {
+                          homeController.setBottomNavigationBar(
+                            !homeController.showBottomNavigationBar,
+                          );
+                        },
+                        child: Row(
+                          spacing: 6,
+                          children: [
+                            Icon(Icons.open_in_full_rounded),
+                            Text("半全屏"),
+                          ],
+                        ),
                       ),
                     ),
                   ],
@@ -1041,53 +1052,57 @@ class TVUIState extends State<TVUI>
                           //   },
                           // ),
                           // 视频填充模式
-                          IconButton(
-                            icon: const Icon(
-                              Icons.aspect_ratio,
-                              size: 20,
+                          Zoom(
+                            child: IconButton(
+                              icon: const Icon(
+                                Icons.aspect_ratio,
+                                size: 20,
+                              ),
+                              onPressed: () {
+                                List<BoxFit> fits = kVideoFits.keys.toList();
+                                int idx = fits.indexOf(videoFit);
+                                idx = (idx + 1) % fits.length;
+                                videoFit = fits[idx];
+                                setState(() {});
+                            
+                                var msg = "切换到${kVideoFits[videoFit] ?? '未知模式'}";
+                                EasyLoading.showToast(
+                                  msg,
+                                  toastPosition: EasyLoadingToastPosition.bottom,
+                                );
+                              },
                             ),
-                            onPressed: () {
-                              List<BoxFit> fits = kVideoFits.keys.toList();
-                              int idx = fits.indexOf(videoFit);
-                              idx = (idx + 1) % fits.length;
-                              videoFit = fits[idx];
-                              setState(() {});
-
-                              var msg = "切换到${kVideoFits[videoFit] ?? '未知模式'}";
-                              EasyLoading.showToast(
-                                msg,
-                                toastPosition: EasyLoadingToastPosition.bottom,
-                              );
-                            },
                           ),
                           // 全屏
-                          IconButton(
-                            icon: const Icon(Icons.fullscreen),
-                            onPressed: () async {
-                              if (GetPlatform.isDesktop) {
-                                bool isFullScreen =
-                                    await windowManager.isFullScreen();
-                                windowManager.setFullScreen(!isFullScreen);
-                              } else {
-                                var orientation =
-                                    MediaQuery.of(context).orientation;
-                                if (orientation == Orientation.portrait) {
-                                  await SystemChrome.setPreferredOrientations([
-                                    DeviceOrientation.landscapeLeft,
-                                    DeviceOrientation.landscapeRight,
-                                  ]);
-                                  homeController.setBottomNavigationBar(false);
+                          Zoom(
+                            child: IconButton(
+                              icon: const Icon(Icons.fullscreen),
+                              onPressed: () async {
+                                if (GetPlatform.isDesktop) {
+                                  bool isFullScreen =
+                                      await windowManager.isFullScreen();
+                                  windowManager.setFullScreen(!isFullScreen);
                                 } else {
-                                  await SystemChrome.setPreferredOrientations([
-                                    DeviceOrientation.portraitUp,
-                                    DeviceOrientation.portraitDown,
-                                  ]);
-                                  homeController.setBottomNavigationBar(true);
+                                  var orientation =
+                                      MediaQuery.of(context).orientation;
+                                  if (orientation == Orientation.portrait) {
+                                    await SystemChrome.setPreferredOrientations([
+                                      DeviceOrientation.landscapeLeft,
+                                      DeviceOrientation.landscapeRight,
+                                    ]);
+                                    homeController.setBottomNavigationBar(false);
+                                  } else {
+                                    await SystemChrome.setPreferredOrientations([
+                                      DeviceOrientation.portraitUp,
+                                      DeviceOrientation.portraitDown,
+                                    ]);
+                                    homeController.setBottomNavigationBar(true);
+                                  }
+                                  showVideoControls = false;
+                                  setState(() {});
                                 }
-                                showVideoControls = false;
-                                setState(() {});
-                              }
-                            },
+                              },
+                            ),
                           ),
                         ],
                       ),
@@ -1289,35 +1304,37 @@ class TVUIState extends State<TVUI>
                                               ),
                                             );
                                           }),
-                                          CupertinoButton.filled(
-                                            color: '#3e3e3e'.$color,
-                                            sizeStyle:
-                                                CupertinoButtonSize.medium,
-                                            padding: EdgeInsets.symmetric(
-                                              horizontal: 12,
+                                          Zoom(
+                                            child: CupertinoButton.filled(
+                                              color: '#3e3e3e'.$color,
+                                              sizeStyle:
+                                                  CupertinoButtonSize.medium,
+                                              padding: EdgeInsets.symmetric(
+                                                horizontal: 12,
+                                              ),
+                                              child: Row(
+                                                children: [
+                                                  Builder(builder: (context) {
+                                                    var channelName =
+                                                        currGroupName.isNotEmpty
+                                                            ? currGroupName
+                                                            : "频道";
+                                                    return Text(
+                                                      channelName,
+                                                      style: TextStyle(
+                                                          color:
+                                                              '#767579'.$color),
+                                                    );
+                                                  }),
+                                                  Icon(
+                                                      CupertinoIcons.chevron_down,
+                                                      color: '#8e8e92'.$color),
+                                                ],
+                                              ),
+                                              onPressed: () {
+                                                toggleDrawer();
+                                              },
                                             ),
-                                            child: Row(
-                                              children: [
-                                                Builder(builder: (context) {
-                                                  var channelName =
-                                                      currGroupName.isNotEmpty
-                                                          ? currGroupName
-                                                          : "频道";
-                                                  return Text(
-                                                    channelName,
-                                                    style: TextStyle(
-                                                        color:
-                                                            '#767579'.$color),
-                                                  );
-                                                }),
-                                                Icon(
-                                                    CupertinoIcons.chevron_down,
-                                                    color: '#8e8e92'.$color),
-                                              ],
-                                            ),
-                                            onPressed: () {
-                                              toggleDrawer();
-                                            },
                                           ),
                                         ],
                                       ),

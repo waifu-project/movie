@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:ui';
 
+import 'package:catmovie/app/widget/zoom.dart';
 import 'package:dlna_dart/dlna.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -75,62 +76,65 @@ class _CastScreenState extends State<CastScreen> {
     if (!support) {
       icon = Icons.router;
     }
-    final card = Card(
-      shape: RoundedRectangleBorder(
-        side: BorderSide(
-          color: context.isDarkMode
-              ? Colors.grey
-              : Colors.grey.withValues(alpha: .12),
-          width: .42,
-        ),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      margin: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-      elevation: .24,
-      child: Row(
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.only(top: 16, left: 16, bottom: 30),
-            child: CircleAvatar(child: Icon(icon)),
+    final card = Zoom(
+      scaleRatio: .98,
+      child: Card(
+        shape: RoundedRectangleBorder(
+          side: BorderSide(
+            color: context.isDarkMode
+                ? Colors.grey
+                : Colors.grey.withValues(alpha: .12),
+            width: .42,
           ),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Container(
-                  margin: const EdgeInsets.only(left: 16),
-                  child: Text(
-                    title,
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
-                      color: textColor,
+          borderRadius: BorderRadius.circular(12),
+        ),
+        margin: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        elevation: .24,
+        child: Row(
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.only(top: 16, left: 16, bottom: 30),
+              child: CircleAvatar(child: Icon(icon)),
+            ),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Container(
+                    margin: const EdgeInsets.only(left: 16),
+                    child: Text(
+                      title,
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                        color: textColor,
+                      ),
                     ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 8, left: 16, right: 16),
-                  child: Row(
-                    children: <Widget>[
-                      Expanded(
-                        child: Text(
-                          subtitle,
-                          softWrap: false,
-                          maxLines: 2,
-                          overflow: TextOverflow.fade,
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: textColor,
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8, left: 16, right: 16),
+                    child: Row(
+                      children: <Widget>[
+                        Expanded(
+                          child: Text(
+                            subtitle,
+                            softWrap: false,
+                            maxLines: 2,
+                            overflow: TextOverflow.fade,
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: textColor,
+                            ),
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
     return MouseRegion(

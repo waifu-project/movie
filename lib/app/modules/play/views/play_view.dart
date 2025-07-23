@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:catmovie/app/modules/play/views/cast_screen.dart';
+import 'package:catmovie/app/widget/zoom.dart';
 import 'package:clipboard/clipboard.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -297,7 +298,7 @@ class _PlayViewState extends State<PlayView> {
                                                   ? Colors.white
                                                   : Colors.black)
                                               .withValues(alpha: .42);
-                                      return GestureDetector(
+                                      return Zoom(
                                         onTap: () {
                                           play.changeTabIndex(index);
                                         },

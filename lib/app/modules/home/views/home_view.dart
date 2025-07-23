@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:catmovie/app/modules/home/views/tv.dart';
+import 'package:catmovie/app/widget/zoom.dart';
 import 'package:command_palette/command_palette.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -158,7 +159,7 @@ class HomeView extends GetView<HomeController> {
                           items: _tabs
                               .map(
                                 (e) => SalomonBottomBarItem(
-                                  icon: Icon(e['icon']),
+                                  icon: Zoom(child: Icon(e['icon'])),
                                   title: Text(e['title']),
                                   selectedColor: e['color'],
                                 ),

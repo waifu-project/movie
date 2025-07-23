@@ -119,6 +119,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.2"
+  bounce_tapper:
+    dependency: "direct main"
+    description:
+      name: bounce_tapper
+      sha256: "2ea08aee05463a7ab926a43a8db1acaffda0e8ecb990cf2dc6e461e0db9ee5c6"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.4"
   build:
     dependency: transitive
     description:

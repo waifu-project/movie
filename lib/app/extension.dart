@@ -62,6 +62,8 @@ extension ISettingMixin on Object {
       return curr.showPlayTips;
     } else if (key == SettingsAllKey.webviewPlayType) {
       return curr.webviewPlayType;
+    } else if (key == SettingsAllKey.onBoardingShowed) {
+      return curr.onBoardingShowed;
     }
     return curr.id;
   }
@@ -89,6 +91,8 @@ extension ISettingMixin on Object {
       curr.showPlayTips = value;
     } else if (key == SettingsAllKey.webviewPlayType) {
       curr.webviewPlayType = value;
+    } else if (key == SettingsAllKey.onBoardingShowed) {
+      curr.onBoardingShowed = value;
     } else {
       return;
     }

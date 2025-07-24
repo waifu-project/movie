@@ -1,5 +1,11 @@
+import 'dart:async';
+
+import 'package:after_layout/after_layout.dart';
+import 'package:catmovie/app/extension.dart';
+import 'package:catmovie/app/modules/home/views/onboarding.dart';
 import 'package:catmovie/app/modules/home/views/search_v2.dart';
 import 'package:catmovie/app/widget/zoom.dart';
+import 'package:catmovie/shared/enum.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -12,6 +18,7 @@ import 'package:catmovie/app/widget/k_empty_mirror.dart';
 import 'package:catmovie/app/widget/k_error_stack.dart';
 import 'package:catmovie/app/widget/movie_card_item.dart';
 import 'package:catmovie/app/widget/window_appbar.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 import 'package:simple/x.dart';
 import 'package:waterfall_flow/waterfall_flow.dart';
@@ -36,7 +43,7 @@ class IndexHomeView extends StatefulWidget {
 }
 
 class _IndexHomeViewState extends State<IndexHomeView>
-    with AutomaticKeepAliveClientMixin {
+    with AutomaticKeepAliveClientMixin, AfterLayoutMixin {
   HomeController controller = Get.find<HomeController>();
 
   ScrollController scrollController = ScrollController();
@@ -141,6 +148,25 @@ class _IndexHomeViewState extends State<IndexHomeView>
   }
 
   @override
+  FutureOr<void> afterFirstLayout(BuildContext context) {
+    initWithOnBoarding();
+  }
+
+  void initWithOnBoarding() {
+    if (getSettingAsKeyIdent<bool>(SettingsAllKey.onBoardingShowed)) return;
+    showCupertinoModalBottomSheet(
+      context: context,
+      topRadius: Radius.circular(24),
+      builder: (_) => OnBoarding(
+        onNext: () {
+          updateSetting(SettingsAllKey.onBoardingShowed, true);
+          controller.updateHomeData(isFirst: true);
+        },
+      ),
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
     super.build(context);
     return GetBuilder<HomeController>(
@@ -149,7 +175,7 @@ class _IndexHomeViewState extends State<IndexHomeView>
           iosBackStyle: true,
           title: Zoom(
             onTap: () {
-            homeview.showMirrorModel(context);
+              homeview.showMirrorModel(context);
             },
             child: Row(
               spacing: 6,
@@ -380,7 +406,8 @@ class _IndexHomeViewState extends State<IndexHomeView>
                                           ),
                                           Zoom(
                                             child: CupertinoButton.filled(
-                                              padding: const EdgeInsets.symmetric(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
                                                 vertical: 12.0,
                                                 horizontal: 24.0,
                                               ),

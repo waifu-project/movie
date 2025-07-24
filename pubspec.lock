@@ -352,6 +352,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.8"
+  cupertino_onboarding:
+    dependency: "direct main"
+    description:
+      name: cupertino_onboarding
+      sha256: f9b4ead5a754fbf2515aa60e4b9d139a64602487c389032f740f44b486a5d293
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.3.0"
   dart_style:
     dependency: transitive
     description:
@@ -425,6 +433,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.1.0"
+  dots_indicator:
+    dependency: transitive
+    description:
+      name: dots_indicator
+      sha256: f1599baa429936ba87f06ae5f2adc920a367b16d08f74db58c3d0f6e93bcdb5c
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.1.2"
   equatable:
     dependency: "direct main"
     description:

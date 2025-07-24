@@ -15,7 +15,7 @@ import 'package:xi/adapters/mac_cms.dart';
 import 'package:catmovie/shared/enum.dart';
 import 'package:xi/xi.dart';
 
-const fetchMirrorAPI =
+const kCatMovieSourceAPI =
     "https://cdn.jsdelivr.net/gh/waifu-project/v1@latest/x.json";
 
 class SourceHelpTable extends StatefulWidget {
@@ -37,7 +37,7 @@ class _SourceHelpTableState extends State<SourceHelpTable> {
       _isLoadingFromAJAX = true;
     });
     try {
-      var resp = await XHttp.dio.get(fetchMirrorAPI, options: $toDioOptions());
+      var resp = await XHttp.dio.get(kCatMovieSourceAPI, options: $toDioOptions());
       late List<dynamic> list;
       if (resp.data is List) {
         list = resp.data;
@@ -335,7 +335,7 @@ class _SourceHelpTableState extends State<SourceHelpTable> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const CupertinoNavigationBarBackButton(),
+                  Zoom(child: const CupertinoNavigationBarBackButton()),
                   Text(
                     "o(-`д´- ｡)",
                     style: Theme.of(context).textTheme.titleLarge,
@@ -393,20 +393,23 @@ class _SourceHelpTableState extends State<SourceHelpTable> {
                       }
                       return ListView(
                         children: mirrors.map((item) {
-                          return CupertinoListTile(
-                            title: Text(
-                              item.title ?? "",
-                              style: TextStyle(
-                                color: context.isDarkMode
-                                    ? Colors.white54
-                                    : Colors.black54,
+                          return Zoom(
+                            scaleRatio: .99,
+                            child: CupertinoListTile(
+                              title: Text(
+                                item.title ?? "",
+                                style: TextStyle(
+                                  color: context.isDarkMode
+                                      ? Colors.white54
+                                      : Colors.black54,
+                                ),
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
                               ),
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
+                              onTap: () {
+                                handleCopyText(item: item);
+                              },
                             ),
-                            onTap: () {
-                              handleCopyText(item: item);
-                            },
                           );
                         }).toList(),
                       );

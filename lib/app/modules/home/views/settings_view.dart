@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:catmovie/app/widget/zoom.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -289,11 +290,13 @@ class _SettingsViewState extends State<SettingsView> {
           !autoDarkMode
               ? CSControl(
                   nameWidget: const Text('深色'),
-                  contentWidget: CupertinoSwitch(
-                    value: isDark,
-                    onChanged: (bool value) {
-                      isDark = value;
-                    },
+                  contentWidget: HoverCursor(
+                    child: CupertinoSwitch(
+                      value: isDark,
+                      onChanged: (bool value) {
+                        isDark = value;
+                      },
+                    ),
                   ),
                   style: const CSWidgetStyle(
                     icon: Icon(
@@ -304,11 +307,13 @@ class _SettingsViewState extends State<SettingsView> {
               : const SizedBox.shrink(),
           CSControl(
             nameWidget: const Text('深色跟随系统'),
-            contentWidget: CupertinoSwitch(
-              value: autoDarkMode,
-              onChanged: (bool value) {
-                autoDarkMode = value;
-              },
+            contentWidget: HoverCursor(
+              child: CupertinoSwitch(
+                value: autoDarkMode,
+                onChanged: (bool value) {
+                  autoDarkMode = value;
+                },
+              ),
             ),
             style: const CSWidgetStyle(
               icon: Icon(
@@ -320,21 +325,25 @@ class _SettingsViewState extends State<SettingsView> {
             onTap: () {
               Get.to(() => const ParseVipManagePageView());
             },
-            child: CSControl(
-              nameWidget: const Text('解析线路管理'),
-              style: const CSWidgetStyle(
-                icon: Icon(
-                  Icons.add_box,
+            child: HoverCursor(
+              child: CSControl(
+                nameWidget: const Text('解析线路管理'),
+                style: const CSWidgetStyle(
+                  icon: Icon(
+                    Icons.add_box,
+                  ),
                 ),
               ),
             ),
           ),
           GestureDetector(
-            child: CSControl(
-              nameWidget: const Text("视频源管理"),
-              style: const CSWidgetStyle(
-                icon: Icon(
-                  Icons.video_library,
+            child: HoverCursor(
+              child: CSControl(
+                nameWidget: const Text("视频源管理"),
+                style: const CSWidgetStyle(
+                  icon: Icon(
+                    Icons.video_library,
+                  ),
                 ),
               ),
             ),
@@ -347,23 +356,27 @@ class _SettingsViewState extends State<SettingsView> {
               }
               Get.defaultDialog(
                 actions: [
-                  CupertinoButton.filled(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 12,
+                  Zoom(
+                    child: CupertinoButton.filled(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                      ),
+                      child: const Text("清空"),
+                      onPressed: () {
+                        handleDiglogTap(HandleDiglogTapType.clean);
+                      },
                     ),
-                    child: const Text("清空"),
-                    onPressed: () {
-                      handleDiglogTap(HandleDiglogTapType.clean);
-                    },
                   ),
-                  CupertinoButton.filled(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 12,
+                  Zoom(
+                    child: CupertinoButton.filled(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                      ),
+                      child: const Text("获取配置"),
+                      onPressed: () {
+                        handleDiglogTap(HandleDiglogTapType.kget);
+                      },
                     ),
-                    child: const Text("获取配置"),
-                    onPressed: () {
-                      handleDiglogTap(HandleDiglogTapType.kget);
-                    },
                   ),
                 ],
                 titlePadding: const EdgeInsets.symmetric(
@@ -397,14 +410,16 @@ class _SettingsViewState extends State<SettingsView> {
           canBeShowIosBrowserSettings
               ? CSControl(
                   nameWidget: const Text('iOS播放使用内置浏览器'),
-                  contentWidget: CupertinoSwitch(
-                    value: _canBeShowIosBrowser,
-                    onChanged: (bool value) async {
-                      setState(() {
-                        _canBeShowIosBrowser = value;
-                      });
-                      home.iosCanBeUseSystemBrowser = value;
-                    },
+                  contentWidget: HoverCursor(
+                    child: CupertinoSwitch(
+                      value: _canBeShowIosBrowser,
+                      onChanged: (bool value) async {
+                        setState(() {
+                          _canBeShowIosBrowser = value;
+                        });
+                        home.iosCanBeUseSystemBrowser = value;
+                      },
+                    ),
                   ),
                   style: const CSWidgetStyle(
                     icon: Icon(
@@ -415,11 +430,13 @@ class _SettingsViewState extends State<SettingsView> {
               : const SizedBox.shrink(),
           CSControl(
             nameWidget: const Text('成人模式'),
-            contentWidget: CupertinoSwitch(
-              value: home.isNsfw,
-              onChanged: (bool value) {
-                updateNSFW(value);
-              },
+            contentWidget: HoverCursor(
+              child: CupertinoSwitch(
+                value: home.isNsfw,
+                onChanged: (bool value) {
+                  updateNSFW(value);
+                },
+              ),
             ),
             style: const CSWidgetStyle(
               icon: Icon(CupertinoIcons.hammer_fill),
@@ -428,18 +445,20 @@ class _SettingsViewState extends State<SettingsView> {
           if (GetPlatform.isMacOS)
             CSControl(
               nameWidget: const Text('播放使用IINA(默认内置播放器)'),
-              contentWidget: CupertinoSwitch(
-                value: macosPlayUseIINA,
-                onChanged: (bool value) async {
-                  if (value) {
-                    final bool isInstall = checkInstalledIINA();
-                    if (!isInstall) {
-                      EasyLoading.showError("未安装IINA, 请先安装!");
-                      return;
+              contentWidget: HoverCursor(
+                child: CupertinoSwitch(
+                  value: macosPlayUseIINA,
+                  onChanged: (bool value) async {
+                    if (value) {
+                      final bool isInstall = checkInstalledIINA();
+                      if (!isInstall) {
+                        EasyLoading.showError("未安装IINA, 请先安装!");
+                        return;
+                      }
                     }
-                  }
-                  macosPlayUseIINA = value;
-                },
+                    macosPlayUseIINA = value;
+                  },
+                ),
               ),
               style: const CSWidgetStyle(
                 icon: Icon(
@@ -452,11 +471,13 @@ class _SettingsViewState extends State<SettingsView> {
             onTap: () {
               Get.to(() => const SourceHelpTable());
             },
-            child: CSControl(
-              nameWidget: const Text("视频源帮助"),
-              style: const CSWidgetStyle(
-                icon: Icon(
-                  CupertinoIcons.arrow_down_right_square_fill,
+            child: HoverCursor(
+              child: CSControl(
+                nameWidget: const Text("视频源帮助"),
+                style: const CSWidgetStyle(
+                  icon: Icon(
+                    CupertinoIcons.arrow_down_right_square_fill,
+                  ),
                 ),
               ),
             ),
@@ -497,11 +518,13 @@ class _SettingsViewState extends State<SettingsView> {
                 context: ctx,
               );
             },
-            child: CSControl(
-              nameWidget: const Text("清除缓存"),
-              style: const CSWidgetStyle(
-                icon: Icon(
-                  CupertinoIcons.clear_thick_circled,
+            child: HoverCursor(
+              child: CSControl(
+                nameWidget: const Text("清除缓存"),
+                style: const CSWidgetStyle(
+                  icon: Icon(
+                    CupertinoIcons.clear_thick_circled,
+                  ),
                 ),
               ),
             ),
@@ -517,10 +540,12 @@ class _SettingsViewState extends State<SettingsView> {
                 ),
               );
             },
-            child: CSControl(
-              nameWidget: const Text("开源协议"),
-              style: const CSWidgetStyle(
-                icon: Icon(CupertinoIcons.lab_flask_solid),
+            child: HoverCursor(
+              child: CSControl(
+                nameWidget: const Text("开源协议"),
+                style: const CSWidgetStyle(
+                  icon: Icon(CupertinoIcons.lab_flask_solid),
+                ),
               ),
             ),
           ),

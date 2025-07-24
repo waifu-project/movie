@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:catmovie/app/widget/zoom.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -41,6 +42,7 @@ class _ParseVipManagePageViewState extends State<ParseVipManagePageView> {
   Future<void> easyAddVipParseModel() async {
     var futureWith = await showCupertinoModalBottomSheet<ParseIsarModel>(
       context: context,
+      backgroundColor: Colors.transparent,
       builder: (BuildContext context) => ParseVipAddDialog(
         onImport: (data, statusCounter) {
           home.addMovieParseVip(data);
@@ -88,53 +90,40 @@ class _ParseVipManagePageViewState extends State<ParseVipManagePageView> {
     return Scaffold(
       appBar: WindowAppBar(
         iosBackStyle: true,
-        title: Row(
-          children: [
-            const SizedBox(
-              width: 6.0,
-            ),
-            GestureDetector(
-              child: SizedBox(
-                width: 24,
-                height: 24,
-                child: Icon(
-                  CupertinoIcons.back,
-                  color: Theme.of(context).primaryIconTheme.color,
+        title: Zoom(
+          onTap: () => Get.back(),
+          child: Row(
+            children: [
+              const SizedBox(width: 6.0),
+              GestureDetector(
+                child: SizedBox(
+                  width: 24,
+                  height: 24,
+                  child: Icon(
+                    CupertinoIcons.back,
+                    color: Theme.of(context).primaryIconTheme.color,
+                  ),
+                ),
+                onTap: () {
+                  Get.back();
+                },
+              ),
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 9),
+                child: Text(
+                  "解析源管理",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 18),
                 ),
               ),
-              onTap: () {
-                Get.back();
-              },
-            ),
-            const Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: 9,
-              ),
-              child: Text(
-                "解析源管理",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 18,
-                ),
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
         actions: [
-          GestureDetector(
-            onTap: easyAddVipParseModel,
-            child: const Icon(Icons.add),
-          ),
-          const SizedBox(
-            width: 12.0,
-          ),
-          GestureDetector(
-            onTap: easyShowHelp,
-            child: const Icon(Icons.help),
-          ),
-          const SizedBox(
-            width: 12.0,
-          ),
+          Zoom(onTap: easyAddVipParseModel, child: const Icon(Icons.add)),
+          const SizedBox(width: 12.0),
+          Zoom(onTap: easyShowHelp, child: const Icon(Icons.help)),
+          const SizedBox(width: 12.0),
         ],
       ),
       body: Builder(builder: (context) {
@@ -349,96 +338,80 @@ class _ParseVipAddDialogState extends State<ParseVipAddDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      child: SizedBox(
-        width: double.infinity,
-        height: 240,
-        child: CupertinoPageScaffold(
-          navigationBar: CupertinoNavigationBar(
-            border: Border(
-              bottom: BorderSide(
-                color: Theme.of(context).dividerColor,
-                width: 0.0, // 0.0 means one physical pixel
-              ),
-            ),
-            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-            leading: GestureDetector(
-              onTap: () {
-                Get.back();
-              },
-              child: const Icon(
-                Icons.close,
-                size: 20,
-                color: CupertinoColors.systemBlue,
-              ),
-            ),
-            trailing: GestureDetector(
-              onTap: handleImportFile,
-              child: const Icon(
-                Icons.add_box,
-                size: 20,
-                color: CupertinoColors.systemBlue,
-              ),
-            ),
-          ),
-          child: SafeArea(
-            child: Center(
-              child: Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: SingleChildScrollView(
-                  child: Form(
-                    key: _formKey,
-                    child: Column(
-                      children: <Widget>[
-                        TextFormField(
-                          style: const TextStyle(
-                            fontSize: 14.0,
-                          ),
-                          decoration: const InputDecoration(hintText: '输入名称'),
-                          onChanged: (value) {
-                            name = value;
-                            setState(() {});
-                          },
-                          validator: (value) {
-                            var b = value!.length >= 2;
-                            var msg = b ? null : '名称最少2个字符';
-                            return msg;
-                          },
-                        ),
-                        TextFormField(
-                          style: const TextStyle(
-                            fontSize: 14.0,
-                          ),
-                          decoration: const InputDecoration(hintText: '输入URL'),
-                          onChanged: (value) {
-                            url = value;
-                            setState(() {});
-                          },
-                          validator: (value) {
-                            bool bindCheck = isURL(value);
-                            return !bindCheck ? '不是url' : null;
-                          },
-                        ),
-                        const SizedBox(
-                          height: 12.0,
-                        ),
-                        SizedBox(
-                          width: double.infinity,
-                          child: CupertinoButton.filled(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 24.0,
-                            ),
-                            onPressed: submit,
-                            child: const Text(
-                              "添加",
-                              style: TextStyle(
+    return SafeArea(
+      child: Material(
+        child: SizedBox(
+          width: double.infinity,
+          height: 420,
+          child: CupertinoPageScaffold(
+            backgroundColor: Colors.transparent,
+            child: Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: SingleChildScrollView(
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    children: <Widget>[
+                      Center(
+                        child: Text("解析源需要填写名称和URL",
+                            style: TextStyle(fontSize: 18)),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            TextFormField(
+                              style: const TextStyle(
                                 fontSize: 14.0,
                               ),
+                              decoration: const InputDecoration(hintText: '输入名称'),
+                              onChanged: (value) {
+                                name = value;
+                                setState(() {});
+                              },
+                              validator: (value) {
+                                var b = value!.length >= 2;
+                                var msg = b ? null : '名称最少2个字符';
+                                return msg;
+                              },
                             ),
-                          ),
+                            TextFormField(
+                              style: const TextStyle(
+                                fontSize: 14.0,
+                              ),
+                              decoration:
+                                  const InputDecoration(hintText: '输入URL'),
+                              onChanged: (value) {
+                                url = value;
+                                setState(() {});
+                              },
+                              validator: (value) {
+                                bool bindCheck = isURL(value);
+                                return !bindCheck ? '不是url' : null;
+                              },
+                            ),
+                            const SizedBox(height: 12.0),
+                            Zoom(
+                              child: SizedBox(
+                                width: double.infinity,
+                                child: CupertinoButton.filled(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 24.0,
+                                  ),
+                                  onPressed: submit,
+                                  child: const Text(
+                                    "添加",
+                                    style: TextStyle(fontSize: 14.0),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 12.0),
+                          ],
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
               ),

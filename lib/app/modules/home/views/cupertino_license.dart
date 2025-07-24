@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:catmovie/app/extension.dart';
 import 'package:catmovie/app/widget/window_appbar.dart';
 import 'package:catmovie/widget/flutter_custom_license_page.dart';
+import 'package:smooth_list_view/smooth_list_view.dart';
 
 CustomLicensePage cupertinoLicensePage = CustomLicensePage((
   context,
@@ -26,7 +27,8 @@ Widget body(
   switch (licenseDataFuture.connectionState) {
     case ConnectionState.done:
       LicenseData? licenseData = licenseDataFuture.data;
-      return ListView(
+      return SmoothListView(
+        duration: const Duration(milliseconds: 210),
         children: [
           const SizedBox(height: 12),
           const Padding(
@@ -131,7 +133,8 @@ Widget body(
                         ),
                       ),
                       child: Material(
-                        child: ListView.builder(
+                        child: SmoothListView.builder(
+                          duration: const Duration(milliseconds: 210),
                           itemCount: packageLicenses.length,
                           itemBuilder: (context, index) {
                             return Padding(

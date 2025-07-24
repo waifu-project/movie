@@ -14,6 +14,7 @@ import 'package:catmovie/app/widget/wechat_popmenu.dart';
 import 'package:catmovie/shared/manage.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:smooth_list_view/smooth_list_view.dart';
 import 'package:xi/xi.dart';
 
 enum MenuActionType {
@@ -267,7 +268,8 @@ class _MirrorTableViewState extends State<MirrorTableView> {
       child: SafeArea(
         child: Scrollbar(
           controller: scrollController,
-          child: ListView.builder(
+          child: SmoothListView.builder(
+            duration: const Duration(milliseconds: 210),
             controller: scrollController,
             itemCount: mirrorList.length,
             itemBuilder: (_, index) {

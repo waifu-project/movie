@@ -90,6 +90,10 @@ dependencies:
     git:
       url: https://github.com/bitsdojo/bitsdojo_window
       path: bitsdojo_window
+  smooth_list_view:
+    git:
+      url: https://github.com/dridino/smooth_list_view
+      ref: main
 
   dio_cache_interceptor: ^4.0.3
   provider: ^6.1.5

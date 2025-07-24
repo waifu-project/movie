@@ -6,6 +6,7 @@ import 'package:dlna_dart/dlna.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:smooth_list_view/smooth_list_view.dart';
 
 Map<String, DLNADevice> cacheDeviceList = {};
 
@@ -157,7 +158,10 @@ class _CastScreenState extends State<CastScreen> {
       dlist.add(buildItem(uri, devi));
     });
 
-    return ListView(children: dlist);
+    return SmoothListView(
+      duration: const Duration(milliseconds: 210),
+      children: dlist,
+    );
   }
 
   @override

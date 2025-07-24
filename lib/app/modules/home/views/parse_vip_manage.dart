@@ -9,6 +9,7 @@ import 'package:catmovie/app/widget/window_appbar.dart';
 import 'package:get/get.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:catmovie/isar/schema/parse_schema.dart';
+import 'package:smooth_list_view/smooth_list_view.dart';
 import 'package:xi/xi.dart';
 
 import '../controllers/home_controller.dart';
@@ -153,7 +154,8 @@ class _ParseVipManagePageViewState extends State<ParseVipManagePageView> {
   }
 
   Widget get _buildWithListBody {
-    return ListView.builder(
+    return SmoothListView.builder(
+      duration: const Duration(milliseconds: 210),
       controller: ScrollController(),
       itemCount: parseList.length,
       itemBuilder: (BuildContext context, int index) {
@@ -365,7 +367,8 @@ class _ParseVipAddDialogState extends State<ParseVipAddDialog> {
                               style: const TextStyle(
                                 fontSize: 14.0,
                               ),
-                              decoration: const InputDecoration(hintText: '输入名称'),
+                              decoration:
+                                  const InputDecoration(hintText: '输入名称'),
                               onChanged: (value) {
                                 name = value;
                                 setState(() {});

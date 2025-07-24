@@ -11,6 +11,7 @@ import 'package:catmovie/app/modules/home/controllers/home_controller.dart';
 import 'package:catmovie/app/widget/k_error_stack.dart';
 import 'package:catmovie/app/widget/window_appbar.dart';
 import 'package:catmovie/shared/manage.dart';
+import 'package:smooth_list_view/smooth_list_view.dart';
 import 'package:xi/adapters/mac_cms.dart';
 import 'package:catmovie/shared/enum.dart';
 import 'package:xi/xi.dart';
@@ -37,7 +38,8 @@ class _SourceHelpTableState extends State<SourceHelpTable> {
       _isLoadingFromAJAX = true;
     });
     try {
-      var resp = await XHttp.dio.get(kCatMovieSourceAPI, options: $toDioOptions());
+      var resp =
+          await XHttp.dio.get(kCatMovieSourceAPI, options: $toDioOptions());
       late List<dynamic> list;
       if (resp.data is List) {
         list = resp.data;
@@ -391,7 +393,8 @@ class _SourceHelpTableState extends State<SourceHelpTable> {
                         }
                         return _mirrorEmptyStateWidget;
                       }
-                      return ListView(
+                      return SmoothListView(
+                        duration: const Duration(milliseconds: 210),
                         children: mirrors.map((item) {
                           return Zoom(
                             scaleRatio: .99,

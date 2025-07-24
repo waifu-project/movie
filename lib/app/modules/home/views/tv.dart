@@ -19,6 +19,7 @@ import 'package:hide_cursor/hide_cursor.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart';
 import 'package:pull_down_button/pull_down_button.dart';
+import 'package:smooth_list_view/smooth_list_view.dart';
 import 'package:tuple/tuple.dart';
 import 'package:window_manager/window_manager.dart';
 import 'package:xi/xi.dart';
@@ -594,7 +595,8 @@ class TVUIState extends State<TVUI>
                           child: Column(
                             children: [
                               Expanded(
-                                child: ListView.builder(
+                                child: SmoothListView.builder(
+                                  duration: const Duration(milliseconds: 210),
                                   itemCount: groups.names.length,
                                   itemBuilder: (cx, idx) {
                                     var name = groups.names[idx];
@@ -690,7 +692,8 @@ class TVUIState extends State<TVUI>
                         if (currTVIdx >= 0)
                           Expanded(
                             flex: isDesktop ? 9 : 6,
-                            child: ListView.builder(
+                            child: SmoothListView.builder(
+                              duration: const Duration(milliseconds: 210),
                               itemCount: currTVS.length,
                               itemBuilder: (cx, idx) {
                                 var tv = currTVS[idx];
@@ -707,13 +710,15 @@ class TVUIState extends State<TVUI>
                                     child: Zoom(
                                       child: ListTile(
                                         dense: true,
-                                        contentPadding: EdgeInsets.only(left: 12),
+                                        contentPadding:
+                                            EdgeInsets.only(left: 12),
                                         selected: isSelected,
                                         selectedTileColor: kActiveColor,
                                         hoverColor:
                                             Colors.white.withValues(alpha: 0.1),
                                         shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(8),
+                                          borderRadius:
+                                              BorderRadius.circular(8),
                                         ),
                                         title: Text(
                                           tv.name,
@@ -1064,11 +1069,13 @@ class TVUIState extends State<TVUI>
                                 idx = (idx + 1) % fits.length;
                                 videoFit = fits[idx];
                                 setState(() {});
-                            
-                                var msg = "切换到${kVideoFits[videoFit] ?? '未知模式'}";
+
+                                var msg =
+                                    "切换到${kVideoFits[videoFit] ?? '未知模式'}";
                                 EasyLoading.showToast(
                                   msg,
-                                  toastPosition: EasyLoadingToastPosition.bottom,
+                                  toastPosition:
+                                      EasyLoadingToastPosition.bottom,
                                 );
                               },
                             ),
@@ -1086,13 +1093,16 @@ class TVUIState extends State<TVUI>
                                   var orientation =
                                       MediaQuery.of(context).orientation;
                                   if (orientation == Orientation.portrait) {
-                                    await SystemChrome.setPreferredOrientations([
+                                    await SystemChrome
+                                        .setPreferredOrientations([
                                       DeviceOrientation.landscapeLeft,
                                       DeviceOrientation.landscapeRight,
                                     ]);
-                                    homeController.setBottomNavigationBar(false);
+                                    homeController
+                                        .setBottomNavigationBar(false);
                                   } else {
-                                    await SystemChrome.setPreferredOrientations([
+                                    await SystemChrome
+                                        .setPreferredOrientations([
                                       DeviceOrientation.portraitUp,
                                       DeviceOrientation.portraitDown,
                                     ]);
@@ -1327,7 +1337,8 @@ class TVUIState extends State<TVUI>
                                                     );
                                                   }),
                                                   Icon(
-                                                      CupertinoIcons.chevron_down,
+                                                      CupertinoIcons
+                                                          .chevron_down,
                                                       color: '#8e8e92'.$color),
                                                 ],
                                               ),
@@ -1347,7 +1358,9 @@ class TVUIState extends State<TVUI>
                                         padding: EdgeInsets.symmetric(
                                           horizontal: 12,
                                         ),
-                                        child: ListView.builder(
+                                        child: SmoothListView.builder(
+                                          duration:
+                                              const Duration(milliseconds: 210),
                                           itemCount: currTVS.length,
                                           itemBuilder: (cx, idx) {
                                             var item = currTVS[idx];

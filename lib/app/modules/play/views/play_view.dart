@@ -16,6 +16,7 @@ import 'package:catmovie/widget/simple_html/flutter_html.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:pull_down_button/pull_down_button.dart';
 import 'package:simple/x.dart';
+import 'package:smooth_list_view/smooth_list_view.dart';
 import 'package:xi/xi.dart';
 
 import '../controllers/play_controller.dart';
@@ -286,7 +287,8 @@ class _PlayViewState extends State<PlayView> {
                                     tabviewData[1] == null;
                                 if (isNext) return const SizedBox.shrink();
                                 if (canRenderIosStyle) {
-                                  return ListView.builder(
+                                  return SmoothListView.builder(
+                                    duration: const Duration(milliseconds: 210),
                                     scrollDirection: Axis.horizontal,
                                     itemCount: playlist.length,
                                     itemBuilder: (context, index) {
@@ -480,12 +482,15 @@ class _PlayViewState extends State<PlayView> {
                                                       playlist[play.tabIndex]
                                                           .datas
                                                           .length;
-                                                  var text =
-                                                      len <= 1 ? "播放" : curr.name;
-                                                  var playState = play.playState;
+                                                  var text = len <= 1
+                                                      ? "播放"
+                                                      : curr.name;
+                                                  var playState =
+                                                      play.playState;
                                                   if (playState.tabIndex ==
                                                           play.tabIndex &&
-                                                      index == playState.index) {
+                                                      index ==
+                                                          playState.index) {
                                                     text += "(上次播放)";
                                                   }
                                                   return Text(text);

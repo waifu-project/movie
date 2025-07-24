@@ -1223,6 +1223,15 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  smooth_list_view:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: main
+      resolved-ref: "2770c25f253a698da809fea9a7e2dd17012ed752"
+      url: "https://github.com/dridino/smooth_list_view"
+    source: git
+    version: "2.0.2"
   source_gen:
     dependency: transitive
     description:

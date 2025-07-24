@@ -14,6 +14,7 @@ import 'package:catmovie/app/widget/movie_card_item.dart';
 import 'package:catmovie/app/widget/window_appbar.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 import 'package:simple/x.dart';
+import 'package:smooth_list_view/smooth_list_view.dart';
 import 'package:waterfall_flow/waterfall_flow.dart';
 import 'package:xi/xi.dart';
 
@@ -149,7 +150,7 @@ class _IndexHomeViewState extends State<IndexHomeView>
           iosBackStyle: true,
           title: Zoom(
             onTap: () {
-            homeview.showMirrorModel(context);
+              homeview.showMirrorModel(context);
             },
             child: Row(
               spacing: 6,
@@ -265,7 +266,8 @@ class _IndexHomeViewState extends State<IndexHomeView>
                         milliseconds: 420,
                       ),
                       curve: Curves.decelerate,
-                      child: ListView.builder(
+                      child: SmoothListView.builder(
+                        duration: const Duration(milliseconds: 210),
                         itemCount: controller.currentCategoryer.length,
                         scrollDirection: Axis.horizontal,
                         itemBuilder: ((context, index) {
@@ -380,7 +382,8 @@ class _IndexHomeViewState extends State<IndexHomeView>
                                           ),
                                           Zoom(
                                             child: CupertinoButton.filled(
-                                              padding: const EdgeInsets.symmetric(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
                                                 vertical: 12.0,
                                                 horizontal: 24.0,
                                               ),

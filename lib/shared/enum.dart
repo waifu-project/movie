@@ -36,6 +36,7 @@ enum SettingsAllKey {
   mirrorTextarea,
   showPlayTips,
   webviewPlayType,
+  onBoardingShowed,
 }
 
 /// 镜像源状态

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:catmovie/app/modules/home/views/auto_update.dart';
 import 'package:catmovie/app/widget/zoom.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -20,6 +21,7 @@ import 'package:catmovie/git_info.dart';
 import 'package:catmovie/shared/enum.dart';
 import 'package:catmovie/shared/manage.dart';
 import 'package:catmovie/app/modules/home/views/cupertino_license.dart';
+import 'package:xi/models/mac_cms/source_data.dart';
 import 'package:xi/utils/helper.dart';
 import 'package:xi/utils/source.dart';
 
@@ -227,20 +229,14 @@ class _SettingsViewState extends State<SettingsView> {
           EasyLoading.showError("获取的内容为空!");
           return;
         }
-        var easyData = SourceUtils.mergeMirror(
+        List<SourceJsonData> realSources = SourceUtils.mergeMirror(
           SpiderManage.extend,
           data,
-          diff: true,
+          cover: true,
+          diff: false,
         );
-        var addLen = easyData[0];
-        if (addLen > 0) {
-          var listData = easyData[1];
-          SpiderManage.mergeSpider(listData);
-        }
-        var showMessage = "获取成功, 已合并$addLen个源!";
-        if (addLen <= 0) {
-          showMessage = "获取成功, 没有新的源!";
-        }
+        SpiderManage.mergeSpider(realSources);
+        var showMessage = "已同步成功(${realSources.length}个源)!";
         EasyLoading.showSuccess(showMessage);
         break;
       default:
@@ -384,8 +380,9 @@ class _SettingsViewState extends State<SettingsView> {
                   vertical: 12,
                 ),
                 title: "我的视频源网络地址",
-                titleStyle: const TextStyle(
+                titleStyle: TextStyle(
                   fontSize: 16,
+                  color: context.isDarkMode ? Colors.white : Colors.black,
                 ),
                 content: SizedBox(
                   height: Get.height * .2,
@@ -467,6 +464,23 @@ class _SettingsViewState extends State<SettingsView> {
               ),
             ),
           const CSHeader('其他设置'),
+          GestureDetector(
+            onTap: () {
+              showCupertinoModalBottomSheet(
+                context: context,
+                builder: (_) => AutoUpdate(),
+              );
+            },
+            child: HoverCursor(
+                child: CSControl(
+              nameWidget: const Text("应用更新"),
+              style: const CSWidgetStyle(
+                icon: Icon(
+                  CupertinoIcons.refresh_circled_solid,
+                ),
+              ),
+            )),
+          ),
           GestureDetector(
             onTap: () {
               Get.to(() => const SourceHelpTable());
@@ -554,20 +568,21 @@ class _SettingsViewState extends State<SettingsView> {
           ),
           GestureDetector(
             onTap: () {
-              if (showNSFW) {
-                showNSFW = false;
-              } else {
-                setState(() {
-                  nShowNSFW++;
-                });
-              }
+              "$kGithubRepo/tree/$gitCommit".openURL();
+              // if (showNSFW) {
+              //   showNSFW = false;
+              // } else {
+              //   setState(() {
+              //     nShowNSFW++;
+              //   });
+              // }
             },
             child: Builder(builder: (context) {
               var firstWriteYear = '2020';
               String currentYearString = DateTime.now().year.toString();
               var text =
                   '© 小猫影视 $firstWriteYear-$currentYearString $gitTag($gitCommit)';
-              return CSDescription(text);
+              return HoverCursor(child: CSDescription(text));
             }),
           ),
         ],

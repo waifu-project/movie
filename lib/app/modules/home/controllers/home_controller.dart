@@ -1,5 +1,4 @@
 import 'package:command_palette/command_palette.dart';
-import 'package:flappy_search_bar/flappy_search_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -77,8 +76,6 @@ class HomeController extends GetxController
     }
     return parseVipList[currentParseVipIndex];
   }
-
-  final searchBarController = SearchBarController<VideoDetail>();
 
   final mirrorCategoryPool = MirrorCategoryPool();
 
@@ -173,7 +170,6 @@ class HomeController extends GetxController
     }
     mirrorIndex = newVal;
     _cacheMirrorIndex = newVal;
-    searchBarController.clear();
     currentCategoryerNow = null;
     update();
     updateHomeData(
@@ -398,19 +394,6 @@ class HomeController extends GetxController
   void updateNsfwSetting() {
     _isNsfw = getSettingAsKeyIdent<bool>(SettingsAllKey.isNsfw);
     update();
-  }
-
-  Future<List<VideoDetail>> updateSearchData(
-    String keyword, {
-    page = 1,
-    limit = 10,
-  }) async {
-    var resp = await currentMirrorItem.getSearch(
-      keyword: keyword,
-      page: page,
-      limit: limit,
-    );
-    return resp;
   }
 
   Future<String?> syncCurrentCategoryer() async {

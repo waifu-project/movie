@@ -239,21 +239,29 @@ class SourceUtils {
   /// => [len, List<KBaseMirrorMovie>]
   ///
   /// => [List<KBaseMirrorMovie>]
+  @Deprecated("REMOVE THIS")
   static dynamic mergeMirror(
     List<ISpiderAdapter> extend,
     List<MacCMSSpider> newSourceData, {
+    /// diff 是为了返回增加的源源量
     bool diff = false,
+    /// cover 是为了覆盖
+    bool cover = false,
   }) {
     int len = extend.length;
 
-    for (var element in newSourceData) {
-      var newDataDomain = element.meta.domain;
-      extend.removeWhere(
-        (element) => element.meta.domain == newDataDomain,
-      );
+    if (!cover) {
+      for (var element in newSourceData) {
+        var newDataDomain = element.meta.domain;
+        extend.removeWhere(
+          (element) => element.meta.domain == newDataDomain,
+        );
+      }
+      extend.addAll(newSourceData);
+    } else {
+      extend.clear();
+      extend.addAll(newSourceData);
     }
-
-    extend.addAll(newSourceData);
 
     int newLen = extend.length;
 

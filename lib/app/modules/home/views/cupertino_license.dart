@@ -1,3 +1,4 @@
+import 'package:catmovie/app/modules/home/controllers/home_controller.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -30,7 +31,7 @@ Widget body(
     case ConnectionState.done:
       LicenseData? licenseData = licenseDataFuture.data;
       return SmoothListView(
-        duration: const Duration(milliseconds: 210),
+        duration: kSmoothListViewDuration,
         children: [
           const SizedBox(height: 12),
           const Padding(
@@ -136,7 +137,7 @@ Widget body(
                       ),
                       child: Material(
                         child: SmoothListView.builder(
-                          duration: const Duration(milliseconds: 210),
+                          duration: kSmoothListViewDuration,
                           itemCount: packageLicenses.length,
                           itemBuilder: (context, index) {
                             return Padding(

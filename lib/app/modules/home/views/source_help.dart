@@ -396,7 +396,7 @@ class _SourceHelpTableState extends State<SourceHelpTable> {
                         return _mirrorEmptyStateWidget;
                       }
                       return SmoothListView(
-                        duration: const Duration(milliseconds: 210),
+                        duration: kSmoothListViewDuration,
                         children: mirrors.map((item) {
                           return Zoom(
                             scaleRatio: .99,

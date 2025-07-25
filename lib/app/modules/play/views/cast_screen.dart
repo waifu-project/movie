@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:ui';
 
+import 'package:catmovie/app/modules/home/controllers/home_controller.dart';
 import 'package:catmovie/app/widget/zoom.dart';
 import 'package:dlna_dart/dlna.dart';
 import 'package:flutter/cupertino.dart';
@@ -159,7 +160,7 @@ class _CastScreenState extends State<CastScreen> {
     });
 
     return SmoothListView(
-      duration: const Duration(milliseconds: 210),
+      duration: kSmoothListViewDuration,
       children: dlist,
     );
   }

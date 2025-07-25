@@ -293,7 +293,7 @@ class _IndexHomeViewState extends State<IndexHomeView>
                       ),
                       curve: Curves.decelerate,
                       child: SmoothListView.builder(
-                        duration: const Duration(milliseconds: 210),
+                        duration: kSmoothListViewDuration,
                         itemCount: controller.currentCategoryer.length,
                         scrollDirection: Axis.horizontal,
                         itemBuilder: ((context, index) {

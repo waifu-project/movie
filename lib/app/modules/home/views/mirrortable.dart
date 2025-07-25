@@ -269,7 +269,7 @@ class _MirrorTableViewState extends State<MirrorTableView> {
         child: Scrollbar(
           controller: scrollController,
           child: SmoothListView.builder(
-            duration: const Duration(milliseconds: 210),
+            duration: kSmoothListViewDuration,
             controller: scrollController,
             itemCount: mirrorList.length,
             itemBuilder: (_, index) {

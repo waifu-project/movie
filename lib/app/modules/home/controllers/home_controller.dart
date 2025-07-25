@@ -21,6 +21,8 @@ import 'package:window_manager/window_manager.dart';
 import 'package:xi/adapters/mac_cms.dart';
 import 'package:xi/xi.dart';
 
+const kSmoothListViewDuration = Duration(milliseconds: 210);
+
 const kAllCategoryPoint = '-114514';
 var kAllCategoryData = SourceSpiderQueryCategory('全部', kAllCategoryPoint);
 

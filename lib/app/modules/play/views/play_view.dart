@@ -288,7 +288,7 @@ class _PlayViewState extends State<PlayView> {
                                 if (isNext) return const SizedBox.shrink();
                                 if (canRenderIosStyle) {
                                   return SmoothListView.builder(
-                                    duration: const Duration(milliseconds: 210),
+                                    duration: kSmoothListViewDuration,
                                     scrollDirection: Axis.horizontal,
                                     itemCount: playlist.length,
                                     itemBuilder: (context, index) {

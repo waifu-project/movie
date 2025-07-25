@@ -596,7 +596,7 @@ class TVUIState extends State<TVUI>
                             children: [
                               Expanded(
                                 child: SmoothListView.builder(
-                                  duration: const Duration(milliseconds: 210),
+                                  duration: kSmoothListViewDuration,
                                   itemCount: groups.names.length,
                                   itemBuilder: (cx, idx) {
                                     var name = groups.names[idx];
@@ -693,7 +693,7 @@ class TVUIState extends State<TVUI>
                           Expanded(
                             flex: isDesktop ? 9 : 6,
                             child: SmoothListView.builder(
-                              duration: const Duration(milliseconds: 210),
+                              duration: kSmoothListViewDuration,
                               itemCount: currTVS.length,
                               itemBuilder: (cx, idx) {
                                 var tv = currTVS[idx];
@@ -1359,8 +1359,7 @@ class TVUIState extends State<TVUI>
                                           horizontal: 12,
                                         ),
                                         child: SmoothListView.builder(
-                                          duration:
-                                              const Duration(milliseconds: 210),
+                                          duration: kSmoothListViewDuration,
                                           itemCount: currTVS.length,
                                           itemBuilder: (cx, idx) {
                                             var item = currTVS[idx];

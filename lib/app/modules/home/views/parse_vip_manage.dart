@@ -155,7 +155,7 @@ class _ParseVipManagePageViewState extends State<ParseVipManagePageView> {
 
   Widget get _buildWithListBody {
     return SmoothListView.builder(
-      duration: const Duration(milliseconds: 210),
+      duration: kSmoothListViewDuration,
       controller: ScrollController(),
       itemCount: parseList.length,
       itemBuilder: (BuildContext context, int index) {

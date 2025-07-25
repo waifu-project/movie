@@ -229,8 +229,9 @@ document.body.append(action)
 document.body.append(mask)
 
 document.addEventListener('keydown', (e) => {
-  // Cmd+T (Mac) | Ctrl+T (Windows)
-  if ((e.metaKey || e.ctrlKey) && e.key === 't') {
+  // CMD+T (Mac) | Ctrl+T (Windows)
+  // CMD+S (Mac) | Ctrl+S (Windows) => Arc 浏览器肌肉记忆
+  if ((e.metaKey || e.ctrlKey) && (e.key === 't' || e.key === 's')) {
     e.preventDefault()
     if (context.style.opacity === '1') {
       togglePlaylist(false)

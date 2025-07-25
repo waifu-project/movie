@@ -247,6 +247,8 @@ class _SourceHelpTableState extends State<SourceHelpTable> {
       );
       return;
     } else {
+      // FIXME: 由于在 `视频源管理->获取配置` 中是同步操作而不是合并操作
+      // 所以这里合并的源, 在 `获取配置` 触发过之后, 就丢失了
       var easyData = SourceUtils.mergeMirror(
         SpiderManage.extend,
         stack,

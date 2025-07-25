@@ -20,6 +20,7 @@ import 'package:catmovie/git_info.dart';
 import 'package:catmovie/shared/enum.dart';
 import 'package:catmovie/shared/manage.dart';
 import 'package:catmovie/app/modules/home/views/cupertino_license.dart';
+import 'package:xi/models/mac_cms/source_data.dart';
 import 'package:xi/utils/helper.dart';
 import 'package:xi/utils/source.dart';
 
@@ -227,20 +228,14 @@ class _SettingsViewState extends State<SettingsView> {
           EasyLoading.showError("获取的内容为空!");
           return;
         }
-        var easyData = SourceUtils.mergeMirror(
+        List<SourceJsonData> realSources = SourceUtils.mergeMirror(
           SpiderManage.extend,
           data,
-          diff: true,
+          cover: true,
+          diff: false,
         );
-        var addLen = easyData[0];
-        if (addLen > 0) {
-          var listData = easyData[1];
-          SpiderManage.mergeSpider(listData);
-        }
-        var showMessage = "获取成功, 已合并$addLen个源!";
-        if (addLen <= 0) {
-          showMessage = "获取成功, 没有新的源!";
-        }
+        SpiderManage.mergeSpider(realSources);
+        var showMessage = "已同步成功(${realSources.length}个源)!";
         EasyLoading.showSuccess(showMessage);
         break;
       default:
@@ -384,8 +379,9 @@ class _SettingsViewState extends State<SettingsView> {
                   vertical: 12,
                 ),
                 title: "我的视频源网络地址",
-                titleStyle: const TextStyle(
+                titleStyle: TextStyle(
                   fontSize: 16,
+                  color: context.isDarkMode ? Colors.white : Colors.black,
                 ),
                 content: SizedBox(
                   height: Get.height * .2,

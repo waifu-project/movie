@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:catmovie/app/modules/home/views/auto_update.dart';
 import 'package:catmovie/app/widget/zoom.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -463,6 +464,23 @@ class _SettingsViewState extends State<SettingsView> {
               ),
             ),
           const CSHeader('其他设置'),
+          GestureDetector(
+            onTap: () {
+              showCupertinoModalBottomSheet(
+                context: context,
+                builder: (_) => AutoUpdate(),
+              );
+            },
+            child: HoverCursor(
+                child: CSControl(
+              nameWidget: const Text("应用更新"),
+              style: const CSWidgetStyle(
+                icon: Icon(
+                  CupertinoIcons.refresh_circled_solid,
+                ),
+              ),
+            )),
+          ),
           GestureDetector(
             onTap: () {
               Get.to(() => const SourceHelpTable());

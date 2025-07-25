@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:after_layout/after_layout.dart';
 import 'package:catmovie/app/extension.dart';
 import 'package:catmovie/app/modules/home/views/onboarding.dart';
-import 'package:catmovie/app/modules/home/views/search_v2.dart';
+import 'package:catmovie/app/modules/home/views/search.dart';
 import 'package:catmovie/app/widget/zoom.dart';
 import 'package:catmovie/shared/enum.dart';
 import 'package:flutter/cupertino.dart';

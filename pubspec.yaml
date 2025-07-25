@@ -59,8 +59,6 @@ dependencies:
 
   flutter_cupertino_settings:
     path: packages/flutter_cupertino_settings
-  flappy_search_bar:
-    path: packages/flappy_search_bar_ns # https://github.com/d1y/flappy_search_bar_ns
   simple:
     path: packages/simple
   xi:

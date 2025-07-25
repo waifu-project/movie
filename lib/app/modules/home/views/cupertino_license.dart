@@ -6,6 +6,8 @@ import 'package:catmovie/app/extension.dart';
 import 'package:catmovie/app/widget/window_appbar.dart';
 import 'package:catmovie/widget/flutter_custom_license_page.dart';
 
+const kGithubRepo = "https://github.com/waifu-project/movie";
+
 CustomLicensePage cupertinoLicensePage = CustomLicensePage((
   context,
   licenseData,
@@ -45,7 +47,7 @@ Widget body(
             cursor: SystemMouseCursors.click,
             child: GestureDetector(
               onTap: () {
-                "https://github.com/waifu-project/movie".openURL();
+                kGithubRepo.openURL();
               },
               child: Padding(
                 padding: const EdgeInsets.all(12),

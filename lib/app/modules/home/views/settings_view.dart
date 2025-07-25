@@ -550,20 +550,21 @@ class _SettingsViewState extends State<SettingsView> {
           ),
           GestureDetector(
             onTap: () {
-              if (showNSFW) {
-                showNSFW = false;
-              } else {
-                setState(() {
-                  nShowNSFW++;
-                });
-              }
+              "$kGithubRepo/tree/$gitCommit".openURL();
+              // if (showNSFW) {
+              //   showNSFW = false;
+              // } else {
+              //   setState(() {
+              //     nShowNSFW++;
+              //   });
+              // }
             },
             child: Builder(builder: (context) {
               var firstWriteYear = '2020';
               String currentYearString = DateTime.now().year.toString();
               var text =
                   '© 小猫影视 $firstWriteYear-$currentYearString $gitTag($gitCommit)';
-              return CSDescription(text);
+              return HoverCursor(child: CSDescription(text));
             }),
           ),
         ],

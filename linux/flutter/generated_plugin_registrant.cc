@@ -8,6 +8,7 @@
 
 #include <bitsdojo_window_linux/bitsdojo_window_plugin.h>
 #include <desktop_webview_window/desktop_webview_window_plugin.h>
+#include <fvp/fvp_plugin.h>
 #include <hide_cursor/hide_cursor_plugin.h>
 #include <isar_flutter_libs/isar_flutter_libs_plugin.h>
 #include <media_kit_libs_linux/media_kit_libs_linux_plugin.h>
@@ -24,6 +25,9 @@ void fl_register_plugins(FlPluginRegistry* registry) {
   g_autoptr(FlPluginRegistrar) desktop_webview_window_registrar =
       fl_plugin_registry_get_registrar_for_plugin(registry, "DesktopWebviewWindowPlugin");
   desktop_webview_window_plugin_register_with_registrar(desktop_webview_window_registrar);
+  g_autoptr(FlPluginRegistrar) fvp_registrar =
+      fl_plugin_registry_get_registrar_for_plugin(registry, "FvpPlugin");
+  fvp_plugin_register_with_registrar(fvp_registrar);
   g_autoptr(FlPluginRegistrar) hide_cursor_registrar =
       fl_plugin_registry_get_registrar_for_plugin(registry, "HideCursorPlugin");
   hide_cursor_plugin_register_with_registrar(hide_cursor_registrar);

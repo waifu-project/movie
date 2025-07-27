@@ -8,6 +8,7 @@ import Foundation
 import bitsdojo_window_macos
 import desktop_webview_window
 import file_picker
+import fvp
 import hide_cursor
 import isar_flutter_libs
 import media_kit_libs_macos_video
@@ -29,6 +30,7 @@ func RegisterGeneratedPlugins(registry: FlutterPluginRegistry) {
   BitsdojoWindowPlugin.register(with: registry.registrar(forPlugin: "BitsdojoWindowPlugin"))
   DesktopWebviewWindowPlugin.register(with: registry.registrar(forPlugin: "DesktopWebviewWindowPlugin"))
   FilePickerPlugin.register(with: registry.registrar(forPlugin: "FilePickerPlugin"))
+  FvpPlugin.register(with: registry.registrar(forPlugin: "FvpPlugin"))
   HideCursorPlugin.register(with: registry.registrar(forPlugin: "HideCursorPlugin"))
   IsarFlutterLibsPlugin.register(with: registry.registrar(forPlugin: "IsarFlutterLibsPlugin"))
   MediaKitLibsMacosVideoPlugin.register(with: registry.registrar(forPlugin: "MediaKitLibsMacosVideoPlugin"))

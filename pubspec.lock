@@ -14,14 +14,6 @@ packages:
     description: dart
     source: sdk
     version: "0.3.3"
-  after_layout:
-    dependency: "direct main"
-    description:
-      name: after_layout
-      sha256: "95a1cb2ca1464f44f14769329fbf15987d20ab6c88f8fc5d359bd362be625f29"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.2.0"
   analyzer:
     dependency: transitive
     description:
@@ -70,6 +62,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.3.0"
+  battery_plus:
+    dependency: transitive
+    description:
+      name: battery_plus
+      sha256: fb794c34cee2e4ea31005fb17ff15e1d904951ec7f15eedead741021870ee834
+      url: "https://pub.dev"
+    source: hosted
+    version: "6.2.2"
+  battery_plus_platform_interface:
+    dependency: transitive
+    description:
+      name: battery_plus_platform_interface
+      sha256: e8342c0f32de4b1dfd0223114b6785e48e579bfc398da9471c9179b907fa4910
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.1"
   bitsdojo_window:
     dependency: "direct main"
     description:
@@ -119,14 +127,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.2"
-  bounce_tapper:
-    dependency: "direct main"
-    description:
-      name: bounce_tapper
-      sha256: "2ea08aee05463a7ab926a43a8db1acaffda0e8ecb990cf2dc6e461e0db9ee5c6"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.1.4"
   build:
     dependency: transitive
     description:
@@ -296,14 +296,6 @@ packages:
       url: "https://github.com/d1y/command_palette"
     source: git
     version: "0.7.6"
-  concurrent_queue:
-    dependency: "direct main"
-    description:
-      name: concurrent_queue
-      sha256: "102db9a757a4ebea3c9ae779225f2781a48fda43f3f0ded12895dc33bc03ab38"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.5.0"
   convert:
     dependency: transitive
     description:
@@ -352,14 +344,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.8"
-  cupertino_onboarding:
-    dependency: "direct main"
-    description:
-      name: cupertino_onboarding
-      sha256: f9b4ead5a754fbf2515aa60e4b9d139a64602487c389032f740f44b486a5d293
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.3.0"
   dart_style:
     dependency: transitive
     description:
@@ -387,12 +371,11 @@ packages:
   desktop_webview_window:
     dependency: "direct main"
     description:
-      path: "packages/desktop_webview_window"
-      ref: "474e50a7aa29e5624dcb54f446bce57050f6a49f"
-      resolved-ref: "474e50a7aa29e5624dcb54f446bce57050f6a49f"
-      url: "https://github.com/waifu-project/flutter-plugins"
-    source: git
-    version: "0.2.4"
+      name: desktop_webview_window
+      sha256: "57cf20d81689d5cbb1adfd0017e96b669398a669d927906073b0e42fc64111c0"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.2.3"
   dio:
     dependency: "direct main"
     description:
@@ -425,22 +408,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.1"
-  dlna_dart:
-    dependency: "direct main"
-    description:
-      name: dlna_dart
-      sha256: "8a4f0e4f378615c99f2af679dc9f0c72fe4a0fb2f3eea96b637fe691dfcf0649"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.1.0"
-  dots_indicator:
-    dependency: transitive
-    description:
-      name: dots_indicator
-      sha256: f1599baa429936ba87f06ae5f2adc920a367b16d08f74db58c3d0f6e93bcdb5c
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.1.2"
   equatable:
     dependency: "direct main"
     description:
@@ -505,6 +472,13 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.1.1"
+  flappy_search_bar:
+    dependency: "direct main"
+    description:
+      path: "packages/flappy_search_bar_ns"
+      relative: true
+    source: path
+    version: "1.7.2"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -533,14 +507,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.5"
-  flutter_highlight:
-    dependency: transitive
-    description:
-      name: flutter_highlight
-      sha256: "7b96333867aa07e122e245c033b8ad622e4e3a42a1a2372cbb098a2541d8782c"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.7.0"
   flutter_launcher_name:
     dependency: "direct dev"
     description:
@@ -582,11 +548,28 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "5.2.1"
+  flutter_staggered_grid_view:
+    dependency: transitive
+    description:
+      name: flutter_staggered_grid_view
+      sha256: f0b6d8c0fa7b4b444985cdde68492c0138a4fb6fc57a641b24cb234b7ee0f5c4
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.4.1"
   flutter_web_plugins:
     dependency: transitive
     description: flutter
     source: sdk
     version: "0.0.0"
+  fplayer:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: develop
+      resolved-ref: "723e630398d0d6abf53d5c8b1fbbc023bd0b1753"
+      url: "https://github.com/FlutterPlayer/fplayer"
+    source: git
+    version: "1.1.3"
   frontend_server_client:
     dependency: transitive
     description:
@@ -595,6 +578,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.0.0"
+  fvp:
+    dependency: "direct main"
+    description:
+      name: fvp
+      sha256: a9439b903b149f768f61bdee68ce071b58df0029f2283bb89e0488b9ecefc0ca
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.33.0"
   get:
     dependency: "direct main"
     description:
@@ -619,23 +610,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.3.2"
-  hide_cursor:
-    dependency: "direct main"
-    description:
-      path: "."
-      ref: "33643d93803c09455445389ad57b1da880cd04aa"
-      resolved-ref: "33643d93803c09455445389ad57b1da880cd04aa"
-      url: "https://github.com/waifu-project/hide_cursor"
-    source: git
-    version: "0.0.3"
-  highlight:
-    dependency: transitive
-    description:
-      name: highlight
-      sha256: "5353a83ffe3e3eca7df0abfb72dcf3fa66cc56b953728e7113ad4ad88497cf21"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.7.0"
   html:
     dependency: "direct main"
     description:
@@ -780,22 +754,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.1.3-main.0"
-  markdown:
-    dependency: transitive
-    description:
-      name: markdown
-      sha256: "935e23e1ff3bc02d390bad4d4be001208ee92cc217cb5b5a6c19bc14aaa318c1"
-      url: "https://pub.dev"
-    source: hosted
-    version: "7.3.0"
-  markdown_widget:
-    dependency: "direct main"
-    description:
-      name: markdown_widget
-      sha256: b52c13d3ee4d0e60c812e15b0593f142a3b8a2003cde1babb271d001a1dbdc1c
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.3.2+8"
   matcher:
     dependency: transitive
     description:
@@ -888,10 +846,10 @@ packages:
     dependency: transitive
     description:
       name: mime
-      sha256: "41a20518f0cb1256669420fdba0cd90d21561e560ac240f26ef8322e45bb7ed6"
+      sha256: "801fd0b26f14a4a58ccb09d5892c3fbdeff209594300a542492cf13fba9d247a"
       url: "https://pub.dev"
     source: hosted
-    version: "2.0.0"
+    version: "1.0.6"
   modal_bottom_sheet:
     dependency: "direct main"
     description:
@@ -1108,14 +1066,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.5.0"
-  pull_down_button:
-    dependency: "direct main"
-    description:
-      name: pull_down_button
-      sha256: "12cdd8ff187a3150ebdf075e5074299f085579b158d2b4e655ccbafccf95f25b"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.10.2"
   pull_to_refresh_flutter3:
     dependency: "direct main"
     description:
@@ -1148,6 +1098,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.3.2"
+  screen_brightness:
+    dependency: transitive
+    description:
+      name: screen_brightness
+      sha256: f9bcfd7029d81aa2ba960f8c67a51427c721796f7f4eea02bc2bb84c41205ad7
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.1.5"
   screen_brightness_android:
     dependency: transitive
     description:
@@ -1156,11 +1114,43 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.2"
+  screen_brightness_ios:
+    dependency: transitive
+    description:
+      name: screen_brightness_ios
+      sha256: "2493953340ecfe8f4f13f61db50ce72533a55b0bbd58ba1402893feecf3727f5"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.1.2"
+  screen_brightness_macos:
+    dependency: transitive
+    description:
+      name: screen_brightness_macos
+      sha256: "4edf330ad21078686d8bfaf89413325fbaf571dcebe1e89254d675a3f288b5b9"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.1.1"
+  screen_brightness_ohos:
+    dependency: transitive
+    description:
+      name: screen_brightness_ohos
+      sha256: "61e313e46eaee3f83dd4e85a2a91f8a81be02c154bc9e60830a7c0fd76dac286"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.1.0"
   screen_brightness_platform_interface:
     dependency: transitive
     description:
       name: screen_brightness_platform_interface
       sha256: "737bd47b57746bc4291cab1b8a5843ee881af499514881b0247ec77447ee769c"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.1.0"
+  screen_brightness_windows:
+    dependency: transitive
+    description:
+      name: screen_brightness_windows
+      sha256: d3518bf0f5d7a884cee2c14449ae0b36803802866de09f7ef74077874b6b2448
       url: "https://pub.dev"
     source: hosted
     version: "2.1.0"
@@ -1204,14 +1194,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.2.0"
-  scroll_to_index:
-    dependency: transitive
-    description:
-      name: scroll_to_index
-      sha256: b707546e7500d9f070d63e5acf74fd437ec7eeeb68d3412ef7b0afada0b4f176
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.0.1"
   share_plus:
     dependency: "direct main"
     description:
@@ -1264,15 +1246,6 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  smooth_list_view:
-    dependency: "direct main"
-    description:
-      path: "."
-      ref: main
-      resolved-ref: "2770c25f253a698da809fea9a7e2dd17012ed752"
-      url: "https://github.com/dridino/smooth_list_view"
-    source: git
-    version: "2.0.2"
   source_gen:
     dependency: transitive
     description:
@@ -1449,6 +1422,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.1.0"
+  upower:
+    dependency: transitive
+    description:
+      name: upower
+      sha256: cf042403154751180affa1d15614db7fa50234bc2373cd21c3db666c38543ebf
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.7.0"
   uri_parser:
     dependency: transitive
     description:
@@ -1529,14 +1510,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.5.1"
-  vclibs:
-    dependency: "direct main"
-    description:
-      name: vclibs
-      sha256: "5dc5de54fabe27ad276898b7c04a56a4a3dd9834e479b9db5e04a9f3eb36790e"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.1.3"
   vector_math:
     dependency: transitive
     description:
@@ -1585,14 +1558,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.3.5"
-  visibility_detector:
-    dependency: transitive
-    description:
-      name: visibility_detector
-      sha256: dd5cc11e13494f432d15939c3aa8ae76844c42b723398643ce9addb88a5ed420
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.4.0+2"
   volume_controller:
     dependency: transitive
     description:
@@ -1661,8 +1626,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "4d6339b032caf91aec4120d2b837fb05a494d511"
-      resolved-ref: "4d6339b032caf91aec4120d2b837fb05a494d511"
+      ref: HEAD
+      resolved-ref: "630a7c78cbb54f35edf84537d0d8b5fbd42ac3bb"
       url: "https://github.com/d1y/webplayer_embedded"
     source: git
     version: "0.0.1"
@@ -1778,5 +1743,5 @@ packages:
     source: hosted
     version: "3.1.3"
 sdks:
-  dart: ">=3.8.1 <3.22.0"
+  dart: ">=3.8.0 <3.22.0"
   flutter: ">=3.29.0"

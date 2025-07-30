@@ -361,12 +361,15 @@ class _IndexHomeViewState extends State<IndexHomeView>
                                       ? Colors.white
                                       : Colors.black)),
                           footer: ClassicFooter(
-                              noMoreText: '我是有底线的......',
+                              noMoreText: '我是有底线的',
                               failedText: '加载失败, 请重试',
                               showMessage: false,
-                              processingText: '拼命加载中......',
+                              processingText: '拼命加载中',
+                              readyText: "拼命加载中",
+                              armedText: "松开加载",
                               dragText: '上划加载更多',
-                              infiniteOffset: 0,
+                              infiniteOffset: null,
+                              triggerOffset: 20.0,
                               iconTheme: IconThemeData(
                                   color: Get.isDarkMode
                                       ? Colors.white

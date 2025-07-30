@@ -16,6 +16,7 @@ import 'package:catmovie/isar/schema/parse_schema.dart';
 import 'package:catmovie/shared/enum.dart';
 import 'package:protocol_handler/protocol_handler.dart';
 import 'package:catmovie/app/extension.dart';
+import 'package:tuple/tuple.dart';
 import 'package:window_manager/window_manager.dart';
 import 'package:xi/adapters/mac_cms.dart';
 import 'package:xi/xi.dart';
@@ -237,7 +238,7 @@ class HomeController extends GetxController
   }
 
   int page = 1;
-  int limit = 10;
+  int kMaccmsDefaultLimit = 10;
 
   List<VideoDetail> homedata = [];
 
@@ -261,8 +262,13 @@ class HomeController extends GetxController
     try {
       page++;
       update();
-      await updateHomeData();
-      easyRefreshController.finishLoad(homedata.length % 20 == 0 ? IndicatorResult.success : IndicatorResult.noMore);
+      Tuple2<bool, List<VideoDetail>> result = await updateHomeData();
+      if (result.item1) {
+        easyRefreshController.finishLoad(
+            result.item2.length % kMaccmsDefaultLimit == 0
+                ? IndicatorResult.success
+                : IndicatorResult.noMore);
+      }
     } catch (e) {
       easyRefreshController.finishLoad(IndicatorResult.fail);
     }
@@ -423,11 +429,11 @@ class HomeController extends GetxController
 
   /// [isFirst] 初始化加载数据需要将 [isLoading] => true
   /// [missIsLoading] 某些特殊情况下不需要设置 [isLoading] => true
-  Future<void> updateHomeData(
+  Future<Tuple2<bool, List<VideoDetail>>> updateHomeData(
       {bool isFirst = false, missIsLoading = false}) async {
     /// 如果都没有源, 则不需要加载数据
     /// => +_+ 还玩个球啊
-    if (mirrorListIsEmpty) return;
+    if (mirrorListIsEmpty) return const Tuple2(false, []);
 
     var onceCategory = "";
     if (currentCategoryerNow != null) {
@@ -458,7 +464,9 @@ class HomeController extends GetxController
 
     /// 如果 [indexHomeLoadDataErrorMessage] 错误栈有内容的话
     /// 并且 [isFirst] 不是初始化数据的话, 就不允许加载更多
-    if (indexHomeLoadDataErrorMessage != "" && !isFirst) return;
+    if (indexHomeLoadDataErrorMessage != "" && !isFirst) {
+      return const Tuple2(false, []);
+    }
 
     try {
       if (isFirst) {
@@ -467,10 +475,10 @@ class HomeController extends GetxController
         page = 1;
         update();
       }
-      debugPrint("get home data: $page, $limit");
+      debugPrint("get home data: $page, $kMaccmsDefaultLimit");
       List<VideoDetail> data = await currentMirrorItem.getHome(
         page: page,
-        limit: limit,
+        limit: kMaccmsDefaultLimit,
         category: onceCategory,
       );
       if (isFirst) {
@@ -480,6 +488,7 @@ class HomeController extends GetxController
       }
       indexHomeLoadDataErrorMessage = "";
       update();
+      return Tuple2(true, data);
     } catch (e) {
       indexHomeLoadDataErrorMessage = e.toString();
       homedata = [];
@@ -498,6 +507,7 @@ class HomeController extends GetxController
       notError,
       canSave: isFirst,
     );
+    return const Tuple2(false, []);
   }
 
   @override

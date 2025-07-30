@@ -238,7 +238,7 @@ class HomeController extends GetxController
   }
 
   int page = 1;
-  int kMaccmsDefaultLimit = 10;
+  int kMaccmsDefaultLimit = 20;
 
   List<VideoDetail> homedata = [];
 

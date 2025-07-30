@@ -345,15 +345,36 @@ class _IndexHomeViewState extends State<IndexHomeView>
                           );
                         }
                         return EasyRefresh(
-                          header: const PhoenixHeader(),
-                          footer: const ClassicFooter(
+                          header: ClassicHeader(
+                              dragText: "下拉刷新",
+                              armedText: "释放刷新",
+                              readyText: "刷新中",
+                              processedText: "刷新成功",
+                              showMessage: false,
+                              processingText: "刷新中",
+                              iconTheme: IconThemeData(
+                                  color: Get.isDarkMode
+                                      ? Colors.white
+                                      : Colors.black),
+                              textStyle: TextStyle(
+                                  color: Get.isDarkMode
+                                      ? Colors.white
+                                      : Colors.black)),
+                          footer: ClassicFooter(
                               noMoreText: '我是有底线的......',
                               failedText: '加载失败, 请重试',
                               showMessage: false,
-                              processingText: '加载中......',
+                              processingText: '拼命加载中......',
                               dragText: '上划加载更多',
                               infiniteOffset: 0,
-                              textStyle: TextStyle(color: Colors.black)),
+                              iconTheme: IconThemeData(
+                                  color: Get.isDarkMode
+                                      ? Colors.white
+                                      : Colors.black),
+                              textStyle: TextStyle(
+                                  color: Get.isDarkMode
+                                      ? Colors.white
+                                      : Colors.black)),
                           scrollController: scrollController,
                           controller: homeview.easyRefreshController,
                           onLoad: homeview.refreshOnLoading,

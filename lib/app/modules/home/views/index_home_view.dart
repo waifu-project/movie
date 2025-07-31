@@ -50,11 +50,12 @@ class _IndexHomeViewState extends State<IndexHomeView>
   ScrollController scrollController = ScrollController();
 
   int get cardCount {
-    bool isLandscape = context.isLandscape;
-    if (GetPlatform.isMobile && !isLandscape) return 3;
-    var w = controller.windowLastSize.width;
-    if (w >= 1248) return 5;
-    return 3;
+    double screenWidth = context.mediaQuery.size.width;
+    double minCardWidth = 200;
+    double spacing = 5;
+    int count = ((screenWidth + spacing) / (minCardWidth + spacing)).floor();
+    count = count.clamp(1, 6);
+    return count;
   }
 
   /// 错误日志
@@ -99,13 +100,15 @@ class _IndexHomeViewState extends State<IndexHomeView>
     );
   }
 
-  /// 每个卡片的高度
-  /// 用设备高度 * 0.33
-  /// 横屏情况下 * 0.42
-  double get _cardOnceHeight {
-    double scan = .27;
-    if (cardCount >= 5) scan = .42;
-    return Get.height * scan;
+  double get _cardWidth {
+    double screenWidth = context.mediaQuery.size.width;
+    double spacing = 5.0;
+    double totalSpacing = spacing * (cardCount - 1);
+    return (screenWidth - totalSpacing) / cardCount;
+  }
+
+  double get _cardHeight {
+    return _cardWidth * 1.5; // 2:3 比例，即宽度的1.5倍
   }
 
   double get _calcImageWidth {
@@ -461,10 +464,8 @@ class _IndexHomeViewState extends State<IndexHomeView>
                                 itemCount: homeview.homedata.length,
                                 itemBuilder: (BuildContext context, int index) {
                                   var subItem = homeview.homedata[index];
-                                  var scale = index % 2 == 0 ? 1 : .8;
-                                  var h = _cardOnceHeight * scale;
                                   return SizedBox(
-                                    height: h,
+                                    height: _cardHeight,
                                     child: MovieCardItem(
                                       imageUrl: subItem.smallCoverImage,
                                       title: subItem.title,

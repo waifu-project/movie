@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:catmovie/app/widget/zoom.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
@@ -418,6 +419,17 @@ class MirrorCard extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
+                  const SizedBox(width: 12),
+                  CachedNetworkImage(
+                    fit: BoxFit.cover,
+                    imageUrl: "${item.meta.domain}/favicon.ico",
+                    errorWidget: (context, url, error) => const Icon(
+                      CupertinoIcons.cube_box,
+                      size: 42,
+                    ),
+                    width: 42,
+                    height: 42
+                  ),
                   const SizedBox(width: 12),
                   Expanded(
                     child: Column(

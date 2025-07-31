@@ -541,6 +541,15 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.7.0"
+  flutter_js:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: HEAD
+      resolved-ref: "89f96fd0bef2ff4e8948d7190b34ce7126574972"
+      url: "https://github.com/abner/flutter_js"
+    source: git
+    version: "0.8.5"
   flutter_launcher_name:
     dependency: "direct dev"
     description:
@@ -1377,6 +1386,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.33"
+  sync_http:
+    dependency: transitive
+    description:
+      name: sync_http
+      sha256: "7f0cd72eca000d2e026bcd6f990b81d0ca06022ef4e32fb257b30d3d1014a961"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.3.1"
   synchronized:
     dependency: transitive
     description:

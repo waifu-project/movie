@@ -577,9 +577,7 @@ class _PlayViewState extends State<PlayView> {
   }
 
   Widget get _buildWithDesc {
-    var desc =
-        // fuck hard-code
-        play.movieItem.desc.replaceAll(r'\r\\n\t', '\n');
+    var desc = play.movieItem.desc;
     if (desc.isEmpty) {
       return Container(
         margin: const EdgeInsets.symmetric(

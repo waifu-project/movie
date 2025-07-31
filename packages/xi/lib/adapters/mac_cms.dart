@@ -55,6 +55,10 @@ class MacCMSSpider extends ISpiderAdapter {
     return jiexiUrl.isNotEmpty;
   }
 
+  String _normalDesc(String raw) {
+    return kUnescape.convert(raw);
+  }
+
   /// 简单获取视频链接类型
   static VideoType easyGetVideoType(String rawUrl) {
     var ext = path.extension(rawUrl);
@@ -280,7 +284,7 @@ class MacCMSSpider extends ISpiderAdapter {
           smallCoverImage: pic,
           title: e.name,
           videos: videos,
-          desc: e.des,
+          desc: _normalDesc(e.des),
           extra: {},
         );
       },
@@ -376,7 +380,7 @@ class MacCMSSpider extends ISpiderAdapter {
           smallCoverImage: pic,
           title: e.name,
           videos: videos,
-          desc: e.des,
+          desc: _normalDesc(e.des),
           extra: {},
         );
       },
@@ -461,7 +465,7 @@ class MacCMSSpider extends ISpiderAdapter {
     var detail = VideoDetail(
       id: id,
       title: item['vod_name'] ?? "",
-      desc: item['vod_blurb'] ?? "",
+      desc: _normalDesc(item['vod_blurb'] ?? ""),
       smallCoverImage: item['vod_pic'] ?? "",
       videos: videos,
       extra: {},

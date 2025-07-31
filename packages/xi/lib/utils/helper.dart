@@ -7,6 +7,7 @@ import 'dart:typed_data';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:html_unescape/html_unescape.dart';
 
 RegExp _ipv4Maybe = RegExp(r'^(\d?\d?\d)\.(\d?\d?\d)\.(\d?\d?\d)\.(\d?\d?\d)$');
 RegExp _ipv6 =
@@ -265,3 +266,5 @@ String encodeURL(String raw) {
 String decodeURL(String raw) {
   return Uri.decodeFull(raw);
 }
+
+var kUnescape = HtmlUnescape();

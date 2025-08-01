@@ -23,7 +23,7 @@ dependencies:
   # cupertino_list_tile: ^0.2.0
   # flutter_html: ^2.1.5
   cached_network_image: ^3.4.1
-  chewie: ^1.11.3
+  chewie: ^1.12.1
   video_player: ^2.10.0
   path_provider: ^2.1.5
   clipboard: ^0.1.3

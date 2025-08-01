@@ -16,20 +16,26 @@ import 'package:chewie/src/models/subtitle_model.dart';
 import 'package:chewie/src/notifiers/index.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
+import 'package:window_manager/window_manager.dart';
 
 class CustomCupertinoControls extends StatefulWidget {
   const CustomCupertinoControls({
     required this.backgroundColor,
     required this.iconColor,
     this.showPlayButton = true,
+    this.onControlsVisibilityChanged,
+    this.onTapEpisodes,
     super.key,
   });
 
   final Color backgroundColor;
   final Color iconColor;
   final bool showPlayButton;
+  final ValueChanged<bool>? onControlsVisibilityChanged;
+  final VoidCallback? onTapEpisodes;
 
   @override
   State<StatefulWidget> createState() {
@@ -38,7 +44,7 @@ class CustomCupertinoControls extends StatefulWidget {
 }
 
 class _CustomCupertinoControlsState extends State<CustomCupertinoControls>
-    with SingleTickerProviderStateMixin {
+    with SingleTickerProviderStateMixin, WindowListener {
   late PlayerNotifier notifier;
   late VideoPlayerValue _latestValue;
   double? _latestVolume;
@@ -61,6 +67,9 @@ class _CustomCupertinoControlsState extends State<CustomCupertinoControls>
   @override
   void initState() {
     super.initState();
+    if (GetPlatform.isDesktop) {
+      windowManager.addListener(this);
+    }
     notifier = Provider.of<PlayerNotifier>(context, listen: false);
   }
 
@@ -88,9 +97,9 @@ class _CustomCupertinoControlsState extends State<CustomCupertinoControls>
     final buttonPadding = orientation == Orientation.portrait ? 16.0 : 24.0;
 
     return MouseRegion(
-      onHover: (_) => _cancelAndRestartTimer(),
+      onHover: (_) => _safeCancelAndRestartTimer(),
       child: GestureDetector(
-        onTap: () => _cancelAndRestartTimer(),
+        onTap: () => _safeCancelAndRestartTimer(),
         child: AbsorbPointer(
           absorbing: notifier.hideStuff,
           child: Stack(
@@ -130,16 +139,42 @@ class _CustomCupertinoControlsState extends State<CustomCupertinoControls>
   }
 
   @override
+  void onWindowEnterFullScreen() {
+    _fullscreenIcon = CupertinoIcons.fullscreen;
+    if (mounted) setState(() {});
+  }
+
+  @override
+  void onWindowLeaveFullScreen() {
+    _fullscreenIcon = CupertinoIcons.fullscreen_exit;
+    if (mounted) setState(() {});
+  }
+
+  @override
   void dispose() {
+    if (GetPlatform.isDesktop) {
+      windowManager.removeListener(this);
+    }
     _dispose();
     super.dispose();
   }
 
   void _dispose() {
-    controller.removeListener(_updateState);
+    try {
+      controller.removeListener(_updateState);
+    } catch (e) {
+      print('Error removing controller listener: $e');
+    }
+    
     _hideTimer?.cancel();
     _expandCollapseTimer?.cancel();
     _initTimer?.cancel();
+    _bufferingDisplayTimer?.cancel();
+    
+    _hideTimer = null;
+    _expandCollapseTimer = null;
+    _initTimer = null;
+    _bufferingDisplayTimer = null;
   }
 
   @override
@@ -288,6 +323,8 @@ class _CustomCupertinoControlsState extends State<CustomCupertinoControls>
                               chewieController
                                   .additionalOptions!(context).isNotEmpty)
                             _buildOptionsButton(iconColor, barHeight),
+                          if (GetPlatform.isDesktop)
+                            _buildFullscreenButton(iconColor),
                         ],
                       ),
               ),
@@ -370,12 +407,13 @@ class _CustomCupertinoControlsState extends State<CustomCupertinoControls>
 
     return GestureDetector(
       onTap: _latestValue.isPlaying
-          ? _cancelAndRestartTimer
+          ? _safeCancelAndRestartTimer
           : () {
               _hideTimer?.cancel();
 
               setState(() {
                 notifier.hideStuff = false;
+                widget.onControlsVisibilityChanged?.call(true); // 点击时显示控制栏
               });
             },
       child: CenterPlayButton(
@@ -398,7 +436,7 @@ class _CustomCupertinoControlsState extends State<CustomCupertinoControls>
   ) {
     return GestureDetector(
       onTap: () {
-        _cancelAndRestartTimer();
+        _safeCancelAndRestartTimer();
 
         if (_latestValue.volume == 0) {
           controller.setVolume(_latestVolume ?? 0.5);
@@ -415,12 +453,13 @@ class _CustomCupertinoControlsState extends State<CustomCupertinoControls>
           child: BackdropFilter(
             filter: ui.ImageFilter.blur(sigmaX: 10.0),
             child: Container(
-              color: backgroundColor,
+              color: Colors.transparent, //backgroundColor,
               child: Container(
                 height: barHeight,
                 padding: EdgeInsets.only(
                   left: buttonPadding,
                   right: buttonPadding,
+                  top: GetPlatform.isDesktop ? 24 : 0,
                 ),
                 child: Icon(
                   _latestValue.volume > 0 ? Icons.volume_up : Icons.volume_off,
@@ -556,6 +595,21 @@ class _CustomCupertinoControlsState extends State<CustomCupertinoControls>
     );
   }
 
+  IconData _fullscreenIcon = CupertinoIcons.fullscreen;
+
+  Widget _buildFullscreenButton(Color iconColor) {
+    return Padding(
+      padding: EdgeInsets.only(right: 12),
+      child: GestureDetector(
+        onTap: () async {
+          bool fc = await windowManager.isFullScreen();
+          windowManager.setFullScreen(!fc);
+        },
+        child: Icon(_fullscreenIcon, color: iconColor, size: 15),
+      ),
+    );
+  }
+
   GestureDetector _buildSpeedButton(
     VideoPlayerController controller,
     Color iconColor,
@@ -614,6 +668,9 @@ class _CustomCupertinoControlsState extends State<CustomCupertinoControls>
     double barHeight,
     double buttonPadding,
   ) {
+    if (GetPlatform.isDesktop) {
+      barHeight = 55;
+    }
     return Container(
       height: barHeight,
       margin: EdgeInsets.only(
@@ -639,19 +696,63 @@ class _CustomCupertinoControlsState extends State<CustomCupertinoControls>
               barHeight,
               buttonPadding,
             ),
+          if (GetPlatform.isMobile)
+            AnimatedOpacity(
+              opacity: notifier.hideStuff ? 0.0 : 1.0,
+              duration: const Duration(milliseconds: 300),
+              child: CupertinoButton(
+                color: Colors.black.withValues(alpha: .42),
+                padding: EdgeInsets.symmetric(
+                  horizontal: 12,
+                ),
+                onPressed: () {
+                  widget.onTapEpisodes?.call();
+                },
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  spacing: 3,
+                  children: [
+                    Icon(Icons.select_all, size: 24, color: Colors.white),
+                    Text(
+                      "选集",
+                      style: TextStyle(fontSize: 16, color: Colors.white),
+                    ),
+                  ],
+                ),
+              ),
+            ),
         ],
       ),
     );
   }
 
+  void _safeCancelAndRestartTimer() {
+    if (!mounted) return;
+    
+    try {
+      _cancelAndRestartTimer();
+    } catch (e) {
+      print('Error in _safeCancelAndRestartTimer: $e');
+    }
+  }
+
   void _cancelAndRestartTimer() {
     _hideTimer?.cancel();
 
-    setState(() {
-      notifier.hideStuff = false;
+    if (mounted) {
+      try {
+        setState(() {
+          notifier.hideStuff = false;
+          widget.onControlsVisibilityChanged?.call(true); // 控制栏显示
 
-      _startHideTimer();
-    });
+          _startHideTimer();
+        });
+      } catch (e) {
+        // 如果 notifier 已经被 dispose，忽略错误
+        print('PlayerNotifier already disposed in _cancelAndRestartTimer: $e');
+      }
+    }
   }
 
   Future<void> _initialize() async {
@@ -668,6 +769,7 @@ class _CustomCupertinoControlsState extends State<CustomCupertinoControls>
       _initTimer = Timer(const Duration(milliseconds: 200), () {
         setState(() {
           notifier.hideStuff = false;
+          widget.onControlsVisibilityChanged?.call(true);
         });
       });
     }
@@ -678,16 +780,14 @@ class _CustomCupertinoControlsState extends State<CustomCupertinoControls>
       // debugPrint("初始化失败, 无法播放");
       return;
     }
-    setState(() {
-      notifier.hideStuff = true;
-
-      chewieController.toggleFullScreen();
-      _expandCollapseTimer = Timer(const Duration(milliseconds: 300), () {
-        setState(() {
-          _cancelAndRestartTimer();
-        });
-      });
+    notifier.hideStuff = true;
+    chewieController.toggleFullScreen();
+    _expandCollapseTimer = Timer(const Duration(milliseconds: 300), () {
+      if (mounted) {
+        _safeCancelAndRestartTimer();
+      }
     });
+    setState(() {});
   }
 
   Widget _buildProgressBar() {
@@ -743,32 +843,40 @@ class _CustomCupertinoControlsState extends State<CustomCupertinoControls>
   }
 
   void _playPause() {
-    final isFinished = _latestValue.position >= _latestValue.duration;
+    if (!mounted) return;
 
-    setState(() {
-      if (controller.value.isPlaying) {
-        notifier.hideStuff = false;
-        _hideTimer?.cancel();
-        controller.pause();
-      } else {
-        _cancelAndRestartTimer();
+    try {
+      final isFinished = _latestValue.position >= _latestValue.duration;
 
-        if (!controller.value.isInitialized) {
-          controller.initialize().then((_) {
-            controller.play();
-          });
+      setState(() {
+        if (controller.value.isPlaying) {
+          notifier.hideStuff = false;
+          _hideTimer?.cancel();
+          controller.pause();
         } else {
-          if (isFinished) {
-            controller.seekTo(Duration.zero);
+          _safeCancelAndRestartTimer();
+
+          if (!controller.value.isInitialized) {
+            controller.initialize().then((_) {
+              if (mounted) {
+                controller.play();
+              }
+            });
+          } else {
+            if (isFinished) {
+              controller.seekTo(Duration.zero);
+            }
+            controller.play();
           }
-          controller.play();
         }
-      }
-    });
+      });
+    } catch (e) {
+      print('Error in _playPause: $e');
+    }
   }
 
   void _skipBack() {
-    _cancelAndRestartTimer();
+    _safeCancelAndRestartTimer();
     final beginning = Duration.zero.inMilliseconds;
     final skip =
         (_latestValue.position - const Duration(seconds: 15)).inMilliseconds;
@@ -776,7 +884,7 @@ class _CustomCupertinoControlsState extends State<CustomCupertinoControls>
   }
 
   void _skipForward() {
-    _cancelAndRestartTimer();
+    _safeCancelAndRestartTimer();
     final end = _latestValue.duration.inMilliseconds;
     final skip =
         (_latestValue.position + const Duration(seconds: 15)).inMilliseconds;
@@ -784,13 +892,23 @@ class _CustomCupertinoControlsState extends State<CustomCupertinoControls>
   }
 
   void _startHideTimer() {
+    _hideTimer?.cancel();
     final hideControlsTimer = chewieController.hideControlsTimer.isNegative
         ? ChewieController.defaultHideControlsTimer
         : chewieController.hideControlsTimer;
     _hideTimer = Timer(hideControlsTimer, () {
-      setState(() {
-        notifier.hideStuff = true;
-      });
+      // 检查 widget 是否还 mounted 以及 notifier 是否可用
+      if (mounted) {
+        try {
+          setState(() {
+            notifier.hideStuff = true;
+            widget.onControlsVisibilityChanged?.call(false); // 控制栏隐藏
+          });
+        } catch (e) {
+          // 如果 notifier 已经被 dispose，忽略错误
+          print('PlayerNotifier already disposed: $e');
+        }
+      }
     });
   }
 

@@ -1,3 +1,5 @@
+import 'package:equatable/equatable.dart';
+
 /// 视频类型
 enum VideoType {
   /// 内嵌的 html 链接
@@ -45,7 +47,7 @@ class VideoSize {
 }
 
 // 视频信息
-class VideoInfo {
+class VideoInfo extends Equatable {
   /// 名称
   final String name;
 
@@ -55,11 +57,14 @@ class VideoInfo {
   /// 视频链接
   final String url;
 
-  VideoInfo({
+  const VideoInfo({
     this.name = "未命名",
     this.type = VideoType.iframe,
     required this.url,
   });
+
+  @override
+  List<Object?> get props => [name, type, url];
 }
 
 // 视频详情

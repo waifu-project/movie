@@ -261,7 +261,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     /// https://github.com/MixinNetwork/flutter-plugins/tree/main/packages/desktop_webview_window
     /// 该插件支持 `windows` | `linux`(<然而[webview.launch]方法不支持:(>) | `macos`
-    if (isWindows || isMacos) {
+    if ((isWindows || isMacos) && false) {
       if (isMacos && home.macosPlayUseIINA) {
         url.openToIINA(); // 家人们, 我们就假装安装了
         return true;
@@ -403,8 +403,9 @@ document.addEventListener('DOMContentLoaded', function() {
       Get.to(
         () => const ChewieView(),
         arguments: {
-          'url': url,
-          'cover': movieItem.smallCoverImage,
+          "curr": curr,
+          "cover": movieItem.smallCoverImage,
+          "playlist": playList,
         },
       );
     }

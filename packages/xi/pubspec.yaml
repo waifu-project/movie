@@ -18,3 +18,4 @@ dependencies:
   jsonc: ^0.0.3
   path: ^1.9.1
   html_unescape: ^2.0.0
+  equatable: ^2.0.7

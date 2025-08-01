@@ -34,8 +34,13 @@ PODS:
     - DKImagePickerController/PhotoGallery
     - Flutter
   - Flutter (1.0.0)
+  - fvp (0.33.1):
+    - Flutter
+    - FlutterMacOS
+    - mdk (~> 0.33.1)
   - isar_flutter_libs (1.0.0):
     - Flutter
+  - mdk (0.33.1)
   - media_kit_libs_ios_video (1.0.4):
     - Flutter
   - media_kit_video (0.0.1):
@@ -72,6 +77,7 @@ PODS:
 DEPENDENCIES:
   - file_picker (from `.symlinks/plugins/file_picker/ios`)
   - Flutter (from `Flutter`)
+  - fvp (from `.symlinks/plugins/fvp/darwin`)
   - isar_flutter_libs (from `.symlinks/plugins/isar_flutter_libs/ios`)
   - media_kit_libs_ios_video (from `.symlinks/plugins/media_kit_libs_ios_video/ios`)
   - media_kit_video (from `.symlinks/plugins/media_kit_video/ios`)
@@ -90,6 +96,7 @@ SPEC REPOS:
   trunk:
     - DKImagePickerController
     - DKPhotoGallery
+    - mdk
     - SDWebImage
     - SwiftyGif
 
@@ -98,6 +105,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/file_picker/ios"
   Flutter:
     :path: Flutter
+  fvp:
+    :path: ".symlinks/plugins/fvp/darwin"
   isar_flutter_libs:
     :path: ".symlinks/plugins/isar_flutter_libs/ios"
   media_kit_libs_ios_video:
@@ -130,7 +139,9 @@ SPEC CHECKSUMS:
   DKPhotoGallery: b3834fecb755ee09a593d7c9e389d8b5d6deed60
   file_picker: a0560bc09d61de87f12d246fc47d2119e6ef37be
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
+  fvp: ed100b827d10aff53789fb9cb9dfdd85a87d037d
   isar_flutter_libs: bc909e72c3d756c2759f14c8776c13b5b0556e26
+  mdk: 622e3452cea55a982c0712ec9ce931d8ec718b22
   media_kit_libs_ios_video: 5a18affdb97d1f5d466dc79988b13eff6c5e2854
   media_kit_video: 1746e198cb697d1ffb734b1d05ec429d1fcd1474
   package_info_plus: af8e2ca6888548050f16fa2f1938db7b5a5df499

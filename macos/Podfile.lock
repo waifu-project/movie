@@ -6,10 +6,15 @@ PODS:
   - file_picker (0.0.1):
     - FlutterMacOS
   - FlutterMacOS (1.0.0)
+  - fvp (0.33.1):
+    - Flutter
+    - FlutterMacOS
+    - mdk (~> 0.33.1)
   - hide_cursor (0.0.1):
     - FlutterMacOS
   - isar_flutter_libs (1.0.0):
     - FlutterMacOS
+  - mdk (0.33.1)
   - media_kit_libs_macos_video (1.0.4):
     - FlutterMacOS
   - media_kit_video (0.0.1):
@@ -48,6 +53,7 @@ DEPENDENCIES:
   - desktop_webview_window (from `Flutter/ephemeral/.symlinks/plugins/desktop_webview_window/macos`)
   - file_picker (from `Flutter/ephemeral/.symlinks/plugins/file_picker/macos`)
   - FlutterMacOS (from `Flutter/ephemeral`)
+  - fvp (from `Flutter/ephemeral/.symlinks/plugins/fvp/darwin`)
   - hide_cursor (from `Flutter/ephemeral/.symlinks/plugins/hide_cursor/macos`)
   - isar_flutter_libs (from `Flutter/ephemeral/.symlinks/plugins/isar_flutter_libs/macos`)
   - media_kit_libs_macos_video (from `Flutter/ephemeral/.symlinks/plugins/media_kit_libs_macos_video/macos`)
@@ -65,6 +71,10 @@ DEPENDENCIES:
   - webview_flutter_wkwebview (from `Flutter/ephemeral/.symlinks/plugins/webview_flutter_wkwebview/darwin`)
   - window_manager (from `Flutter/ephemeral/.symlinks/plugins/window_manager/macos`)
 
+SPEC REPOS:
+  trunk:
+    - mdk
+
 EXTERNAL SOURCES:
   bitsdojo_window_macos:
     :path: Flutter/ephemeral/.symlinks/plugins/bitsdojo_window_macos/macos
@@ -74,6 +84,8 @@ EXTERNAL SOURCES:
     :path: Flutter/ephemeral/.symlinks/plugins/file_picker/macos
   FlutterMacOS:
     :path: Flutter/ephemeral
+  fvp:
+    :path: Flutter/ephemeral/.symlinks/plugins/fvp/darwin
   hide_cursor:
     :path: Flutter/ephemeral/.symlinks/plugins/hide_cursor/macos
   isar_flutter_libs:
@@ -112,8 +124,10 @@ SPEC CHECKSUMS:
   desktop_webview_window: 2f0cdefecc06e21208a51589bd3d1580a87a703c
   file_picker: 7584aae6fa07a041af2b36a2655122d42f578c1a
   FlutterMacOS: 8f6f14fa908a6fb3fba0cd85dbd81ec4b251fb24
+  fvp: ed100b827d10aff53789fb9cb9dfdd85a87d037d
   hide_cursor: b2c315dcec23c14ece92fbbab9b9c0d33f3a603d
   isar_flutter_libs: a65381780401f81ad6bf3f2e7cd0de5698fb98c4
+  mdk: 622e3452cea55a982c0712ec9ce931d8ec718b22
   media_kit_libs_macos_video: 85a23e549b5f480e72cae3e5634b5514bc692f65
   media_kit_video: fa6564e3799a0a28bff39442334817088b7ca758
   package_info_plus: f0052d280d17aa382b932f399edf32507174e870

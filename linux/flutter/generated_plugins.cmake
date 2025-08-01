@@ -5,6 +5,7 @@
 list(APPEND FLUTTER_PLUGIN_LIST
   bitsdojo_window_linux
   desktop_webview_window
+  fvp
   hide_cursor
   isar_flutter_libs
   media_kit_libs_linux

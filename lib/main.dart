@@ -14,6 +14,7 @@ import 'package:xi/utils/helper.dart';
 import 'package:xi/utils/http.dart';
 import 'shared/manage.dart';
 import 'package:catmovie/shared/enum.dart';
+import 'package:fvp/fvp.dart' as fvp;
 
 import 'app/routes/app_pages.dart';
 
@@ -41,6 +42,8 @@ Future<ThemeMode> runBefore() async {
   // * https://github.com/media-kit/media-kit#installation
   // * https://pub.dev/packages/media_kit#installation
   MediaKit.ensureInitialized();
+
+  fvp.registerWith();
 
   // Register a custom protocol
   // For macOS platform needs to declare the scheme in ios/Runner/Info.plist

@@ -13,11 +13,13 @@ import 'package:catmovie/app/modules/home/views/parse_vip_manage.dart';
 import 'package:catmovie/app/widget/helper.dart';
 import 'package:catmovie/app/widget/window_appbar.dart';
 import 'package:catmovie/widget/simple_html/flutter_html.dart';
+import 'package:media_kit_video/media_kit_video.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:pull_down_button/pull_down_button.dart';
 import 'package:simple/x.dart';
 import 'package:smooth_list_view/smooth_list_view.dart';
 import 'package:xi/xi.dart';
+import 'package:media_kit/media_kit.dart';
 
 import '../controllers/play_controller.dart';
 
@@ -39,6 +41,9 @@ class _PlayViewState extends State<PlayView> {
   final HomeController home = Get.find<HomeController>();
   final FocusNode focusNode = FocusNode();
   final ScrollController scrollController = ScrollController();
+
+  late final Player player = Player();
+  late final controller = VideoController(player);
 
   bool get canBeShowParseVipButton {
     return home.parseVipList.isNotEmpty;
@@ -72,6 +77,14 @@ class _PlayViewState extends State<PlayView> {
   void initState() {
     focusNode.requestFocus();
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    player.dispose().catchError((error) {
+      debugPrint("player dispose error: $error");
+    });
+    super.dispose();
   }
 
   Future<void> handlePlay(int tabIndex, int index) async {
@@ -186,66 +199,74 @@ class _PlayViewState extends State<PlayView> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Container(
+                        SizedBox(
                           width: double.infinity,
-                          height: screenHeight * coverHeightScale,
-                          decoration: const BoxDecoration(
-                            color: Color.fromRGBO(246, 246, 246, 1),
-                          ),
-                          child: Stack(
-                            children: [
-                              Positioned.fill(
-                                child: Image.network(
-                                  play.movieItem.smallCoverImage,
-                                  fit: BoxFit.contain,
-                                  errorBuilder: (_, __, ___) {
-                                    return Image.asset(
-                                      K_DEFAULT_IMAGE,
-                                      fit: BoxFit.cover,
-                                    );
-                                  },
-                                ),
-                              ),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const Expanded(child: SizedBox.shrink()),
-                                  Container(
-                                    width: double.infinity,
-                                    clipBehavior: Clip.antiAlias,
-                                    decoration: const BoxDecoration(
-                                      color: Colors.black12,
-                                    ),
-                                    child: BackdropFilter(
-                                      filter: ImageFilter.blur(
-                                        sigmaX: 24,
-                                        sigmaY: 24,
-                                      ),
-                                      child: Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                          vertical: 12,
-                                          horizontal: 24,
-                                        ),
-                                        child: Text(
-                                          play.movieItem.title,
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .titleLarge
-                                              ?.copyWith(
-                                                  color: context.isDarkMode
-                                                      ? Colors.white
-                                                      : Colors.black),
-                                          overflow: TextOverflow.ellipsis,
-                                          maxLines: 4,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
+                          height: 420,
+                          child: Video(
+                            controller: controller,
                           ),
                         ),
+                        if (false)
+                          Container(
+                            width: double.infinity,
+                            height: screenHeight * coverHeightScale,
+                            decoration: const BoxDecoration(
+                              color: Color.fromRGBO(246, 246, 246, 1),
+                            ),
+                            child: Stack(
+                              children: [
+                                Positioned.fill(
+                                  child: Image.network(
+                                    play.movieItem.smallCoverImage,
+                                    fit: BoxFit.contain,
+                                    errorBuilder: (_, __, ___) {
+                                      return Image.asset(
+                                        K_DEFAULT_IMAGE,
+                                        fit: BoxFit.cover,
+                                      );
+                                    },
+                                  ),
+                                ),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const Expanded(child: SizedBox.shrink()),
+                                    Container(
+                                      width: double.infinity,
+                                      clipBehavior: Clip.antiAlias,
+                                      decoration: const BoxDecoration(
+                                        color: Colors.black12,
+                                      ),
+                                      child: BackdropFilter(
+                                        filter: ImageFilter.blur(
+                                          sigmaX: 24,
+                                          sigmaY: 24,
+                                        ),
+                                        child: Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                            vertical: 12,
+                                            horizontal: 24,
+                                          ),
+                                          child: Text(
+                                            play.movieItem.title,
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .titleLarge
+                                                ?.copyWith(
+                                                    color: context.isDarkMode
+                                                        ? Colors.white
+                                                        : Colors.black),
+                                            overflow: TextOverflow.ellipsis,
+                                            maxLines: 4,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -496,8 +517,14 @@ class _PlayViewState extends State<PlayView> {
                                                   return Text(text);
                                                 }),
                                                 onPressed: () {
-                                                  handlePlay(
-                                                      play.tabIndex, index);
+                                                  var curr =
+                                                      playlist[play.tabIndex]
+                                                          .datas[index];
+                                                  debugPrint(
+                                                      "uri is ${curr.url}");
+                                                  player.open(Media(curr.url));
+                                                  // handlePlay(
+                                                  //     play.tabIndex, index);
                                                 },
                                                 onLongPress: () {
                                                   showMenu();

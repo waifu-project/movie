@@ -408,7 +408,7 @@ class _SettingsViewState extends State<SettingsView>
           ),
           canBeShowIosBrowserSettings
               ? CSControl(
-                  nameWidget: const Text('iOS播放使用内置浏览器'),
+                  nameWidget: const Text('原生浏览器播放'),
                   contentWidget: HoverCursor(
                     child: CupertinoSwitch(
                       value: _canBeShowIosBrowser,
@@ -422,7 +422,7 @@ class _SettingsViewState extends State<SettingsView>
                   ),
                   style: const CSWidgetStyle(
                     icon: Icon(
-                      Icons.airplay_rounded,
+                      CupertinoIcons.play_rectangle_fill,
                     ),
                   ),
                 )
@@ -443,7 +443,7 @@ class _SettingsViewState extends State<SettingsView>
           ),
           if (GetPlatform.isMacOS)
             CSControl(
-              nameWidget: const Text('播放使用IINA(默认内置播放器)'),
+              nameWidget: const Text('IINA播放'),
               contentWidget: HoverCursor(
                 child: CupertinoSwitch(
                   value: macosPlayUseIINA,
@@ -461,7 +461,7 @@ class _SettingsViewState extends State<SettingsView>
               ),
               style: const CSWidgetStyle(
                 icon: Icon(
-                  CupertinoIcons.play_rectangle,
+                  CupertinoIcons.option,
                 ),
               ),
             ),

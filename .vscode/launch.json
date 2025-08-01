@@ -8,7 +8,10 @@
       "name": "movie",
       "request": "launch",
       "type": "dart",
-      "program": "lib/main.dart"
+      "program": "lib/main.dart",
+      "env": {
+        "MDK_CLOG": "1",
+      }
     },
     {
       "name": "movie (profile mode)",

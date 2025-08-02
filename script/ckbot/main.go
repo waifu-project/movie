@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"net/url"
 	"os"
+	"regexp"
 	"slices"
 	"strings"
 	"sync"
@@ -15,6 +16,7 @@ import (
 	"github.com/charmbracelet/log"
 	"github.com/imroc/req/v3"
 	"github.com/longbridgeapp/opencc"
+	"github.com/mozillazg/go-pinyin"
 	"github.com/sourcegraph/conc/pool"
 )
 
@@ -24,6 +26,8 @@ var htmlTemplate string
 var t2s *opencc.OpenCC
 
 var ua = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36"
+
+var pinyinContext = pinyin.NewArgs()
 
 func isHTML(input string) bool {
 	input = strings.ToLower(input)
@@ -172,6 +176,7 @@ func getGithubIssueComments(owner, repo, issueID, token string) map[uint64]Githu
 }
 
 type ParseResult struct {
+	ID   string `json:"id"`
 	Text string `json:"name"`
 	URL  string `json:"url"`
 	Nsfw bool   `json:"nsfw"`
@@ -198,6 +203,27 @@ func parseName(raw string) string {
 		return result
 	}
 	return text
+}
+
+func convertWithPreserve(s string) string {
+	var result []string
+	isAlnum := regexp.MustCompile(`^[a-zA-Z0-9]$`).MatchString
+
+	for _, r := range s {
+		char := string(r)
+		if isAlnum(char) {
+			result = append(result, char)
+		} else {
+			py := pinyin.Pinyin(char, pinyinContext)
+			if len(py) > 0 && len(py[0]) > 0 {
+				result = append(result, py[0][0])
+			} else {
+				result = append(result, char)
+			}
+		}
+	}
+
+	return strings.Join(result, "")
 }
 
 func getItemWithText(text string, cx map[uint64]GithubIssueComment) []ParseResult {
@@ -227,7 +253,9 @@ func getItemWithText(text string, cx map[uint64]GithubIssueComment) []ParseResul
 		}
 		var text = parseName(ss[0])
 		var url = strings.TrimSpace(ss[1])
+		var id = convertWithPreserve(text) // FIXME(d1y): id 可能会重复
 		var now = ParseResult{
+			ID:   id,
 			Text: text,
 			URL:  url,
 			Nsfw: false,
@@ -310,6 +338,7 @@ func runTaskCheck(list []ParseResult, ccTaskCount int) []Result {
 }
 
 type v1 struct {
+	ID     string `json:"id"`
 	Name   string `json:"name"`
 	Nsfw   bool   `json:"nsfw"`
 	API    v1API  `json:"api"`
@@ -353,7 +382,7 @@ func dumpToHTML(result map[uint64][]Result, cx map[uint64]GithubIssueComment, co
 		panic(err)
 	}
 	var code = string(buf)
-	var html = strings.Replace(htmlTemplate, "$$$$", code, -1)
+	var html = strings.ReplaceAll(htmlTemplate, "$$$$", code)
 	var outHTML = os.Getenv("OUT_HTML")
 	if outHTML != "" {
 		os.WriteFile(outHTML, []byte(html), 0644)
@@ -378,7 +407,7 @@ func dumpToJSON(_result map[uint64][]Result) (int, int) {
 					panic(err)
 				}
 				var root = fmt.Sprintf("%s://%s", cx.Scheme, cx.Host)
-				var data = v1{Name: val.Parse.Text, Nsfw: val.Nsfw, API: v1API{Root: root, Path: cx.Path}, Status: true}
+				var data = v1{ID: val.Parse.ID, Name: val.Parse.Text, Nsfw: val.Nsfw, API: v1API{Root: root, Path: cx.Path}, Status: true}
 				yoyoJSON = append(yoyoJSON, data)
 			} else {
 				err++

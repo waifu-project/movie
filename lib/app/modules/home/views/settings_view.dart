@@ -1,11 +1,11 @@
 import 'dart:async';
 
 import 'package:catmovie/app/modules/home/views/auto_update.dart';
+import 'package:catmovie/app/widget/window_appbar.dart';
 import 'package:catmovie/app/widget/zoom.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_cupertino_settings/flutter_cupertino_settings.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'package:get/get.dart';
@@ -15,12 +15,12 @@ import 'package:catmovie/app/modules/home/controllers/home_controller.dart';
 import 'package:catmovie/app/modules/home/views/parse_vip_manage.dart';
 import 'package:catmovie/app/modules/home/views/source_help.dart';
 import 'package:catmovie/app/shared/bus.dart';
-import 'package:catmovie/app/widget/window_appbar.dart';
 import 'package:catmovie/git_info.dart';
 import 'package:catmovie/shared/enum.dart';
 import 'package:catmovie/shared/manage.dart';
 import 'package:catmovie/app/modules/home/views/cupertino_license.dart';
 import 'package:pull_down_button/pull_down_button.dart';
+import 'package:settings_ui/settings_ui.dart';
 import 'package:xi/models/mac_cms/source_data.dart';
 import 'package:xi/xi.dart';
 
@@ -287,6 +287,99 @@ class _SettingsViewState extends State<SettingsView>
     return result;
   }
 
+  void handleSourceHelp() {
+    var cx = getSettingAsKeyIdent<String>(SettingsAllKey.mirrorTextarea).trim();
+    if (cx.isNotEmpty && cx != editingControllerValue) {
+      editingControllerValue = cx;
+    }
+    Get.defaultDialog(
+      actions: [
+        Zoom(
+          child: CupertinoButton.filled(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 12,
+            ),
+            child: const Text("清空"),
+            onPressed: () {
+              handleDiglogTap(HandleDiglogTapType.clean);
+            },
+          ),
+        ),
+        Zoom(
+          child: CupertinoButton.filled(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 12,
+            ),
+            child: const Text("获取配置"),
+            onPressed: () {
+              handleDiglogTap(HandleDiglogTapType.kget);
+            },
+          ),
+        ),
+      ],
+      titlePadding: const EdgeInsets.symmetric(
+        horizontal: 3,
+        vertical: 12,
+      ),
+      title: "我的视频源网络地址",
+      titleStyle: TextStyle(
+        fontSize: 16,
+        color: context.isDarkMode ? Colors.white : Colors.black,
+      ),
+      content: SizedBox(
+        height: Get.height * .2,
+        width: context.widthTransformer(dividedBy: 1),
+        child: Card(
+          color: const Color.fromRGBO(0, 0, 0, .02),
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: TextField(
+              controller: _editingController,
+              maxLines: 10,
+              decoration: InputDecoration.collapsed(
+                hintText: sourceHelpText,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  void handleCleanCacheBefore(BuildContext ctx) {
+    showCupertinoDialog(
+      builder: (BuildContext context) => CupertinoAlertDialog(
+        title: const Text('提示'),
+        content: const Text("将删除所有缓存, 包括视频源和一些设置"),
+        actions: <CupertinoDialogAction>[
+          CupertinoDialogAction(
+            child: const Text(
+              '我想想',
+              style: TextStyle(
+                color: Colors.red,
+              ),
+            ),
+            onPressed: () {
+              Get.back();
+            },
+          ),
+          CupertinoDialogAction(
+            isDestructiveAction: true,
+            onPressed: () {
+              Get.back();
+              handleCleanCache();
+            },
+            child: const Text(
+              '确定',
+              style: TextStyle(color: Colors.blue),
+            ),
+          ),
+        ],
+      ),
+      context: ctx,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -296,287 +389,112 @@ class _SettingsViewState extends State<SettingsView>
         centerTitle: true,
         actions: [SizedBox.shrink()],
       ),
-      body: CupertinoSettings(
-        items: <Widget>[
-          const CSHeader('常规设置'),
-          !autoDarkMode
-              ? CSControl(
-                  nameWidget: const Text('深色'),
-                  contentWidget: HoverCursor(
-                    child: CupertinoSwitch(
-                      value: isDark,
-                      onChanged: (bool value) {
-                        isDark = value;
-                      },
-                    ),
-                  ),
-                  style: const CSWidgetStyle(
-                    icon: Icon(
-                      Icons.settings_brightness,
-                    ),
-                  ),
-                )
-              : const SizedBox.shrink(),
-          CSControl(
-            nameWidget: const Text('深色跟随系统'),
-            contentWidget: HoverCursor(
-              child: CupertinoSwitch(
-                value: autoDarkMode,
-                onChanged: (bool value) {
+      body: SettingsList(
+        applicationType: ApplicationType.cupertino,
+        sections: [
+          SettingsSection(
+            title: Text('常规设置'),
+            tiles: <SettingsTile>[
+              if (!autoDarkMode)
+                SettingsTile.switchTile(
+                  onToggle: (value) {
+                    isDark = value;
+                  },
+                  initialValue: isDark,
+                  leading: Icon(Icons.settings_brightness),
+                  title: Text('深色'),
+                ),
+              SettingsTile.switchTile(
+                onToggle: (value) {
                   autoDarkMode = value;
                 },
+                initialValue: autoDarkMode,
+                leading: Icon(CupertinoIcons.moon_stars_fill),
+                title: Text('深色跟随系统'),
               ),
-            ),
-            style: const CSWidgetStyle(
-              icon: Icon(
-                CupertinoIcons.moon_stars_fill,
-              ),
-            ),
-          ),
-          GestureDetector(
-            onTap: () {
-              Get.to(() => const ParseVipManagePageView());
-            },
-            child: HoverCursor(
-              child: CSControl(
-                nameWidget: const Text('解析线路管理'),
-                style: const CSWidgetStyle(
-                  icon: Icon(
-                    Icons.add_box,
-                  ),
-                ),
-              ),
-            ),
-          ),
-          GestureDetector(
-            child: HoverCursor(
-              child: CSControl(
-                nameWidget: const Text("视频源管理"),
-                style: const CSWidgetStyle(
-                  icon: Icon(
-                    Icons.video_library,
-                  ),
-                ),
-              ),
-            ),
-            onTap: () {
-              var cx =
-                  getSettingAsKeyIdent<String>(SettingsAllKey.mirrorTextarea)
-                      .trim();
-              if (cx.isNotEmpty && cx != editingControllerValue) {
-                editingControllerValue = cx;
-              }
-              Get.defaultDialog(
-                actions: [
-                  Zoom(
-                    child: CupertinoButton.filled(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                      ),
-                      child: const Text("清空"),
-                      onPressed: () {
-                        handleDiglogTap(HandleDiglogTapType.clean);
-                      },
-                    ),
-                  ),
-                  Zoom(
-                    child: CupertinoButton.filled(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                      ),
-                      child: const Text("获取配置"),
-                      onPressed: () {
-                        handleDiglogTap(HandleDiglogTapType.kget);
-                      },
-                    ),
-                  ),
-                ],
-                titlePadding: const EdgeInsets.symmetric(
-                  horizontal: 3,
-                  vertical: 12,
-                ),
-                title: "我的视频源网络地址",
-                titleStyle: TextStyle(
-                  fontSize: 16,
-                  color: context.isDarkMode ? Colors.white : Colors.black,
-                ),
-                content: SizedBox(
-                  height: Get.height * .2,
-                  width: context.widthTransformer(dividedBy: 1),
-                  child: Card(
-                    color: const Color.fromRGBO(0, 0, 0, .02),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: TextField(
-                        controller: _editingController,
-                        maxLines: 10,
-                        decoration: InputDecoration.collapsed(
-                          hintText: sourceHelpText,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              );
-            },
-          ),
-          CSControl(
-            nameWidget: const Text("播放器内核"),
-            contentWidget: HoverCursor(
-              child: PullDownButton(
-                itemBuilder: (cx) {
-                  return _buildVideoKernel();
+              SettingsTile.navigation(
+                leading: Icon(Icons.add_box),
+                title: Text('解析线路管理'),
+                onPressed: (cx) {
+                  Get.to(() => const ParseVipManagePageView());
                 },
-                buttonBuilder: (cx, showMenu) {
-                  return CupertinoButton(
-                    padding: EdgeInsets.zero,
-                    onPressed: showMenu,
-                    child: Text(_videoKernel.name),
+                // TODO(d1y): impl this
+                // value: Text("1个线路"),
+              ),
+              SettingsTile.navigation(
+                leading: Icon(Icons.video_library),
+                title: Text('视频源管理'),
+                onPressed: (cx) {
+                  handleSourceHelp();
+                },
+                // TODO(d1y): impl this
+                // value: Text("55个源"),
+              ),
+              SettingsTile(
+                leading: Icon(CupertinoIcons.macwindow),
+                title: Text("播放器内核"),
+                trailing: PullDownButton(
+                  itemBuilder: (cx) {
+                    return _buildVideoKernel();
+                  },
+                  buttonBuilder: (cx, showMenu) {
+                    return CupertinoButton(
+                      padding: EdgeInsets.zero,
+                      onPressed: showMenu,
+                      child: Text(_videoKernel.name),
+                    );
+                  },
+                ),
+              ),
+              SettingsTile.switchTile(
+                onToggle: updateNSFW,
+                initialValue: home.isNsfw,
+                leading: Icon(CupertinoIcons.hammer_fill),
+                title: Text('成人模式'),
+              ),
+            ],
+          ),
+          SettingsSection(
+            title: Text('其他设置'),
+            tiles: <AbstractSettingsTile>[
+              SettingsTile.navigation(
+                leading: Icon(CupertinoIcons.refresh_circled_solid),
+                title: Text('应用更新'),
+                onPressed: (cx) {
+                  showCupertinoModalBottomSheet(
+                    context: cx,
+                    builder: (_) => AutoUpdate(),
                   );
                 },
               ),
-            ),
-            style: const CSWidgetStyle(
-              icon: Icon(
-                CupertinoIcons.macwindow,
-              ),
-            ),
-          ),
-          CSControl(
-            nameWidget: const Text('成人模式'),
-            contentWidget: HoverCursor(
-              child: CupertinoSwitch(
-                value: home.isNsfw,
-                onChanged: (bool value) {
-                  updateNSFW(value);
+              SettingsTile.navigation(
+                leading: Icon(CupertinoIcons.arrow_down_right_square_fill),
+                title: Text('视频源帮助'),
+                onPressed: (cx) {
+                  Get.to(() => const SourceHelpTable());
                 },
               ),
-            ),
-            style: const CSWidgetStyle(
-              icon: Icon(CupertinoIcons.hammer_fill),
-            ),
-          ),
-          const CSHeader('其他设置'),
-          GestureDetector(
-            onTap: () {
-              showCupertinoModalBottomSheet(
-                context: context,
-                builder: (_) => AutoUpdate(),
-              );
-            },
-            child: HoverCursor(
-                child: CSControl(
-              nameWidget: const Text("应用更新"),
-              style: const CSWidgetStyle(
-                icon: Icon(
-                  CupertinoIcons.refresh_circled_solid,
-                ),
+              SettingsTile.navigation(
+                leading: Icon(CupertinoIcons.clear_thick_circled),
+                title: Text('清除缓存'),
+                onPressed: handleCleanCacheBefore,
               ),
-            )),
-          ),
-          GestureDetector(
-            onTap: () {
-              Get.to(() => const SourceHelpTable());
-            },
-            child: HoverCursor(
-              child: CSControl(
-                nameWidget: const Text("视频源帮助"),
-                style: const CSWidgetStyle(
-                  icon: Icon(
-                    CupertinoIcons.arrow_down_right_square_fill,
-                  ),
-                ),
-              ),
-            ),
-          ),
-          GestureDetector(
-            onTap: () async {
-              var ctx = Get.context;
-              if (ctx == null) return;
-              showCupertinoDialog(
-                builder: (BuildContext context) => CupertinoAlertDialog(
-                  title: const Text('提示'),
-                  content: const Text("将删除所有缓存, 包括视频源和一些设置"),
-                  actions: <CupertinoDialogAction>[
-                    CupertinoDialogAction(
-                      child: const Text(
-                        '我想想',
-                        style: TextStyle(
-                          color: Colors.red,
-                        ),
-                      ),
-                      onPressed: () {
-                        Get.back();
-                      },
+              SettingsTile.navigation(
+                leading: Icon(CupertinoIcons.lab_flask_solid),
+                title: Text('开源协议'),
+                onPressed: (cx) {
+                  showCupertinoModalBottomSheet(
+                    context: cx,
+                    builder: (_) => SizedBox(
+                      width: double.infinity,
+                      height: Get.height * .72,
+                      child: cupertinoLicensePage,
                     ),
-                    CupertinoDialogAction(
-                      isDestructiveAction: true,
-                      onPressed: () {
-                        Get.back();
-                        handleCleanCache();
-                      },
-                      child: const Text(
-                        '确定',
-                        style: TextStyle(color: Colors.blue),
-                      ),
-                    ),
-                  ],
-                ),
-                context: ctx,
-              );
-            },
-            child: HoverCursor(
-              child: CSControl(
-                nameWidget: const Text("清除缓存"),
-                style: const CSWidgetStyle(
-                  icon: Icon(
-                    CupertinoIcons.clear_thick_circled,
-                  ),
-                ),
+                  );
+                },
               ),
-            ),
-          ),
-          GestureDetector(
-            onTap: () {
-              showCupertinoModalBottomSheet(
-                context: context,
-                builder: (_) => SizedBox(
-                  width: double.infinity,
-                  height: Get.height * .72,
-                  child: cupertinoLicensePage,
-                ),
-              );
-            },
-            child: HoverCursor(
-              child: CSControl(
-                nameWidget: const Text("开源协议"),
-                style: const CSWidgetStyle(
-                  icon: Icon(CupertinoIcons.lab_flask_solid),
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(
-            height: 24,
-          ),
-          GestureDetector(
-            onTap: () {
-              "$kGithubRepo/tree/$gitCommit".openURL();
-              // if (showNSFW) {
-              //   showNSFW = false;
-              // } else {
-              //   setState(() {
-              //     nShowNSFW++;
-              //   });
-              // }
-            },
-            child: Builder(builder: (context) {
-              var firstWriteYear = '2020';
-              String currentYearString = DateTime.now().year.toString();
-              var text =
-                  '© 小猫影视 $firstWriteYear-$currentYearString $gitTag($gitCommit)';
-              return HoverCursor(child: CSDescription(text));
-            }),
+              Copyright(),
+            ],
           ),
         ],
       ),
@@ -585,4 +503,40 @@ class _SettingsViewState extends State<SettingsView>
 
   @override
   bool get wantKeepAlive => true;
+}
+
+class Copyright extends AbstractSettingsTile {
+  const Copyright({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.only(top: 12),
+      child: GestureDetector(
+        onTap: () {
+          "$kGithubRepo/tree/$gitCommit".openURL();
+        },
+        child: Builder(builder: (context) {
+          var firstWriteYear = '2020';
+          String currentYearString = DateTime.now().year.toString();
+          var text = "© 小猫影视 ";
+          text += "$firstWriteYear-$currentYearString ";
+          text += "$gitTag($gitCommit)";
+          return HoverCursor(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                text,
+                // textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 14,
+                  color: (Get.isDarkMode ? Colors.white : Colors.black).withValues(alpha: .42),
+                ),
+              ),
+            ),
+          );
+        }),
+      ),
+    );
+  }
 }

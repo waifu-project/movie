@@ -5,6 +5,7 @@ import 'package:catmovie/app/widget/zoom.dart';
 import 'package:command_palette/command_palette.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'package:get/get.dart';
 import 'package:catmovie/app/extension.dart';
@@ -127,6 +128,7 @@ class HomeView extends GetView<HomeController> {
               // fix ios keyboard auto up
               var currentFocus = FocusScope.of(context);
               currentFocus.unfocus();
+              EasyLoading.dismiss();
               controller.focusNode.requestFocus();
               homeview.changeCurrentBarIndex(index);
             },

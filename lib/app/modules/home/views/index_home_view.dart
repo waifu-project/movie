@@ -9,6 +9,7 @@ import 'package:catmovie/shared/enum.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'package:get/get.dart';
 import 'package:catmovie/app/modules/home/controllers/home_controller.dart';
@@ -179,6 +180,7 @@ class _IndexHomeViewState extends State<IndexHomeView>
           iosBackStyle: true,
           title: Zoom(
             onTap: () {
+              EasyLoading.dismiss();
               homeview.showMirrorModel(context);
             },
             child: Row(
@@ -209,6 +211,7 @@ class _IndexHomeViewState extends State<IndexHomeView>
                   color: Colors.white,
                 ),
                 onPressed: () {
+                  EasyLoading.dismiss();
                   Get.to(() => const SearchV2());
                 },
               ),
@@ -223,6 +226,7 @@ class _IndexHomeViewState extends State<IndexHomeView>
                 ),
                 onPressed: () {
                   // TODO: impl this
+                  EasyLoading.dismiss();
                 },
               ),
             ),
@@ -329,6 +333,7 @@ class _IndexHomeViewState extends State<IndexHomeView>
                                   ),
                                 ),
                                 onPressed: () {
+                                  EasyLoading.dismiss();
                                   switchCategory(curr);
                                 },
                               ),
@@ -470,6 +475,7 @@ class _IndexHomeViewState extends State<IndexHomeView>
                                       imageUrl: subItem.smallCoverImage,
                                       title: subItem.title,
                                       onTap: () {
+                                        EasyLoading.dismiss();
                                         handleClickItem(subItem, controller);
                                       },
                                     ),

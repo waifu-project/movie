@@ -66,7 +66,10 @@ class _SettingsViewState extends State<SettingsView>
   }
 
   set isDark(bool newVal) {
-    updateSetting(SettingsAllKey.themeMode, newVal ? SystemThemeMode.dark : SystemThemeMode.light);
+    updateSetting(
+      SettingsAllKey.themeMode,
+      newVal ? SystemThemeMode.dark : SystemThemeMode.light,
+    );
     setState(() {
       _isDark = newVal;
     });
@@ -416,6 +419,7 @@ class _SettingsViewState extends State<SettingsView>
                 leading: Icon(Icons.add_box),
                 title: Text('解析线路管理'),
                 onPressed: (cx) {
+                  EasyLoading.dismiss();
                   Get.to(() => const ParseVipManagePageView());
                 },
                 // TODO(d1y): impl this
@@ -425,6 +429,7 @@ class _SettingsViewState extends State<SettingsView>
                 leading: Icon(Icons.video_library),
                 title: Text('视频源管理'),
                 onPressed: (cx) {
+                  EasyLoading.dismiss();
                   handleSourceHelp();
                 },
                 // TODO(d1y): impl this
@@ -440,7 +445,10 @@ class _SettingsViewState extends State<SettingsView>
                   buttonBuilder: (cx, showMenu) {
                     return CupertinoButton(
                       padding: EdgeInsets.zero,
-                      onPressed: showMenu,
+                      onPressed: () {
+                        EasyLoading.dismiss();
+                        showMenu();
+                      },
                       child: Text(_videoKernel.name),
                     );
                   },
@@ -530,7 +538,8 @@ class Copyright extends AbstractSettingsTile {
                 // textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 14,
-                  color: (Get.isDarkMode ? Colors.white : Colors.black).withValues(alpha: .42),
+                  color: (Get.isDarkMode ? Colors.white : Colors.black)
+                      .withValues(alpha: .42),
                 ),
               ),
             ),

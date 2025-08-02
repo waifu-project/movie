@@ -11,6 +11,9 @@ import '../models/mac_cms/xml_search_data.dart';
 import 'package:xml2json/xml2json.dart';
 import 'package:path/path.dart' as path;
 
+/// m3u8 | mp4 都会抓取到
+final kIframeParseRegex = RegExp("[\"']([^\"']+.(m3u8|mp4))[\"']");
+
 /// 请求返回的内容
 enum ResponseCustomType {
   xml,
@@ -479,5 +482,36 @@ class MacCMSSpider extends ISpiderAdapter {
     output += "name: $name\n";
     output += " url: $root_url$api_path";
     return output;
+  }
+
+  List<String> _parseIframe(String iframe,String body) {
+    var url = Uri.tryParse(iframe);
+    if (url == null) return [];
+    var domain = "${url.scheme}://${url.host}";
+    final List<String> m3u8Links = [];
+    for (final Match match in kIframeParseRegex.allMatches(body)) {
+      if (match.groupCount >= 1) {
+        String? link = match.group(1);
+        if (link != null && link.isNotEmpty) {
+          if (!(link.startsWith("http://") || link.startsWith("https://"))) {
+            link = "$domain$link"; /// 如果 $link 前缀不是 /xx/xx.m3u8 那就惨了!
+          }
+          m3u8Links.add(link);
+        }
+      }
+    }
+    return m3u8Links;
+  }
+
+  @override
+  // TODO(d1y): 这个应该交由原配置去解析, 这里的通用解析只是为了乐呵乐呵(某些估计解析不了?)
+  Future<List<String>> parseIframe(String iframe) async {
+    try {
+      var resp = await XHttp.dio.get<String>(iframe);
+      var htmlText = resp.data ?? "";
+      return _parseIframe(iframe, htmlText);
+    } catch (e) {
+      return []; // catch error
+    }
   }
 }

@@ -202,6 +202,9 @@ abstract class ISpiderAdapter {
 
   /// 获取视频详情
   Future<VideoDetail> getDetail(String movieId);
+
+  /// 解析 iframe 链接
+  Future<List<String>> parseIframe(String iframe);
 }
 
 /// 基本上它就是一个空的占位符
@@ -225,6 +228,11 @@ class EmptySpiderAdapter implements ISpiderAdapter {
   @override
   Future<List<VideoDetail>> getSearch(
       {required String keyword, int page = 1, int limit = 10}) async {
+    return [];
+  }
+
+  @override
+  Future<List<String>> parseIframe(String iframe) async {
     return [];
   }
 

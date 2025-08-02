@@ -413,16 +413,29 @@ document.addEventListener('DOMContentLoaded', function() {
           return false;
         }
         if (curr.type == VideoType.iframe) {
-          EasyLoading.showError("IINA不支持iframe播放");
-          return false;
-        } else {
-          url.openToIINA();
+          var closed = showLoading("正在解析iframe");
+          var result = await home.currentMirrorItem.parseIframe(url);
+          closed();
+          if (result.isEmpty) {
+            EasyLoading.showError("解析失败, 无法播放");
+            return false;
+          }
+          debugPrint("result: $result");
+          url = result[0]; // NOTE(d1y): 估计解析到不止一个, 该用哪一个呢!
         }
+        url.openToIINA();
         break;
       case VideoKernel.mediaKit:
         if (curr.type == VideoType.iframe) {
-          EasyLoading.showError("Media-Kit不支持iframe播放");
-          return false;
+          var closed = showLoading("正在解析iframe");
+          var result = await home.currentMirrorItem.parseIframe(url);
+          closed();
+          if (result.isEmpty) {
+            EasyLoading.showError("解析失败, 无法播放");
+            return false;
+          }
+          debugPrint("result: $result");
+          url = result[0]; // NOTE(d1y): 估计解析到不止一个, 该用哪一个呢!
         }
         mediaKitPlayer.open(Media(url));
         break;

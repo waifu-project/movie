@@ -10,8 +10,7 @@ import 'package:hide_cursor/hide_cursor.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:protocol_handler/protocol_handler.dart';
 import 'package:window_manager/window_manager.dart';
-import 'package:xi/utils/helper.dart';
-import 'package:xi/utils/http.dart';
+import 'package:xi/xi.dart';
 import 'shared/manage.dart';
 import 'package:catmovie/shared/enum.dart';
 

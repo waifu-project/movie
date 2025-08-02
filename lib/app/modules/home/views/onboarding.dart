@@ -5,7 +5,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
-import 'package:xi/adapters/mac_cms.dart';
 import 'package:xi/models/mac_cms/source_data.dart';
 import 'package:xi/xi.dart';
 

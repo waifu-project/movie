@@ -18,7 +18,6 @@ import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 
 import 'package:catmovie/app/extension.dart';
 import 'package:window_manager/window_manager.dart';
-import 'package:xi/adapters/mac_cms.dart';
 import 'package:xi/xi.dart';
 
 const kSmoothListViewDuration = Duration(milliseconds: 210);
@@ -86,8 +85,6 @@ class HomeController extends GetxController
     return currentMirrorItem.meta.id;
   }
 
-  bool _iosCanBeUseSystemBrowser = true;
-
   List<SourceSpiderQueryCategory> get currentCategoryer {
     var data = mirrorCategoryPool.data(currentMirrorItemId);
     if (data.isNotEmpty) {
@@ -108,34 +105,7 @@ class HomeController extends GetxController
     update();
   }
 
-  bool get iosCanBeUseSystemBrowser =>
-      _iosCanBeUseSystemBrowser && GetPlatform.isIOS && !GetPlatform.isLinux;
-
-  set iosCanBeUseSystemBrowser(bool newVal) {
-    _iosCanBeUseSystemBrowser = newVal;
-    update();
-    updateSetting(SettingsAllKey.iosCanBeUseSystemBrowser, newVal);
-  }
-
-  void updateIOSCanBeUseSystemBrowser() {
-    var val =
-        getSettingAsKeyIdent<bool>(SettingsAllKey.iosCanBeUseSystemBrowser);
-    iosCanBeUseSystemBrowser = val;
-  }
-
   bool _isNsfw = false;
-
-  bool _macosPlayUseIINA = false;
-
-  bool get macosPlayUseIINA {
-    return _macosPlayUseIINA;
-  }
-
-  set macosPlayUseIINA(bool newVal) {
-    _macosPlayUseIINA = newVal;
-    update();
-    updateSetting(SettingsAllKey.macosPlayUseIINA, newVal);
-  }
 
   bool get isNsfw {
     return _isNsfw;
@@ -372,8 +342,6 @@ class HomeController extends GetxController
     updateWindowLastSize();
     WidgetsBinding.instance.addObserver(this);
     updateNsfwSetting();
-    updateIOSCanBeUseSystemBrowser();
-    updateMacosPlayUseIINAState();
     updateHomeData(isFirst: true);
     initCacheMirrorTableScrollControllerOffset();
     initMovieParseVipList();
@@ -382,12 +350,6 @@ class HomeController extends GetxController
 
   void updateWindowLastSize() {
     windowLastSize = View.of(Get.context!).physicalSize;
-    update();
-  }
-
-  void updateMacosPlayUseIINAState() {
-    _macosPlayUseIINA =
-        getSettingAsKeyIdent<bool>(SettingsAllKey.macosPlayUseIINA);
     update();
   }
 

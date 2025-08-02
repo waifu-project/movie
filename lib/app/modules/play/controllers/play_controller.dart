@@ -1,20 +1,20 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:catmovie/app/modules/play/views/chewie_view.dart';
 import 'package:catmovie/app/modules/play/views/play_view.dart';
 import 'package:desktop_webview_window/desktop_webview_window.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:catmovie/app/extension.dart';
 import 'package:catmovie/app/modules/home/controllers/home_controller.dart';
 import 'package:catmovie/app/modules/home/views/source_help.dart';
-import 'package:catmovie/app/modules/play/views/chewie_view.dart';
 import 'package:catmovie/app/modules/play/views/webview_view.dart';
 import 'package:catmovie/shared/auto_injector.dart';
-import 'package:xi/adapters/mac_cms.dart';
-import 'package:xi/interface.dart';
+import 'package:media_kit/media_kit.dart';
 import 'package:xi/xi.dart';
 import 'package:catmovie/isar/schema/parse_schema.dart';
 import 'package:catmovie/shared/enum.dart';
@@ -209,10 +209,136 @@ document.addEventListener('DOMContentLoaded', function() {
     update();
   }
 
+  Future<bool> playWithWebview(
+    List<VideoInfo> playList,
+    VideoInfo curr,
+    String url,
+  ) async {
+    if (GetPlatform.isWindows) {
+      bool bWebviewWindow = await WebviewWindow.isWebviewAvailable();
+      if (!bWebviewWindow) {
+        showCupertinoDialog(
+          builder: (BuildContext context) => CupertinoAlertDialog(
+            title: const Text('提示'),
+            content: const Padding(
+              padding: EdgeInsets.symmetric(
+                vertical: 12.0,
+              ),
+              child: Text(
+                '未安装 edge webview runtime, 无法播放 :(',
+                style: TextStyle(
+                  fontSize: 18,
+                ),
+              ),
+            ),
+            actions: <CupertinoDialogAction>[
+              CupertinoDialogAction(
+                child: const Text(
+                  '我知道了',
+                  style: TextStyle(
+                    color: Color.fromARGB(255, 51, 22, 20),
+                  ),
+                ),
+                onPressed: () {
+                  Get.back();
+                },
+              ),
+              CupertinoDialogAction(
+                isDestructiveAction: true,
+                onPressed: () {
+                  _kWindowsWebviewRuntimeLink.openURL();
+                  Get.back();
+                },
+                child: const Text(
+                  '去下载',
+                  style: TextStyle(
+                    color: Colors.blue,
+                  ),
+                ),
+              )
+            ],
+          ),
+          context: Get.context as BuildContext,
+        );
+      }
+      return false;
+    }
+
+    Webview webview = await WebviewWindow.create(
+      configuration: CreateConfiguration(
+        titleBarHeight: GetPlatform.isMacOS ? 24 : 0,
+        title: "小猫影视",
+      ),
+    );
+
+    void setWebviewActivePlay(VideoInfo curr) {
+      webview.evaluateJavaScript("setActionText(`${curr.name}`)");
+      webview.evaluateJavaScript("setActiveWithPlaylist(`${curr.url}`)");
+    }
+
+    void updatePlayStateWithUrl(String url) {
+      int index = playList.indexWhere(
+        (item) => item.url == url,
+      );
+      if (index >= 0) {
+        updatePlayState(tabIndex, index);
+      }
+    }
+
+    /// `MP4` 理论上来说不需要操作就可以直接喂给浏览器?
+    if (!(await webPlayerEmbedded.checkRunning())) {
+      await webPlayerEmbedded.createServer(
+        port: kWebPlayerEmbeddedPort,
+        onMessage: (msg) {
+          String value = jsonDecode(msg.value);
+          switch (msg.type) {
+            case "switchVideo":
+              updatePlayStateWithUrl(value);
+          }
+        },
+      );
+    }
+
+    url = url2Iframe(url);
+    debugPrint("webview url: $url");
+    // NOTE(d1y): linux 不支持?
+    webview.launch(url);
+
+    // (不需要解析)白嫖的第三方资源会自动跳转广告网站, 这个方法将延迟删除广告
+    // NOTE(d1y): 果真需要吗?
+    // if (!needParse) {
+    //   int beforeRemoveADTime = 1200;
+    //   String execCode =
+    //       "alert('$webviewShowMessage');setTimeout(function() {window.removeEventListener('click', _popwnd_open);}, $beforeRemoveADTime)";
+    //   webview.addScriptToExecuteOnDocumentCreated(execCode);
+    // }
+
+    webview.setOnUrlRequestCallback((newUrl) {
+      updatePlayStateWithUrl(newUrl);
+      Future.delayed(kDelayExecInjectPlaylistJSCode, () async {
+        var curr = playList.firstWhere((element) => element.url == newUrl);
+        setWebviewActivePlay(curr);
+      });
+      return true;
+    });
+
+    if (playList.length >= 2) {
+      webview.addScriptToExecuteOnDocumentCreated(
+        await injectPlaylistJSCode(playList, GetPlatform.isMacOS ? 0 : 12),
+      );
+      Future.delayed(kDelayExecInjectPlaylistJSCode, () async {
+        setWebviewActivePlay(curr);
+      });
+    }
+    return true;
+  }
+
   Future<bool> handleTapPlayerButtom(
     VideoInfo curr,
     List<VideoInfo> playList,
     int tabIndex,
+    VideoKennel videoKennel,
+    Player mediaKitPlayer,
   ) async {
     var url = curr.url;
     url = getPlayUrl(url);
@@ -254,160 +380,54 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     }
 
-    debugPrint("play url: [$url]");
+    debugPrint("current play url is: $url");
 
-    bool isWindows = GetPlatform.isWindows;
-    bool isMacos = GetPlatform.isMacOS;
-
-    /// https://github.com/MixinNetwork/flutter-plugins/tree/main/packages/desktop_webview_window
-    /// 该插件支持 `windows` | `linux`(<然而[webview.launch]方法不支持:(>) | `macos`
-    if (isWindows || isMacos) {
-      if (isMacos && home.macosPlayUseIINA) {
-        url.openToIINA(); // 家人们, 我们就假装安装了
-        return true;
-      }
-
-      if (isWindows) {
-        bool bWebviewWindow = await WebviewWindow.isWebviewAvailable();
-        if (!bWebviewWindow) {
-          showCupertinoDialog(
-            builder: (BuildContext context) => CupertinoAlertDialog(
-              title: const Text('提示'),
-              content: const Padding(
-                padding: EdgeInsets.symmetric(
-                  vertical: 12.0,
-                ),
-                child: Text(
-                  '未安装 edge webview runtime, 无法播放 :(',
-                  style: TextStyle(
-                    fontSize: 18,
-                  ),
-                ),
-              ),
-              actions: <CupertinoDialogAction>[
-                CupertinoDialogAction(
-                  child: const Text(
-                    '我知道了',
-                    style: TextStyle(
-                      color: Colors.red,
-                    ),
-                  ),
-                  onPressed: () {
-                    Get.back();
-                  },
-                ),
-                CupertinoDialogAction(
-                  isDestructiveAction: true,
-                  onPressed: () {
-                    _kWindowsWebviewRuntimeLink.openToIINA();
-                    Get.back();
-                  },
-                  child: const Text(
-                    '去下载',
-                    style: TextStyle(
-                      color: Colors.blue,
-                    ),
-                  ),
-                )
-              ],
-            ),
-            context: Get.context as BuildContext,
-          );
+    switch (videoKennel) {
+      case VideoKennel.webview:
+        if (GetPlatform.isDesktop) {
+          return await playWithWebview(playList, curr, url);
+        } else {
+          if (GetPlatform.isAndroid) {
+            if (curr.type == VideoType.iframe) {
+              Get.to(
+                () => const WebviewView(),
+                arguments: url,
+              );
+            } else {
+              Get.to(
+                () => const ChewieView(),
+                arguments: {
+                  'url': url,
+                  'cover': movieItem.smallCoverImage,
+                },
+              );
+            }
+          } else {
+            url.openURL();
+          }
+        }
+        break;
+      case VideoKennel.iina:
+        if (!GetPlatform.isMacOS) {
+          EasyLoading.showError("该平台不支持 iina 播放");
           return false;
         }
-      }
-
-      Webview webview = await WebviewWindow.create(
-        configuration: CreateConfiguration(
-          titleBarHeight: GetPlatform.isMacOS ? 24 : 0,
-          title: "小猫影视",
-        ),
-      );
-
-      void setWebviewActivePlay(VideoInfo curr) {
-        webview.evaluateJavaScript("setActionText(`${curr.name}`)");
-        webview.evaluateJavaScript("setActiveWithPlaylist(`${curr.url}`)");
-      }
-
-      void updatePlayStateWithUrl(String url) {
-        int index = playList.indexWhere(
-          (item) => item.url == url,
-        );
-        if (index >= 0) {
-          updatePlayState(tabIndex, index);
+        if (curr.type == VideoType.iframe) {
+          EasyLoading.showError("IINA不支持iframe播放");
+          return false;
+        } else {
+          url.openToIINA();
         }
-      }
-
-      /// `MP4` 理论上来说不需要操作就可以直接喂给浏览器?
-      if (!(await webPlayerEmbedded.checkRunning())) {
-        await webPlayerEmbedded.createServer(
-          port: kWebPlayerEmbeddedPort,
-          onMessage: (msg) {
-            String value = jsonDecode(msg.value);
-            switch (msg.type) {
-              case "switchVideo":
-                updatePlayStateWithUrl(value);
-            }
-          },
-        );
-      }
-      url = url2Iframe(url);
-      debugPrint("webview url: $url");
-      webview.launch(url);
-
-      // (不需要解析)白嫖的第三方资源会自动跳转广告网站, 这个方法将延迟删除广告
-      // NOTE(d1y): 果真需要吗?
-      // if (!needParse) {
-      //   int beforeRemoveADTime = 1200;
-      //   String execCode =
-      //       "alert('$webviewShowMessage');setTimeout(function() {window.removeEventListener('click', _popwnd_open);}, $beforeRemoveADTime)";
-      //   webview.addScriptToExecuteOnDocumentCreated(execCode);
-      // }
-
-      webview.setOnUrlRequestCallback((newUrl) {
-        updatePlayStateWithUrl(newUrl);
-        Future.delayed(kDelayExecInjectPlaylistJSCode, () async {
-          var curr = playList.firstWhere((element) => element.url == newUrl);
-          setWebviewActivePlay(curr);
-        });
-        return true;
-      });
-
-      if (playList.length >= 2) {
-        webview.addScriptToExecuteOnDocumentCreated(
-          await injectPlaylistJSCode(playList, GetPlatform.isMacOS ? 0 : 12),
-        );
-        Future.delayed(kDelayExecInjectPlaylistJSCode, () async {
-          setWebviewActivePlay(curr);
-        });
-      }
-
-      return true;
+        break;
+      case VideoKennel.mediaKit:
+        if (curr.type == VideoType.iframe) {
+          EasyLoading.showError("Media-Kit不支持iframe播放");
+          return false;
+        }
+        mediaKitPlayer.open(Media(url));
+        break;
     }
 
-    /// (`m3u8` | `mp4`) 资源
-    var canUseChewieView = [VideoType.m3u8, VideoType.mp4].contains(curr.type);
-
-    /// iOS
-    if (home.iosCanBeUseSystemBrowser) {
-      url.openURL();
-      return true;
-    }
-
-    if (curr.type == VideoType.iframe) {
-      Get.to(
-        () => const WebviewView(),
-        arguments: url,
-      );
-    } else if (canUseChewieView) {
-      Get.to(
-        () => const ChewieView(),
-        arguments: {
-          'url': url,
-          'cover': movieItem.smallCoverImage,
-        },
-      );
-    }
     return true;
   }
 

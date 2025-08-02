@@ -19,7 +19,6 @@ extension StringWithColor on String {
   }
 }
 
-/// remove this(mixin object 杀伤力太大)
 extension ISettingMixin on Object {
   IsarCollection<SettingsIsarModel> get settingAs => IsarRepository().settingAs;
   SettingsIsarModel get settingAsValue => IsarRepository().settingsSingleModel;
@@ -39,19 +38,10 @@ extension ISettingMixin on Object {
     return getSettingAsKey(key) as T;
   }
 
-  /// the code is shit|_・)
-  ///
-  /// disgustingε(┬┬﹏┬┬)3
-  ///
-  /// (っ ̯ -｡)
   Object getSettingAsKey(SettingsAllKey key) {
     var curr = settingAsValue;
     if (key == SettingsAllKey.themeMode) {
       return curr.themeMode;
-    } else if (key == SettingsAllKey.iosCanBeUseSystemBrowser) {
-      return curr.iosCanBeUseSystemBrowser;
-    } else if (key == SettingsAllKey.macosPlayUseIINA) {
-      return curr.macosPlayUseIINA;
     } else if (key == SettingsAllKey.isNsfw) {
       return curr.isNSFW;
     } else if (key == SettingsAllKey.mirrorIndex) {
@@ -64,23 +54,16 @@ extension ISettingMixin on Object {
       return curr.webviewPlayType;
     } else if (key == SettingsAllKey.onBoardingShowed) {
       return curr.onBoardingShowed;
+    } else if (key == SettingsAllKey.videoKennel) {
+      return curr.videoKennel;
     }
     return curr.id;
   }
 
-  /// the code is shit|_・)
-  ///
-  /// disgustingε(┬┬﹏┬┬)3
-  ///
-  /// (っ ̯ -｡)
   void updateSetting(SettingsAllKey key, dynamic value) {
     var curr = settingAsValue;
     if (key == SettingsAllKey.themeMode) {
       curr.themeMode = value;
-    } else if (key == SettingsAllKey.iosCanBeUseSystemBrowser) {
-      curr.iosCanBeUseSystemBrowser = value;
-    } else if (key == SettingsAllKey.macosPlayUseIINA) {
-      curr.macosPlayUseIINA = value;
     } else if (key == SettingsAllKey.isNsfw) {
       curr.isNSFW = value;
     } else if (key == SettingsAllKey.mirrorIndex) {
@@ -93,6 +76,8 @@ extension ISettingMixin on Object {
       curr.webviewPlayType = value;
     } else if (key == SettingsAllKey.onBoardingShowed) {
       curr.onBoardingShowed = value;
+    } else if (key == SettingsAllKey.videoKennel) {
+      curr.videoKennel = value;
     } else {
       return;
     }

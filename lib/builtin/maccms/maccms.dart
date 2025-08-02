@@ -1,3 +1,3 @@
-import 'package:xi/adapters/mac_cms.dart';
+import 'package:xi/xi.dart';
 
 List<MacCMSSpider> list$ = [];

@@ -12,15 +12,11 @@ class SettingsIsarModel {
   @Enumerated(EnumType.ordinal)
   SystemThemeMode themeMode = SystemThemeMode.system;
 
-  /// `ios` 播放视频是否使用默认的系统浏览器
-  /// 1. 浏览器默认支持: `m3u8` | `mp4`
-  /// 2. 网页可以直接跳转给浏览器用
-  /// (所以`ios`默认直接走浏览器岂不美哉?)
-  bool iosCanBeUseSystemBrowser = true;
+  /// 播放器内核
+  @Enumerated(EnumType.ordinal)
+  VideoKennel videoKennel = VideoKennel.webview;
 
-  /// macos播放使用 [iina](https://iina.io)
-  bool macosPlayUseIINA = false;
-
+  /// 是否开启成人模式
   bool isNSFW = false;
 
   /// 当前源

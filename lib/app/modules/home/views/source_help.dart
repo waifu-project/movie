@@ -12,7 +12,6 @@ import 'package:catmovie/app/widget/k_error_stack.dart';
 import 'package:catmovie/app/widget/window_appbar.dart';
 import 'package:catmovie/shared/manage.dart';
 import 'package:smooth_list_view/smooth_list_view.dart';
-import 'package:xi/adapters/mac_cms.dart';
 import 'package:catmovie/shared/enum.dart';
 import 'package:xi/xi.dart';
 

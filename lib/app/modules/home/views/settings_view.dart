@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:catmovie/app/modules/home/views/auto_update.dart';
 import 'package:catmovie/app/widget/zoom.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_cupertino_settings/flutter_cupertino_settings.dart';
@@ -21,9 +20,9 @@ import 'package:catmovie/git_info.dart';
 import 'package:catmovie/shared/enum.dart';
 import 'package:catmovie/shared/manage.dart';
 import 'package:catmovie/app/modules/home/views/cupertino_license.dart';
+import 'package:pull_down_button/pull_down_button.dart';
 import 'package:xi/models/mac_cms/source_data.dart';
-import 'package:xi/utils/helper.dart';
-import 'package:xi/utils/source.dart';
+import 'package:xi/xi.dart';
 
 enum GetBackResultType {
   /// 失败
@@ -76,6 +75,8 @@ class _SettingsViewState extends State<SettingsView>
 
   bool _autoDarkMode = false;
 
+  VideoKennel _videoKennel = VideoKennel.webview;
+
   set autoDarkMode(bool newVal) {
     if (newVal) {
       updateSetting(SettingsAllKey.themeMode, SystemThemeMode.system);
@@ -106,9 +107,8 @@ class _SettingsViewState extends State<SettingsView>
           getSettingAsKeyIdent<SystemThemeMode>(SettingsAllKey.themeMode);
       _isDark = themeMode.isDark;
       _autoDarkMode = themeMode.isSytem;
-      _canBeShowIosBrowser =
-          getSettingAsKeyIdent<bool>(SettingsAllKey.iosCanBeUseSystemBrowser);
-      _macosPlayUseIINA = home.macosPlayUseIINA;
+      _videoKennel =
+          getSettingAsKeyIdent<VideoKennel>(SettingsAllKey.videoKennel);
     });
     loadSourceHelp();
     addMirrorMangerTextareaLister();
@@ -244,25 +244,6 @@ class _SettingsViewState extends State<SettingsView>
     }
   }
 
-  /// 是否显示`ios`默认浏览器设置
-  /// linux no support this options!!
-  bool canBeShowIosBrowserSettings =
-      !GetPlatform.isLinux && (GetPlatform.isIOS || kDebugMode);
-
-  bool _canBeShowIosBrowser = true;
-
-  bool _macosPlayUseIINA = false;
-
-  bool get macosPlayUseIINA {
-    return _macosPlayUseIINA;
-  }
-
-  set macosPlayUseIINA(bool newVal) {
-    _macosPlayUseIINA = newVal;
-    setState(() {});
-    home.macosPlayUseIINA = newVal;
-  }
-
   void handleCleanCache() {
     home.clearCache();
     home.confirmAlert(
@@ -271,6 +252,39 @@ class _SettingsViewState extends State<SettingsView>
       confirmText: "我知道了",
       context: context,
     );
+  }
+
+  List<PullDownMenuEntry> _buildVideoKennel() {
+    void action(VideoKennel vk) {
+      _videoKennel = vk;
+      updateSetting(SettingsAllKey.videoKennel, vk);
+      setState(() {});
+    }
+
+    var result = [VideoKennel.webview, VideoKennel.mediaKit].map((item) {
+      return PullDownMenuItem.selectable(
+        selected: item == _videoKennel,
+        onTap: () => action(item),
+        title: item.name,
+      );
+    }).toList();
+    if (GetPlatform.isMacOS) {
+      result.add(
+        PullDownMenuItem.selectable(
+          selected: VideoKennel.iina == _videoKennel,
+          onTap: () {
+            final bool isInstall = checkInstalledIINA();
+            if (!isInstall) {
+              EasyLoading.showError("未安装IINA, 请先安装!");
+              return;
+            }
+            action(VideoKennel.iina);
+          },
+          title: VideoKennel.iina.name,
+        ),
+      );
+    }
+    return result;
   }
 
   @override
@@ -406,27 +420,28 @@ class _SettingsViewState extends State<SettingsView>
               );
             },
           ),
-          canBeShowIosBrowserSettings
-              ? CSControl(
-                  nameWidget: const Text('原生浏览器播放'),
-                  contentWidget: HoverCursor(
-                    child: CupertinoSwitch(
-                      value: _canBeShowIosBrowser,
-                      onChanged: (bool value) async {
-                        setState(() {
-                          _canBeShowIosBrowser = value;
-                        });
-                        home.iosCanBeUseSystemBrowser = value;
-                      },
-                    ),
-                  ),
-                  style: const CSWidgetStyle(
-                    icon: Icon(
-                      CupertinoIcons.play_rectangle_fill,
-                    ),
-                  ),
-                )
-              : const SizedBox.shrink(),
+          CSControl(
+            nameWidget: const Text("播放器内核"),
+            contentWidget: HoverCursor(
+              child: PullDownButton(
+                itemBuilder: (cx) {
+                  return _buildVideoKennel();
+                },
+                buttonBuilder: (cx, showMenu) {
+                  return CupertinoButton(
+                    padding: EdgeInsets.zero,
+                    onPressed: showMenu,
+                    child: Text(_videoKennel.name),
+                  );
+                },
+              ),
+            ),
+            style: const CSWidgetStyle(
+              icon: Icon(
+                CupertinoIcons.macwindow,
+              ),
+            ),
+          ),
           CSControl(
             nameWidget: const Text('成人模式'),
             contentWidget: HoverCursor(
@@ -441,30 +456,6 @@ class _SettingsViewState extends State<SettingsView>
               icon: Icon(CupertinoIcons.hammer_fill),
             ),
           ),
-          if (GetPlatform.isMacOS)
-            CSControl(
-              nameWidget: const Text('IINA播放'),
-              contentWidget: HoverCursor(
-                child: CupertinoSwitch(
-                  value: macosPlayUseIINA,
-                  onChanged: (bool value) async {
-                    if (value) {
-                      final bool isInstall = checkInstalledIINA();
-                      if (!isInstall) {
-                        EasyLoading.showError("未安装IINA, 请先安装!");
-                        return;
-                      }
-                    }
-                    macosPlayUseIINA = value;
-                  },
-                ),
-              ),
-              style: const CSWidgetStyle(
-                icon: Icon(
-                  CupertinoIcons.option,
-                ),
-              ),
-            ),
           const CSHeader('其他设置'),
           GestureDetector(
             onTap: () {

@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print, depend_on_referenced_packages
+
 import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
@@ -57,7 +59,7 @@ String space(int size) {
 }
 
 String toDartCode(List<X> sources) {
-  String result = '''import 'package:xi/adapters/mac_cms.dart';\n
+  String result = '''import 'package:xi/xi.dart';\n
 var list\$ = [\n''';
   for (var source in sources) {
     result += '${space(2)}MacCMSSpider(\n';

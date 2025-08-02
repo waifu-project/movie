@@ -10,25 +10,25 @@ enum SystemThemeMode {
   dark,
 }
 
-enum VideoKennel {
+enum VideoKernel {
   webview,
   mediaKit,
   /// macos 专属
   iina,
 }
 
-extension  VideoKennelExtension on VideoKennel {
-  bool get isWebview => this == VideoKennel.webview;
-  bool get isMediaKit => this == VideoKennel.mediaKit;
-  bool get isIina => this == VideoKennel.iina;
+extension  VideoKernelExtension on VideoKernel {
+  bool get isWebview => this == VideoKernel.webview;
+  bool get isMediaKit => this == VideoKernel.mediaKit;
+  bool get isIina => this == VideoKernel.iina;
 
   String get name {
     switch (this) {
-      case VideoKennel.webview:
+      case VideoKernel.webview:
         return "Webview";
-      case VideoKennel.mediaKit:
+      case VideoKernel.mediaKit:
         return "MediaKit";
-      case VideoKennel.iina:
+      case VideoKernel.iina:
         return "IINA";
     }
   }
@@ -55,7 +55,7 @@ enum SettingsAllKey {
   /// 主题
   themeMode,
   /// 播放器内核
-  videoKennel,
+  videoKernel,
   /// 是否开启成人模式
   isNsfw,
   /// 当前源(索引)

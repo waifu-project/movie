@@ -14,7 +14,7 @@ class SettingsIsarModel {
 
   /// 播放器内核
   @Enumerated(EnumType.ordinal)
-  VideoKennel videoKennel = VideoKennel.webview;
+  VideoKernel videoKernel = VideoKernel.webview;
 
   /// 是否开启成人模式
   bool isNSFW = false;

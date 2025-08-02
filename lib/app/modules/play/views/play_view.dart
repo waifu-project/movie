@@ -46,7 +46,7 @@ class _PlayViewState extends State<PlayView> {
   late final Player player = Player();
   late final controller = VideoController(player);
 
-  VideoKennel videoKennel = VideoKennel.webview;
+  VideoKernel videoKernel= VideoKernel.webview;
 
   bool get canBeShowParseVipButton {
     return home.parseVipList.isNotEmpty;
@@ -79,7 +79,7 @@ class _PlayViewState extends State<PlayView> {
   @override
   void initState() {
     focusNode.requestFocus();
-    videoKennel = getSettingAsKeyIdent<VideoKennel>(SettingsAllKey.videoKennel);
+    videoKernel = getSettingAsKeyIdent<VideoKernel>(SettingsAllKey.videoKernel);
     if (mounted) setState(() {});
     super.initState();
   }
@@ -99,7 +99,7 @@ class _PlayViewState extends State<PlayView> {
       curr,
       realPlaylist,
       tabIndex,
-      videoKennel,
+      videoKernel,
       player,
     );
     if (!isOk) return;
@@ -211,7 +211,7 @@ class _PlayViewState extends State<PlayView> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        if (videoKennel.isMediaKit)
+                        if (videoKernel.isMediaKit)
                           SizedBox(
                             width: double.infinity,
                             height: 420,

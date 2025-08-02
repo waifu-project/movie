@@ -337,7 +337,7 @@ document.addEventListener('DOMContentLoaded', function() {
     VideoInfo curr,
     List<VideoInfo> playList,
     int tabIndex,
-    VideoKennel videoKennel,
+    VideoKernel videoKernel,
     Player mediaKitPlayer,
   ) async {
     var url = curr.url;
@@ -382,8 +382,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     debugPrint("current play url is: $url");
 
-    switch (videoKennel) {
-      case VideoKennel.webview:
+    switch (videoKernel) {
+      case VideoKernel.webview:
         if (GetPlatform.isDesktop) {
           return await playWithWebview(playList, curr, url);
         } else {
@@ -407,7 +407,7 @@ document.addEventListener('DOMContentLoaded', function() {
           }
         }
         break;
-      case VideoKennel.iina:
+      case VideoKernel.iina:
         if (!GetPlatform.isMacOS) {
           EasyLoading.showError("该平台不支持 iina 播放");
           return false;
@@ -419,7 +419,7 @@ document.addEventListener('DOMContentLoaded', function() {
           url.openToIINA();
         }
         break;
-      case VideoKennel.mediaKit:
+      case VideoKernel.mediaKit:
         if (curr.type == VideoType.iframe) {
           EasyLoading.showError("Media-Kit不支持iframe播放");
           return false;

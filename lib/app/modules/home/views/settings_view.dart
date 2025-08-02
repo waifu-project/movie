@@ -75,7 +75,7 @@ class _SettingsViewState extends State<SettingsView>
 
   bool _autoDarkMode = false;
 
-  VideoKennel _videoKennel = VideoKennel.webview;
+  VideoKernel _videoKernel = VideoKernel.webview;
 
   set autoDarkMode(bool newVal) {
     if (newVal) {
@@ -107,8 +107,8 @@ class _SettingsViewState extends State<SettingsView>
           getSettingAsKeyIdent<SystemThemeMode>(SettingsAllKey.themeMode);
       _isDark = themeMode.isDark;
       _autoDarkMode = themeMode.isSytem;
-      _videoKennel =
-          getSettingAsKeyIdent<VideoKennel>(SettingsAllKey.videoKennel);
+      _videoKernel =
+          getSettingAsKeyIdent<VideoKernel>(SettingsAllKey.videoKernel);
     });
     loadSourceHelp();
     addMirrorMangerTextareaLister();
@@ -254,16 +254,16 @@ class _SettingsViewState extends State<SettingsView>
     );
   }
 
-  List<PullDownMenuEntry> _buildVideoKennel() {
-    void action(VideoKennel vk) {
-      _videoKennel = vk;
-      updateSetting(SettingsAllKey.videoKennel, vk);
+  List<PullDownMenuEntry> _buildVideoKernel() {
+    void action(VideoKernel vk) {
+      _videoKernel = vk;
+      updateSetting(SettingsAllKey.videoKernel, vk);
       setState(() {});
     }
 
-    var result = [VideoKennel.webview, VideoKennel.mediaKit].map((item) {
+    var result = [VideoKernel.webview, VideoKernel.mediaKit].map((item) {
       return PullDownMenuItem.selectable(
-        selected: item == _videoKennel,
+        selected: item == _videoKernel,
         onTap: () => action(item),
         title: item.name,
       );
@@ -271,16 +271,16 @@ class _SettingsViewState extends State<SettingsView>
     if (GetPlatform.isMacOS) {
       result.add(
         PullDownMenuItem.selectable(
-          selected: VideoKennel.iina == _videoKennel,
+          selected: VideoKernel.iina == _videoKernel,
           onTap: () {
             final bool isInstall = checkInstalledIINA();
             if (!isInstall) {
               EasyLoading.showError("未安装IINA, 请先安装!");
               return;
             }
-            action(VideoKennel.iina);
+            action(VideoKernel.iina);
           },
-          title: VideoKennel.iina.name,
+          title: VideoKernel.iina.name,
         ),
       );
     }
@@ -425,13 +425,13 @@ class _SettingsViewState extends State<SettingsView>
             contentWidget: HoverCursor(
               child: PullDownButton(
                 itemBuilder: (cx) {
-                  return _buildVideoKennel();
+                  return _buildVideoKernel();
                 },
                 buttonBuilder: (cx, showMenu) {
                   return CupertinoButton(
                     padding: EdgeInsets.zero,
                     onPressed: showMenu,
-                    child: Text(_videoKennel.name),
+                    child: Text(_videoKernel.name),
                   );
                 },
               ),

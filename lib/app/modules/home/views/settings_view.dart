@@ -66,7 +66,7 @@ class _SettingsViewState extends State<SettingsView>
   }
 
   set isDark(bool newVal) {
-    updateSetting(SettingsAllKey.themeMode, SystemThemeMode.dark);
+    updateSetting(SettingsAllKey.themeMode, newVal ? SystemThemeMode.dark : SystemThemeMode.light);
     setState(() {
       _isDark = newVal;
     });

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:catmovie/app/modules/play/views/chewie_view.dart';
 import 'package:catmovie/app/modules/play/views/play_view.dart';
@@ -19,18 +20,6 @@ import 'package:xi/xi.dart';
 import 'package:catmovie/isar/schema/parse_schema.dart';
 import 'package:catmovie/shared/enum.dart';
 import 'package:webplayer_embedded/webplayer_embedded.dart';
-
-// https://www.bilibili.com/video/BV1cN411d73g
-//
-// 嗷！我们是斗鱼直播间6324抽象工作室，
-// 我是抽象工作室李赣，
-// 我是抽象工作室的大师兄，
-// 我是抽象工作室的劳改犯。
-// 在新的一年里，
-// 抽象工作室祝广大斗鱼水友新年快乐。
-//
-// 如果能够重来, 你还会在那天下午打开一个房间号为 6324 的直播间吗?
-const kWebPlayerEmbeddedPort = 6324;
 
 // 延迟注入播放列表的时间
 const kDelayExecInjectPlaylistJSCode = Duration(seconds: 1);
@@ -171,14 +160,17 @@ class PlayController extends GetxController {
 
   String playTips = "";
 
-  String url2Iframe(String realUrl) {
+  HttpServer? _httpServerContext;
+
+  String url2Iframe(String realUrl, HttpServer server) {
     var type = getSettingAsKeyIdent<IWebPlayerEmbeddedType>(
       SettingsAllKey.webviewPlayType,
     );
     if (realUrl.endsWith(".m3u8")) {
       return webPlayerEmbedded.generatePlayerUrl(type, realUrl);
     }
-    return "http://localhost:$kWebPlayerEmbeddedPort/assets/iframe.html?url=$realUrl";
+    var port = server.port;
+    return "http://localhost:$port/assets/iframe.html?url=$realUrl";
   }
 
   Future<String> injectPlaylistJSCode(
@@ -287,8 +279,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     /// `MP4` 理论上来说不需要操作就可以直接喂给浏览器?
     if (!(await webPlayerEmbedded.checkRunning())) {
-      await webPlayerEmbedded.createServer(
-        port: kWebPlayerEmbeddedPort,
+      _httpServerContext = await webPlayerEmbedded.createServer(
         onMessage: (msg) {
           String value = jsonDecode(msg.value);
           switch (msg.type) {
@@ -299,7 +290,7 @@ document.addEventListener('DOMContentLoaded', function() {
       );
     }
 
-    url = url2Iframe(url);
+    url = url2Iframe(url, _httpServerContext!);
     debugPrint("webview url: $url");
     // NOTE(d1y): linux 不支持?
     webview.launch(url);

@@ -1670,8 +1670,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "4d6339b032caf91aec4120d2b837fb05a494d511"
-      resolved-ref: "4d6339b032caf91aec4120d2b837fb05a494d511"
+      ref: "1d78923edd091b90d362ce9587aacf8ce83a93fa"
+      resolved-ref: "1d78923edd091b90d362ce9587aacf8ce83a93fa"
       url: "https://github.com/d1y/webplayer_embedded"
     source: git
     version: "0.0.1"

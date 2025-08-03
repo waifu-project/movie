@@ -1,3 +1,5 @@
+import 'package:equatable/equatable.dart';
+
 /// 视频类型
 enum VideoType {
   /// 内嵌的 html 链接
@@ -113,32 +115,32 @@ class VideoDetail {
   });
 }
 
-class SourceItemMeta {
+class SourceItemMeta extends Equatable {
   /// 图标, 默认为空将使用本地资源图标
-  String logo;
+  final String logo;
 
   /// 域名, 用来去重
-  String domain;
+  final String domain;
 
   /// 资源名称
-  String name;
+  final String name;
 
   /// 开发者
-  String developer;
+  final String developer;
 
   /// 开发者邮箱
   /// 用于联系维护者
-  String developerMail;
+  final String developerMail;
 
   /// 介绍
-  String desc;
+  final String desc;
 
-  String id;
+  final String id;
 
   /// 是否可用
-  bool status;
+  final bool status;
 
-  SourceItemMeta({
+  const SourceItemMeta({
     this.logo = "",
     this.developer = "",
     this.developerMail = "",
@@ -148,6 +150,9 @@ class SourceItemMeta {
     required this.name,
     required this.domain,
   });
+  
+  @override
+  List<Object?> get props => [logo, domain, name, developer, developerMail, desc, id];
 }
 
 class SourceSpiderQueryCategory {

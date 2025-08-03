@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:after_layout/after_layout.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:catmovie/app/modules/home/controllers/home_controller.dart';
 import 'package:catmovie/app/routes/app_pages.dart';
@@ -17,6 +20,8 @@ import 'package:xi/xi.dart';
 
 final kAllSourceMeta = SourceItemMeta(id: "6324", name: "全部", domain: "empty");
 
+final int kDefaultPagingSize = 20;
+
 typedef MapVideosRecord = Tuple2<SourceItemMeta, List<VideoDetail>>;
 
 class SearchV2 extends StatefulWidget {
@@ -26,10 +31,14 @@ class SearchV2 extends StatefulWidget {
   State<SearchV2> createState() => _SearchV2State();
 }
 
-class _SearchV2State extends State<SearchV2> {
+class _SearchV2State extends State<SearchV2> with AfterLayoutMixin {
   final home = Get.find<HomeController>();
 
   Map<SourceItemMeta, List<VideoDetail>> map = {};
+
+  // [int]  -> 当前 page-size
+  // [bool] -> 是否有更多视频
+  Map<SourceItemMeta, Tuple2<int, bool>> pagingMap = {};
 
   TextEditingController textEditingController = TextEditingController();
 
@@ -80,19 +89,47 @@ class _SearchV2State extends State<SearchV2> {
   }
 
   @override
-  void initState() {
-    super.initState();
+  FutureOr<void> afterFirstLayout(BuildContext context) {
     loadSearchHistory();
+    scrollController.addListener(() {
+      if (currSource == kAllSourceMeta) return;
+      var cx = pagingMap[currSource];
+      if (cx == null || !cx.item2) return;
+      double currentPosition = scrollController.position.pixels;
+      double maxScrollExtent = scrollController.position.maxScrollExtent;
+      if (currentPosition >= maxScrollExtent - 1) {
+        // debugPrint("已经滚动到底部");
+        showMoreBtn = true;
+        if (mounted) setState(() {});
+      }
+      if (currentPosition > _lastScrollPosition) {
+        // debugPrint("向下滚动");
+      } else if (currentPosition < _lastScrollPosition) {
+        // debugPrint("向上滚动");
+        showMoreBtn = false;
+        if (mounted) setState(() {});
+      }
+      _lastScrollPosition = currentPosition;
+      if (mounted) setState(() {});
+    });
   }
 
   @override
   void dispose() {
     super.dispose();
+    scrollController.dispose();
     stopSearch();
   }
 
   final queue = ConcurrentQueue(concurrency: 3);
   bool searchDone = false;
+  bool showMoreBtn = false;
+  bool moreBtnLoading = false;
+
+  // 记录上一次滚动位置
+  double _lastScrollPosition = 0;
+
+  ScrollController scrollController = ScrollController();
 
   void stopSearch() {
     queue.pause();
@@ -142,6 +179,11 @@ class _SearchV2State extends State<SearchV2> {
         var result = event.result as MapVideosRecord;
         if (result.item2.isNotEmpty) {
           map[result.item1] = result.item2;
+          if (result.item2.length == kDefaultPagingSize) {
+            pagingMap[result.item1] = Tuple2(1, true);
+          } else {
+            pagingMap[result.item1] = Tuple2(1, false);
+          }
           setState(() {});
         }
       }
@@ -452,6 +494,8 @@ class _SearchV2State extends State<SearchV2> {
                 }
                 return Zoom(
                   onTap: () {
+                    showMoreBtn = false;
+                    moreBtnLoading = false;
                     currSource = item;
                     setState(() {});
                   },
@@ -477,115 +521,179 @@ class _SearchV2State extends State<SearchV2> {
           ),
         ),
         Expanded(
-          child: SizedBox(
-            width: double.infinity,
-            height: double.infinity,
-            child: SingleChildScrollView(
-              child: Builder(builder: (context) {
-                return Padding(
+          child: Stack(
+            children: [
+              Positioned.fill(
+                child: Padding(
                   padding: const EdgeInsets.symmetric(
-                    horizontal: 12,
+                    horizontal: 6,
                     vertical: 6,
-                  ),
-                  child: Column(
-                    spacing: 12,
-                    children: videos.map((item) {
-                      return GestureDetector(
-                        onTap: () async {
-                          var data = item;
-                          if (item.videos.isEmpty) {
-                            String id = item.id;
-                            Get.dialog(
-                              const Center(
-                                child: CupertinoActivityIndicator(),
-                              ),
-                            );
-                            data = await home.currentMirrorItem.getDetail(id);
-                            Get.back();
-                          }
-                          Get.toNamed(
-                            Routes.PLAY,
-                            arguments: data,
-                          );
-                        },
-                        child: Zoom(
-                          scaleRatio: .99,
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: (Get.isDarkMode ? '#1c1c1e' : "#f0f0f0")
-                                  .$color,
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            width: double.infinity,
-                            height: 160,
-                            padding: EdgeInsets.all(12),
-                            child: Row(
-                              spacing: 12,
-                              children: [
-                                Builder(builder: (context) {
-                                  String img = item.smallCoverImage;
-                                  if (img.isEmpty) return SizedBox.shrink();
-                                  return ClipRRect(
-                                    borderRadius: BorderRadius.circular(6.0),
-                                    child: CachedNetworkImage(
-                                      imageUrl: item.smallCoverImage,
-                                      fit: BoxFit.cover,
-                                      width: 100,
-                                      height: double.infinity,
-                                      progressIndicatorBuilder:
-                                          (context, url, progress) => Center(
-                                        child: CircularProgressIndicator(
-                                          value: progress.progress,
-                                        ),
-                                      ),
-                                      errorWidget: (_, __, ___) => kErrorImage,
-                                    ),
-                                  );
-                                }),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        item.title,
-                                        style: TextStyle(
-                                          color: Get.isDarkMode
-                                              ? Colors.white
-                                              : Colors.black,
-                                        ),
-                                        maxLines: 2,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                      Builder(builder: (context) {
-                                        dynamic source = item.extra['source'];
-                                        if (source == null) {
-                                          return const SizedBox.shrink();
-                                        }
-                                        return Text(
-                                            (source as SourceItemMeta).name,
-                                            style: TextStyle(
-                                              color: (Get.isDarkMode
-                                                      ? '#a4a4a6'
-                                                      : '#71727a')
-                                                  .$color,
-                                            ));
-                                      }),
-                                    ],
-                                  ),
+                  ).copyWith(right: 18),
+                  child: SingleChildScrollView(
+                    controller: scrollController,
+                    physics: ClampingScrollPhysics(),
+                    child: Column(
+                      spacing: 12,
+                      children: videos.map((item) {
+                        return GestureDetector(
+                          onTap: () async {
+                            var data = item;
+                            if (item.videos.isEmpty) {
+                              String id = item.id;
+                              Get.dialog(
+                                const Center(
+                                  child: CupertinoActivityIndicator(),
                                 ),
-                              ],
+                              );
+                              data = await home.currentMirrorItem.getDetail(id);
+                              Get.back();
+                            }
+                            Get.toNamed(
+                              Routes.PLAY,
+                              arguments: data,
+                            );
+                          },
+                          child: Zoom(
+                            scaleRatio: .99,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: (Get.isDarkMode ? '#1c1c1e' : "#f0f0f0")
+                                    .$color,
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              width: double.infinity,
+                              height: 160,
+                              padding: EdgeInsets.all(12),
+                              child: Row(
+                                spacing: 12,
+                                children: [
+                                  Builder(builder: (context) {
+                                    String img = item.smallCoverImage;
+                                    if (img.isEmpty) {
+                                      return SizedBox.shrink();
+                                    }
+                                    return ClipRRect(
+                                      borderRadius: BorderRadius.circular(6.0),
+                                      child: CachedNetworkImage(
+                                        imageUrl: item.smallCoverImage,
+                                        fit: BoxFit.cover,
+                                        width: 100,
+                                        height: double.infinity,
+                                        progressIndicatorBuilder:
+                                            (context, url, progress) => Center(
+                                          child: CircularProgressIndicator(
+                                            value: progress.progress,
+                                          ),
+                                        ),
+                                        errorWidget: (_, __, ___) =>
+                                            kErrorImage,
+                                      ),
+                                    );
+                                  }),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          item.title,
+                                          style: TextStyle(
+                                            color: Get.isDarkMode
+                                                ? Colors.white
+                                                : Colors.black,
+                                          ),
+                                          maxLines: 2,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                        Builder(builder: (context) {
+                                          dynamic source = item.extra['source'];
+                                          if (source == null) {
+                                            return const SizedBox.shrink();
+                                          }
+                                          return Text(
+                                              (source as SourceItemMeta).name,
+                                              style: TextStyle(
+                                                color: (Get.isDarkMode
+                                                        ? '#a4a4a6'
+                                                        : '#71727a')
+                                                    .$color,
+                                              ));
+                                        }),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-                      );
-                    }).toList(),
+                        );
+                      }).toList(),
+                    ),
                   ),
-                );
-              }),
-            ),
+                ),
+              ),
+              AnimatedPositioned(
+                width: context.mediaQuery.size.width - 120,
+                left: 0,
+                bottom: showMoreBtn ? 24 : -88,
+                curve: Curves.easeIn,
+                duration: Duration(milliseconds: 420),
+                child: Center(
+                  child: CupertinoButton.filled(
+                    mouseCursor: SystemMouseCursors.click,
+                    padding: EdgeInsets.symmetric(vertical: 6, horizontal: 32),
+                    sizeStyle: CupertinoButtonSize.medium,
+                    child: Row(
+                      spacing: 6,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        if (moreBtnLoading)
+                          SizedBox(
+                            width: 15,
+                            height: 15,
+                            child: CircularProgressIndicator(
+                              color: Colors.white,
+                              strokeWidth: 1.8,
+                            ),
+                          ),
+                        Text("加载更多", style: TextStyle(color: Colors.white)),
+                      ],
+                    ),
+                    onPressed: () async {
+                      moreBtnLoading = true;
+                      if (mounted) setState(() {});
+                      var cx = pagingMap[currSource];
+                      if (cx == null || !cx.item2) return;
+                      var axios = home.mirrorList.firstWhere((item) {
+                        return item.meta == currSource;
+                      });
+                      var nextPage = cx.item1 + 1;
+                      List<VideoDetail> list = [];
+                      try {
+                        list = await axios.getSearch(
+                          keyword: keyword,
+                          page: nextPage,
+                        );
+                      } catch (e) {
+                        debugPrint(e.toString());
+                      }
+                      moreBtnLoading = false;
+                      showMoreBtn = false;
+                      if (mounted) setState(() {});
+                      map[currSource]!.addAll(list);
+                      if (list.length == kDefaultPagingSize) {
+                        pagingMap[currSource] = Tuple2(nextPage, true);
+                      } else {
+                        pagingMap[currSource] = Tuple2(nextPage, false);
+                      }
+                      if (mounted) setState(() {});
+                    },
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       ],
@@ -595,7 +703,8 @@ class _SearchV2State extends State<SearchV2> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: context.isDarkMode ? Colors.black : Colors.white,
+      backgroundColor: (context.isDarkMode ? Colors.black : Colors.white)
+          .withValues(alpha: .88),
       appBar: _buildAppBar(),
       floatingActionButton: _buildActionButton(),
       body: SizedBox(

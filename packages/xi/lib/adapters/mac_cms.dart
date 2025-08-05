@@ -416,6 +416,29 @@ class MacCMSSpider extends ISpiderAdapter {
     return result;
   }
 
+  // [0] => episode(name)
+  // [1] => url
+  List<String> __parseVideoInfo(String input) {
+    // 第一集$https://x.dev/1.m3u8
+    if (input.contains("\$")) {
+      return input.split("\$");
+    }
+    // 第一集https://x.dev/1.m3u8
+    // 第二集https://x.dev/2.m3u8
+    const String httpsPrefix = 'https://';
+    const String httpPrefix = 'http://';
+    int urlStartIndex = input.indexOf(httpsPrefix);
+    if (urlStartIndex == -1) {
+      urlStartIndex = input.indexOf(httpPrefix);
+    }
+    if (urlStartIndex == -1) {
+      return []; // throw error
+    }
+    String episode = input.substring(0, urlStartIndex).trim();
+    String url = input.substring(urlStartIndex).trim();
+    return [episode, url];
+  }
+
   VideoDetail __parseListItem(dynamic item) {
     var videos = <VideoInfo>[];
     // 参考格式: vod_play_from":"ukyun$$$ukm3u8","vod_play_server":"no$$$no","vod_play_note":"$$$","vod_play_url": "xxxx$$$xxxxx"
@@ -436,7 +459,8 @@ class MacCMSSpider extends ISpiderAdapter {
         var _nameKey = tags[index];
         List<VideoInfo> _map =
             subItem.split("#").where((e) => e.trim().isNotEmpty).map((item) {
-          List<String> items = item.split("\$");
+          List<String> items = __parseVideoInfo(item);
+          if (items.length == 1) {}
           return VideoInfo(
             name: items[0],
             url: items[1],
@@ -485,7 +509,7 @@ class MacCMSSpider extends ISpiderAdapter {
     return output;
   }
 
-  List<String> _parseIframe(String iframe,String body) {
+  List<String> _parseIframe(String iframe, String body) {
     var url = Uri.tryParse(iframe);
     if (url == null) return [];
     var domain = "${url.scheme}://${url.host}";
@@ -495,7 +519,8 @@ class MacCMSSpider extends ISpiderAdapter {
         String? link = match.group(1);
         if (link != null && link.isNotEmpty) {
           if (!(link.startsWith("http://") || link.startsWith("https://"))) {
-            link = "$domain$link"; /// 如果 $link 前缀不是 /xx/xx.m3u8 那就惨了!
+            /// 如果 $link 前缀不是 /xx/xx.m3u8 那就惨了!
+            link = "$domain$link";
           }
           m3u8Links.add(link);
         }

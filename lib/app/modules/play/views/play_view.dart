@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:catmovie/app/extension.dart';
 import 'package:catmovie/app/modules/play/controllers/play_controller.dart';
 import 'package:catmovie/app/modules/play/views/cast_screen.dart';
@@ -13,7 +14,6 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:catmovie/app/modules/home/controllers/home_controller.dart';
 import 'package:catmovie/app/modules/home/views/parse_vip_manage.dart';
-import 'package:catmovie/app/widget/helper.dart';
 import 'package:catmovie/app/widget/window_appbar.dart';
 import 'package:catmovie/widget/simple_html/flutter_html.dart';
 import 'package:media_kit_video/media_kit_video.dart';
@@ -46,7 +46,7 @@ class _PlayViewState extends State<PlayView> {
   late final Player player = Player();
   late final controller = VideoController(player);
 
-  VideoKernel videoKernel= VideoKernel.webview;
+  VideoKernel videoKernel = VideoKernel.webview;
 
   bool get canBeShowParseVipButton {
     return home.parseVipList.isNotEmpty;
@@ -108,15 +108,60 @@ class _PlayViewState extends State<PlayView> {
     });
   }
 
+  Widget _buildCoverImage() {
+    return Positioned.fill(
+      child: CachedNetworkImage(
+        imageUrl: play.movieItem.smallCoverImage,
+        fit: BoxFit.contain,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return GetBuilder<PlayController>(
       builder: (play) => Scaffold(
         appBar: CupertinoEasyAppBar(
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Zoom(child: const CupertinoNavigationBarBackButton()),
+              Expanded(
+                child: Zoom(
+                  onTap: () {
+                    Get.back();
+                  },
+                  scaleRatio: .99,
+                  child: videoKernel.isMediaKit
+                      ? Container(
+                          padding: EdgeInsets.symmetric(vertical: 12),
+                          child: Row(
+                            spacing: 6,
+                            mainAxisSize: MainAxisSize.max,
+                            children: [
+                              Icon(CupertinoIcons.back, size: 28),
+                              Expanded(
+                                child: Text(
+                                  play.movieItem.title,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .titleMedium
+                                      ?.copyWith(
+                                          color: context.isDarkMode
+                                              ? Colors.white
+                                              : Colors.black),
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 1,
+                                ),
+                              ),
+                            ],
+                          ),
+                        )
+                      : CupertinoNavigationBarBackButton(
+                          onPressed: () {
+                            // NOOP
+                          },
+                        ),
+                ),
+              ),
               if (canBeShowParseVipButton)
                 Zoom(
                   child: CupertinoButton(
@@ -215,8 +260,16 @@ class _PlayViewState extends State<PlayView> {
                           SizedBox(
                             width: double.infinity,
                             height: 420,
-                            child: Video(
-                              controller: controller,
+                            child: Stack(
+                              children: [
+                                _buildCoverImage(),
+                                Positioned.fill(
+                                  child: Video(
+                                    fill: Colors.transparent,
+                                    controller: controller,
+                                  ),
+                                ),
+                              ],
                             ),
                           )
                         else
@@ -228,18 +281,7 @@ class _PlayViewState extends State<PlayView> {
                             ),
                             child: Stack(
                               children: [
-                                Positioned.fill(
-                                  child: Image.network(
-                                    play.movieItem.smallCoverImage,
-                                    fit: BoxFit.contain,
-                                    errorBuilder: (_, __, ___) {
-                                      return Image.asset(
-                                        K_DEFAULT_IMAGE,
-                                        fit: BoxFit.cover,
-                                      );
-                                    },
-                                  ),
-                                ),
+                                _buildCoverImage(),
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
@@ -623,35 +665,38 @@ class _PlayViewState extends State<PlayView> {
         child: const Text('暂无简介~'),
       );
     }
-    return ExpansionTile(
-      initiallyExpanded: false,
-      subtitle: _buildWithShortDesc(desc),
-      title: Text(
-        '查看简介',
-        style: TextStyle(
-          fontSize: 18,
-          color: context.isDarkMode ? Colors.white : Colors.black,
-        ),
-      ),
-      children: [
-        ConstrainedBox(
-          constraints: BoxConstraints(
-            maxHeight: screenHeight * .33,
+    return Theme(
+      data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+      child: ExpansionTile(
+        initiallyExpanded: false,
+        subtitle: _buildWithShortDesc(desc),
+        title: Text(
+          '查看简介',
+          style: TextStyle(
+            fontSize: 18,
+            color: context.isDarkMode ? Colors.white : Colors.black,
           ),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 12,
-              vertical: 8,
+        ),
+        children: [
+          ConstrainedBox(
+            constraints: BoxConstraints(
+              maxHeight: screenHeight * .33,
             ),
-            child: SingleChildScrollView(
-              controller: ScrollController(),
-              child: Html(
-                data: desc,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 12,
+                vertical: 8,
+              ),
+              child: SingleChildScrollView(
+                controller: ScrollController(),
+                child: Html(
+                  data: desc,
+                ),
               ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 

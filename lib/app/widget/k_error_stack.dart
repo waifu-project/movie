@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 /// 错误栈最大行数
 const int kErrorStackMaxLine = 12;
@@ -25,7 +24,7 @@ class KErrorStack extends StatelessWidget {
       color: Colors.transparent,
       shadowColor: Colors.transparent,
       child: Padding(
-        padding: EdgeInsets.all(Get.width * .05),
+        padding: EdgeInsets.all(12),
         child: Text(
           msg,
           maxLines: _maxLine,

@@ -377,6 +377,7 @@ class _SearchV2State extends State<SearchV2> with AfterLayoutMixin {
     String textColor = context.isDarkMode ? '#6f737a' : '#767a82';
     return Center(
       child: Column(
+        spacing: 12,
         mainAxisSize: MainAxisSize.min,
         children: [
           Image.asset("assets/images/error.png", width: 120, height: 120),

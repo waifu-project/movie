@@ -410,13 +410,12 @@ class _IndexHomeViewState extends State<IndexHomeView>
                                   return Center(
                                     child: SingleChildScrollView(
                                       child: Column(
+                                        spacing: 12,
                                         children: [
                                           Image.asset(
                                             "assets/images/error.png",
-                                            width: Get.width * .24,
-                                          ),
-                                          const SizedBox(
-                                            height: 24,
+                                            width: 120,
+                                            height: 120,
                                           ),
                                           Zoom(
                                             child: CupertinoButton.filled(
@@ -435,12 +434,7 @@ class _IndexHomeViewState extends State<IndexHomeView>
                                               ),
                                             ),
                                           ),
-                                          const SizedBox(
-                                            height: 6,
-                                          ),
-                                          KErrorStack(
-                                            msg: errorMsg,
-                                          ),
+                                          KErrorStack(msg: errorMsg),
                                         ],
                                       ),
                                     ),
@@ -448,14 +442,21 @@ class _IndexHomeViewState extends State<IndexHomeView>
                                 }
                                 return Center(
                                   child: Column(
-                                    spacing: 24,
+                                    spacing: 12,
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
                                       Image.asset(
                                         "assets/images/error.png",
-                                        width: Get.width * .24,
+                                        width: 120,
+                                        height: 120,
                                       ),
-                                      const Text("当前请求列表为空"),
+                                      Text("当前请求列表为空",
+                                          style: TextStyle(
+                                            color: (context.isDarkMode
+                                                    ? '#6f737a'
+                                                    : '#767a82')
+                                                .$color,
+                                          )),
                                     ],
                                   ),
                                 );

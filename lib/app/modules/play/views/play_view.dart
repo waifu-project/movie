@@ -76,6 +76,15 @@ class _PlayViewState extends State<PlayView> {
   final double offsetSize = 12;
   final coverHeightScale = .48;
 
+  int get playListGridCount {
+    double screenWidth = context.mediaQuery.size.width;
+    double minCardWidth = 188;
+    double spacing = 5;
+    int count = ((screenWidth + spacing) / (minCardWidth + spacing)).floor();
+    count = count.clamp(1, 6);
+    return count;
+  }
+
   @override
   void initState() {
     focusNode.requestFocus();
@@ -117,14 +126,65 @@ class _PlayViewState extends State<PlayView> {
     );
   }
 
+  Widget _buildMediaKit() {
+    return Positioned.fill(
+      child: Video(
+        fill: Colors.transparent,
+        // TODO(d1y): support dynamic set box-fit
+        fit: BoxFit.cover,
+        controller: controller,
+      ),
+    );
+  }
+
+  Widget _buildCover() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Expanded(child: SizedBox.shrink()),
+        Container(
+          width: double.infinity,
+          clipBehavior: Clip.antiAlias,
+          decoration: const BoxDecoration(
+            color: Colors.black12,
+          ),
+          child: BackdropFilter(
+            filter: ImageFilter.blur(
+              sigmaX: 24,
+              sigmaY: 24,
+            ),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                vertical: 12,
+                horizontal: 24,
+              ),
+              child: Text(
+                play.movieItem.title,
+                style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                    color: context.isDarkMode ? Colors.white : Colors.black),
+                overflow: TextOverflow.ellipsis,
+                maxLines: 4,
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    var cardHeight = context.mediaQuery.size.width * (6 / 12);
+    var hh = context.mediaQuery.size.height * .42;
+    if (cardHeight >= hh) cardHeight = hh;
     return GetBuilder<PlayController>(
       builder: (play) => Scaffold(
         appBar: CupertinoEasyAppBar(
           child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Expanded(
+              Container(
+                constraints: BoxConstraints(maxWidth: 240),
                 child: Zoom(
                   onTap: () {
                     Get.back();
@@ -250,79 +310,64 @@ class _PlayViewState extends State<PlayView> {
                   style: TextStyle(
                     color: context.isDarkMode ? Colors.white : Colors.black,
                   ),
-                  child: SingleChildScrollView(
-                    controller: scrollController,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        if (videoKernel.isMediaKit)
-                          SizedBox(
-                            width: double.infinity,
-                            height: 420,
-                            child: Stack(
-                              children: [
-                                _buildCoverImage(),
-                                Positioned.fill(
-                                  child: Video(
-                                    fill: Colors.transparent,
-                                    controller: controller,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          )
-                        else
-                          Container(
-                            width: double.infinity,
-                            height: screenHeight * coverHeightScale,
-                            decoration: const BoxDecoration(
-                              color: Color.fromRGBO(246, 246, 246, 1),
-                            ),
-                            child: Stack(
-                              children: [
-                                _buildCoverImage(),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(
+                        width: double.infinity,
+                        height: cardHeight,
+                        child: Stack(
+                          children: [
+                            _buildCoverImage(),
+                            if (videoKernel.isMediaKit)
+                              Positioned.fill(
+                                child: Stack(
                                   children: [
-                                    const Expanded(child: SizedBox.shrink()),
-                                    Container(
-                                      width: double.infinity,
-                                      clipBehavior: Clip.antiAlias,
-                                      decoration: const BoxDecoration(
-                                        color: Colors.black12,
-                                      ),
-                                      child: BackdropFilter(
-                                        filter: ImageFilter.blur(
-                                          sigmaX: 24,
-                                          sigmaY: 24,
-                                        ),
-                                        child: Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                            vertical: 12,
-                                            horizontal: 24,
-                                          ),
-                                          child: Text(
-                                            play.movieItem.title,
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .titleLarge
-                                                ?.copyWith(
-                                                    color: context.isDarkMode
-                                                        ? Colors.white
-                                                        : Colors.black),
-                                            overflow: TextOverflow.ellipsis,
-                                            maxLines: 4,
-                                          ),
+                                    Positioned.fill(
+                                      child: ClipRect(
+                                        child: Stack(
+                                          children: [
+                                            Positioned.fill(
+                                              child: CachedNetworkImage(
+                                                imageUrl: play
+                                                    .movieItem.smallCoverImage,
+                                                fit: BoxFit.cover,
+                                              ),
+                                            ),
+                                            Positioned.fill(
+                                              child: BackdropFilter(
+                                                filter: ImageFilter.blur(
+                                                    sigmaX: 24, sigmaY: 24),
+                                                child: Container(
+                                                    color: Colors.white
+                                                        .withValues(
+                                                            alpha: .12)),
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                       ),
                                     ),
+                                    Positioned.fill(
+                                      child: CachedNetworkImage(
+                                        imageUrl:
+                                            play.movieItem.smallCoverImage,
+                                        fit: BoxFit.contain,
+                                      ),
+                                    )
                                   ],
                                 ),
-                              ],
-                            ),
-                          ),
-                        Column(
+                              ),
+                            if (videoKernel.isMediaKit)
+                              _buildMediaKit()
+                            else
+                              _buildCover()
+                          ],
+                        ),
+                      ),
+                      Expanded(
+                        child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             _buildWithDesc,
@@ -338,7 +383,7 @@ class _PlayViewState extends State<PlayView> {
                                 ),
                               ),
                             ),
-                            const Divider(),
+                            Opacity(opacity: .66, child: const Divider()),
                             Container(
                               width: double.infinity,
                               height: canRenderIosStyle ? 32 + 12 : null,
@@ -431,23 +476,20 @@ class _PlayViewState extends State<PlayView> {
                                 );
                               }),
                             ),
-                            SizedBox(height: offsetSize),
-                            Padding(
-                              padding: EdgeInsets.all(offsetSize),
-                              child: Builder(builder: (context) {
-                                // NOTE: ↓ 若单个是否也为空
-                                bool oneIsEmpty = playlist.length == 1 &&
-                                    playlist[0].datas.isEmpty;
-                                if (playlist.isEmpty || oneIsEmpty) {
-                                  return emptyPlaylistWidget;
-                                }
-                                return SizedBox(
-                                  width: double.infinity,
-                                  height: screenHeight * .66,
-                                  child: GridView.builder(
+                            Expanded(
+                              child: Padding(
+                                padding: EdgeInsets.all(offsetSize),
+                                child: Builder(builder: (context) {
+                                  // NOTE: ↓ 若单个是否也为空
+                                  bool oneIsEmpty = playlist.length == 1 &&
+                                      playlist[0].datas.isEmpty;
+                                  if (playlist.isEmpty || oneIsEmpty) {
+                                    return emptyPlaylistWidget;
+                                  }
+                                  return GridView.builder(
                                     gridDelegate:
-                                        const SliverGridDelegateWithFixedCrossAxisCount(
-                                      crossAxisCount: 3,
+                                        SliverGridDelegateWithFixedCrossAxisCount(
+                                      crossAxisCount: playListGridCount,
                                       mainAxisExtent: 48,
                                       crossAxisSpacing: 12,
                                       mainAxisSpacing: 12,
@@ -552,24 +594,37 @@ class _PlayViewState extends State<PlayView> {
                                           buttonBuilder: (context, showMenu) {
                                             return HoverCursor(
                                               child: CupertinoButton.filled(
+                                                color: (context.isDarkMode
+                                                        ? '#222222'
+                                                        : '#f4e8f8')
+                                                    .$color,
                                                 padding: EdgeInsets.zero,
                                                 child: Builder(builder: (cx) {
-                                                  var len =
-                                                      playlist[play.tabIndex]
-                                                          .datas
-                                                          .length;
-                                                  var text = len <= 1
-                                                      ? "播放"
-                                                      : curr.name;
+                                                  var text = curr.name;
                                                   var playState =
                                                       play.playState;
-                                                  if (playState.tabIndex ==
+                                                  var lastedPlay = playState
+                                                              .tabIndex ==
                                                           play.tabIndex &&
-                                                      index ==
-                                                          playState.index) {
+                                                      index == playState.index;
+                                                  var textColor =
+                                                      context.isDarkMode
+                                                          ? Colors.white
+                                                          : Colors.black;
+                                                  if (lastedPlay) {
                                                     text += "(上次播放)";
+                                                    textColor =
+                                                        Color(0xFF6750A4);
                                                   }
-                                                  return Text(text);
+                                                  return Text(
+                                                    text,
+                                                    style: TextStyle(
+                                                      color: textColor,
+                                                      fontSize: 14,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                                  );
                                                 }),
                                                 onPressed: () {
                                                   handlePlay(
@@ -586,14 +641,14 @@ class _PlayViewState extends State<PlayView> {
                                         );
                                       });
                                     },
-                                  ),
-                                );
-                              }),
+                                  );
+                                }),
+                              ),
                             ),
                           ],
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
               ),

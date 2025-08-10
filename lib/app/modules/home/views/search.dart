@@ -85,6 +85,7 @@ class _SearchV2State extends State<SearchV2> with AfterLayoutMixin {
 
   @override
   FutureOr<void> afterFirstLayout(BuildContext context) {
+    loadSources();
     loadSearchHistory();
     scrollController.addListener(() {
       if (currSource == kAllSourceMeta) return;
@@ -124,6 +125,8 @@ class _SearchV2State extends State<SearchV2> with AfterLayoutMixin {
   // 记录上一次滚动位置
   double _lastScrollPosition = 0;
 
+  List<ISpiderAdapter> sources = [];
+
   ScrollController scrollController = ScrollController();
 
   void stopSearch() {
@@ -149,6 +152,15 @@ class _SearchV2State extends State<SearchV2> with AfterLayoutMixin {
     });
   }
 
+  void loadSources() {
+    List<ISpiderAdapter> _sources = List.from(home.mirrorList);
+    _sources.remove(home.currentMirrorItem);
+    _sources.insert(0, home.currentMirrorItem);
+    sources = _sources;
+    debugPrint("load ${sources.length} source");
+    setState(() {});
+  }
+
   void handleSearch(String _keyword) async {
     textEditingController.text = _keyword;
     showHistory = false;
@@ -160,7 +172,7 @@ class _SearchV2State extends State<SearchV2> with AfterLayoutMixin {
     setState(() {});
     handleUpdateSearchHistory(_keyword);
     stopSearch();
-    for (var item in home.mirrorList) {
+    for (var item in sources) {
       queue.add<MapVideosRecord>(() async {
         var list = await item.getSearch(keyword: _keyword, page: 1, limit: 12);
         for (var video in list) {
@@ -208,16 +220,16 @@ class _SearchV2State extends State<SearchV2> with AfterLayoutMixin {
       case UpdateSearchHistoryType.add: // 添加
         oldData.remove(text);
         oldData.insert(0, text);
-        safe(()=> historyAs.putSync(HistoryIsarModel(nsfw, text)));
+        safe(() => historyAs.putSync(HistoryIsarModel(nsfw, text)));
         break;
       case UpdateSearchHistoryType.remove: // 删除单个
         oldData.remove(text);
         var pipe = historyAs.filter().isNsfwEqualTo(nsfw);
-        safe(()=> pipe.contentEqualTo(text).deleteFirstSync());
+        safe(() => pipe.contentEqualTo(text).deleteFirstSync());
         break;
       case UpdateSearchHistoryType.clean: // 清除所有
         oldData = [];
-        safe(()=> historyAs.filter().isNsfwEqualTo(nsfw).deleteAllSync());
+        safe(() => historyAs.filter().isNsfwEqualTo(nsfw).deleteAllSync());
         break;
       default:
     }
@@ -405,7 +417,9 @@ class _SearchV2State extends State<SearchV2> with AfterLayoutMixin {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Padding(
-                padding: searchHistory.isEmpty ? EdgeInsets.symmetric(vertical: 5) : EdgeInsets.zero,
+                padding: searchHistory.isEmpty
+                    ? EdgeInsets.symmetric(vertical: 5)
+                    : EdgeInsets.zero,
                 child: Text(
                   "搜索历史",
                   style: TextStyle(
@@ -413,23 +427,24 @@ class _SearchV2State extends State<SearchV2> with AfterLayoutMixin {
                       color: Get.isDarkMode ? Colors.white : Colors.black),
                 ),
               ),
-              if (searchHistory.isNotEmpty) Zoom(
-                child: IconButton(
-                  iconSize: 18,
-                  tooltip: "删除所有历史记录",
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 3,
-                    horizontal: 2,
+              if (searchHistory.isNotEmpty)
+                Zoom(
+                  child: IconButton(
+                    iconSize: 18,
+                    tooltip: "删除所有历史记录",
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 3,
+                      horizontal: 2,
+                    ),
+                    onPressed: () {
+                      handleUpdateSearchHistory(
+                        "",
+                        type: UpdateSearchHistoryType.clean,
+                      );
+                    },
+                    icon: const Icon(CupertinoIcons.trash),
                   ),
-                  onPressed: () {
-                    handleUpdateSearchHistory(
-                      "",
-                      type: UpdateSearchHistoryType.clean,
-                    );
-                  },
-                  icon: const Icon(CupertinoIcons.trash),
                 ),
-              ),
             ],
           ),
         ),

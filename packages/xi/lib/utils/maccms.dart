@@ -5,7 +5,7 @@ import 'helper.dart';
 class PlayListData {
   final String title;
 
-  final List<VideoInfo> datas;
+  List<VideoInfo> datas;
 
   PlayListData({
     required this.title,

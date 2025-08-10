@@ -1,5 +1,7 @@
+import 'dart:async';
 import 'dart:ui';
 
+import 'package:after_layout/after_layout.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:catmovie/app/extension.dart';
 import 'package:catmovie/app/modules/play/controllers/play_controller.dart';
@@ -24,11 +26,27 @@ import 'package:smooth_list_view/smooth_list_view.dart';
 import 'package:xi/xi.dart';
 import 'package:media_kit/media_kit.dart';
 
+enum PlaylistSort { down, up }
+
+extension PlaylistSortExt on PlaylistSort {
+  String get name {
+    if (this == PlaylistSort.down) return "正序";
+    return "倒序";
+  }
+
+  IconData get icon {
+    if (this == PlaylistSort.down) return CupertinoIcons.sort_down;
+    return CupertinoIcons.sort_up;
+  }
+}
+
 class PlayState {
   const PlayState(this.tabIndex, this.index);
   final int tabIndex;
   final int index;
 }
+
+PlayState kEmptyPlayState = const PlayState(-1, -1);
 
 class PlayView extends StatefulWidget {
   const PlayView({super.key});
@@ -37,7 +55,7 @@ class PlayView extends StatefulWidget {
   State<PlayView> createState() => _PlayViewState();
 }
 
-class _PlayViewState extends State<PlayView> {
+class _PlayViewState extends State<PlayView> with AfterLayoutMixin {
   final PlayController play = Get.find<PlayController>();
   final HomeController home = Get.find<HomeController>();
   final FocusNode focusNode = FocusNode();
@@ -57,9 +75,7 @@ class _PlayViewState extends State<PlayView> {
     return ret;
   }
 
-  List<PlayListData> get playlist {
-    return videoInfo2PlayListData(play.movieItem.videos);
-  }
+  List<PlayListData> playlist = [];
 
   Map<int, Widget> get tabviewData {
     Map<int, Widget> result = {};
@@ -76,6 +92,13 @@ class _PlayViewState extends State<PlayView> {
   final double offsetSize = 12;
   final coverHeightScale = .48;
 
+  PlaylistSort playlistSort = PlaylistSort.down;
+
+  bool get playlistIsEmpty {
+    bool allEmpty = playlist.length == 1 && playlist[0].datas.isEmpty;
+    return playlist.isEmpty || allEmpty;
+  }
+
   int get playListGridCount {
     double screenWidth = context.mediaQuery.size.width;
     double minCardWidth = 188;
@@ -86,11 +109,11 @@ class _PlayViewState extends State<PlayView> {
   }
 
   @override
-  void initState() {
+  FutureOr<void> afterFirstLayout(BuildContext context) {
     focusNode.requestFocus();
     videoKernel = getSettingAsKeyIdent<VideoKernel>(SettingsAllKey.videoKernel);
+    playlist = videoInfo2PlayListData(play.movieItem.videos);
     if (mounted) setState(() {});
-    super.initState();
   }
 
   @override
@@ -115,6 +138,25 @@ class _PlayViewState extends State<PlayView> {
     Future.delayed(const Duration(milliseconds: 240), () {
       play.updatePlayState(tabIndex, index);
     });
+  }
+
+  // TODO(d1y): 当切换时保留"上次播放"状态
+  void handleSortPlaylist() {
+    if (playlistSort == PlaylistSort.down) {
+      playlistSort = PlaylistSort.up;
+    } else {
+      playlistSort = PlaylistSort.down;
+    }
+    playlist.asMap().forEach((idx, item) {
+      playlist[idx].datas = item.datas.reversed.toList();
+    });
+    play.playState = kEmptyPlayState;
+    play.update();
+    EasyLoading.showToast(
+      "切换到${playlistSort.name}",
+      toastPosition: EasyLoadingToastPosition.bottom,
+    );
+    setState(() {});
   }
 
   Widget _buildCoverImage() {
@@ -175,7 +217,7 @@ class _PlayViewState extends State<PlayView> {
   @override
   Widget build(BuildContext context) {
     var cardHeight = context.mediaQuery.size.width * (6 / 12);
-    var hh = context.mediaQuery.size.height * .42;
+    var hh = context.mediaQuery.size.height * .51;
     if (cardHeight >= hh) cardHeight = hh;
     return GetBuilder<PlayController>(
       builder: (play) => Scaffold(
@@ -374,16 +416,28 @@ class _PlayViewState extends State<PlayView> {
                             Container(
                               margin: const EdgeInsets.symmetric(
                                 horizontal: 12,
-                                vertical: 9,
+                                vertical: 6,
                               ),
-                              child: const Text(
-                                "播放列表",
-                                style: TextStyle(
-                                  fontSize: 18,
-                                ),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  const Text(
+                                    "播放列表",
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                    ),
+                                  ),
+                                  if (!playlistIsEmpty &&
+                                      playlist[play.tabIndex].datas.length >= 2)
+                                    IconButton(
+                                      tooltip: playlistSort.name,
+                                      onPressed: handleSortPlaylist,
+                                      icon: Icon(playlistSort.icon),
+                                    ),
+                                ],
                               ),
                             ),
-                            Opacity(opacity: .66, child: const Divider()),
                             Container(
                               width: double.infinity,
                               height: canRenderIosStyle ? 32 + 12 : null,
@@ -459,8 +513,8 @@ class _PlayViewState extends State<PlayView> {
                                   );
                                 }
                                 return Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 12),
+                                  padding: EdgeInsets.symmetric(horizontal: 12)
+                                      .copyWith(bottom: 12),
                                   child: CupertinoSlidingSegmentedControl(
                                     backgroundColor: Colors.black26,
                                     thumbColor: context.isDarkMode
@@ -478,12 +532,10 @@ class _PlayViewState extends State<PlayView> {
                             ),
                             Expanded(
                               child: Padding(
-                                padding: EdgeInsets.all(offsetSize),
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: offsetSize),
                                 child: Builder(builder: (context) {
-                                  // NOTE: ↓ 若单个是否也为空
-                                  bool oneIsEmpty = playlist.length == 1 &&
-                                      playlist[0].datas.isEmpty;
-                                  if (playlist.isEmpty || oneIsEmpty) {
+                                  if (playlistIsEmpty) {
                                     return emptyPlaylistWidget;
                                   }
                                   return GridView.builder(
@@ -601,12 +653,11 @@ class _PlayViewState extends State<PlayView> {
                                                 padding: EdgeInsets.zero,
                                                 child: Builder(builder: (cx) {
                                                   var text = curr.name;
-                                                  var playState =
-                                                      play.playState;
-                                                  var lastedPlay = playState
-                                                              .tabIndex ==
-                                                          play.tabIndex &&
-                                                      index == playState.index;
+                                                  var ps = play.playState;
+                                                  var lastedPlay =
+                                                      ps.tabIndex ==
+                                                              play.tabIndex &&
+                                                          index == ps.index;
                                                   var textColor =
                                                       context.isDarkMode
                                                           ? Colors.white

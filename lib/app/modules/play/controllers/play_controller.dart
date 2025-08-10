@@ -112,7 +112,7 @@ class PlayController extends GetxController {
     return itemAs;
   }
 
-  PlayState playState = const PlayState(-1, -1);
+  PlayState playState = kEmptyPlayState;
 
   /// 是否为通用解析
   bool get bIsBaseMirrorMovie {

@@ -58,11 +58,6 @@ class _SearchV2State extends State<SearchV2> with AfterLayoutMixin {
     setState(() {
       _searchHistory = newVal;
     });
-    isarInstance.writeTxnSync(() async {
-      final data = newVal.map((e) => HistoryIsarModel(e)).toList();
-      historyAs.clearSync();
-      historyAs.putAllSync(data);
-    });
   }
 
   SourceItemMeta currSource = kAllSourceMeta;
@@ -148,7 +143,7 @@ class _SearchV2State extends State<SearchV2> with AfterLayoutMixin {
   }
 
   Future<void> loadSearchHistory() async {
-    var data = historyAs.where(distinct: false).findAllSync();
+    var data = historyAs.filter().isNsfwEqualTo(home.isNsfw).findAllSync();
     setState(() {
       _searchHistory = data.map((e) => e.content).toList();
     });
@@ -204,16 +199,25 @@ class _SearchV2State extends State<SearchV2> with AfterLayoutMixin {
     type = UpdateSearchHistoryType.add,
   }) {
     var oldData = _searchHistory;
+    var nsfw = home.isNsfw;
+    void safe(VoidCallback cb) {
+      isarInstance.writeTxnSync(cb);
+    }
+
     switch (type) {
       case UpdateSearchHistoryType.add: // 添加
         oldData.remove(text);
         oldData.insert(0, text);
+        safe(()=> historyAs.putSync(HistoryIsarModel(nsfw, text)));
         break;
       case UpdateSearchHistoryType.remove: // 删除单个
         oldData.remove(text);
+        var pipe = historyAs.filter().isNsfwEqualTo(nsfw);
+        safe(()=> pipe.contentEqualTo(text).deleteFirstSync());
         break;
       case UpdateSearchHistoryType.clean: // 清除所有
         oldData = [];
+        safe(()=> historyAs.filter().isNsfwEqualTo(nsfw).deleteAllSync());
         break;
       default:
     }
@@ -406,7 +410,7 @@ class _SearchV2State extends State<SearchV2> with AfterLayoutMixin {
                     fontSize: 21,
                     color: Get.isDarkMode ? Colors.white : Colors.black),
               ),
-              Zoom(
+              if (searchHistory.isNotEmpty) Zoom(
                 child: IconButton(
                   iconSize: 18,
                   tooltip: "删除所有历史记录",

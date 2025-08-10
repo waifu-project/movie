@@ -6,7 +6,9 @@ part 'history_schema.g.dart';
 class HistoryIsarModel {
   Id id = Isar.autoIncrement;
 
+  @Index()
+  late bool isNsfw;
   late String content;
 
-  HistoryIsarModel(this.content);
+  HistoryIsarModel(this.isNsfw, this.content);
 }

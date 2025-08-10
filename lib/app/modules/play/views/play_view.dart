@@ -175,6 +175,27 @@ class _PlayViewState extends State<PlayView> with AfterLayoutMixin {
         // TODO(d1y): support dynamic set box-fit
         fit: BoxFit.cover,
         controller: controller,
+        onEnterFullscreen: () async {
+          await defaultEnterNativeFullscreen();
+          // workaround: 在 iOS 上全屏之后播放会暂停
+          if (GetPlatform.isIOS) {
+            Future.delayed(const Duration(milliseconds: 88), () {
+              controller.player.pause();
+              controller.player.play();
+            });
+          }
+        },
+        onExitFullscreen: () async {
+          await defaultExitNativeFullscreen();
+          if (GetPlatform.isMobile) {
+            SystemChrome.setPreferredOrientations(
+              [
+                DeviceOrientation.portraitUp,
+                DeviceOrientation.portraitDown,
+              ],
+            );
+          }
+        },
       ),
     );
   }

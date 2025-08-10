@@ -220,16 +220,30 @@ class _SearchV2State extends State<SearchV2> with AfterLayoutMixin {
       case UpdateSearchHistoryType.add: // 添加
         oldData.remove(text);
         oldData.insert(0, text);
-        safe(() => historyAs.putSync(HistoryIsarModel(nsfw, text)));
+        safe(() {
+          historyAs
+              .filter()
+              .isNsfwEqualTo(nsfw)
+              .contentEqualTo(text)
+              .deleteAllSync();
+          historyAs.putSync(HistoryIsarModel(nsfw, text));
+        });
         break;
       case UpdateSearchHistoryType.remove: // 删除单个
         oldData.remove(text);
-        var pipe = historyAs.filter().isNsfwEqualTo(nsfw);
-        safe(() => pipe.contentEqualTo(text).deleteFirstSync());
+        safe(() {
+          historyAs
+              .filter()
+              .isNsfwEqualTo(nsfw)
+              .contentEqualTo(text)
+              .deleteAllSync();
+        });
         break;
       case UpdateSearchHistoryType.clean: // 清除所有
         oldData = [];
-        safe(() => historyAs.filter().isNsfwEqualTo(nsfw).deleteAllSync());
+        safe(() {
+          historyAs.filter().isNsfwEqualTo(nsfw).deleteAllSync();
+        });
         break;
       default:
     }

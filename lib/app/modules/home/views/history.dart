@@ -338,7 +338,7 @@ class _HistoryPageState extends State<HistoryPage> with AfterLayoutMixin {
             width: context.mediaQuery.size.width,
             child: Center(
               child: CupertinoButton.filled(
-                sizeStyle: CupertinoButtonSize.small,
+                sizeStyle: CupertinoButtonSize.medium,
                 mouseCursor: SystemMouseCursors.click,
                 padding: EdgeInsets.symmetric(horizontal: 42),
                 onPressed: handleDeleteAll,

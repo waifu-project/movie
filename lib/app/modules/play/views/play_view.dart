@@ -151,20 +151,25 @@ class _PlayViewState extends State<PlayView> with AfterLayoutMixin {
   Future<void> handlePlay(int tabIndex, int index) async {
     var realPlaylist = playlist[tabIndex].datas;
     var curr = playlist[tabIndex].datas[index];
+    var isUpSort = playlistSort == PlaylistSort.up;
     var isOk = await play.handleTapPlayerButtom(
       curr,
       realPlaylist,
       tabIndex,
       videoKernel,
       player,
+      isUpSort,
     );
     if (!isOk) return;
+    var realIndex = index;
+    if (isUpSort) {
+      realIndex = getReversalIndex(realPlaylist, index);
+    }
     Future.delayed(const Duration(milliseconds: 124), () {
-      play.updatePlayState(tabIndex, index, curr.name);
+      play.updatePlayState(tabIndex, index, realIndex, curr.name);
     });
   }
 
-  // TODO(d1y): 当切换时保留"上次播放"状态
   void handleSortPlaylist() {
     if (playlistSort == PlaylistSort.down) {
       playlistSort = PlaylistSort.up;
@@ -174,7 +179,9 @@ class _PlayViewState extends State<PlayView> with AfterLayoutMixin {
     playlist.asMap().forEach((idx, item) {
       playlist[idx].datas = item.datas.reversed.toList();
     });
-    play.playState = kEmptyPlayState;
+    var idx = getReversalIndex(playlist[0].datas, play.playState.index);
+    // play.playState = kEmptyPlayState;
+    play.playState = PlayState(play.playState.tabIndex, idx);
     play.update();
     EasyLoading.showToast(
       "切换到${playlistSort.name}",

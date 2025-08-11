@@ -58,6 +58,13 @@ const _kNeedToParseDomains = [
 const _kHttpPrefix = "http://";
 const _kHttpsPrefix = "https://";
 
+int getReversalIndex<T>(List<T> list, int realIndex) {
+  if (realIndex < 0 || realIndex >= list.length) {
+    return 0;
+  }
+  return list.length - 1 - realIndex;
+}
+
 /// 检测是否需要解析
 bool checkDomainIsParse(String raw) {
   for (var i = 0; i < _kNeedToParseDomains.length; i++) {
@@ -199,13 +206,13 @@ document.addEventListener('DOMContentLoaded', function() {
     return result;
   }
 
-  void updatePlayState(int tabIndex, int index, String epName) {
+  void updatePlayState(int tabIndex, int index, realIndex, String epName) {
     playState = PlayState(tabIndex, index);
     changeTabIndex(tabIndex);
     if (historyContext != null) {
-      updateHistory(tabIndex, index, epName);
+      updateHistory(tabIndex, realIndex, epName);
     } else {
-      addHistory(tabIndex, index, epName);
+      addHistory(tabIndex, realIndex, epName);
     }
     update();
   }
@@ -245,6 +252,7 @@ document.addEventListener('DOMContentLoaded', function() {
     List<VideoInfo> playList,
     VideoInfo curr,
     String url,
+    bool isUpSort,
   ) async {
     if (GetPlatform.isWindows) {
       bool bWebviewWindow = await WebviewWindow.isWebviewAvailable();
@@ -311,8 +319,9 @@ document.addEventListener('DOMContentLoaded', function() {
     void updatePlayStateWithUrl(String url) {
       var curr = playList.firstWhere((element) => element.url == url);
       var index = playList.indexOf(curr);
+      var realIndex = getReversalIndex(playList, index);
       if (index >= 0) {
-        updatePlayState(tabIndex, index, curr.name);
+        updatePlayState(tabIndex, index, realIndex, curr.name);
       }
     }
 
@@ -382,6 +391,7 @@ document.addEventListener('DOMContentLoaded', function() {
     int tabIndex,
     VideoKernel videoKernel,
     Player mediaKitPlayer,
+    bool isUpSort,
   ) async {
     var url = curr.url;
     url = getPlayUrl(url);
@@ -428,7 +438,7 @@ document.addEventListener('DOMContentLoaded', function() {
     switch (videoKernel) {
       case VideoKernel.webview:
         if (GetPlatform.isDesktop) {
-          return await playWithWebview(playList, curr, url);
+          return await playWithWebview(playList, curr, url, isUpSort);
         } else {
           if (GetPlatform.isAndroid) {
             if (curr.type == VideoType.iframe) {

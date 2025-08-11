@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:after_layout/after_layout.dart';
 import 'package:catmovie/app/extension.dart';
+import 'package:catmovie/app/modules/home/views/history.dart';
 import 'package:catmovie/app/modules/home/views/onboarding.dart';
 import 'package:catmovie/app/modules/home/views/search.dart';
 import 'package:catmovie/app/widget/zoom.dart';
@@ -95,6 +96,7 @@ class _IndexHomeViewState extends State<IndexHomeView>
       data = await controller.currentMirrorItem.getDetail(id);
       Get.back();
     }
+    data.setContext(controller.currentMirrorItem.meta);
     Get.toNamed(
       Routes.PLAY,
       arguments: data,
@@ -229,8 +231,8 @@ class _IndexHomeViewState extends State<IndexHomeView>
                   color: Colors.white,
                 ),
                 onPressed: () {
-                  // TODO: impl this
                   EasyLoading.dismiss();
+                  Get.to(() => const HistoryPage());
                 },
               ),
             ),

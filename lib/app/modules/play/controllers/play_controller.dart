@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:catmovie/app/modules/play/views/chewie_view.dart';
 import 'package:catmovie/app/modules/play/views/play_view.dart';
+import 'package:catmovie/isar/schema/video_search_schema.dart';
 import 'package:desktop_webview_window/desktop_webview_window.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -114,6 +115,8 @@ class PlayController extends GetxController {
 
   PlayState playState = kEmptyPlayState;
 
+  VideoHistoryIsarModel? historyContext;
+
   /// 是否为通用解析
   bool get bIsBaseMirrorMovie {
     return currentMovieInstance is MacCMSSpider;
@@ -196,9 +199,45 @@ document.addEventListener('DOMContentLoaded', function() {
     return result;
   }
 
-  void updatePlayState(int tabIndex, int index) {
+  void updatePlayState(int tabIndex, int index, String epName) {
     playState = PlayState(tabIndex, index);
+    changeTabIndex(tabIndex);
+    if (historyContext != null) {
+      updateHistory(tabIndex, index);
+    } else {
+      addHistory(tabIndex, index, epName);
+    }
     update();
+  }
+
+  void updateHistory(int tabIndex, int index) async {
+    historyContext!.ctx.pTabIndex = tabIndex;
+    historyContext!.ctx.pIndex = index;
+    isarInstance.writeTxnSync(() {
+      videoHistoryAs.putSync(historyContext!);
+    });
+  }
+
+  void addHistory(int tabIndex, int index, String epName) {
+    var sourceContext = movieItem.getContext()!;
+    var ctx = VideoHistoryContextIsardModel(
+      title: movieItem.title,
+      cover: movieItem.smallCoverImage,
+      pTabIndex: tabIndex,
+      pIndex: index,
+      pText: epName,
+      detailID: movieItem.id,
+    );
+    var history = VideoHistoryIsarModel(
+      isNsfw: home.isNsfw,
+      sid: sourceContext.id,
+      sourceName: sourceContext.name,
+      ctx: ctx,
+    );
+    isarInstance.writeTxnSync(() {
+      videoHistoryAs.putSync(history);
+      historyContext = history;
+    });
   }
 
   Future<bool> playWithWebview(
@@ -269,11 +308,10 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     void updatePlayStateWithUrl(String url) {
-      int index = playList.indexWhere(
-        (item) => item.url == url,
-      );
+      var curr = playList.firstWhere((element) => element.url == url);
+      var index = playList.indexOf(curr);
       if (index >= 0) {
-        updatePlayState(tabIndex, index);
+        updatePlayState(tabIndex, index, curr.name);
       }
     }
 

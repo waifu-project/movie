@@ -18,10 +18,14 @@ class MirrorIsarModel {
     required this.desc,
     required this.nsfw,
     required this.status,
+    required this.sid,
     this.jiexiUrl,
   });
 
   Id id = Isar.autoIncrement;
+
+  @Index()
+  late String sid;
 
   late String name;
   String logo = "";

@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:catmovie/isar/schema/video_search_schema.dart';
 import 'package:isar/isar.dart';
 import 'package:catmovie/isar/repo.dart';
 import 'package:catmovie/isar/schema/history_schema.dart';
@@ -31,6 +32,9 @@ extension ISettingMixin on Object {
 
   IsarCollection<MirrorIsarModel> get mirrorAs =>
       IsarRepository().isar.mirrorIsarModels;
+
+  IsarCollection<VideoHistoryIsarModel> get videoHistoryAs =>
+      IsarRepository().isar.videoHistoryIsarModels;
 
   Isar get isarInstance => IsarRepository().isar;
 

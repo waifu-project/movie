@@ -7,6 +7,7 @@ import 'package:catmovie/app/extension.dart';
 import 'package:catmovie/app/modules/play/controllers/play_controller.dart';
 import 'package:catmovie/app/modules/play/views/cast_screen.dart';
 import 'package:catmovie/app/widget/zoom.dart';
+import 'package:catmovie/isar/schema/video_search_schema.dart';
 import 'package:catmovie/shared/enum.dart';
 import 'package:clipboard/clipboard.dart';
 import 'package:flutter/cupertino.dart';
@@ -18,6 +19,7 @@ import 'package:catmovie/app/modules/home/controllers/home_controller.dart';
 import 'package:catmovie/app/modules/home/views/parse_vip_manage.dart';
 import 'package:catmovie/app/widget/window_appbar.dart';
 import 'package:catmovie/widget/simple_html/flutter_html.dart';
+import 'package:isar/isar.dart';
 import 'package:media_kit_video/media_kit_video.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:pull_down_button/pull_down_button.dart';
@@ -113,7 +115,28 @@ class _PlayViewState extends State<PlayView> with AfterLayoutMixin {
     focusNode.requestFocus();
     videoKernel = getSettingAsKeyIdent<VideoKernel>(SettingsAllKey.videoKernel);
     playlist = videoInfo2PlayListData(play.movieItem.videos);
+    loadHistory();
     if (mounted) setState(() {});
+  }
+
+  void loadHistory() {
+    var item = play.movieItem;
+    var cx = item.getContext()!;
+    play.historyContext = videoHistoryAs
+        .filter()
+        .isNsfwEqualTo(home.isNsfw)
+        .sidEqualTo(cx.id)
+        .ctx((cx) {
+      return cx.detailIDEqualTo(item.id);
+    }).findFirstSync();
+    if (play.historyContext == null) return;
+    var tabIndex = play.historyContext!.ctx.pTabIndex;
+    var index = play.historyContext!.ctx.pIndex;
+    debugPrint("load history t: $tabIndex, i: $index");
+    if (tabIndex <= -1 || index <= -1) return;
+    if (videoKernel.isMediaKit) {
+      handlePlay(tabIndex, index);
+    }
   }
 
   @override
@@ -135,8 +158,8 @@ class _PlayViewState extends State<PlayView> with AfterLayoutMixin {
       player,
     );
     if (!isOk) return;
-    Future.delayed(const Duration(milliseconds: 240), () {
-      play.updatePlayState(tabIndex, index);
+    Future.delayed(const Duration(milliseconds: 124), () {
+      play.updatePlayState(tabIndex, index, curr.name);
     });
   }
 
@@ -279,16 +302,13 @@ class _PlayViewState extends State<PlayView> with AfterLayoutMixin {
                                 ),
                               )
                             : Row(
-                              children: [
-                                Zoom(
-                                  child: CupertinoNavigationBarBackButton(
-                                      onPressed: () {
-                                        // NOOP
-                                      },
-                                    ),
-                                ),
-                              ],
-                            ),
+                                children: [
+                                  Zoom(
+                                    child: CupertinoNavigationBarBackButton(
+                                        onPressed: () {}),
+                                  ),
+                                ],
+                              ),
                       ),
                     ),
                     Positioned(

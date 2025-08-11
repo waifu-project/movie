@@ -36,7 +36,7 @@ class SpiderManage {
         api_path: item.api.path,
         root_url: item.api.root,
         nsfw: item.nsfw,
-        id: item.id.toString(),
+        id: item.sid,
         status: item.status == MirrorStatus.available,
       );
     }).toList();
@@ -186,6 +186,7 @@ class SpiderManage {
       api.path = item.api?.path ?? "";
       var status = item.status ?? true;
       return MirrorIsarModel(
+        sid: item.id ?? Xid().toString(),
         name: item.name ?? "",
         logo: item.name ?? "",
         api: api,

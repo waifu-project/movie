@@ -826,14 +826,15 @@ class _PlayViewState extends State<PlayView> with AfterLayoutMixin {
 
   Widget get _buildWithDesc {
     var desc = play.movieItem.desc;
-    if (desc.isEmpty) {
-      return Container(
-        margin: const EdgeInsets.symmetric(
-          horizontal: 12,
-          vertical: 9,
-        ),
-        child: const Text('暂无简介~'),
-      );
+    if (desc.isEmpty || desc == "暂无简介") {
+      return SizedBox.shrink();
+      // return Container(
+      //   margin: const EdgeInsets.symmetric(
+      //     horizontal: 12,
+      //     vertical: 9,
+      //   ),
+      //   child: const Text('暂无简介~'),
+      // );
     }
     return Theme(
       data: Theme.of(context).copyWith(dividerColor: Colors.transparent),

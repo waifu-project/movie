@@ -258,23 +258,35 @@ class _HistoryPageState extends State<HistoryPage> with AfterLayoutMixin {
                                             style: TextStyle(
                                                 fontSize: 18, color: textColor),
                                           ),
+                                          // 无语死了, 一开始使用 RichText 实现
+                                          // 只不过发现 RichText 下的 TextSpan 下划线会有问题
+                                          // 都这么久了还没修复, 拉胯的一批
+                                          // https://github.com/flutter/flutter/issues/42833#issuecomment-1605590098
                                           Opacity(
                                             opacity: .72,
-                                            child: RichText(
-                                              overflow: TextOverflow.ellipsis,
-                                              maxLines: 1,
-                                              text: TextSpan(
-                                                text: "上次看到 ",
-                                                style: TextStyle(
-                                                    fontSize: 12,
-                                                    color: textColor),
+                                            child: DefaultTextStyle(
+                                              style: TextStyle(
+                                                  fontSize: 12,
+                                                  color: context.isDarkMode
+                                                      ? Colors.white
+                                                      : Colors.black),
+                                              child: Row(
+                                                spacing: 6,
                                                 children: [
-                                                  TextSpan(
-                                                    text: item.ctx.pText,
-                                                    style: TextStyle(
-                                                      decoration: TextDecoration
-                                                          .underline,
+                                                  Text("上次看到"),
+                                                  DecoratedBox(
+                                                    decoration: BoxDecoration(
+                                                      border: Border(
+                                                        bottom: BorderSide(
+                                                          width: .66,
+                                                          color: context
+                                                                  .isDarkMode
+                                                              ? Colors.white
+                                                              : Colors.black,
+                                                        ),
+                                                      ),
                                                     ),
+                                                    child: Text(item.ctx.pText),
                                                   ),
                                                 ],
                                               ),

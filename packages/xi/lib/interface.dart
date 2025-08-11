@@ -100,6 +100,14 @@ class VideoDetail {
 
   Map<String, dynamic> extra;
 
+  SourceItemMeta? getContext() {
+    return extra['source'];
+  }
+
+  void setContext(SourceItemMeta value) {
+    extra['source'] = value;
+  }
+
   VideoDetail({
     required this.id,
     required this.title,
@@ -150,9 +158,10 @@ class SourceItemMeta extends Equatable {
     required this.name,
     required this.domain,
   });
-  
+
   @override
-  List<Object?> get props => [logo, domain, name, developer, developerMail, desc, id];
+  List<Object?> get props =>
+      [logo, domain, name, developer, developerMail, desc, id];
 }
 
 class SourceSpiderQueryCategory {

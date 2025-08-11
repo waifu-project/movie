@@ -176,7 +176,7 @@ class _SearchV2State extends State<SearchV2> with AfterLayoutMixin {
       queue.add<MapVideosRecord>(() async {
         var list = await item.getSearch(keyword: _keyword, page: 1, limit: 12);
         for (var video in list) {
-          video.extra['source'] = item.meta;
+          video.setContext(item.meta);
         }
         return Tuple2(item.meta, list);
       });
@@ -654,12 +654,12 @@ class _SearchV2State extends State<SearchV2> with AfterLayoutMixin {
                                           overflow: TextOverflow.ellipsis,
                                         ),
                                         Builder(builder: (context) {
-                                          dynamic source = item.extra['source'];
+                                          var source = item.getContext();
                                           if (source == null) {
                                             return const SizedBox.shrink();
                                           }
                                           return Text(
-                                              (source as SourceItemMeta).name,
+                                              source.name,
                                               style: TextStyle(
                                                 color: (Get.isDarkMode
                                                         ? '#a4a4a6'

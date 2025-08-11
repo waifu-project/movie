@@ -1,13 +1,14 @@
 # 制作规则
 
-`YY`实现了通用的制作规则如下
+小猫影视实现了通用的制作规则如下
 
 ```jsonc
 {
+  "id": "$UUID", // 唯一标识(不能重复)
   "name": "小不点の资源库", // 名称
   "logo": "", // 图标
   "desc": "", // 介绍
-  "nsfw": true, // ********
+  "nsfw": true, // 是否为色情源
   "api": {
     "root": "http://baidu.com", // 域名
     "path": "/xx/xx.php" // api 路径

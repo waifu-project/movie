@@ -21,7 +21,7 @@
 ![首页](https://s2.loli.net/2025/08/04/1qJ72QC9ioxRjkZ.jpg)
 ![搜索](https://s2.loli.net/2025/08/04/VNZtikObdxhnRLf.jpg)
 ![TV](https://s2.loli.net/2025/08/04/XUZ18fmzEwiPoR3.jpg)
-![播放](https://s2.loli.net/2025/08/04/THIq3Ym5nhupPa6.jpg)
+![播放.jpg](https://s2.loli.net/2025/08/11/Fzy8J3aCqc6hTbk.jpg)
 
 </details>
 

@@ -10,6 +10,7 @@ import 'package:catmovie/app/widget/zoom.dart';
 import 'package:catmovie/isar/schema/video_search_schema.dart';
 import 'package:catmovie/shared/enum.dart';
 import 'package:clipboard/clipboard.dart';
+import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -43,10 +44,13 @@ extension PlaylistSortExt on PlaylistSort {
   }
 }
 
-class PlayState {
+class PlayState extends Equatable {
   const PlayState(this.tabIndex, this.index);
   final int tabIndex;
   final int index;
+
+  @override
+  List<Object?> get props => [tabIndex, index];
 }
 
 PlayState kEmptyPlayState = const PlayState(-1, -1);
@@ -328,6 +332,10 @@ class _PlayViewState extends State<PlayView> with AfterLayoutMixin {
                         behavior: HitTestBehavior.opaque,
                         onTap: () {
                           var ps = play.playState;
+                          if (ps == kEmptyPlayState) {
+                            Get.back();
+                            return;
+                          }
                           var curr = playlist[ps.tabIndex].datas[ps.index];
                           Get.back(result: Tuple2(play.playState, curr.name));
                         },

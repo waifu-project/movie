@@ -25,6 +25,7 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:pull_down_button/pull_down_button.dart';
 import 'package:simple/x.dart';
 import 'package:smooth_list_view/smooth_list_view.dart';
+import 'package:tuple/tuple.dart';
 import 'package:xi/xi.dart';
 import 'package:media_kit/media_kit.dart';
 
@@ -318,7 +319,11 @@ class _PlayViewState extends State<PlayView> with AfterLayoutMixin {
                       width: 120,
                       child: GestureDetector(
                         behavior: HitTestBehavior.opaque,
-                        onTap: Get.back,
+                        onTap: () {
+                          var ps = play.playState;
+                          var curr = playlist[ps.tabIndex].datas[ps.index];
+                          Get.back(result: Tuple2(play.playState, curr.name));
+                        },
                         child: MouseRegion(
                           cursor: SystemMouseCursors.click,
                           child: SizedBox.expand(),

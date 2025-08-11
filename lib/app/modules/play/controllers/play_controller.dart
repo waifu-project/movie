@@ -203,16 +203,17 @@ document.addEventListener('DOMContentLoaded', function() {
     playState = PlayState(tabIndex, index);
     changeTabIndex(tabIndex);
     if (historyContext != null) {
-      updateHistory(tabIndex, index);
+      updateHistory(tabIndex, index, epName);
     } else {
       addHistory(tabIndex, index, epName);
     }
     update();
   }
 
-  void updateHistory(int tabIndex, int index) async {
+  void updateHistory(int tabIndex, int index, epName) async {
     historyContext!.ctx.pTabIndex = tabIndex;
     historyContext!.ctx.pIndex = index;
+    historyContext!.ctx.pText = epName;
     isarInstance.writeTxnSync(() {
       videoHistoryAs.putSync(historyContext!);
     });

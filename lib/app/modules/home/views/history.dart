@@ -4,6 +4,7 @@ import 'package:after_layout/after_layout.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:catmovie/app/extension.dart';
 import 'package:catmovie/app/modules/home/controllers/home_controller.dart';
+import 'package:catmovie/app/modules/play/views/play_view.dart';
 import 'package:catmovie/app/routes/app_pages.dart';
 import 'package:catmovie/app/widget/helper.dart';
 import 'package:catmovie/app/widget/window_appbar.dart';
@@ -14,6 +15,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:isar/isar.dart';
+import 'package:tuple/tuple.dart';
 
 class HistoryPage extends StatefulWidget {
   const HistoryPage({super.key});
@@ -201,10 +203,17 @@ class _HistoryPageState extends State<HistoryPage> with AfterLayoutMixin {
                                       await cx.getDetail(item.ctx.detailID);
                                   data.setContext(cx.meta);
                                   Get.back();
-                                  Get.toNamed(
-                                    Routes.PLAY,
-                                    arguments: data,
-                                  );
+                                  try {
+                                    Tuple2<PlayState, String> ps =
+                                        await Get.toNamed(
+                                      Routes.PLAY,
+                                      arguments: data,
+                                    );
+                                    item.ctx.pText = ps.item2;
+                                    if (mounted) setState(() {});
+                                  } catch (e) {
+                                    debugPrint(e.toString());
+                                  }
                                 },
                                 scaleRatio: .98,
                                 child: Row(

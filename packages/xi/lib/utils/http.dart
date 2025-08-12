@@ -84,9 +84,9 @@ class XHttp {
     if (enableLog) {
       dio.interceptors.add(
         AwesomeDioInterceptor(
-          logRequestTimeout: false,
-          logRequestHeaders: false,
-          logResponseHeaders: false,
+          logRequestTimeout: true,
+          logRequestHeaders: true,
+          logResponseHeaders: true,
           logger: debugPrint,
         ),
       );

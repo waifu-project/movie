@@ -1,4 +1,5 @@
 import 'package:bitsdojo_window/bitsdojo_window.dart';
+import 'package:catmovie/shared/env.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -50,7 +51,8 @@ Future<ThemeMode> runBefore() async {
     windowManager.setTitle("小猫影视");
   }
 
-  await XHttp.init();
+  var enableHttpLog = CMEnv.isDebug && CMEnv.enableFullHttpLog;
+  await XHttp.init(enableLog: enableHttpLog);
   await IsarRepository().init();
   await SpiderManage.init();
   registerAutoInjector();

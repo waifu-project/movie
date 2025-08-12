@@ -32,6 +32,11 @@ import 'package:media_kit/media_kit.dart';
 
 enum PlaylistSort { down, up }
 
+List<String> kDescEmptyList = [
+  "暂无简介",
+  "无简介",
+];
+
 extension PlaylistSortExt on PlaylistSort {
   String get name {
     if (this == PlaylistSort.down) return "正序";
@@ -846,7 +851,7 @@ class _PlayViewState extends State<PlayView> with AfterLayoutMixin {
 
   Widget get _buildWithDesc {
     var desc = play.movieItem.desc;
-    if (desc.isEmpty || desc == "暂无简介") {
+    if (desc.isEmpty || kDescEmptyList.contains(desc) || desc == play.movieItem.title) {
       return SizedBox.shrink();
       // return Container(
       //   margin: const EdgeInsets.symmetric(

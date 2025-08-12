@@ -4,6 +4,7 @@ import 'dart:ui';
 import 'package:after_layout/after_layout.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:catmovie/app/extension.dart';
+import 'package:catmovie/app/modules/home/views/tv.dart';
 import 'package:catmovie/app/modules/play/controllers/play_controller.dart';
 import 'package:catmovie/app/modules/play/views/cast_screen.dart';
 import 'package:catmovie/app/widget/zoom.dart';
@@ -105,6 +106,8 @@ class _PlayViewState extends State<PlayView> with AfterLayoutMixin {
   final coverHeightScale = .48;
 
   PlaylistSort playlistSort = PlaylistSort.down;
+
+  BoxFit mediaKitFit = kVideoFits.keys.first;
 
   bool get playlistIsEmpty {
     bool allEmpty = playlist.length == 1 && playlist[0].datas.isEmpty;
@@ -208,36 +211,129 @@ class _PlayViewState extends State<PlayView> with AfterLayoutMixin {
     );
   }
 
-  Widget _buildMediaKit() {
-    return Positioned.fill(
-      child: Video(
-        fill: Colors.transparent,
-        // TODO(d1y): support dynamic set box-fit
-        fit: BoxFit.cover,
-        controller: controller,
-        onEnterFullscreen: () async {
-          await defaultEnterNativeFullscreen();
-          // workaround: 在 iOS 上全屏之后播放会暂停
-          if (GetPlatform.isIOS) {
-            Future.delayed(const Duration(milliseconds: 88), () {
-              controller.player.pause();
-              controller.player.play();
-            });
-          }
+  void showMediaKitPlaylist() {
+    var w = context.mediaQuery.size.width * .62;
+    if (w >= 480) w = 480;
+    var list = playlist[play.tabIndex].datas;
+    // TODO: save last scroll position
+    Get.dialog(
+      MediaKitPlaylist(
+        width: w,
+        list: list,
+        sort: playlistSort,
+        index: play.playState.index,
+        onTap: (index) {
+          handlePlay(play.tabIndex, index);
         },
-        onExitFullscreen: () async {
-          await defaultExitNativeFullscreen();
-          if (GetPlatform.isMobile) {
-            SystemChrome.setPreferredOrientations(
-              [
-                DeviceOrientation.portraitUp,
-                DeviceOrientation.portraitDown,
-              ],
-            );
-          }
+        onSortTap: () {
+          handleSortPlaylist();
         },
       ),
     );
+  }
+
+  Widget _buildMediaKit() {
+    Widget boxFitView = MaterialDesktopCustomButton(
+      onPressed: () {
+        List<BoxFit> fits = kVideoFits.keys.toList();
+        int idx = fits.indexOf(mediaKitFit);
+        idx = (idx + 1) % fits.length;
+        mediaKitFit = fits[idx];
+        setState(() {});
+        var msg = "切换到${kVideoFits[mediaKitFit] ?? '未知模式'}";
+        EasyLoading.showToast(
+          msg,
+          toastPosition: EasyLoadingToastPosition.bottom,
+        );
+      },
+      icon: Opacity(
+        opacity: .88,
+        child: const Icon(Icons.aspect_ratio, size: 23),
+      ),
+    );
+    Widget videoView = Video(
+      fill: Colors.black.withValues(alpha: .21),
+      fit: mediaKitFit,
+      controller: controller,
+      onEnterFullscreen: () async {
+        await defaultEnterNativeFullscreen();
+        // workaround: 在 iOS 上全屏之后播放会暂停
+        if (GetPlatform.isIOS) {
+          Future.delayed(const Duration(milliseconds: 88), () {
+            controller.player.pause();
+            controller.player.play();
+          });
+        }
+      },
+      onExitFullscreen: () async {
+        await defaultExitNativeFullscreen();
+        if (GetPlatform.isMobile) {
+          SystemChrome.setPreferredOrientations(
+            [
+              DeviceOrientation.portraitUp,
+              DeviceOrientation.portraitDown,
+            ],
+          );
+        }
+      },
+    );
+    var topButtonBar = [
+      CupertinoNavigationBarBackButton(
+        color: Colors.white,
+        previousPageTitle: "返回",
+      ),
+      const Spacer(),
+      MaterialDesktopCustomButton(
+        onPressed: showMediaKitPlaylist,
+        icon: Row(
+          spacing: 6,
+          children: [
+            Icon(CupertinoIcons.ellipsis_circle_fill),
+            Text("播放列表"),
+          ],
+        ),
+      ),
+    ];
+    if (GetPlatform.isDesktop) {
+      var bottomButtonBar = [
+        MaterialDesktopSkipPreviousButton(),
+        MaterialDesktopPlayOrPauseButton(),
+        MaterialDesktopSkipNextButton(),
+        MaterialDesktopVolumeButton(),
+        MaterialDesktopPositionIndicator(),
+        Spacer(),
+        boxFitView,
+        MaterialDesktopFullscreenButton(),
+      ];
+      videoView = MaterialDesktopVideoControlsTheme(
+        normal: MaterialDesktopVideoControlsThemeData(
+          bottomButtonBar: bottomButtonBar,
+        ),
+        fullscreen: MaterialDesktopVideoControlsThemeData(
+          topButtonBar: topButtonBar,
+          bottomButtonBar: bottomButtonBar,
+        ),
+        child: videoView,
+      );
+    } else {
+      var bottomButtonBar = [
+        MaterialPositionIndicator(),
+        Spacer(),
+        boxFitView,
+        MaterialFullscreenButton(),
+      ];
+      videoView = MaterialVideoControlsTheme(
+        normal: MaterialVideoControlsThemeData(
+          bottomButtonBar: bottomButtonBar,
+        ),
+        fullscreen: MaterialVideoControlsThemeData(
+          topButtonBar: topButtonBar,
+          bottomButtonBar: bottomButtonBar,
+        ),
+        child: videoView,
+      );
+    }
+    return Positioned.fill(child: videoView);
   }
 
   Widget _buildCover() {
@@ -851,7 +947,9 @@ class _PlayViewState extends State<PlayView> with AfterLayoutMixin {
 
   Widget get _buildWithDesc {
     var desc = play.movieItem.desc;
-    if (desc.isEmpty || kDescEmptyList.contains(desc) || desc == play.movieItem.title) {
+    if (desc.isEmpty ||
+        kDescEmptyList.contains(desc) ||
+        desc == play.movieItem.title) {
       return SizedBox.shrink();
       // return Container(
       //   margin: const EdgeInsets.symmetric(
@@ -914,6 +1012,133 @@ class _PlayViewState extends State<PlayView> with AfterLayoutMixin {
           ),
         ],
       ),
+    );
+  }
+}
+
+class MediaKitPlaylist extends StatefulWidget {
+  const MediaKitPlaylist({
+    super.key,
+    required this.width,
+    required this.list,
+    required this.sort,
+    required this.index,
+    this.onTap,
+    this.onSortTap,
+  });
+
+  final double width;
+  final List<VideoInfo> list;
+  final PlaylistSort sort;
+  final int index;
+  final ValueChanged<int>? onTap;
+  final VoidCallback? onSortTap;
+
+  @override
+  State<MediaKitPlaylist> createState() => _MediaKitPlaylistState();
+}
+
+class _MediaKitPlaylistState extends State<MediaKitPlaylist>
+    with AfterLayoutMixin {
+  PlaylistSort sort = PlaylistSort.down;
+  List<VideoInfo> list = [];
+  int index = -1;
+
+  @override
+  FutureOr<void> afterFirstLayout(BuildContext context) {
+    sort = widget.sort;
+    index = widget.index;
+    list = widget.list;
+    setState(() {});
+  }
+
+  void handleSortPlaylist() {
+    sort = sort == PlaylistSort.down ? PlaylistSort.up : PlaylistSort.down;
+    list = list.reversed.toList();
+    index = getReversalIndex(list, index);
+    if (mounted) setState(() {});
+    widget.onSortTap?.call();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Spacer(),
+        Container(
+          width: widget.width,
+          height: double.infinity,
+          decoration: BoxDecoration(
+            color: Colors.black.withValues(alpha: .88),
+          ),
+          padding: EdgeInsets.only(top: 6),
+          child: Column(
+            children: [
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 12),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      spacing: 3,
+                      children: [
+                        Text(
+                          "选集",
+                          style: TextStyle(fontSize: 16),
+                        ),
+                        Opacity(
+                          opacity: .68,
+                          child: Text(
+                            "(共${list.length}集)",
+                            style: TextStyle(fontSize: 14),
+                          ),
+                        ),
+                      ],
+                    ),
+                    IconButton(
+                      onPressed: handleSortPlaylist,
+                      icon: Row(
+                        spacing: 6,
+                        children: [
+                          Icon(sort.icon, color: Colors.white),
+                          Text(sort.name),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Expanded(
+                child: SmoothListView(
+                  duration: kSmoothListViewDuration,
+                  children: list.map((item) {
+                    var currIndex = list.indexOf(item);
+                    var isCurr = currIndex == index;
+                    return Material(
+                      color: Colors.transparent,
+                      child: ListTile(
+                        dense: true,
+                        selected: isCurr,
+                        selectedTileColor: kActiveColor,
+                        hoverColor: Colors.white.withValues(alpha: 0.1),
+                        title: Text(
+                          item.name,
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        onTap: () {
+                          index = currIndex;
+                          if (mounted) setState(() {});
+                          widget.onTap?.call(currIndex);
+                        },
+                      ),
+                    );
+                  }).toList(),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }

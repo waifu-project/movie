@@ -52,8 +52,11 @@ class XHttp {
 
   /// 网络请求配置
   static final Dio dio = Dio(BaseOptions(
-    connectTimeout: const Duration(seconds: 15),
-    receiveTimeout: const Duration(seconds: 13),
+    connectTimeout: const Duration(seconds: 12),
+    receiveTimeout: const Duration(seconds: 12),
+    headers: {
+      "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36",
+    }
   ));
 
   static void setDefaultTImeout() {

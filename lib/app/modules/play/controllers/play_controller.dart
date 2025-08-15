@@ -170,6 +170,8 @@ class PlayController extends GetxController {
 
   String playTips = "";
 
+  // TODO(d1y): 不自己维护 HttpServer 实例, 而是直接使用
+  // [webPlayerEmbedded] 中的 HttpServer 实例
   HttpServer? _httpServerContext;
 
   String url2Iframe(String realUrl, HttpServer server) {
@@ -181,6 +183,17 @@ class PlayController extends GetxController {
     }
     var port = server.port;
     return "http://localhost:$port/assets/iframe.html?url=$realUrl";
+  }
+
+  String decodeURLComponent(String raw) {
+    return Uri.decodeComponent(raw);
+  }
+
+  String getIframeRealUrl(String url) {
+    if (!url.contains("http://localhost")) return url;
+    var u = Uri.parse(url);
+    var realUrl = u.queryParameters["url"] ?? "";
+    return decodeURLComponent(realUrl);
   }
 
   Future<String> injectPlaylistJSCode(
@@ -316,23 +329,27 @@ document.addEventListener('DOMContentLoaded', function() {
       webview.evaluateJavaScript("setActiveWithPlaylist(`${curr.url}`)");
     }
 
-    void updatePlayStateWithUrl(String url) {
-      var curr = playList.firstWhere((element) => element.url == url);
+    bool updatePlayStateWithUrl(String url) {
+      var curr = playList.firstWhereOrNull((element) => element.url == url);
+      if (curr == null) return false;
       var index = playList.indexOf(curr);
       var realIndex = getReversalIndex(playList, index);
       if (index >= 0) {
         updatePlayState(tabIndex, index, realIndex, curr.name);
+        return true;
       }
+      return false;
     }
 
     /// `MP4` 理论上来说不需要操作就可以直接喂给浏览器?
-    if (!(await webPlayerEmbedded.checkRunning())) {
+    if (_httpServerContext == null ||
+        !(await webPlayerEmbedded.checkRunning())) {
       _httpServerContext = await webPlayerEmbedded.createServer(
         onMessage: (msg) {
           String value = jsonDecode(msg.value);
           switch (msg.type) {
             case "switchVideo":
-              updatePlayStateWithUrl(value);
+              updatePlayStateWithUrl(getIframeRealUrl(value));
           }
         },
       );
@@ -353,9 +370,12 @@ document.addEventListener('DOMContentLoaded', function() {
     // }
 
     webview.setOnUrlRequestCallback((newUrl) {
-      updatePlayStateWithUrl(newUrl);
+      var realUrl = getIframeRealUrl(newUrl);
+      updatePlayStateWithUrl(realUrl);
       Future.delayed(kDelayExecInjectPlaylistJSCode, () async {
-        var curr = playList.firstWhere((element) => element.url == newUrl);
+        var curr =
+            playList.firstWhereOrNull((element) => element.url == realUrl);
+        if (curr == null) return;
         setWebviewActivePlay(curr);
       });
       return true;
@@ -548,5 +568,15 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   @override
-  void onClose() {}
+  void onClose() {
+    if (_httpServerContext != null) {
+      try {
+        _httpServerContext!.close();
+        webPlayerEmbedded.dispose();
+      } catch (e) {
+        // I don't care
+        debugPrint("close server error: $e");
+      }
+    }
+  }
 }

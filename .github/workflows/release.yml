@@ -6,7 +6,7 @@ on:
       - "release-v*"
 
 env:
-  FLUTTER_VERSION: 3.32.4
+  FLUTTER_VERSION: 3.35.1
   LINUX_DEPENDENCIES: git wget unzip python3 zip xz-utils curl clang cmake ninja-build pkg-config libgtk-3-dev libblkid-dev liblzma-dev libjsoncpp-dev cmake-data libjsoncpp25 libsecret-1-dev libsecret-1-0 librhash0 libsqlite3-dev libappindicator3-dev gettext libwebkit2gtk-4.1-dev libasound2-dev libmpv-dev mpv
 
 jobs:

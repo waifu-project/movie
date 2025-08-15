@@ -267,15 +267,20 @@ class _SearchV2State extends State<SearchV2> with AfterLayoutMixin {
 
   PreferredSizeWidget _buildAppBar() {
     double top = MediaQuery.of(context).padding.top;
+    double height = GetPlatform.isDesktop ? 81 : top;
+    if (GetPlatform.isAndroid) {
+      height *= 2;
+    }
     return PreferredSize(
-      preferredSize: Size.fromHeight(GetPlatform.isDesktop ? 81 : top),
+      preferredSize: Size.fromHeight(height),
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
         child: CustomMoveWindow(
           child: Column(
             children: [
               SizedBox(
-                  height: GetPlatform.isDesktop ? (kMacPaddingTop + 12) : top),
+                height: GetPlatform.isDesktop ? (kMacPaddingTop + 12) : top,
+              ),
               Expanded(
                 child: Padding(
                   padding: EdgeInsetsGeometry.symmetric(horizontal: 12),
@@ -658,8 +663,7 @@ class _SearchV2State extends State<SearchV2> with AfterLayoutMixin {
                                           if (source == null) {
                                             return const SizedBox.shrink();
                                           }
-                                          return Text(
-                                              source.name,
+                                          return Text(source.name,
                                               style: TextStyle(
                                                 color: (Get.isDarkMode
                                                         ? '#a4a4a6'

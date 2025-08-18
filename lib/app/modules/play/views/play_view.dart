@@ -77,7 +77,7 @@ class _PlayViewState extends State<PlayView> with AfterLayoutMixin {
   final FocusNode focusNode = FocusNode();
   final ScrollController scrollController = ScrollController();
 
-  late Player player;
+  Player? player;
   late VideoController controller;
 
   VideoKernel videoKernel = VideoKernel.webview;
@@ -155,9 +155,9 @@ class _PlayViewState extends State<PlayView> with AfterLayoutMixin {
           logLevel: logLevel,
         ),
       );
-      controller = VideoController(player);
-      if (player.platform is NativePlayer) {
-        var pp = player.platform as NativePlayer;
+      controller = VideoController(player!);
+      if (player!.platform is NativePlayer) {
+        var pp = player!.platform as NativePlayer;
         var temp = await _tempPath();
         debugPrint("video cache dir is $temp");
         pp.setProperty("demuxer-cache-dir", temp);
@@ -190,11 +190,9 @@ class _PlayViewState extends State<PlayView> with AfterLayoutMixin {
 
   @override
   void dispose() {
-    if (videoKernel.isMediaKit) {
-      player.dispose().catchError((error) {
-        debugPrint("player dispose error: $error");
-      });
-    }
+    player?.dispose().catchError((error) {
+      debugPrint("player dispose error: $error");
+    });
     super.dispose();
   }
 
@@ -242,9 +240,36 @@ class _PlayViewState extends State<PlayView> with AfterLayoutMixin {
 
   Widget _buildCoverImage() {
     return Positioned.fill(
-      child: CachedNetworkImage(
-        imageUrl: play.movieItem.smallCoverImage,
-        fit: BoxFit.contain,
+      child: Stack(
+        children: [
+          Positioned.fill(
+            child: ClipRect(
+              child: Stack(
+                children: [
+                  Positioned.fill(
+                    child: CachedNetworkImage(
+                      imageUrl: play.movieItem.smallCoverImage,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  Positioned.fill(
+                    child: BackdropFilter(
+                      filter: ImageFilter.blur(sigmaX: 24, sigmaY: 24),
+                      child:
+                          Container(color: Colors.white.withValues(alpha: .12)),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          Positioned.fill(
+            child: CachedNetworkImage(
+              imageUrl: play.movieItem.smallCoverImage,
+              fit: BoxFit.contain,
+            ),
+          )
+        ],
       ),
     );
   }
@@ -293,39 +318,7 @@ class _PlayViewState extends State<PlayView> with AfterLayoutMixin {
     Widget videoView = Video(
       fill: Colors.black.withValues(alpha: .21),
       fit: mediaKitFit,
-      placeholder: Positioned.fill(
-        child: Stack(
-          children: [
-            Positioned.fill(
-              child: ClipRect(
-                child: Stack(
-                  children: [
-                    Positioned.fill(
-                      child: CachedNetworkImage(
-                        imageUrl: play.movieItem.smallCoverImage,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                    Positioned.fill(
-                      child: BackdropFilter(
-                        filter: ImageFilter.blur(sigmaX: 24, sigmaY: 24),
-                        child: Container(
-                            color: Colors.white.withValues(alpha: .12)),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            Positioned.fill(
-              child: CachedNetworkImage(
-                imageUrl: play.movieItem.smallCoverImage,
-                fit: BoxFit.contain,
-              ),
-            )
-          ],
-        ),
-      ),
+      placeholder: _buildCoverImage(),
       controller: controller,
       onEnterFullscreen: () async {
         await defaultEnterNativeFullscreen();
@@ -408,33 +401,401 @@ class _PlayViewState extends State<PlayView> with AfterLayoutMixin {
     return Positioned.fill(child: videoView);
   }
 
-  Widget _buildCover() {
+  Widget _oneView(bool isDesktop) {
+    var cardHeight = context.mediaQuery.size.width * (6 / 12);
+    var hh = context.mediaQuery.size.height * .51;
+    if (cardHeight >= hh) cardHeight = hh;
+    if (cardHeight <= 200) cardHeight = 240;
+    return SizedBox(
+      width: isDesktop ? context.mediaQuery.size.width * .72 : double.infinity,
+      height: isDesktop ? double.infinity : cardHeight,
+      child: Stack(
+        children: [
+          if (videoKernel.isMediaKit) _buildMediaKit() else _buildCoverImage(),
+        ],
+      ),
+    );
+  }
+
+  Widget _twoView(bool isDesktop) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Expanded(child: SizedBox.shrink()),
+        _buildWithDesc,
+        Container(
+          height: 32,
+          margin: EdgeInsets.symmetric(
+            horizontal: 12,
+            vertical: 6,
+          ).copyWith(top: 0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text(
+                "播放列表",
+                style: TextStyle(
+                  fontSize: 18,
+                ),
+              ),
+              if (!playlistIsEmpty && playlist[play.tabIndex].datas.length >= 2)
+                IconButton(
+                  tooltip: playlistSort.name,
+                  onPressed: handleSortPlaylist,
+                  icon: Icon(playlistSort.icon),
+                ),
+            ],
+          ),
+        ),
         Container(
           width: double.infinity,
-          clipBehavior: Clip.antiAlias,
-          decoration: const BoxDecoration(
-            color: Colors.black12,
-          ),
-          child: BackdropFilter(
-            filter: ImageFilter.blur(
-              sigmaX: 24,
-              sigmaY: 24,
-            ),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                vertical: 12,
-                horizontal: 24,
+          height: canRenderIosStyle ? 32 + 12 : null,
+          decoration: canRenderIosStyle
+              ? BoxDecoration(
+                  border: Border(
+                    bottom: BorderSide(
+                      color: Colors.grey.withValues(alpha: .2),
+                      width: 1,
+                    ),
+                  ),
+                )
+              : null,
+          padding: canRenderIosStyle
+              ? const EdgeInsets.only(
+                  bottom: 12,
+                )
+              : null,
+          child: Builder(builder: (_) {
+            var isNext = playlist.length <= 1 || tabviewData[1] == null;
+            if (isNext) return const SizedBox.shrink();
+            if (canRenderIosStyle) {
+              return SmoothListView.builder(
+                duration: kSmoothListViewDuration,
+                scrollDirection: Axis.horizontal,
+                itemCount: playlist.length,
+                itemBuilder: (context, index) {
+                  var isCurrentIndex = index == play.tabIndex;
+                  var current = playlist[index];
+                  var currentBorderColor = isCurrentIndex
+                      ? CupertinoTheme.of(context).primaryColor
+                      : (context.isDarkMode ? Colors.white : Colors.black)
+                          .withValues(alpha: .42);
+                  return GestureDetector(
+                    onTap: () {
+                      play.changeTabIndex(index);
+                    },
+                    child: AnimatedContainer(
+                      alignment: Alignment.center,
+                      height: 32,
+                      duration: const Duration(milliseconds: 300),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                          color: currentBorderColor,
+                        ),
+                      ),
+                      margin: const EdgeInsets.only(
+                        right: 6,
+                        left: 9,
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 24,
+                      ),
+                      child: Text(
+                        current.title,
+                        style: TextStyle(
+                          color: currentBorderColor,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  );
+                },
+              );
+            }
+            return Padding(
+              padding:
+                  EdgeInsets.symmetric(horizontal: 12).copyWith(bottom: 12),
+              child: CupertinoSlidingSegmentedControl(
+                backgroundColor: Colors.black26,
+                thumbColor: context.isDarkMode ? Colors.blue : Colors.white,
+                onValueChanged: (value) {
+                  if (value == null) return;
+                  play.changeTabIndex(value);
+                },
+                groupValue: play.tabIndex,
+                children: tabviewData,
               ),
-              child: Text(
-                play.movieItem.title,
-                style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    color: context.isDarkMode ? Colors.white : Colors.black),
-                overflow: TextOverflow.ellipsis,
-                maxLines: 4,
+            );
+          }),
+        ),
+        Expanded(
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: offsetSize),
+            child: Builder(builder: (context) {
+              if (playlistIsEmpty) {
+                return emptyPlaylistWidget;
+              }
+              return GridView.builder(
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: isDesktop ? 2 : playListGridCount,
+                  mainAxisExtent: 48,
+                  crossAxisSpacing: 12,
+                  mainAxisSpacing: 12,
+                ),
+                itemCount: playlist[play.tabIndex].datas.length,
+                itemBuilder: (context, index) {
+                  var curr = playlist[play.tabIndex].datas[index];
+                  String playUrl = curr.url;
+                  var isCast =
+                      playUrl.endsWith(".m3u8") || playUrl.endsWith(".mp4");
+                  return Builder(builder: (menuContext) {
+                    return PullDownButton(
+                      itemBuilder: (context) {
+                        return [
+                          PullDownMenuItem(
+                            onTap: () async {
+                              await FlutterClipboard.copy(
+                                playUrl,
+                              );
+                              EasyLoading.showToast(
+                                "复制链接成功",
+                                maskType: EasyLoadingMaskType.none,
+                              );
+                            },
+                            title: '复制链接',
+                            icon: CupertinoIcons.doc_on_clipboard,
+                          ),
+                          if (isCast)
+                            PullDownMenuItem(
+                              title: '投屏播放',
+                              subtitle: '仅支持局域网里的设备',
+                              onTap: () {
+                                showCupertinoModalBottomSheet(
+                                    context: context,
+                                    backgroundColor: (context.isDarkMode
+                                            ? Colors.black
+                                            : Colors.white)
+                                        .withValues(alpha: .88),
+                                    builder: (
+                                      BuildContext context,
+                                    ) {
+                                      return CastScreen(
+                                        onTapDevice: (cx) async {
+                                          try {
+                                            await cx.setUrl(playUrl);
+                                            await cx.play();
+                                            // TODO: 支持控制远程DLNA设备
+                                            if (!context.mounted) {
+                                              return;
+                                            }
+                                            Navigator.of(context).pop();
+                                            EasyLoading.showToast(
+                                              "即将开始投屏播放",
+                                              toastPosition:
+                                                  EasyLoadingToastPosition
+                                                      .bottom,
+                                              duration:
+                                                  Duration(milliseconds: 240),
+                                            );
+                                          } catch (e) {
+                                            EasyLoading.showToast(
+                                              "播放失败",
+                                              toastPosition:
+                                                  EasyLoadingToastPosition
+                                                      .bottom,
+                                              duration:
+                                                  Duration(milliseconds: 240),
+                                            );
+                                          }
+                                        },
+                                      );
+                                    });
+                              },
+                              icon: CupertinoIcons.tv,
+                            ),
+                        ];
+                      },
+                      buttonBuilder: (context, showMenu) {
+                        return HoverCursor(
+                          child: CupertinoButton.filled(
+                            color: (context.isDarkMode ? '#222222' : '#f4e8f8')
+                                .$color,
+                            padding: EdgeInsets.zero,
+                            child: Builder(builder: (cx) {
+                              var text = curr.name;
+                              var ps = play.playState;
+                              var lastedPlay = ps.tabIndex == play.tabIndex &&
+                                  index == ps.index;
+                              var textColor = context.isDarkMode
+                                  ? Colors.white
+                                  : Colors.black;
+                              if (lastedPlay) {
+                                text += "\n(上次播放)";
+                                textColor = Color(0xFF6750A4);
+                              }
+                              return Text(
+                                text,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  color: textColor,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              );
+                            }),
+                            onPressed: () {
+                              handlePlay(
+                                play.tabIndex,
+                                index,
+                              );
+                            },
+                            onLongPress: () {
+                              showMenu();
+                            },
+                          ),
+                        );
+                      },
+                    );
+                  });
+                },
+              );
+            }),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _realBodyView() {
+    var width = context.mediaQuery.size.width;
+    var isDesktop = width >= 720;
+    late Widget body;
+    if (isDesktop) {
+      body = Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _oneView(true),
+          if (isDesktop) Container(
+            width: 1,
+            height: double.infinity,
+            color: (context.isDarkMode ? Colors.white : Colors.black)
+                .withValues(alpha: .12),
+          ),
+          Expanded(child: _twoView(true)),
+        ],
+      );
+    } else {
+      body = Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _oneView(false),
+          Expanded(child: _twoView(false)),
+        ],
+      );
+    }
+    return Stack(
+      children: [
+        Positioned.fill(child: body),
+        Positioned(
+          left: 0,
+          top: 0,
+          width: isDesktop ? width * .72 : width,
+          height: GetPlatform.isDesktop ? 56 : 48,
+          child: MoveWindow(
+            child: Container(
+              decoration: BoxDecoration(
+                color: (context.isDarkMode ? '#141218' : "#fef7ff").$color,
+              ),
+              padding: EdgeInsets.only(
+                top: GetPlatform.isDesktop ? 12 : 0,
+                left: 6,
+                right: 6
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: Stack(
+                      children: [
+                        Positioned.fill(
+                          child: Container(
+                            padding: EdgeInsets.symmetric(vertical: 12)
+                                .copyWith(right: 24),
+                            child: Row(
+                              spacing: 6,
+                              mainAxisSize: MainAxisSize.max,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(CupertinoIcons.back, size: 24),
+                                Expanded(
+                                  child: Text(
+                                    play.movieItem.title,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .titleMedium
+                                        ?.copyWith(
+                                            color: context.isDarkMode
+                                                ? Colors.white
+                                                : Colors.black),
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 1,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        Positioned(
+                          left: 0,
+                          top: 0,
+                          bottom: 0,
+                          width: 120,
+                          child: GestureDetector(
+                            behavior: HitTestBehavior.opaque,
+                            onTap: () {
+                              var ps = play.playState;
+                              if (ps == kEmptyPlayState) {
+                                Get.back();
+                                return;
+                              }
+                              var curr = playlist[ps.tabIndex].datas[ps.index];
+                              Get.back(result: Tuple2(play.playState, curr.name));
+                            },
+                            child: MouseRegion(
+                              cursor: SystemMouseCursors.click,
+                              child: SizedBox.expand(),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  if (canBeShowParseVipButton)
+                    Zoom(
+                      child: CupertinoButton(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 6.0,
+                        ),
+                        child: const Row(
+                          children: [
+                            Icon(CupertinoIcons.collections, size: 16),
+                            SizedBox(width: 6.0),
+                            Text(
+                              "解析源",
+                              style: TextStyle(fontSize: 14.0),
+                            ),
+                            SizedBox(width: 2.0),
+                          ],
+                        ),
+                        onPressed: () {
+                          Get.to(() => const ParseVipManagePageView());
+                        },
+                      ),
+                    ),
+                ],
               ),
             ),
           ),
@@ -445,107 +806,8 @@ class _PlayViewState extends State<PlayView> with AfterLayoutMixin {
 
   @override
   Widget build(BuildContext context) {
-    var cardHeight = context.mediaQuery.size.width * (6 / 12);
-    var hh = context.mediaQuery.size.height * .51;
-    if (cardHeight >= hh) cardHeight = hh;
-    if (cardHeight <= 200) cardHeight = 240;
     return GetBuilder<PlayController>(
       builder: (play) => Scaffold(
-        appBar: CupertinoEasyAppBar(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                child: Stack(
-                  children: [
-                    Positioned.fill(
-                      child: Container(
-                        child: videoKernel.isMediaKit
-                            ? Container(
-                                padding: EdgeInsets.symmetric(vertical: 12)
-                                    .copyWith(right: 24),
-                                child: Row(
-                                  spacing: 6,
-                                  mainAxisSize: MainAxisSize.max,
-                                  children: [
-                                    Icon(CupertinoIcons.back, size: 28),
-                                    Expanded(
-                                      child: Text(
-                                        play.movieItem.title,
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .titleMedium
-                                            ?.copyWith(
-                                                color: context.isDarkMode
-                                                    ? Colors.white
-                                                    : Colors.black),
-                                        overflow: TextOverflow.ellipsis,
-                                        maxLines: 1,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              )
-                            : Row(
-                                children: [
-                                  Zoom(
-                                    child: CupertinoNavigationBarBackButton(
-                                        onPressed: () {}),
-                                  ),
-                                ],
-                              ),
-                      ),
-                    ),
-                    Positioned(
-                      left: 0,
-                      top: 0,
-                      bottom: 0,
-                      width: 120,
-                      child: GestureDetector(
-                        behavior: HitTestBehavior.opaque,
-                        onTap: () {
-                          var ps = play.playState;
-                          if (ps == kEmptyPlayState) {
-                            Get.back();
-                            return;
-                          }
-                          var curr = playlist[ps.tabIndex].datas[ps.index];
-                          Get.back(result: Tuple2(play.playState, curr.name));
-                        },
-                        child: MouseRegion(
-                          cursor: SystemMouseCursors.click,
-                          child: SizedBox.expand(),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              if (canBeShowParseVipButton)
-                Zoom(
-                  child: CupertinoButton(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 6.0,
-                    ),
-                    child: const Row(
-                      children: [
-                        Icon(CupertinoIcons.collections, size: 16),
-                        SizedBox(width: 6.0),
-                        Text(
-                          "解析源",
-                          style: TextStyle(fontSize: 14.0),
-                        ),
-                        SizedBox(width: 2.0),
-                      ],
-                    ),
-                    onPressed: () {
-                      Get.to(() => const ParseVipManagePageView());
-                    },
-                  ),
-                ),
-            ],
-          ),
-        ),
         body: Shortcuts(
           shortcuts: {
             // esc
@@ -609,316 +871,7 @@ class _PlayViewState extends State<PlayView> with AfterLayoutMixin {
                   style: TextStyle(
                     color: context.isDarkMode ? Colors.white : Colors.black,
                   ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SizedBox(
-                        width: double.infinity,
-                        height: cardHeight,
-                        child: Stack(
-                          children: [
-                            _buildCoverImage(),
-                            if (videoKernel.isMediaKit)
-                              _buildMediaKit()
-                            else
-                              _buildCover()
-                          ],
-                        ),
-                      ),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            _buildWithDesc,
-                            Container(
-                              margin: const EdgeInsets.symmetric(
-                                horizontal: 12,
-                                vertical: 6,
-                              ),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  const Text(
-                                    "播放列表",
-                                    style: TextStyle(
-                                      fontSize: 18,
-                                    ),
-                                  ),
-                                  if (!playlistIsEmpty &&
-                                      playlist[play.tabIndex].datas.length >= 2)
-                                    IconButton(
-                                      tooltip: playlistSort.name,
-                                      onPressed: handleSortPlaylist,
-                                      icon: Icon(playlistSort.icon),
-                                    ),
-                                ],
-                              ),
-                            ),
-                            Container(
-                              width: double.infinity,
-                              height: canRenderIosStyle ? 32 + 12 : null,
-                              decoration: canRenderIosStyle
-                                  ? BoxDecoration(
-                                      border: Border(
-                                        bottom: BorderSide(
-                                          color:
-                                              Colors.grey.withValues(alpha: .2),
-                                          width: 1,
-                                        ),
-                                      ),
-                                    )
-                                  : null,
-                              padding: canRenderIosStyle
-                                  ? const EdgeInsets.only(
-                                      bottom: 12,
-                                    )
-                                  : null,
-                              child: Builder(builder: (_) {
-                                var isNext = playlist.length <= 1 ||
-                                    tabviewData[1] == null;
-                                if (isNext) return const SizedBox.shrink();
-                                if (canRenderIosStyle) {
-                                  return SmoothListView.builder(
-                                    duration: kSmoothListViewDuration,
-                                    scrollDirection: Axis.horizontal,
-                                    itemCount: playlist.length,
-                                    itemBuilder: (context, index) {
-                                      var isCurrentIndex =
-                                          index == play.tabIndex;
-                                      var current = playlist[index];
-                                      var currentBorderColor = isCurrentIndex
-                                          ? CupertinoTheme.of(context)
-                                              .primaryColor
-                                          : (context.isDarkMode
-                                                  ? Colors.white
-                                                  : Colors.black)
-                                              .withValues(alpha: .42);
-                                      return GestureDetector(
-                                        onTap: () {
-                                          play.changeTabIndex(index);
-                                        },
-                                        child: AnimatedContainer(
-                                          alignment: Alignment.center,
-                                          height: 32,
-                                          duration:
-                                              const Duration(milliseconds: 300),
-                                          decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(12),
-                                            border: Border.all(
-                                              color: currentBorderColor,
-                                            ),
-                                          ),
-                                          margin: const EdgeInsets.only(
-                                            right: 6,
-                                            left: 9,
-                                          ),
-                                          padding: const EdgeInsets.symmetric(
-                                            horizontal: 24,
-                                          ),
-                                          child: Text(
-                                            current.title,
-                                            style: TextStyle(
-                                              color: currentBorderColor,
-                                            ),
-                                            textAlign: TextAlign.center,
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                  );
-                                }
-                                return Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 12)
-                                      .copyWith(bottom: 12),
-                                  child: CupertinoSlidingSegmentedControl(
-                                    backgroundColor: Colors.black26,
-                                    thumbColor: context.isDarkMode
-                                        ? Colors.blue
-                                        : Colors.white,
-                                    onValueChanged: (value) {
-                                      if (value == null) return;
-                                      play.changeTabIndex(value);
-                                    },
-                                    groupValue: play.tabIndex,
-                                    children: tabviewData,
-                                  ),
-                                );
-                              }),
-                            ),
-                            Expanded(
-                              child: Padding(
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: offsetSize),
-                                child: Builder(builder: (context) {
-                                  if (playlistIsEmpty) {
-                                    return emptyPlaylistWidget;
-                                  }
-                                  return GridView.builder(
-                                    gridDelegate:
-                                        SliverGridDelegateWithFixedCrossAxisCount(
-                                      crossAxisCount: playListGridCount,
-                                      mainAxisExtent: 48,
-                                      crossAxisSpacing: 12,
-                                      mainAxisSpacing: 12,
-                                    ),
-                                    itemCount:
-                                        playlist[play.tabIndex].datas.length,
-                                    itemBuilder: (context, index) {
-                                      var curr =
-                                          playlist[play.tabIndex].datas[index];
-                                      String playUrl = curr.url;
-                                      var isCast = playUrl.endsWith(".m3u8") ||
-                                          playUrl.endsWith(".mp4");
-                                      return Builder(builder: (menuContext) {
-                                        return PullDownButton(
-                                          itemBuilder: (context) {
-                                            return [
-                                              PullDownMenuItem(
-                                                onTap: () async {
-                                                  await FlutterClipboard.copy(
-                                                    playUrl,
-                                                  );
-                                                  EasyLoading.showToast(
-                                                    "复制链接成功",
-                                                    maskType:
-                                                        EasyLoadingMaskType
-                                                            .none,
-                                                  );
-                                                },
-                                                title: '复制链接',
-                                                icon: CupertinoIcons
-                                                    .doc_on_clipboard,
-                                              ),
-                                              if (isCast)
-                                                PullDownMenuItem(
-                                                  title: '投屏播放',
-                                                  subtitle: '仅支持局域网里的设备',
-                                                  onTap: () {
-                                                    showCupertinoModalBottomSheet(
-                                                        context: context,
-                                                        backgroundColor:
-                                                            (context.isDarkMode
-                                                                    ? Colors
-                                                                        .black
-                                                                    : Colors
-                                                                        .white)
-                                                                .withValues(
-                                                                    alpha: .88),
-                                                        builder: (
-                                                          BuildContext context,
-                                                        ) {
-                                                          return CastScreen(
-                                                            onTapDevice:
-                                                                (cx) async {
-                                                              try {
-                                                                await cx.setUrl(
-                                                                    playUrl);
-                                                                await cx.play();
-                                                                // TODO: 支持控制远程DLNA设备
-                                                                if (!context
-                                                                    .mounted) {
-                                                                  return;
-                                                                }
-                                                                Navigator.of(
-                                                                        context)
-                                                                    .pop();
-                                                                EasyLoading
-                                                                    .showToast(
-                                                                  "即将开始投屏播放",
-                                                                  toastPosition:
-                                                                      EasyLoadingToastPosition
-                                                                          .bottom,
-                                                                  duration: Duration(
-                                                                      milliseconds:
-                                                                          240),
-                                                                );
-                                                              } catch (e) {
-                                                                EasyLoading
-                                                                    .showToast(
-                                                                  "播放失败",
-                                                                  toastPosition:
-                                                                      EasyLoadingToastPosition
-                                                                          .bottom,
-                                                                  duration: Duration(
-                                                                      milliseconds:
-                                                                          240),
-                                                                );
-                                                              }
-                                                            },
-                                                          );
-                                                        });
-                                                  },
-                                                  icon: CupertinoIcons.tv,
-                                                ),
-                                              // PullDownMenuItem(
-                                              //   onTap: () {},
-                                              //   title: '删除',
-                                              //   isDestructive: true,
-                                              //   icon: CupertinoIcons.delete,
-                                              // ),
-                                            ];
-                                          },
-                                          buttonBuilder: (context, showMenu) {
-                                            return HoverCursor(
-                                              child: CupertinoButton.filled(
-                                                color: (context.isDarkMode
-                                                        ? '#222222'
-                                                        : '#f4e8f8')
-                                                    .$color,
-                                                padding: EdgeInsets.zero,
-                                                child: Builder(builder: (cx) {
-                                                  var text = curr.name;
-                                                  var ps = play.playState;
-                                                  var lastedPlay =
-                                                      ps.tabIndex ==
-                                                              play.tabIndex &&
-                                                          index == ps.index;
-                                                  var textColor =
-                                                      context.isDarkMode
-                                                          ? Colors.white
-                                                          : Colors.black;
-                                                  if (lastedPlay) {
-                                                    text += "(上次播放)";
-                                                    textColor =
-                                                        Color(0xFF6750A4);
-                                                  }
-                                                  return Text(
-                                                    text,
-                                                    style: TextStyle(
-                                                      color: textColor,
-                                                      fontSize: 14,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                    ),
-                                                  );
-                                                }),
-                                                onPressed: () {
-                                                  handlePlay(
-                                                    play.tabIndex,
-                                                    index,
-                                                  );
-                                                },
-                                                onLongPress: () {
-                                                  showMenu();
-                                                },
-                                              ),
-                                            );
-                                          },
-                                        );
-                                      });
-                                    },
-                                  );
-                                }),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
+                  child: _realBodyView(),
                 ),
               ),
             ),
@@ -995,6 +948,7 @@ class _PlayViewState extends State<PlayView> with AfterLayoutMixin {
     return Theme(
       data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
       child: ExpansionTile(
+        dense: true,
         initiallyExpanded: false,
         subtitle: _buildWithShortDesc(desc),
         title: Text(

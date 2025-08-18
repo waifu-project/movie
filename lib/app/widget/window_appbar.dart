@@ -7,8 +7,8 @@ import 'mac.dart';
 
 double kMacPaddingTop = 16;
 
-class _MoveWindow extends StatelessWidget {
-  const _MoveWindow({this.child});
+class MoveWindow extends StatelessWidget {
+  const MoveWindow({super.key, this.child});
   final Widget? child;
   @override
   Widget build(BuildContext context) {
@@ -37,8 +37,8 @@ class CustomMoveWindow extends StatelessWidget {
   });
   @override
   Widget build(BuildContext context) {
-    if (child == null) return const _MoveWindow();
-    return _MoveWindow(
+    if (child == null) return const MoveWindow();
+    return MoveWindow(
       child: child,
     );
   }
@@ -104,9 +104,7 @@ class _CupertinoEasyAppBarState extends State<CupertinoEasyAppBar> {
         child: target,
       );
     }
-    return _MoveWindow(
-      child: target,
-    );
+    return MoveWindow(child: target);
   }
 
   @override

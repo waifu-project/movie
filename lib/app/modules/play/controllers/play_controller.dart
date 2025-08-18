@@ -410,7 +410,7 @@ document.addEventListener('DOMContentLoaded', function() {
     List<VideoInfo> playList,
     int tabIndex,
     VideoKernel videoKernel,
-    Player mediaKitPlayer,
+    Player? mediaKitPlayer,
     bool isUpSort,
   ) async {
     var url = curr.url;
@@ -500,6 +500,7 @@ document.addEventListener('DOMContentLoaded', function() {
           url = await parseIframe(url);
           if (url.isEmpty) return false;
         }
+        if (mediaKitPlayer == null) return false;
         mediaKitPlayer.open(Media(url, httpHeaders: {
           "user-agent":
               "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36",

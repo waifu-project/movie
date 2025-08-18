@@ -85,6 +85,10 @@ class _SearchV2State extends State<SearchV2> with AfterLayoutMixin {
 
   @override
   FutureOr<void> afterFirstLayout(BuildContext context) {
+    searchFocusNode.addListener(() {
+      if (mounted) _hasFocus = searchFocusNode.hasFocus;
+      setState(() {});
+    });
     loadSources();
     loadSearchHistory();
     scrollController.addListener(() {
@@ -113,6 +117,7 @@ class _SearchV2State extends State<SearchV2> with AfterLayoutMixin {
   @override
   void dispose() {
     super.dispose();
+    searchFocusNode.dispose();
     scrollController.dispose();
     stopSearch();
   }
@@ -128,6 +133,9 @@ class _SearchV2State extends State<SearchV2> with AfterLayoutMixin {
   List<ISpiderAdapter> sources = [];
 
   ScrollController scrollController = ScrollController();
+
+  FocusNode searchFocusNode = FocusNode();
+  bool _hasFocus = true;
 
   void stopSearch() {
     queue.pause();
@@ -290,74 +298,82 @@ class _SearchV2State extends State<SearchV2> with AfterLayoutMixin {
                       // TODO(d1y): 支持选择(过滤)源
                       // Icon(Icons.filter_alt_outlined, size: 26),
                       Expanded(
-                        child: CupertinoTextField(
-                          controller: textEditingController,
-                          onSubmitted: handleSearch,
-                          textInputAction: TextInputAction.search,
-                          decoration: BoxDecoration(
-                            color: CupertinoDynamicColor.withBrightness(
-                              color: "#f0f0f0".$color,
-                              darkColor: "#1c1c1e".$color,
-                            ),
-                            border: Border.all(
+                        child: MouseRegion(
+                          cursor: SystemMouseCursors.text,
+                          child: CupertinoTextField(
+                            controller: textEditingController,
+                            onSubmitted: handleSearch,
+                            textInputAction: TextInputAction.search,
+                            autofocus: true,
+                            focusNode: searchFocusNode,
+                            showCursor: true,
+                            decoration: BoxDecoration(
                               color: CupertinoDynamicColor.withBrightness(
-                                color: CupertinoColors.inactiveGray,
-                                darkColor: CupertinoColors.white,
-                              ).withValues(alpha: .12),
-                              width: 1,
+                                color: "#f0f0f0".$color,
+                                darkColor: "#1c1c1e".$color,
+                              ),
+                              border: Border.all(
+                                color: CupertinoDynamicColor.withBrightness(
+                                  color: CupertinoColors.inactiveGray,
+                                  darkColor: CupertinoColors.white,
+                                ).withValues(alpha: _hasFocus ? .42 : .12),
+                                width: 1,
+                              ),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(12)),
                             ),
-                            borderRadius: BorderRadius.all(Radius.circular(12)),
-                          ),
-                          onChanged: (_keyword) {
-                            keyword = _keyword;
-                            setState(() {});
-                          },
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 12,
-                            vertical: 6,
-                          ),
-                          style: TextStyle(
-                            color: context.isDarkMode
-                                ? Colors.white
-                                : Colors.black,
-                          ),
-                          placeholder: "搜索",
-                          prefix: Padding(
-                            padding: EdgeInsets.only(
-                              left: 6,
+                            onChanged: (_keyword) {
+                              keyword = _keyword;
+                              setState(() {});
+                            },
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 6,
                             ),
-                            child: Icon(
-                              CupertinoIcons.search,
-                              size: 21,
-                              color: "#707070".$color,
+                            style: TextStyle(
+                              color: context.isDarkMode
+                                  ? Colors.white
+                                  : Colors.black,
                             ),
-                          ),
-                          suffix: keyword.isEmpty
-                              ? null
-                              : Zoom(
-                                  onTap: handleClean,
-                                  child: Padding(
-                                    padding: EdgeInsets.only(right: 12),
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        color: "#d0d0d0"
-                                            .$color
-                                            .withValues(alpha: .42),
-                                        borderRadius: BorderRadius.circular(12),
-                                      ),
-                                      padding: EdgeInsets.all(6),
-                                      child: Icon(
-                                        CupertinoIcons.clear,
-                                        size: 12,
-                                        weight: 12,
-                                        color: (Get.isDarkMode
-                                                ? '#f0f0f0'
-                                                : '#1c1c1e')
-                                            .$color,
+                            placeholder: "搜索",
+                            prefix: Padding(
+                              padding: EdgeInsets.only(
+                                left: 6,
+                              ),
+                              child: Icon(
+                                CupertinoIcons.search,
+                                size: 21,
+                                color: "#707070".$color,
+                              ),
+                            ),
+                            suffix: keyword.isEmpty
+                                ? null
+                                : Zoom(
+                                    onTap: handleClean,
+                                    child: Padding(
+                                      padding: EdgeInsets.only(right: 12),
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          color: "#d0d0d0"
+                                              .$color
+                                              .withValues(alpha: .42),
+                                          borderRadius:
+                                              BorderRadius.circular(12),
+                                        ),
+                                        padding: EdgeInsets.all(6),
+                                        child: Icon(
+                                          CupertinoIcons.clear,
+                                          size: 12,
+                                          weight: 12,
+                                          color: (Get.isDarkMode
+                                                  ? '#f0f0f0'
+                                                  : '#1c1c1e')
+                                              .$color,
+                                        ),
                                       ),
                                     ),
                                   ),
-                                ),
+                          ),
                         ),
                       ),
                       Zoom(

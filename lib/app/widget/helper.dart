@@ -17,8 +17,9 @@ Widget kErrorImage = ClipRRect(
           Icon(
             Icons.cloud_off,
             size: 42,
+            color: Colors.white,
           ),
-          Text("加载失败")
+          Text("加载失败", style: TextStyle(color: Colors.white))
         ],
       ),
     ),

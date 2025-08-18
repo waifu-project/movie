@@ -1074,6 +1074,7 @@ class TVUIState extends State<TVUI>
                               icon: const Icon(
                                 Icons.aspect_ratio,
                                 size: 20,
+                                color: Colors.white,
                               ),
                               onPressed: () {
                                 List<BoxFit> fits = kVideoFits.keys.toList();
@@ -1095,7 +1096,7 @@ class TVUIState extends State<TVUI>
                           // 全屏
                           Zoom(
                             child: IconButton(
-                              icon: const Icon(Icons.fullscreen),
+                              icon: const Icon(Icons.fullscreen, color: Colors.white),
                               onPressed: () async {
                                 if (GetPlatform.isDesktop) {
                                   bool isFullScreen =

@@ -10,6 +10,7 @@ import 'package:catmovie/app/modules/play/views/cast_screen.dart';
 import 'package:catmovie/app/widget/zoom.dart';
 import 'package:catmovie/isar/schema/video_history_schema.dart';
 import 'package:catmovie/shared/enum.dart';
+import 'package:catmovie/shared/env.dart';
 import 'package:clipboard/clipboard.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
@@ -24,12 +25,14 @@ import 'package:catmovie/widget/simple_html/flutter_html.dart';
 import 'package:isar/isar.dart';
 import 'package:media_kit_video/media_kit_video.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:pull_down_button/pull_down_button.dart';
 import 'package:simple/x.dart';
 import 'package:smooth_list_view/smooth_list_view.dart';
 import 'package:tuple/tuple.dart';
 import 'package:xi/xi.dart';
 import 'package:media_kit/media_kit.dart';
+import 'package:path/path.dart' as path;
 
 enum PlaylistSort { down, up }
 
@@ -74,8 +77,8 @@ class _PlayViewState extends State<PlayView> with AfterLayoutMixin {
   final FocusNode focusNode = FocusNode();
   final ScrollController scrollController = ScrollController();
 
-  late final Player player = Player();
-  late final controller = VideoController(player);
+  late Player player;
+  late VideoController controller;
 
   VideoKernel videoKernel = VideoKernel.webview;
 
@@ -123,10 +126,43 @@ class _PlayViewState extends State<PlayView> with AfterLayoutMixin {
     return count;
   }
 
+  int get _bufferSize {
+    var mb = 125; // 125MB
+    if (GetPlatform.isDesktop) {
+      mb = 1024; // 1GB
+    }
+    return mb * 1024 * 1024;
+  }
+
+  Future<String> _tempPath() async {
+    var dir = await getTemporaryDirectory();
+    return path.join(dir.path, "video_cache");
+  }
+
   @override
-  FutureOr<void> afterFirstLayout(BuildContext context) {
+  FutureOr<void> afterFirstLayout(BuildContext context) async {
     focusNode.requestFocus();
     videoKernel = getSettingAsKeyIdent<VideoKernel>(SettingsAllKey.videoKernel);
+    if (videoKernel.isMediaKit) {
+      MPVLogLevel logLevel = MPVLogLevel.info;
+      if (CMEnv.isDebug) {
+        logLevel = MPVLogLevel.debug;
+      }
+      player = Player(
+        configuration: PlayerConfiguration(
+          bufferSize: _bufferSize,
+          osc: false,
+          logLevel: logLevel,
+        ),
+      );
+      controller = VideoController(player);
+      if (player.platform is NativePlayer) {
+        var pp = player.platform as NativePlayer;
+        var temp = await _tempPath();
+        debugPrint("video cache dir is $temp");
+        pp.setProperty("demuxer-cache-dir", temp);
+      }
+    }
     playlist = videoInfo2PlayListData(play.movieItem.videos);
     loadHistory();
     if (mounted) setState(() {});
@@ -212,11 +248,12 @@ class _PlayViewState extends State<PlayView> with AfterLayoutMixin {
   }
 
   void showMediaKitPlaylist() {
-    var w = context.mediaQuery.size.width * .62;
-    if (w >= 480) w = 480;
+    var fw = context.mediaQuery.size.width;
+    var w = fw * .32;
+    if (w >= 320) w = 320;
     var list = playlist[play.tabIndex].datas;
-    // TODO: save last scroll position
     Get.dialog(
+      useSafeArea: false,
       MediaKitPlaylist(
         width: w,
         list: list,
@@ -254,6 +291,39 @@ class _PlayViewState extends State<PlayView> with AfterLayoutMixin {
     Widget videoView = Video(
       fill: Colors.black.withValues(alpha: .21),
       fit: mediaKitFit,
+      placeholder: Positioned.fill(
+        child: Stack(
+          children: [
+            Positioned.fill(
+              child: ClipRect(
+                child: Stack(
+                  children: [
+                    Positioned.fill(
+                      child: CachedNetworkImage(
+                        imageUrl: play.movieItem.smallCoverImage,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    Positioned.fill(
+                      child: BackdropFilter(
+                        filter: ImageFilter.blur(sigmaX: 24, sigmaY: 24),
+                        child: Container(
+                            color: Colors.white.withValues(alpha: .12)),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Positioned.fill(
+              child: CachedNetworkImage(
+                imageUrl: play.movieItem.smallCoverImage,
+                fit: BoxFit.contain,
+              ),
+            )
+          ],
+        ),
+      ),
       controller: controller,
       onEnterFullscreen: () async {
         await defaultEnterNativeFullscreen();
@@ -547,45 +617,6 @@ class _PlayViewState extends State<PlayView> with AfterLayoutMixin {
                         child: Stack(
                           children: [
                             _buildCoverImage(),
-                            if (videoKernel.isMediaKit)
-                              Positioned.fill(
-                                child: Stack(
-                                  children: [
-                                    Positioned.fill(
-                                      child: ClipRect(
-                                        child: Stack(
-                                          children: [
-                                            Positioned.fill(
-                                              child: CachedNetworkImage(
-                                                imageUrl: play
-                                                    .movieItem.smallCoverImage,
-                                                fit: BoxFit.cover,
-                                              ),
-                                            ),
-                                            Positioned.fill(
-                                              child: BackdropFilter(
-                                                filter: ImageFilter.blur(
-                                                    sigmaX: 24, sigmaY: 24),
-                                                child: Container(
-                                                    color: Colors.white
-                                                        .withValues(
-                                                            alpha: .12)),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                    Positioned.fill(
-                                      child: CachedNetworkImage(
-                                        imageUrl:
-                                            play.movieItem.smallCoverImage,
-                                        fit: BoxFit.contain,
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              ),
                             if (videoKernel.isMediaKit)
                               _buildMediaKit()
                             else
@@ -1069,73 +1100,128 @@ class _MediaKitPlaylistState extends State<MediaKitPlaylist>
           width: widget.width,
           height: double.infinity,
           decoration: BoxDecoration(
-            color: Colors.black.withValues(alpha: .88),
+            color: Colors.black.withValues(alpha: .42),
           ),
-          padding: EdgeInsets.only(top: 6),
-          child: Column(
-            children: [
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 12),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      spacing: 3,
-                      children: [
-                        Text(
-                          "选集",
-                          style: TextStyle(fontSize: 16, color: Colors.white),
-                        ),
-                        Opacity(
-                          opacity: .68,
-                          child: Text(
-                            "(共${list.length}集)",
-                            style: TextStyle(fontSize: 14, color: Colors.white),
+          child: ClipRRect(
+            child: Stack(
+              children: [
+                if (GetPlatform.isDesktop)
+                  Positioned.fill(
+                    child: ClipRRect(
+                      child: BackdropFilter(
+                        filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color:
+                                Theme.of(context).brightness == Brightness.dark
+                                    ? Colors.black.withValues(alpha: 0.38)
+                                    : Colors.white.withValues(alpha: 0.24),
+                            border: Border.all(
+                              color: Colors.white.withValues(alpha: 0.21),
+                              width: 1,
+                            ),
                           ),
                         ),
-                      ],
-                    ),
-                    IconButton(
-                      onPressed: handleSortPlaylist,
-                      icon: Row(
-                        spacing: 6,
-                        children: [
-                          Icon(sort.icon, color: Colors.white),
-                          Text(sort.name, style: TextStyle(color: Colors.white)),
-                        ],
                       ),
                     ),
-                  ],
-                ),
-              ),
-              Expanded(
-                child: SmoothListView(
-                  duration: kSmoothListViewDuration,
-                  children: list.map((item) {
-                    var currIndex = list.indexOf(item);
-                    var isCurr = currIndex == index;
-                    return Material(
-                      color: Colors.transparent,
-                      child: ListTile(
-                        dense: true,
-                        selected: isCurr,
-                        selectedTileColor: kActiveColor,
-                        hoverColor: Colors.white.withValues(alpha: 0.1),
-                        title: Text(
-                          item.name,
-                          style: TextStyle(color: Colors.white),
+                  ),
+                Positioned.fill(
+                  child: Column(
+                    children: [
+                      Container(
+                        padding: EdgeInsets.symmetric(horizontal: 12),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              spacing: 3,
+                              children: [
+                                Text(
+                                  "选集",
+                                  style: TextStyle(
+                                      fontSize: 16, color: Colors.white),
+                                ),
+                                Opacity(
+                                  opacity: .68,
+                                  child: Text(
+                                    "(共${list.length}集)",
+                                    style: TextStyle(
+                                        fontSize: 14, color: Colors.white),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            IconButton(
+                              onPressed: handleSortPlaylist,
+                              icon: Row(
+                                spacing: 6,
+                                children: [
+                                  Icon(sort.icon, color: Colors.white),
+                                  Text(
+                                    sort.name,
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
                         ),
-                        onTap: () {
-                          index = currIndex;
-                          if (mounted) setState(() {});
-                          widget.onTap?.call(currIndex);
-                        },
                       ),
-                    );
-                  }).toList(),
+                      Expanded(
+                        child: SmoothListView(
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 12,
+                            horizontal: 6,
+                          ),
+                          duration: kSmoothListViewDuration,
+                          children: list.map((item) {
+                            var currIndex = list.indexOf(item);
+                            var isCurr = currIndex == index;
+                            return Padding(
+                              padding: const EdgeInsets.symmetric(
+                                vertical: 6,
+                                horizontal: 9,
+                              ),
+                              child: Material(
+                                color: Colors.transparent,
+                                child: ListTile(
+                                  shape: RoundedRectangleBorder(
+                                    side: BorderSide(
+                                      width: 1,
+                                      color: Colors.grey.withValues(
+                                        alpha: isCurr ? .88 : .24,
+                                      ),
+                                    ),
+                                    borderRadius: BorderRadius.circular(6),
+                                  ),
+                                  dense: true,
+                                  mouseCursor: SystemMouseCursors.click,
+                                  selected: isCurr,
+                                  selectedTileColor: kActiveColor,
+                                  hoverColor:
+                                      Colors.white.withValues(alpha: 0.24),
+                                  title: Text(
+                                    item.name,
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                  onTap: () {
+                                    index = currIndex;
+                                    if (mounted) setState(() {});
+                                    widget.onTap?.call(currIndex);
+                                  },
+                                ),
+                              ),
+                            );
+                          }).toList(),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ],

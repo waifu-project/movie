@@ -261,6 +261,7 @@ class _SettingsViewState extends State<SettingsView>
         );
         SpiderManage.mergeSpider(realSources);
         var showMessage = "已同步成功(${realSources.length}个源)!";
+        updateSetting(SettingsAllKey.onBoardingShowed, true);
         EasyLoading.showSuccess(showMessage);
         _mirrorLength = realSources.length;
         if (mounted) setState(() {});

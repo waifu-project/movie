@@ -11,7 +11,6 @@ list(APPEND FLUTTER_PLUGIN_LIST
   media_kit_video
   screen_retriever_linux
   url_launcher_linux
-  volume_controller
   window_manager
 )
 

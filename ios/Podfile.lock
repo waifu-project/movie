@@ -47,6 +47,8 @@ PODS:
     - FlutterMacOS
   - protocol_handler_ios (0.0.1):
     - Flutter
+  - screen_brightness_ios (0.1.0):
+    - Flutter
   - SDWebImage (5.21.1):
     - SDWebImage/Core (= 5.21.1)
   - SDWebImage/Core (5.21.1)
@@ -78,6 +80,7 @@ DEPENDENCIES:
   - package_info_plus (from `.symlinks/plugins/package_info_plus/ios`)
   - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
   - protocol_handler_ios (from `.symlinks/plugins/protocol_handler_ios/ios`)
+  - screen_brightness_ios (from `.symlinks/plugins/screen_brightness_ios/ios`)
   - share_plus (from `.symlinks/plugins/share_plus/ios`)
   - sqflite_darwin (from `.symlinks/plugins/sqflite_darwin/darwin`)
   - url_launcher_ios (from `.symlinks/plugins/url_launcher_ios/ios`)
@@ -110,6 +113,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/path_provider_foundation/darwin"
   protocol_handler_ios:
     :path: ".symlinks/plugins/protocol_handler_ios/ios"
+  screen_brightness_ios:
+    :path: ".symlinks/plugins/screen_brightness_ios/ios"
   share_plus:
     :path: ".symlinks/plugins/share_plus/ios"
   sqflite_darwin:
@@ -129,23 +134,24 @@ SPEC CHECKSUMS:
   DKImagePickerController: 946cec48c7873164274ecc4624d19e3da4c1ef3c
   DKPhotoGallery: b3834fecb755ee09a593d7c9e389d8b5d6deed60
   file_picker: a0560bc09d61de87f12d246fc47d2119e6ef37be
-  Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
+  Flutter: cabc95a1d2626b1b06e7179b784ebcf0c0cde467
   isar_flutter_libs: bc909e72c3d756c2759f14c8776c13b5b0556e26
   media_kit_libs_ios_video: 5a18affdb97d1f5d466dc79988b13eff6c5e2854
   media_kit_video: 1746e198cb697d1ffb734b1d05ec429d1fcd1474
   package_info_plus: af8e2ca6888548050f16fa2f1938db7b5a5df499
   path_provider_foundation: 080d55be775b7414fd5a5ef3ac137b97b097e564
   protocol_handler_ios: 59f23ee71f3ec602d67902ca7f669a80957888d5
+  screen_brightness_ios: 9953fd7da5bd480f1a93990daeec2eb42d4f3b52
   SDWebImage: f29024626962457f3470184232766516dee8dfea
   share_plus: 50da8cb520a8f0f65671c6c6a99b3617ed10a58a
   sqflite_darwin: 20b2a3a3b70e43edae938624ce550a3cbf66a3d0
   SwiftyGif: 706c60cf65fa2bc5ee0313beece843c8eb8194d4
   url_launcher_ios: 694010445543906933d732453a59da0a173ae33d
   video_player_avfoundation: 2cef49524dd1f16c5300b9cd6efd9611ce03639b
-  volume_controller: 3657a1f65bedb98fa41ff7dc5793537919f31b12
+  volume_controller: ca1cde542ee70fad77d388f82e9616488110942b
   wakelock_plus: e29112ab3ef0b318e58cfa5c32326458be66b556
   webview_flutter_wkwebview: 1821ceac936eba6f7984d89a9f3bcb4dea99ebb2
 
-PODFILE CHECKSUM: 4305caec6b40dde0ae97be1573c53de1882a07e5
+PODFILE CHECKSUM: 3c63482e143d1b91d2d2560aee9fb04ecc74ac7e
 
 COCOAPODS: 1.16.2

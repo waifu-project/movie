@@ -115,15 +115,78 @@ dependencies:
 
   after_layout: ^1.2.0
 
-  media_kit: ^1.2.0
-  media_kit_video: ^1.3.0
-  media_kit_libs_video: ^1.0.6
+  # media_kit: ^1.2.0
+  # media_kit_video: ^1.3.0
+  # media_kit_libs_video: ^1.0.6
+  media_kit:
+    git:
+      url: https://github.com/Predidit/media-kit.git
+      ref: main
+      path: ./media_kit
+  media_kit_video:
+    # git:
+    #   url: https://github.com/Predidit/media-kit.git
+    #   ref: main
+    #   path: ./media_kit_video
+    git:
+      url: https://github.com/waifu-project/media-kit.git
+      ref: main
+      path: ./media_kit_video
+  media_kit_libs_video:
+    git:
+      url: https://github.com/Predidit/media-kit.git
+      ref: main
+      path: ./libs/universal/media_kit_libs_video
 
   bounce_tapper: ^1.1.4
 
   cupertino_onboarding: ^1.3.0
 
   markdown_widget: ^2.3.2+8
+
+  path: ^1.9.1
+
+dependency_overrides:
+  media_kit:
+    git:
+      url: https://github.com/Predidit/media-kit.git
+      ref: main
+      path: ./media_kit
+  # media_kit_video:
+  #   git:
+  #     url: https://github.com/Predidit/media-kit.git
+  #     ref: main
+  #     path: ./media_kit_video
+  media_kit_libs_video:
+    git:
+      url: https://github.com/Predidit/media-kit.git
+      ref: main
+      path: ./libs/universal/media_kit_libs_video
+  media_kit_libs_linux:
+    git:
+      url: https://github.com/Predidit/media-kit.git
+      ref: main
+      path: ./libs/linux/media_kit_libs_linux
+  media_kit_libs_ios_video:
+    git:
+      url: https://github.com/Predidit/media-kit.git
+      ref: main
+      path: ./libs/ios/media_kit_libs_ios_video
+  media_kit_libs_android_video:
+    git:
+      url: https://github.com/Predidit/media-kit.git
+      ref: main
+      path: ./libs/android/media_kit_libs_android_video
+  media_kit_libs_windows_video:
+    git:
+      url: https://github.com/Predidit/media-kit.git
+      ref: main
+      path: ./libs/windows/media_kit_libs_windows_video
+  media_kit_libs_macos_video:
+    git:
+      url: https://github.com/Predidit/media-kit.git
+      ref: main
+      path: ./libs/macos/media_kit_libs_macos_video
 
 dev_dependencies:
   flutter_lints: ^6.0.0

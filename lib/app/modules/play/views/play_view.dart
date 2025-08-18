@@ -190,9 +190,11 @@ class _PlayViewState extends State<PlayView> with AfterLayoutMixin {
 
   @override
   void dispose() {
-    player.dispose().catchError((error) {
-      debugPrint("player dispose error: $error");
-    });
+    if (videoKernel.isMediaKit) {
+      player.dispose().catchError((error) {
+        debugPrint("player dispose error: $error");
+      });
+    }
     super.dispose();
   }
 

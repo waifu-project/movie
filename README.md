@@ -12,7 +12,7 @@
 
 **仅供学习参考, 请勿用于商业用途**
 
-<img src="https://s2.loli.net/2025/08/12/dN78kJ1pAwqHYVZ.webp" width="120" />
+<!-- <img src="https://s2.loli.net/2025/08/12/dN78kJ1pAwqHYVZ.webp" width="120" /> -->
 
 <details>
 <summary>查看截图 🖼️</summary>
@@ -20,7 +20,7 @@
 ![首页](https://s2.loli.net/2025/08/04/1qJ72QC9ioxRjkZ.jpg)
 ![搜索](https://s2.loli.net/2025/08/04/VNZtikObdxhnRLf.jpg)
 ![TV](https://s2.loli.net/2025/08/04/XUZ18fmzEwiPoR3.jpg)
-![播放.jpg](https://s2.loli.net/2025/08/11/Fzy8J3aCqc6hTbk.jpg)
+![播放.jpg](https://s2.loli.net/2025/08/29/PghkRipeYQDfC2U.png)
 
 </details>
 
@@ -41,8 +41,6 @@ brew install yoyo
 ```
 
 #### **Linux 🐧**
-
-`Linux` 下打包的二进制相对于其他平台会大 `15mb`, 由于在不同Linux(桌面)系统上字体渲染太糊([#32](https://github.com/waifu-project/movie/issues/32)), 所以直接内置了一个 `CJK` 字体([LXGWWenKai](https://github.com/lxgw/LxgwWenKai))
 
 [![](https://img.shields.io/badge/-点我下载-blue?logo=github)](https://github.com/waifu-project/movie/releases/latest/download/catmovie-linux-x86_64.tar.gz)
 

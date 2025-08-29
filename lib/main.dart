@@ -1,6 +1,6 @@
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:catmovie/shared/env.dart';
-import 'package:flutter/foundation.dart';
+import 'package:chinese_font_library/chinese_font_library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
@@ -17,19 +17,18 @@ import 'package:catmovie/shared/enum.dart';
 
 import 'app/routes/app_pages.dart';
 
-const kStandWenKaiFontName = "LXGW WenKai";
-
 ThemeData applyTheme({bool isDark = true}) {
   var theme = isDark ? ThemeData.dark() : ThemeData.light();
-  if (GetPlatform.isLinux || kDebugMode) {
-    theme = theme.copyWith(
-      textTheme: TextTheme(
-        bodyMedium: TextStyle(
-          fontFamily: GetPlatform.isMacOS ? kStandWenKaiFontName : 'LXG',
-        ),
-      ),
-    );
-  }
+  // TODO(d1y): support linux fallback font(s)
+  // https://github.com/LastMonopoly/chinese_font_library/issues/11
+  // NOTE(d1y): Linux 下最好指定一个字体(OPPO Sans 字体就不错)
+  // > https://www.coloros.com/article/A00000074
+  // https://github.com/wordshub/free-font
+  theme = theme.copyWith(
+    textTheme: TextTheme().useSystemChineseFont(
+      isDark ? Brightness.dark : Brightness.light,
+    ),
+  );
   return theme;
 }
 

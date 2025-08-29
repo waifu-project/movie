@@ -146,6 +146,8 @@ dependencies:
 
   path: ^1.9.1
 
+  chinese_font_library: ^1.2.0
+
 dependency_overrides:
   media_kit:
     git:
@@ -233,8 +235,6 @@ flutter:
     - assets/images/github_logo.png
     - assets/images/error.png
     - assets/data/playlist.js
-
-##HERE
 
 # flutter pub run icons_launcher:create
 icons_launcher:

@@ -554,6 +554,7 @@ class _SettingsViewState extends State<SettingsView>
                 },
               ),
               Copyright(),
+              BottomNavigationBarPlaceholder(),
             ],
           ),
         ],
@@ -563,6 +564,15 @@ class _SettingsViewState extends State<SettingsView>
 
   @override
   bool get wantKeepAlive => true;
+}
+
+class BottomNavigationBarPlaceholder extends AbstractSettingsTile {
+  const BottomNavigationBarPlaceholder({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(height: 80);
+  }
 }
 
 class Copyright extends AbstractSettingsTile {

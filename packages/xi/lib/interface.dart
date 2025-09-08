@@ -75,6 +75,12 @@ class VideoDetail {
   /// 介绍
   final String desc;
 
+  /// 更新时间
+  final String updateTime;
+
+  /// 备注
+  final String remark;
+
   /// 喜欢
   final int likeCount;
 
@@ -113,6 +119,8 @@ class VideoDetail {
     required this.title,
     required this.extra,
     this.desc = "",
+    this.updateTime = "",
+    this.remark = "",
     this.likeCount = 0,
     this.viewCount = 0,
     this.dislikeCount = 0,

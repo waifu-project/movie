@@ -664,28 +664,65 @@ class _SearchV2State extends State<SearchV2> with AfterLayoutMixin {
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
                                       children: [
-                                        Text(
-                                          item.title,
-                                          style: TextStyle(
-                                            color: Get.isDarkMode
-                                                ? Colors.white
-                                                : Colors.black,
-                                          ),
-                                          maxLines: 2,
-                                          overflow: TextOverflow.ellipsis,
+                                        Column(
+                                          spacing: 6,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              item.title,
+                                              style: TextStyle(
+                                                color: Get.isDarkMode
+                                                    ? Colors.white
+                                                    : Colors.black,
+                                              ),
+                                              maxLines: 2,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                            if (item.remark.isNotEmpty)
+                                              Text(
+                                                item.remark,
+                                                style: TextStyle(
+                                                  fontSize: 12,
+                                                  color: (Get.isDarkMode
+                                                          ? Colors.white
+                                                          : Colors.black)
+                                                      .withValues(alpha: .42),
+                                                ),
+                                              ),
+                                            // Text(item.updateTime),
+                                          ],
                                         ),
                                         Builder(builder: (context) {
                                           var source = item.getContext();
                                           if (source == null) {
                                             return const SizedBox.shrink();
                                           }
-                                          return Text(source.name,
+                                          var color = (Get.isDarkMode
+                                                  ? '#a4a4a6'
+                                                  : '#71727a')
+                                              .$color;
+                                          return Container(
+                                            decoration: BoxDecoration(
+                                              border: Border.all(
+                                                color: color,
+                                                width: .72,
+                                              ),
+                                              borderRadius:
+                                                  BorderRadius.circular(6),
+                                            ),
+                                            padding: EdgeInsets.symmetric(
+                                              horizontal: 6,
+                                              vertical: 3,
+                                            ),
+                                            child: Text(
+                                              source.name,
                                               style: TextStyle(
-                                                color: (Get.isDarkMode
-                                                        ? '#a4a4a6'
-                                                        : '#71727a')
-                                                    .$color,
-                                              ));
+                                                fontSize: 11,
+                                                color: color,
+                                              ),
+                                            ),
+                                          );
                                         }),
                                       ],
                                     ),

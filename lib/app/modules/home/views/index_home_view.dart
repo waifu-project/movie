@@ -481,6 +481,7 @@ class _IndexHomeViewState extends State<IndexHomeView>
                                     child: MovieCardItem(
                                       imageUrl: subItem.smallCoverImage,
                                       title: subItem.title,
+                                      note: subItem.remark,
                                       onTap: () {
                                         EasyLoading.dismiss();
                                         handleClickItem(subItem, controller);

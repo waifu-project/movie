@@ -7,12 +7,14 @@ import 'package:catmovie/app/widget/helper.dart';
 class MovieCardItem extends StatelessWidget {
   final String imageUrl;
   final String title;
+  final String note;
   final VoidCallback onTap;
 
   const MovieCardItem({
     super.key,
     required this.imageUrl,
     required this.title,
+    required this.note,
     required this.onTap,
   });
 
@@ -31,17 +33,46 @@ class MovieCardItem extends StatelessWidget {
             children: [
               Expanded(
                 child: ClipRRect(
-                  borderRadius: BorderRadius.circular(4),
-                  child: CachedNetworkImage(
-                    imageUrl: imageUrl,
-                    width: double.infinity,
-                    fit: BoxFit.cover,
-                    progressIndicatorBuilder: (context, url, progress) => Center(
-                      child: CircularProgressIndicator(
-                        value: progress.progress,
+                  borderRadius: BorderRadius.circular(6),
+                  child: Stack(
+                    children: [
+                      Positioned.fill(
+                        child: CachedNetworkImage(
+                          imageUrl: imageUrl,
+                          width: double.infinity,
+                          fit: BoxFit.cover,
+                          progressIndicatorBuilder: (context, url, progress) =>
+                              Center(
+                            child: CircularProgressIndicator(
+                              value: progress.progress,
+                            ),
+                          ),
+                          errorWidget: (context, error, stackTrace) =>
+                              kErrorImage,
+                        ),
                       ),
-                    ),
-                    errorWidget: (context, error, stackTrace) => kErrorImage,
+                      if (note.isNotEmpty)
+                        Positioned(
+                          bottom: 6,
+                          right: 6,
+                          child: Container(
+                            padding: EdgeInsets.symmetric(
+                              vertical: 3,
+                              horizontal: 6,
+                            ),
+                            decoration: BoxDecoration(
+                              color: Colors.black.withValues(alpha: .72),
+                              borderRadius: BorderRadius.circular(6),
+                            ),
+                            alignment: Alignment.center,
+                            child: Text(
+                              note,
+                              style: TextStyle(color: Colors.white, fontSize: 12),
+                              maxLines: 1,
+                            ),
+                          ),
+                        ),
+                    ],
                   ),
                 ),
               ),

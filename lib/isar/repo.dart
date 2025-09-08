@@ -1,3 +1,4 @@
+import 'package:catmovie/isar/schema/category_schema.dart';
 import 'package:catmovie/isar/schema/video_history_schema.dart';
 import 'package:flutter/foundation.dart';
 import 'package:isar/isar.dart';
@@ -39,6 +40,7 @@ class IsarRepository {
         ParseIsarModelSchema,
         MirrorIsarModelSchema,
         VideoHistoryIsarModelSchema,
+        CategoryIsarModelSchema,
       ];
 
   Future<void> init() async {

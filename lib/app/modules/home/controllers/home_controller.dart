@@ -340,6 +340,7 @@ class HomeController extends GetxController
     updateHomeData(isFirst: true);
     initCacheMirrorTableScrollControllerOffset();
     initMovieParseVipList();
+    MirrorCategoryPool().init();
     super.onInit();
   }
 

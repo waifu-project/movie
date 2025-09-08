@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:catmovie/app/widget/zoom.dart';
+import 'package:catmovie/utils/boop.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -251,6 +252,7 @@ class _MirrorTableViewState extends State<MirrorTableView> {
             onTap: (MenuActionType value) {
               _controller.hideMenu();
               handleClickSubMenu(value);
+              boop.selection();
             },
           ),
           pressType: PressType.singleClick,
@@ -282,6 +284,7 @@ class _MirrorTableViewState extends State<MirrorTableView> {
                   var index = mirrorList.indexOf(e);
                   home.updateMirrorIndex(index);
                   Get.back();
+                  boop.selection();
                 },
                 hashTable: __statusMap,
                 onDel: (context) {
@@ -428,7 +431,7 @@ class MirrorCard extends StatelessWidget {
                       size: 42,
                     ),
                     width: 42,
-                    height: 42
+                    height: 42,
                   ),
                   const SizedBox(width: 12),
                   Expanded(

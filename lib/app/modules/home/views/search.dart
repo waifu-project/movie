@@ -9,6 +9,7 @@ import 'package:catmovie/app/widget/k_tag.dart';
 import 'package:catmovie/app/widget/window_appbar.dart';
 import 'package:catmovie/app/widget/zoom.dart';
 import 'package:catmovie/isar/schema/history_schema.dart';
+import 'package:catmovie/utils/boop.dart';
 import 'package:concurrent_queue/concurrent_queue.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -476,6 +477,7 @@ class _SearchV2State extends State<SearchV2> with AfterLayoutMixin {
                         "",
                         type: UpdateSearchHistoryType.clean,
                       );
+                      boop.warning();
                     },
                     icon: const Icon(CupertinoIcons.trash),
                   ),
@@ -508,6 +510,7 @@ class _SearchV2State extends State<SearchV2> with AfterLayoutMixin {
                                 keyword = _keyword;
                                 setState(() {});
                                 handleSearch(keyword);
+                                boop.selection();
                                 break;
                               case KTagTapEventType.action: // 操作
                                 handleUpdateSearchHistory(
@@ -556,6 +559,7 @@ class _SearchV2State extends State<SearchV2> with AfterLayoutMixin {
                     moreBtnLoading = false;
                     currSource = item;
                     setState(() {});
+                    boop.selection();
                   },
                   child: Container(
                     decoration: BoxDecoration(

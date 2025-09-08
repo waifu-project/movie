@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:catmovie/app/modules/home/views/auto_update.dart';
 import 'package:catmovie/app/widget/window_appbar.dart';
 import 'package:catmovie/app/widget/zoom.dart';
+import 'package:catmovie/utils/boop.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -206,15 +207,18 @@ class _SettingsViewState extends State<SettingsView>
       case HandleDiglogTapType.clean:
         editingControllerValue = "";
         EasyLoading.showInfo("解析内容已经清空!");
+        boop.success();
         break;
       case HandleDiglogTapType.kget:
         if (editingControllerValue.isEmpty) {
           EasyLoading.showError("内容为空, 请填写url!");
+          boop.error();
           return;
         }
         var target = SourceUtils.getSources(editingControllerValue);
         if (target.isEmpty) {
           EasyLoading.showError("没有找到匹配的源!");
+          boop.error();
           return;
         }
         Get.dialog(
@@ -251,6 +255,7 @@ class _SettingsViewState extends State<SettingsView>
         Get.back();
         if (data.isEmpty) {
           EasyLoading.showError("获取的内容为空!");
+          boop.error();
           return;
         }
         List<SourceJsonData> realSources = SourceUtils.mergeMirror(
@@ -265,6 +270,7 @@ class _SettingsViewState extends State<SettingsView>
         EasyLoading.showSuccess(showMessage);
         _mirrorLength = realSources.length;
         if (mounted) setState(() {});
+        boop.success();
         break;
       default:
     }
@@ -287,6 +293,7 @@ class _SettingsViewState extends State<SettingsView>
       _videoKernel = vk;
       updateSetting(SettingsAllKey.videoKernel, vk);
       setState(() {});
+      boop.selection();
     }
 
     var result = [VideoKernel.webview, VideoKernel.mediaKit].map((item) {
@@ -304,6 +311,7 @@ class _SettingsViewState extends State<SettingsView>
             final bool isInstall = checkInstalledIINA();
             if (!isInstall) {
               EasyLoading.showError("未安装IINA, 请先安装!");
+              boop.error();
               return;
             }
             action(VideoKernel.iina);
@@ -347,6 +355,7 @@ class _SettingsViewState extends State<SettingsView>
             ),
             child: const Text("获取配置"),
             onPressed: () {
+              boop.selection();
               handleDiglogTap(HandleDiglogTapType.kget);
             },
           ),

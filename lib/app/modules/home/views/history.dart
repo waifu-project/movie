@@ -10,6 +10,7 @@ import 'package:catmovie/app/widget/helper.dart';
 import 'package:catmovie/app/widget/window_appbar.dart';
 import 'package:catmovie/app/widget/zoom.dart';
 import 'package:catmovie/isar/schema/video_history_schema.dart';
+import 'package:catmovie/utils/boop.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -49,10 +50,12 @@ class _HistoryPageState extends State<HistoryPage> with AfterLayoutMixin {
     if (history.isEmpty) {
       isEditing = false;
     }
+    boop.success();
     setState(() {});
   }
 
   Future<void> handleDeleteAll() async {
+    boop.warning();
     bool isNext = await showCupertinoDialog(
       builder: (BuildContext context) => CupertinoAlertDialog(
         title: const Text('提示'),
@@ -140,6 +143,7 @@ class _HistoryPageState extends State<HistoryPage> with AfterLayoutMixin {
                     onPressed: () {
                       isEditing = !isEditing;
                       setState(() {});
+                      boop.selection();
                     },
                     icon: Row(
                       spacing: 6,

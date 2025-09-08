@@ -1,3 +1,4 @@
+import 'package:catmovie/utils/boop.dart';
 import 'package:command_palette/command_palette.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -512,6 +513,7 @@ class HomeController extends GetxController
     } else {
       currentBarController.jumpToPage(i);
     }
+    boop.selection();
     update();
   }
 

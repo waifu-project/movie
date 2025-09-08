@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:catmovie/app/modules/play/views/chewie_view.dart';
 import 'package:catmovie/app/modules/play/views/play_view.dart';
 import 'package:catmovie/isar/schema/video_history_schema.dart';
+import 'package:catmovie/utils/boop.dart';
 import 'package:desktop_webview_window/desktop_webview_window.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -561,6 +562,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (canShowPlayTips) {
       Timer(const Duration(seconds: 2), () {
         showPlayTips();
+        boop.warning();
       });
     }
   }

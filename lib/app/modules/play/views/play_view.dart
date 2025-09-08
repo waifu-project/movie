@@ -11,6 +11,7 @@ import 'package:catmovie/app/widget/zoom.dart';
 import 'package:catmovie/isar/schema/video_history_schema.dart';
 import 'package:catmovie/shared/enum.dart';
 import 'package:catmovie/shared/env.dart';
+import 'package:catmovie/utils/boop.dart';
 import 'package:clipboard/clipboard.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
@@ -208,7 +209,11 @@ class _PlayViewState extends State<PlayView> with AfterLayoutMixin {
       player,
       isUpSort,
     );
-    if (!isOk) return;
+    if (!isOk) {
+      boop.error();
+      return;
+    }
+    boop.success();
     var realIndex = index;
     if (isUpSort) {
       realIndex = getReversalIndex(realPlaylist, index);
@@ -511,6 +516,7 @@ class _PlayViewState extends State<PlayView> with AfterLayoutMixin {
                   return GestureDetector(
                     onTap: () {
                       play.changeTabIndex(index);
+                      boop.selection();
                     },
                     child: AnimatedContainer(
                       alignment: Alignment.center,
@@ -550,6 +556,7 @@ class _PlayViewState extends State<PlayView> with AfterLayoutMixin {
                 onValueChanged: (value) {
                   if (value == null) return;
                   play.changeTabIndex(value);
+                  boop.selection();
                 },
                 groupValue: play.tabIndex,
                 children: tabviewData,
@@ -673,6 +680,7 @@ class _PlayViewState extends State<PlayView> with AfterLayoutMixin {
                               );
                             }),
                             onPressed: () {
+                              boop.selection();
                               handlePlay(
                                 play.tabIndex,
                                 index,
@@ -680,6 +688,7 @@ class _PlayViewState extends State<PlayView> with AfterLayoutMixin {
                             },
                             onLongPress: () {
                               showMenu();
+                              boop.success();
                             },
                           ),
                         );

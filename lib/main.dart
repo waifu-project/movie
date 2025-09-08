@@ -1,5 +1,6 @@
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:catmovie/shared/env.dart';
+import 'package:catmovie/utils/boop.dart';
 import 'package:chinese_font_library/chinese_font_library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -54,6 +55,7 @@ Future<ThemeMode> runBefore() async {
   await XHttp.init(enableLog: enableHttpLog);
   await IsarRepository().init();
   await SpiderManage.init();
+  await boop.init();
   registerAutoInjector();
   var currTheme = IsarRepository().settingsSingleModel.themeMode;
   Brightness wrapperIfDark = Brightness.light;

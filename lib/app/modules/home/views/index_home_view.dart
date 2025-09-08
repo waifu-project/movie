@@ -7,6 +7,7 @@ import 'package:catmovie/app/modules/home/views/onboarding.dart';
 import 'package:catmovie/app/modules/home/views/search.dart';
 import 'package:catmovie/app/widget/zoom.dart';
 import 'package:catmovie/shared/enum.dart';
+import 'package:catmovie/utils/boop.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -184,6 +185,7 @@ class _IndexHomeViewState extends State<IndexHomeView>
             onTap: () {
               EasyLoading.dismiss();
               homeview.showMirrorModel(context);
+              boop.selection();
             },
             child: Row(
               spacing: 6,
@@ -341,6 +343,7 @@ class _IndexHomeViewState extends State<IndexHomeView>
                                 onPressed: () {
                                   EasyLoading.dismiss();
                                   switchCategory(curr);
+                                  boop.selection();
                                 },
                               ),
                             ),
@@ -485,6 +488,7 @@ class _IndexHomeViewState extends State<IndexHomeView>
                                       onTap: () {
                                         EasyLoading.dismiss();
                                         handleClickItem(subItem, controller);
+                                        boop.selection();
                                       },
                                     ),
                                   );

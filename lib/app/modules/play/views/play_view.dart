@@ -411,8 +411,6 @@ class _PlayViewState extends State<PlayView> with AfterLayoutMixin {
             vertical: 24,
             horizontal: 12,
           ),
-          brightnessGesture: true,
-          volumeGesture: true,
           seekGesture: true,
           seekOnDoubleTap: true,
           speedUpOnLongPress: true,

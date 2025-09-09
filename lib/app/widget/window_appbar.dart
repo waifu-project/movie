@@ -196,7 +196,7 @@ class WindowAppBar extends StatelessWidget implements PreferredSizeWidget {
         child: PreferredSize(
           preferredSize: preferredSize,
           child: Container(
-            color: Theme.of(context).primaryColor,
+            color: Colors.transparent,
             width: double.infinity,
             height: double.infinity,
             padding: EdgeInsets.only(

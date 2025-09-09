@@ -1223,6 +1223,7 @@ class TVUIState extends State<TVUI>
     );
     return Positioned.fill(
       child: Scaffold(
+        backgroundColor: Colors.transparent,
         key: scaffoldKey,
         onDrawerChanged: (isOpened) {
           if (!isOpened) {

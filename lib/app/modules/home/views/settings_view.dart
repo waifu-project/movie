@@ -429,13 +429,22 @@ class _SettingsViewState extends State<SettingsView>
   Widget build(BuildContext context) {
     super.build(context);
     return Scaffold(
-      appBar: const WindowAppBar(
-        title: Text("设置"),
+      backgroundColor: Colors.transparent,
+      appBar: WindowAppBar(
+        title: Text(
+          "设置",
+          style: TextStyle(
+            fontSize: 16,
+            color: context.isDarkMode ? Colors.white : Colors.black,
+          ),
+        ),
         centerTitle: true,
         actions: [SizedBox.shrink()],
       ),
       body: SettingsList(
         applicationType: ApplicationType.cupertino,
+        lightTheme: SettingsThemeData(settingsListBackground: Colors.transparent),
+        darkTheme: SettingsThemeData(settingsListBackground: Colors.transparent),
         sections: [
           SettingsSection(
             title: Text('常规设置'),

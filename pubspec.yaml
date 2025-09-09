@@ -150,6 +150,8 @@ dependencies:
 
   haptic_feedback: ^0.5.1+1
 
+  aurora: ^1.0.0
+
 dependency_overrides:
   media_kit:
     git:

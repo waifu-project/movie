@@ -49,6 +49,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.13.0"
+  aurora:
+    dependency: "direct main"
+    description:
+      name: aurora
+      sha256: a47eb54aec3efcbc95c56c55ccc58a76e957e262e91588de4760c52454e4e63c
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.0"
   auto_injector:
     dependency: "direct main"
     description:

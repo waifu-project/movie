@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:ui';
 
 import 'package:after_layout/after_layout.dart';
+import 'package:aurora/aurora.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:catmovie/app/extension.dart';
 import 'package:catmovie/app/modules/home/views/tv.dart';
@@ -918,7 +919,23 @@ class _PlayViewState extends State<PlayView> with AfterLayoutMixin {
                   style: TextStyle(
                     color: context.isDarkMode ? Colors.white : Colors.black,
                   ),
-                  child: _realBodyView(),
+                  child: Stack(
+                    children: [
+                      Positioned.fill(
+                        child: Positioned.fill(
+                          child: Aurora(
+                            size: 88,
+                            colors: [
+                              Color(0xffc2e59c).withValues(alpha: .24),
+                              Color(0xff64b3f4).withValues(alpha: .24)
+                            ],
+                            blur: 88,
+                          ),
+                        ),
+                      ),
+                      Positioned.fill(child: _realBodyView()),
+                    ],
+                  ),
                 ),
               ),
             ),

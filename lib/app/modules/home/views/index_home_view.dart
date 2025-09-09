@@ -179,6 +179,7 @@ class _IndexHomeViewState extends State<IndexHomeView>
     super.build(context);
     return GetBuilder<HomeController>(
       builder: (homeview) => Scaffold(
+        backgroundColor: Colors.transparent,
         appBar: WindowAppBar(
           iosBackStyle: true,
           title: Zoom(
@@ -195,16 +196,17 @@ class _IndexHomeViewState extends State<IndexHomeView>
               return Row(
                 spacing: 6,
                 children: [
-                  const Icon(
+                  Icon(
                     CupertinoIcons.arrowtriangle_right_square_fill,
-                    color: Colors.white,
+                    color: context.isDarkMode ? Colors.white : Colors.black,
                     size: 28,
                   ),
                   Text(
                     currentTitle,
                     textAlign: TextAlign.center,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 21,
+                      color: context.isDarkMode ? Colors.white : Colors.black,
                     ),
                   ),
                 ],
@@ -215,10 +217,10 @@ class _IndexHomeViewState extends State<IndexHomeView>
             Zoom(
               child: CupertinoButton(
                 padding: EdgeInsets.zero,
-                child: const Icon(
+                child: Icon(
                   CupertinoIcons.search,
                   size: 24,
-                  color: Colors.white,
+                  color: context.isDarkMode ? Colors.white : Colors.black,
                 ),
                 onPressed: () {
                   EasyLoading.dismiss();
@@ -233,10 +235,10 @@ class _IndexHomeViewState extends State<IndexHomeView>
             Zoom(
               child: CupertinoButton(
                 padding: EdgeInsets.zero,
-                child: const Icon(
+                child: Icon(
                   CupertinoIcons.clock,
                   size: 24,
-                  color: Colors.white,
+                  color: context.isDarkMode ? Colors.white : Colors.black,
                 ),
                 onPressed: () {
                   EasyLoading.dismiss();

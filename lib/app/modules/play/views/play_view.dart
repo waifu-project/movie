@@ -706,7 +706,9 @@ class _PlayViewState extends State<PlayView> with AfterLayoutMixin {
 
   Widget _realBodyView() {
     var width = context.mediaQuery.size.width;
-    var isDesktop = width >= 720 && GetPlatform.isDesktop;
+    var height = context.mediaQuery.size.height;
+    var isPad = (width / height) > 1.38; // 宽高比大于 1.38 认为是 Pad(大屏)
+    var isDesktop = width >= 720 && (GetPlatform.isDesktop || isPad);
     late Widget body;
     if (isDesktop) {
       body = Row(

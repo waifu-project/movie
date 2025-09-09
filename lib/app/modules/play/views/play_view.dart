@@ -245,37 +245,39 @@ class _PlayViewState extends State<PlayView> with AfterLayoutMixin {
   }
 
   Widget _buildCoverImage() {
-    return Positioned.fill(
-      child: Stack(
-        children: [
-          Positioned.fill(
-            child: ClipRect(
-              child: Stack(
-                children: [
-                  Positioned.fill(
-                    child: CachedNetworkImage(
-                      imageUrl: play.movieItem.smallCoverImage,
-                      fit: BoxFit.cover,
+    return IgnorePointer(
+      child: Positioned.fill(
+        child: Stack(
+          children: [
+            Positioned.fill(
+              child: ClipRect(
+                child: Stack(
+                  children: [
+                    Positioned.fill(
+                      child: CachedNetworkImage(
+                        imageUrl: play.movieItem.smallCoverImage,
+                        fit: BoxFit.cover,
+                      ),
                     ),
-                  ),
-                  Positioned.fill(
-                    child: BackdropFilter(
-                      filter: ImageFilter.blur(sigmaX: 24, sigmaY: 24),
-                      child:
-                          Container(color: Colors.white.withValues(alpha: .12)),
+                    Positioned.fill(
+                      child: BackdropFilter(
+                        filter: ImageFilter.blur(sigmaX: 24, sigmaY: 24),
+                        child:
+                            Container(color: Colors.white.withValues(alpha: .12)),
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
-          ),
-          Positioned.fill(
-            child: CachedNetworkImage(
-              imageUrl: play.movieItem.smallCoverImage,
-              fit: BoxFit.contain,
-            ),
-          )
-        ],
+            Positioned.fill(
+              child: CachedNetworkImage(
+                imageUrl: play.movieItem.smallCoverImage,
+                fit: BoxFit.contain,
+              ),
+            )
+          ],
+        ),
       ),
     );
   }

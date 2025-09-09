@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:catmovie/app/extension.dart';
 import 'package:catmovie/app/widget/zoom.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -42,9 +43,16 @@ class MovieCardItem extends StatelessWidget {
                           width: double.infinity,
                           fit: BoxFit.cover,
                           progressIndicatorBuilder: (context, url, progress) =>
-                              Center(
-                            child: CircularProgressIndicator(
-                              value: progress.progress,
+                              DecoratedBox(
+                            decoration: BoxDecoration(
+                              color:
+                                  (context.isDarkMode ? '#1c1c1e' : "#f0f0f0")
+                                      .$color,
+                            ),
+                            child: Center(
+                              child: CircularProgressIndicator(
+                                value: progress.progress,
+                              ),
                             ),
                           ),
                           errorWidget: (context, error, stackTrace) =>
@@ -67,7 +75,8 @@ class MovieCardItem extends StatelessWidget {
                             alignment: Alignment.center,
                             child: Text(
                               note,
-                              style: TextStyle(color: Colors.white, fontSize: 12),
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 12),
                               maxLines: 1,
                             ),
                           ),

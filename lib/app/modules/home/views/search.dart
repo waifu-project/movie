@@ -651,9 +651,15 @@ class _SearchV2State extends State<SearchV2> with AfterLayoutMixin {
                                         width: 100,
                                         height: double.infinity,
                                         progressIndicatorBuilder:
-                                            (context, url, progress) => Center(
-                                          child: CircularProgressIndicator(
-                                            value: progress.progress,
+                                            (context, url, progress) =>
+                                                DecoratedBox(
+                                          decoration: BoxDecoration(
+                                            color: Colors.white.withValues(alpha: .12),
+                                          ),
+                                          child: Center(
+                                            child: CircularProgressIndicator(
+                                              value: progress.progress,
+                                            ),
                                           ),
                                         ),
                                         errorWidget: (_, __, ___) =>

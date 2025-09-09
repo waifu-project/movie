@@ -64,6 +64,17 @@ class VideoInfo {
   });
 }
 
+class Videos {
+  final String title;
+  // final VideoType type;
+  List<VideoInfo> datas;
+  Videos({
+    // this.type = VideoType.iframe,
+    required this.title,
+    required this.datas,
+  });
+}
+
 // 视频详情
 class VideoDetail {
   /// id
@@ -97,7 +108,7 @@ class VideoDetail {
   final String bigCoverImage;
 
   /// 视频列表
-  final List<VideoInfo> videos;
+  final List<Videos> videos;
 
   /// 视频信息
   /// 视频尺寸大小

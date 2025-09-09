@@ -282,12 +282,13 @@ class MacCMSSpider extends ISpiderAdapter {
             type: easyGetVideoType(item.cData),
           );
         }).toList();
+        var realVideos = videoInfo2RealVideos(videos);
         var pic = normalizeCoverImage(e.pic);
         return VideoDetail(
           id: e.id,
           smallCoverImage: pic,
           title: e.name,
-          videos: videos,
+          videos: realVideos,
           desc: _normalDesc(e.des),
           updateTime: e.last,
           remark: e.note,
@@ -382,12 +383,13 @@ class MacCMSSpider extends ISpiderAdapter {
             type: easyGetVideoType(item.cData),
           );
         }).toList();
+        var realVideos = videoInfo2RealVideos(videos);
         var pic = normalizeCoverImage(e.pic);
         return VideoDetail(
           id: e.id,
           smallCoverImage: pic,
           title: e.name,
-          videos: videos,
+          videos: realVideos,
           desc: _normalDesc(e.des),
           updateTime: e.last,
           remark: e.note,
@@ -496,6 +498,7 @@ class MacCMSSpider extends ISpiderAdapter {
     } else {
       id = _id;
     }
+    var realVideos = videoInfo2RealVideos(videos);
     var detail = VideoDetail(
       id: id,
       title: item['vod_name'] ?? "",
@@ -503,7 +506,7 @@ class MacCMSSpider extends ISpiderAdapter {
       updateTime: item["vod_time"] ?? "",
       remark: item["vod_remarks"] ?? "",
       smallCoverImage: item['vod_pic'] ?? "",
-      videos: videos,
+      videos: realVideos,
       extra: {},
     );
     return detail;

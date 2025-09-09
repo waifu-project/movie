@@ -92,7 +92,7 @@ class _PlayViewState extends State<PlayView> with AfterLayoutMixin {
     return ret;
   }
 
-  List<PlayListData> playlist = [];
+  List<Videos> playlist = [];
 
   Map<int, Widget> get tabviewData {
     Map<int, Widget> result = {};
@@ -164,7 +164,7 @@ class _PlayViewState extends State<PlayView> with AfterLayoutMixin {
         pp.setProperty("demuxer-cache-dir", temp);
       }
     }
-    playlist = videoInfo2PlayListData(play.movieItem.videos);
+    playlist = play.movieItem.videos;
     loadHistory();
     if (mounted) setState(() {});
   }

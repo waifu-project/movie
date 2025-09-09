@@ -423,16 +423,22 @@ class MirrorCard extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   const SizedBox(width: 12),
-                  CachedNetworkImage(
-                    fit: BoxFit.cover,
-                    imageUrl: "${item.meta.domain}/favicon.ico",
-                    errorWidget: (context, url, error) => const Icon(
-                      CupertinoIcons.cube_box,
-                      size: 42,
-                    ),
-                    width: 42,
-                    height: 42,
-                  ),
+                  Builder(builder: (context) {
+                    // NOTE(d1y): 这里的 logo 展示不太好看, 所以先不要了, 等待展示更好的图标
+                    var logo = item.meta.logo;
+                    if (logo.isEmpty || true) {
+                      logo = "${item.meta.domain}/favicon.ico";
+                    }
+                    return CachedNetworkImage(
+                      fit: BoxFit.cover,
+                      imageUrl: logo,
+                      errorWidget: (context, url, error) => const Icon(
+                        CupertinoIcons.cube_box,
+                        size: 42,
+                      ),
+                      width: 42,
+                    );
+                  }),
                   const SizedBox(width: 12),
                   Expanded(
                     child: Column(

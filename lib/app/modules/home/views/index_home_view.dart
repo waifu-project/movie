@@ -187,23 +187,29 @@ class _IndexHomeViewState extends State<IndexHomeView>
               homeview.showMirrorModel(context);
               boop.selection();
             },
-            child: Row(
-              spacing: 6,
-              children: [
-                const Icon(
-                  CupertinoIcons.bolt_circle_fill,
-                  color: Colors.white,
-                  size: 24,
-                ),
-                Text(
-                  currentTitle,
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    fontSize: 16,
+            child: Builder(builder: (context) {
+              // var logo = homeview.currentMirrorItem.meta.logo;
+              // if (logo.isNotEmpty) {
+              //   return CachedNetworkImage(imageUrl: logo, width: 120,);
+              // }
+              return Row(
+                spacing: 6,
+                children: [
+                  const Icon(
+                    CupertinoIcons.arrowtriangle_right_square_fill,
+                    color: Colors.white,
+                    size: 28,
                   ),
-                ),
-              ],
-            ),
+                  Text(
+                    currentTitle,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      fontSize: 21,
+                    ),
+                  ),
+                ],
+              );
+            }),
           ),
           actions: [
             Zoom(
@@ -228,7 +234,7 @@ class _IndexHomeViewState extends State<IndexHomeView>
               child: CupertinoButton(
                 padding: EdgeInsets.zero,
                 child: const Icon(
-                  Icons.history,
+                  CupertinoIcons.clock,
                   size: 24,
                   color: Colors.white,
                 ),
@@ -327,7 +333,10 @@ class _IndexHomeViewState extends State<IndexHomeView>
                                 ),
                                 // FIXME: use real primary color
                                 // >> theme_data _colorSchemeLightM3->primary
-                                color: isCurr ? Color(0xFF6750A4) : null,
+                                color: isCurr
+                                    ? Color(0xFF6750A4)
+                                    : (Get.isDarkMode ? '#1c1c1e' : "#f0f0f0")
+                                        .$color,
                                 child: Text(
                                   curr.name,
                                   style: TextStyle(
@@ -473,8 +482,8 @@ class _IndexHomeViewState extends State<IndexHomeView>
                                 gridDelegate:
                                     SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
                                   crossAxisCount: cardCount,
-                                  crossAxisSpacing: 5.0,
-                                  mainAxisSpacing: 5.0,
+                                  crossAxisSpacing: 9.0,
+                                  mainAxisSpacing: 9.0,
                                 ),
                                 itemCount: homeview.homedata.length,
                                 itemBuilder: (BuildContext context, int index) {

@@ -137,7 +137,9 @@ class MacCMSSpider extends ISpiderAdapter {
       "ac": "videolist",
       "pg": page,
     };
-    if (category != null && category.isNotEmpty) {
+    if (category != null &&
+        category.isNotEmpty &&
+        category != kDefaultAllCategory.id) {
       qs['t'] = category;
     }
     var resp = await XHttp.dio.get(
@@ -242,10 +244,14 @@ class MacCMSSpider extends ISpiderAdapter {
     var resp = await XHttp.dio.get(path);
     dynamic data = resp.data;
     var _type = getResponseTypeAndCheck(data);
+    List<SourceSpiderQueryCategory> category = [];
     if (_type == ResponseCustomType.json) {
-      return _parseCategoryJSON(data);
+      category = _parseCategoryJSON(data);
+    } else {
+      category = _parseCategoryXML(data);
     }
-    return _parseCategoryXML(data);
+    // NOTE(d1y): 分类默认添加一个全部分类
+    return [kDefaultAllCategory, ...category];
   }
 
   dynamic _parseDetailJSON(dynamic data) {

@@ -23,9 +23,6 @@ import 'package:xi/xi.dart';
 
 const kSmoothListViewDuration = Duration(milliseconds: 210);
 
-const kAllCategoryPoint = '-114514';
-var kAllCategoryData = SourceSpiderQueryCategory('全部', kAllCategoryPoint);
-
 /// 历史记录处理类型
 enum UpdateSearchHistoryType {
   /// 添加
@@ -88,9 +85,6 @@ class HomeController extends GetxController
 
   List<SourceSpiderQueryCategory> get currentCategoryer {
     var data = mirrorCategoryPool.data(currentMirrorItemId);
-    if (data.isNotEmpty) {
-      return [kAllCategoryData, ...data];
-    }
     return data;
   }
 
@@ -98,7 +92,7 @@ class HomeController extends GetxController
     return mirrorCategoryPool.has(currentMirrorItemId);
   }
 
-  SourceSpiderQueryCategory? currentCategoryerNow = kAllCategoryData;
+  SourceSpiderQueryCategory? currentCategoryerNow;
 
   void setCurrentCategoryerNow(SourceSpiderQueryCategory category) {
     currentCategoryerNow = category;
@@ -361,7 +355,7 @@ class HomeController extends GetxController
     update();
   }
 
-  Future<String?> syncCurrentCategoryer() async {
+  Future<SourceSpiderQueryCategory?> syncCurrentCategoryer() async {
     try {
       if (mirrorListIsEmpty) return null;
       var category = await currentMirrorItem.getCategory();
@@ -372,10 +366,9 @@ class HomeController extends GetxController
         return null;
       }
       mirrorCategoryPool.put(currentMirrorItemId, category);
-      // XXX(d1y): 默认使用全部分类
-      currentCategoryerNow = kAllCategoryData;
+      currentCategoryerNow = category.first;
       update();
-      return kAllCategoryData.id;
+      return category.first;
     } catch (e) {
       if (currentMirrorItemId.isNotEmpty) {
         mirrorCategoryPool.fetchCountPP(currentMirrorItemId);
@@ -413,11 +406,6 @@ class HomeController extends GetxController
           dispose();
         }
       }
-    }
-
-    /// XXX(d1y): 但凡是个正常一点的站点都不会用 `-114514` 作为分类的
-    if (onceCategory == kAllCategoryPoint) {
-      onceCategory = "";
     }
 
     /// 如果 [indexHomeLoadDataErrorMessage] 错误栈有内容的话

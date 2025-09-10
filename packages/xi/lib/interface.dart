@@ -183,19 +183,11 @@ class SourceItemMeta extends Equatable {
       [logo, domain, name, developer, developerMail, desc, id];
 }
 
-class SourceSpiderQueryCategory {
+class SourceSpiderQueryCategory extends Equatable {
   final String name;
   final String id;
 
-  SourceSpiderQueryCategory(this.name, this.id);
-
-  @override
-  bool operator ==(Object other) {
-    if (other is SourceSpiderQueryCategory) {
-      return other.name == name;
-    }
-    return false;
-  }
+  const SourceSpiderQueryCategory(this.name, this.id);
 
   @override
   String toString() {
@@ -203,7 +195,7 @@ class SourceSpiderQueryCategory {
   }
 
   @override
-  int get hashCode => name.hashCode;
+  List<Object?> get props => [id, name];
 }
 
 //=====================================
@@ -277,3 +269,6 @@ class EmptySpiderAdapter implements ISpiderAdapter {
 }
 
 const VideoSize kDefaultVideoSize = VideoSize();
+
+// 默认全部分类
+const kDefaultAllCategory = SourceSpiderQueryCategory('全部', "-114514");

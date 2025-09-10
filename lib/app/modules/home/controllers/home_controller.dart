@@ -388,22 +388,29 @@ class HomeController extends GetxController
 
     var onceCategory = "";
     if (currentCategoryerNow != null) {
-      var id = currentCategoryerNow!.id;
-      onceCategory = id;
+      onceCategory = currentCategoryerNow!.id;
     }
     if (isFirst) {
       var dispose = showLoading("加载分类中");
-      var isNext = !currentHasCategoryer &&
+
+      // NOTE(d1y): 不存在分类并且请求次数没有超过阈值
+      var needFetch = !currentHasCategoryer &&
           !mirrorCategoryPool.fetchCountAlreadyMax(currentMirrorItemId);
 
-      /// NOTE(d1y): 不存在分类并且请求次数没有超过阈值
-      if (isNext) {
+      if (needFetch) {
         try {
-          onceCategory = await syncCurrentCategoryer() ?? "";
+          var category = (await syncCurrentCategoryer()) ?? kDefaultAllCategory;
+          onceCategory = category.id;
         } catch (e) {
           debugPrint(e.toString());
         } finally {
           dispose();
+        }
+      } else {
+        if (currentCategoryerNow == null) {
+          currentCategoryerNow = currentCategoryer.first;
+          update();
+          onceCategory = currentCategoryerNow!.id;
         }
       }
     }

@@ -218,17 +218,11 @@ class _HistoryPageState extends State<HistoryPage> with AfterLayoutMixin {
                                   children: [
                                     Builder(builder: (context) {
                                       var img = item.ctx.cover;
-                                      var w =
-                                          context.mediaQuery.size.width * .32;
-                                      var h =
-                                          context.mediaQuery.size.height * .126;
-                                      if (w >= 320) w = 320;
                                       return ClipRRect(
                                         borderRadius: BorderRadius.circular(6),
                                         child: CachedNetworkImage(
                                           imageUrl: img,
-                                          width: w,
-                                          height: h,
+                                          width: 120,
                                           fit: BoxFit.cover,
                                           placeholder: (context, url) =>
                                               Container(

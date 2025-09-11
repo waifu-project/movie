@@ -24,6 +24,7 @@ import 'package:catmovie/app/modules/home/controllers/home_controller.dart';
 import 'package:catmovie/app/modules/home/views/parse_vip_manage.dart';
 import 'package:catmovie/app/widget/window_appbar.dart';
 import 'package:catmovie/widget/simple_html/flutter_html.dart';
+import 'package:haptic_feedback/haptic_feedback.dart';
 import 'package:isar/isar.dart';
 import 'package:media_kit_video/media_kit_video.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
@@ -157,7 +158,11 @@ class _PlayViewState extends State<PlayView> with AfterLayoutMixin {
           logLevel: logLevel,
         ),
       );
-      controller = VideoController(player!);
+      controller = VideoController(player!, onSpeedUpChanged: (flag) {
+        if (flag) {
+          boop.call(HapticsType.medium);
+        }
+      });
       if (player!.platform is NativePlayer) {
         var pp = player!.platform as NativePlayer;
         var temp = await _tempPath();

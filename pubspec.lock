@@ -892,7 +892,7 @@ packages:
     description:
       path: media_kit_video
       ref: main
-      resolved-ref: "885cfa45e62b8ad1778ee8dc61ca7a48a96e0e27"
+      resolved-ref: "317f5cf6c609a966e6bf63fffeec64d79118a600"
       url: "https://github.com/waifu-project/media-kit.git"
     source: git
     version: "1.2.5"

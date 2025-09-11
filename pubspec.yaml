@@ -132,6 +132,7 @@ dependencies:
       url: https://github.com/waifu-project/media-kit.git
       ref: main
       path: ./media_kit_video
+    # path: /Users/d1y/code/github/media-kit/media_kit_video
   media_kit_libs_video:
     git:
       url: https://github.com/Predidit/media-kit.git

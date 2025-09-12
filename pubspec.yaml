@@ -155,6 +155,8 @@ dependencies:
 
   flutter_keyboard_visibility: ^6.0.0
 
+  flutter_svg: ^2.2.1
+
 dependency_overrides:
   media_kit:
     git:

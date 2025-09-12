@@ -476,14 +476,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.2.5"
-  extended_list_library:
-    dependency: transitive
-    description:
-      name: extended_list_library
-      sha256: cb424a04464e89bd6737f9ae025029bd8e913c7bf37101ad10c2defe0238d842
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.0.0"
   ffi:
     dependency: transitive
     description:
@@ -1749,14 +1741,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.1.2"
-  waterfall_flow:
-    dependency: "direct main"
-    description:
-      name: waterfall_flow
-      sha256: e7ab5728fe536e53cf4b8ea97128112ad18c7f1d797d91f073bf396fa6910181
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.1.1"
   web:
     dependency: transitive
     description:

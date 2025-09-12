@@ -33,8 +33,6 @@ dependencies:
   auto_injector: ^2.1.1
   settings_ui: ^2.0.2
 
-  waterfall_flow: ^3.1.1
-
   file_picker: ^10.2.0
   share_plus: ^11.0.0
 

@@ -25,10 +25,9 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 import 'package:simple/x.dart';
 import 'package:smooth_list_view/smooth_list_view.dart';
-import 'package:waterfall_flow/waterfall_flow.dart';
 import 'package:xi/xi.dart';
 
-const scrollSize = 240;
+double kHomeMovieCardSpacing = 9;
 
 CallbackAction<Intent> shortcutCallback<T extends Intent>(
     int curr, VoidCallback cb) {
@@ -54,8 +53,8 @@ class _IndexHomeViewState extends State<IndexHomeView>
 
   int get cardCount {
     double screenWidth = context.mediaQuery.size.width;
-    double minCardWidth = 168;
-    double spacing = 5;
+    double minCardWidth = 188;
+    double spacing = kHomeMovieCardSpacing;
     int count = ((screenWidth + spacing) / (minCardWidth + spacing)).floor();
     count = count.clamp(1, 6);
     return count;
@@ -81,17 +80,6 @@ class _IndexHomeViewState extends State<IndexHomeView>
       Routes.PLAY,
       arguments: data,
     );
-  }
-
-  double get _cardWidth {
-    double screenWidth = context.mediaQuery.size.width;
-    double spacing = 5.0;
-    double totalSpacing = spacing * (cardCount - 1);
-    return (screenWidth - totalSpacing) / cardCount;
-  }
-
-  double get _cardHeight {
-    return _cardWidth * 1.5; // 2:3 比例，即宽度的1.5倍
   }
 
   double get _calcImageWidth {
@@ -461,31 +449,29 @@ class _IndexHomeViewState extends State<IndexHomeView>
                                   ),
                                 );
                               }
-                              return WaterfallFlow.builder(
+                              return GridView.builder(
                                 controller: ScrollController(),
                                 physics: const NeverScrollableScrollPhysics(),
                                 shrinkWrap: true,
                                 gridDelegate:
-                                    SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
+                                    SliverGridDelegateWithFixedCrossAxisCount(
                                   crossAxisCount: cardCount,
-                                  crossAxisSpacing: 9.0,
-                                  mainAxisSpacing: 9.0,
+                                  crossAxisSpacing: kHomeMovieCardSpacing,
+                                  mainAxisSpacing: kHomeMovieCardSpacing,
+                                  childAspectRatio: 12 / 9,
                                 ),
                                 itemCount: homeview.homedata.length,
                                 itemBuilder: (BuildContext context, int index) {
                                   var subItem = homeview.homedata[index];
-                                  return SizedBox(
-                                    height: _cardHeight,
-                                    child: MovieCardItem(
-                                      imageUrl: subItem.smallCoverImage,
-                                      title: subItem.title,
-                                      note: subItem.remark,
-                                      onTap: () {
-                                        EasyLoading.dismiss();
-                                        handleClickItem(subItem, controller);
-                                        boop.selection();
-                                      },
-                                    ),
+                                  return MovieCardItem(
+                                    imageUrl: subItem.smallCoverImage,
+                                    title: subItem.title,
+                                    note: subItem.remark,
+                                    onTap: () {
+                                      EasyLoading.dismiss();
+                                      handleClickItem(subItem, controller);
+                                      boop.selection();
+                                    },
                                   );
                                 },
                               );

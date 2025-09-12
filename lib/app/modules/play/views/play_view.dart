@@ -1075,6 +1075,7 @@ class MediaKitPlaylist extends StatefulWidget {
     this.onTap,
     this.onSortTap,
     this.onScroll,
+    this.lateShowDuration = const Duration(milliseconds: 240),
   });
 
   final double width;
@@ -1085,6 +1086,7 @@ class MediaKitPlaylist extends StatefulWidget {
   final VoidCallback? onSortTap;
   final ValueChanged<double>? onScroll;
   final double restoreOffset;
+  final Duration lateShowDuration;
 
   @override
   State<MediaKitPlaylist> createState() => _MediaKitPlaylistState();
@@ -1098,8 +1100,11 @@ class _MediaKitPlaylistState extends State<MediaKitPlaylist>
 
   ScrollController controller = ScrollController();
 
+  bool show = false;
+
   @override
   FutureOr<void> afterFirstLayout(BuildContext context) {
+    show = true;
     sort = widget.sort;
     index = widget.index;
     list = widget.list;
@@ -1130,138 +1135,160 @@ class _MediaKitPlaylistState extends State<MediaKitPlaylist>
     widget.onSortTap?.call();
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Spacer(),
-        Container(
-          width: widget.width,
-          height: double.infinity,
-          decoration: BoxDecoration(
-            color: Colors.black.withValues(alpha: .42),
-          ),
-          child: ClipRRect(
-            child: Stack(
-              children: [
-                if (GetPlatform.isDesktop)
-                  Positioned.fill(
-                    child: ClipRRect(
-                      child: BackdropFilter(
-                        filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color:
-                                Theme.of(context).brightness == Brightness.dark
-                                    ? Colors.black.withValues(alpha: 0.38)
-                                    : Colors.white.withValues(alpha: 0.24),
-                            border: Border.all(
-                              color: Colors.white.withValues(alpha: 0.21),
-                              width: 1,
-                            ),
-                          ),
+  Widget _buildRealBody() {
+    return Container(
+      width: widget.width,
+      height: double.infinity,
+      decoration: BoxDecoration(
+        color: Colors.black.withValues(alpha: .72),
+      ),
+      child: ClipRRect(
+        child: Stack(
+          children: [
+            if (GetPlatform.isDesktop)
+              Positioned.fill(
+                child: ClipRRect(
+                  child: BackdropFilter(
+                    filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).brightness == Brightness.dark
+                            ? Colors.black.withValues(alpha: 0.38)
+                            : Colors.white.withValues(alpha: 0.24),
+                        border: Border.all(
+                          color: Colors.white.withValues(alpha: 0.21),
+                          width: 1,
                         ),
                       ),
                     ),
                   ),
-                Positioned.fill(
-                  child: Column(
-                    children: [
-                      Container(
-                        padding: EdgeInsets.symmetric(horizontal: 12),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                ),
+              ),
+            Positioned.fill(
+              child: Column(
+                children: [
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 12),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          spacing: 3,
                           children: [
-                            Row(
-                              spacing: 3,
-                              children: [
-                                Text(
-                                  "选集",
-                                  style: TextStyle(
-                                      fontSize: 16, color: Colors.white),
-                                ),
-                                Opacity(
-                                  opacity: .68,
-                                  child: Text(
-                                    "(共${list.length}集)",
-                                    style: TextStyle(
-                                        fontSize: 14, color: Colors.white),
-                                  ),
-                                ),
-                              ],
+                            Text(
+                              "选集",
+                              style:
+                                  TextStyle(fontSize: 16, color: Colors.white),
                             ),
-                            IconButton(
-                              onPressed: handleSortPlaylist,
-                              icon: Row(
-                                spacing: 6,
-                                children: [
-                                  Icon(sort.icon, color: Colors.white),
-                                  Text(
-                                    sort.name,
-                                    style: TextStyle(color: Colors.white),
-                                  ),
-                                ],
+                            Opacity(
+                              opacity: .68,
+                              child: Text(
+                                "(共${list.length}集)",
+                                style: TextStyle(
+                                    fontSize: 14, color: Colors.white),
                               ),
                             ),
                           ],
                         ),
-                      ),
-                      Expanded(
-                        child: ListView(
-                          controller: controller,
-                          padding: const EdgeInsets.symmetric(
-                            vertical: 12,
-                            horizontal: 6,
+                        IconButton(
+                          onPressed: handleSortPlaylist,
+                          icon: Row(
+                            spacing: 6,
+                            children: [
+                              Icon(sort.icon, color: Colors.white),
+                              Text(
+                                sort.name,
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ],
                           ),
-                          children: list.map((item) {
-                            var currIndex = list.indexOf(item);
-                            var isCurr = currIndex == index;
-                            return Padding(
-                              padding: const EdgeInsets.symmetric(
-                                vertical: 6,
-                                horizontal: 9,
-                              ),
-                              child: Material(
-                                color: Colors.transparent,
-                                child: ListTile(
-                                  shape: RoundedRectangleBorder(
-                                    side: BorderSide(
-                                      width: 1,
-                                      color: Colors.grey.withValues(
-                                        alpha: isCurr ? .88 : .24,
-                                      ),
-                                    ),
-                                    borderRadius: BorderRadius.circular(6),
-                                  ),
-                                  dense: true,
-                                  mouseCursor: SystemMouseCursors.click,
-                                  selected: isCurr,
-                                  selectedTileColor: kActiveColor,
-                                  hoverColor:
-                                      Colors.white.withValues(alpha: 0.24),
-                                  title: Text(
-                                    item.name,
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(color: Colors.white),
-                                  ),
-                                  onTap: () {
-                                    index = currIndex;
-                                    if (mounted) setState(() {});
-                                    widget.onTap?.call(currIndex);
-                                  },
-                                ),
-                              ),
-                            );
-                          }).toList(),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                  Expanded(
+                    child: ListView(
+                      controller: controller,
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 12,
+                        horizontal: 6,
+                      ),
+                      children: list.map((item) {
+                        var currIndex = list.indexOf(item);
+                        var isCurr = currIndex == index;
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 6,
+                            horizontal: 9,
+                          ),
+                          child: Material(
+                            color: Colors.transparent,
+                            child: ListTile(
+                              shape: RoundedRectangleBorder(
+                                side: BorderSide(
+                                  width: 1,
+                                  color: Colors.grey.withValues(
+                                    alpha: isCurr ? .88 : .24,
+                                  ),
+                                ),
+                                borderRadius: BorderRadius.circular(6),
+                              ),
+                              dense: true,
+                              mouseCursor: SystemMouseCursors.click,
+                              selected: isCurr,
+                              selectedTileColor: kActiveColor,
+                              hoverColor: Colors.white.withValues(alpha: 0.24),
+                              title: Text(
+                                item.name,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(color: Colors.white),
+                              ),
+                              onTap: () {
+                                index = currIndex;
+                                if (mounted) setState(() {});
+                                widget.onTap?.call(currIndex);
+                              },
+                            ),
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        Positioned.fill(
+          child: SizedBox(
+            width: double.infinity,
+            height: double.infinity,
+            child: GestureDetector(
+              onTap: () {
+                show = false;
+                if (mounted) setState(() {});
+                Get.back();
+              },
             ),
           ),
+        ),
+        AnimatedPositioned(
+          top: 0,
+          right: show ? 0 : -widget.width,
+          bottom: 0,
+          duration: widget.lateShowDuration,
+          curve: Curves.easeInOut,
+          width: widget.width,
+          child: _buildRealBody(),
         ),
       ],
     );

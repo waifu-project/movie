@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:isar/isar.dart';
+import 'package:isar_community/isar.dart';
 import 'package:catmovie/app/extension.dart';
 import 'package:catmovie/builtin/maccms/maccms.dart';
 import 'package:xi/xi.dart';

@@ -1,4 +1,4 @@
-import 'package:isar/isar.dart';
+import 'package:isar_community/isar.dart';
 import 'package:xi/interface.dart';
 
 part 'category_schema.g.dart';

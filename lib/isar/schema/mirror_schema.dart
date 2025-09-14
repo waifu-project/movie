@@ -1,4 +1,4 @@
-import 'package:isar/isar.dart';
+import 'package:isar_community/isar.dart';
 import 'package:catmovie/shared/enum.dart';
 
 part 'mirror_schema.g.dart';

@@ -9,7 +9,7 @@ import bitsdojo_window_macos
 import desktop_webview_window
 import file_picker
 import hide_cursor
-import isar_flutter_libs
+import isar_community_flutter_libs
 import media_kit_libs_macos_video
 import media_kit_video
 import package_info_plus

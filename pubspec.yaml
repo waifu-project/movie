@@ -38,19 +38,8 @@ dependencies:
 
   equatable: ^2.0.7
 
-  isar:
-    hosted:
-      name: isar
-      url: https://pub.isar-community.dev/
-    version: ^3.1.8
-  isar_flutter_libs:
-    hosted:
-      name: isar_flutter_libs
-      url: https://pub.isar-community.dev/
-    version: ^3.1.8
-
-  # isar: ^3.1.0+1
-  # isar_flutter_libs: ^3.1.0+1
+  isar_community: ^3.3.0-dev.2
+  isar_community_flutter_libs: ^3.3.0-dev.2
 
   tuple: ^2.0.2
   flutter_easyloading: ^3.0.5
@@ -211,12 +200,7 @@ dev_dependencies:
 
   # flutter_native_splash: ^2.4.6
 
-  isar_generator:
-    hosted:
-      name: isar_generator
-      url: https://pub.isar-community.dev/
-    version: ^3.1.8
-  # isar_generator: ^3.1.0+1
+  isar_community_generator: ^3.3.0-dev.2
 
   build_runner: ^2.4.4
 

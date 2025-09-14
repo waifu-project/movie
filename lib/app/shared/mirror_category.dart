@@ -2,7 +2,7 @@ import 'package:catmovie/app/extension.dart';
 import 'package:catmovie/isar/schema/category_schema.dart';
 import 'package:catmovie/utils/once.dart';
 import 'package:flutter/widgets.dart';
-import 'package:isar/isar.dart';
+import 'package:isar_community/isar.dart';
 import 'package:xi/xi.dart';
 
 /// NOTE(d1y): 获取分类最大尝试次数(3次)

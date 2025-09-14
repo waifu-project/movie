@@ -1,4 +1,4 @@
-import 'package:isar/isar.dart';
+import 'package:isar_community/isar.dart';
 import 'package:catmovie/shared/enum.dart';
 import 'package:webplayer_embedded/webplayer_embedded.dart';
 

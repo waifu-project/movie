@@ -12,6 +12,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_svg/svg.dart';
 
 import 'package:get/get.dart';
+import 'package:haptic_feedback/haptic_feedback.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:catmovie/app/extension.dart';
 import 'package:catmovie/app/modules/home/controllers/home_controller.dart';
@@ -91,6 +92,16 @@ class _SettingsViewState extends State<SettingsView>
 
   VideoKernel _videoKernel = VideoKernel.webview;
 
+  bool _hapticFeedback = true;
+
+  bool get hapticFeedback => _hapticFeedback;
+  set hapticFeedback(bool flag) {
+    boop.call(HapticsType.selection, force: true);
+    boop.setEnabled(flag);
+    _hapticFeedback = flag;
+    if (mounted) setState(() {});
+  }
+
   set autoDarkMode(bool newVal) {
     if (newVal) {
       updateSetting(SettingsAllKey.themeMode, SystemThemeMode.system);
@@ -124,6 +135,12 @@ class _SettingsViewState extends State<SettingsView>
       _videoKernel =
           getSettingAsKeyIdent<VideoKernel>(SettingsAllKey.videoKernel);
       _mirrorLength = SpiderManage.data.length;
+      var __hapticFeedback = getSettingAsKeyIdent<bool>(
+        SettingsAllKey.hapticFeedback,
+        defaultValue: true,
+      );
+      _hapticFeedback = __hapticFeedback;
+      boop.enabled = _hapticFeedback;
     });
     loadSourceHelp();
     addMirrorMangerTextareaLister();
@@ -555,6 +572,30 @@ class _SettingsViewState extends State<SettingsView>
                       );
                     },
                   ),
+                ),
+                SettingsTile.switchTile(
+                  initialValue: _hapticFeedback,
+                  onToggle: (flag) {
+                    hapticFeedback = flag;
+                  },
+                  onPressed: (_) {
+                    hapticFeedback = !hapticFeedback;
+                  },
+                  leading: Builder(builder: (context) {
+                    return SvgPicture.string(
+                      r"""
+<svg t="1758088888195" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="6051" width="200" height="200"><path d="M104.732875 358.909911a83.272497 83.272497 0 0 0 0-74.579357L67.832442 210.425889A35.714533 35.714533 0 1 0 3.9184 242.318036l37.030182 73.956564a12.040648 12.040648 0 0 1 0 10.665315L14.557766 379.56585a83.272497 83.272497 0 0 0 0 74.579357l26.338917 52.625934a12.040648 12.040648 0 0 1 0 10.665315L14.557766 570.062391a83.272497 83.272497 0 0 0 0 74.579357l26.338917 52.625934a12.040648 12.040648 0 0 1 0 10.665315l-37.030182 73.956565a35.743078 35.743078 0 1 0 63.965941 31.918096l36.952333-73.930615a83.272497 83.272497 0 0 0 0-74.579357l-26.287018-52.599984a12.092547 12.092547 0 0 1 0-10.691265l26.287018-52.599985a83.272497 83.272497 0 0 0 0-74.579357l-26.338917-52.625934a12.040648 12.040648 0 0 1 0-10.665315zM631.121969 809.629761h-238.114189a35.706748 35.706748 0 1 0 0 71.413497h238.114189a35.706748 35.706748 0 0 0 0-71.413497zM1020.185398 781.889562l-36.952332-73.956565a11.88495 11.88495 0 0 1 0-10.665315l26.338916-52.625934a83.272497 83.272497 0 0 0 0-74.579357l-26.338916-52.625935a11.88495 11.88495 0 0 1 0-10.665315l26.338916-52.651884a83.272497 83.272497 0 0 0 0-74.579357l-26.338916-52.574035a11.88495 11.88495 0 0 1 0-10.665315l36.952332-73.982514a35.714533 35.714533 0 1 0-63.914041-31.892147l-36.952333 73.904665a83.428195 83.428195 0 0 0 0 74.579357l26.338917 52.625935a11.88495 11.88495 0 0 1 0 10.665315l-26.338917 52.677833a83.428195 83.428195 0 0 0 0 74.579357l26.338917 52.574035a11.936849 11.936849 0 0 1 0 10.691265l-26.338917 52.599985a83.428195 83.428195 0 0 0 0 74.579357l36.952333 73.930615a35.732698 35.732698 0 1 0 63.914041-31.944046z" p-id="6052"></path><path d="M828.858468 52.392387c-28.544639-28.544639-64.87418-41.000481-107.639239-46.709409-41.285928-5.682978-93.782114-5.682978-158.91579-5.682978h-100.477129c-65.107727 0-117.629862 0-158.863891 5.579179-42.868858 5.760827-79.016751 18.16477-107.639239 46.70941s-41.052381 64.87418-46.709409 107.639238c-5.52728 41.389727-5.52728 93.911862-5.527281 159.019589V705.156382c0 65.107727 0 117.629862 5.57918 158.915791 5.760827 42.868858 18.16477 78.964851 46.709409 107.639238s64.87418 40.948582 107.639239 46.70941c41.285928 5.52728 93.808064 5.52728 158.91579 5.52728h100.47713c65.107727 0 117.629862 0 158.91579-5.52728 42.868858-5.812726 78.964851-18.16477 107.639239-46.70941s41.000481-64.87418 46.709409-107.639238c5.52728-41.285928 5.52728-93.808064 5.52728-158.915791V318.947416c0-65.107727 0-117.629862-5.52728-158.91579-5.864626-42.868858-18.16477-78.964851-46.813208-107.639239z m-19.150858 650.143078c0 68.351436 0 116.020983-4.904488 151.987228-4.72284 34.980158-13.286232 53.482274-26.442716 66.664707s-31.710499 21.771775-66.664706 26.468665c-35.966245 4.826639-83.635792 4.904488-152.013178 4.904488h-95.235296c-68.351436 0-116.020983 0-151.961278-4.904488-34.980158-4.696891-53.482274-13.286232-66.690656-26.468665s-21.771775-31.684549-26.468666-66.612807c-4.800689-36.018144-4.904488-83.687692-4.904488-152.039128V321.568333c0-68.377385 0-116.098832 4.904488-151.961278 4.696891-35.006107 13.286232-53.482274 26.468666-66.664707s31.710499-21.771775 66.638757-26.494615c35.992195-4.800689 83.661742-4.904488 152.013177-4.904488h95.235296c68.377385 0 116.046932 0 152.013178 4.904488 34.954208 4.72284 53.430374 13.286232 66.612807 26.494615s21.771775 31.6586 26.494615 66.612808c4.852589 35.966245 4.904488 83.661742 4.904488 152.013177z" p-id="6053"></path></svg>
+""",
+                      colorFilter: ColorFilter.mode(
+                        SettingsTheme.of(context).themeData.leadingIconsColor ??
+                            Colors.transparent,
+                        BlendMode.srcIn,
+                      ),
+                      width: 24,
+                      height: 24,
+                    );
+                  }),
+                  title: Text("震动反馈"),
                 ),
                 SettingsTile.switchTile(
                   onToggle: updateNSFW,

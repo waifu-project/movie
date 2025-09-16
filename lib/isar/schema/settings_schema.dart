@@ -27,8 +27,11 @@ class SettingsIsarModel {
   /// 显示播放前的提示(告知用户不要相信广告!)
   bool showPlayTips = true;
 
-  // 启动时是否显示引导页面
+  /// 启动时是否显示引导页面
   bool onBoardingShowed = false;
+
+  /// 震动反馈
+  bool hapticFeedback = true;
 
   @Enumerated(EnumType.ordinal)
   IWebPlayerEmbeddedType webviewPlayType = IWebPlayerEmbeddedType.p2pHLS;

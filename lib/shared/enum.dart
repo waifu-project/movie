@@ -68,6 +68,8 @@ enum SettingsAllKey {
   webviewPlayType,
   /// 首次启动
   onBoardingShowed,
+  /// 震动反馈
+  hapticFeedback,
 }
 
 /// 镜像源状态

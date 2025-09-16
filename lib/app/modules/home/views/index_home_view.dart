@@ -91,7 +91,7 @@ class _IndexHomeViewState extends State<IndexHomeView>
   }
 
   bool get indexEnablePullDown {
-    return !controller.isLoading;
+    return !controller.isLoading && false;
   }
 
   bool get indexEnablePullUp {

@@ -356,155 +356,164 @@ class _IndexHomeViewState extends State<IndexHomeView>
                             context: context,
                           );
                         }
-                        return SmartRefresher(
-                          enablePullDown: indexEnablePullDown,
-                          enablePullUp: indexEnablePullUp,
-                          header: const WaterDropHeader(
-                            refresh: Row(
-                              spacing: 12,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                CupertinoActivityIndicator(),
-                                Text("加载中"),
-                              ],
-                            ),
-                            complete: Row(
-                              spacing: 12,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(CupertinoIcons.smiley),
-                                Text("加载完成"),
-                              ],
-                            ),
+                        return RefreshConfiguration(
+                          springDescription: const SpringDescription(
+                            mass: 1,
+                            stiffness: 364.71867768595047,
+                            damping: 35.2,
                           ),
-                          footer: CustomFooter(
-                            builder: (BuildContext context, LoadStatus? mode) {
-                              Widget body;
-                              if (mode == LoadStatus.idle) {
-                                body = const Text("上划加载更多");
-                              } else if (mode == LoadStatus.loading) {
-                                body = const CupertinoActivityIndicator();
-                              } else if (mode == LoadStatus.failed) {
-                                body = const Text("加载失败, 请重试");
-                              } else if (mode == LoadStatus.canLoading) {
-                                body = const Text("释放以加载更多");
-                              } else {
-                                body = const Text("没有更多数据");
-                              }
-                              return Center(
-                                child: body,
-                              );
-                            },
-                          ),
-                          scrollController: scrollController,
-                          controller: homeview.refreshController,
-                          onLoading: homeview.refreshOnLoading,
-                          onRefresh: homeview.refreshOnRefresh,
-                          child: Builder(
-                            builder: (_) {
-                              if (homeview.isLoading) {
-                                return const SizedBox.shrink();
-                              }
-                              if (homeview.homedata.isEmpty) {
-                                if (errorMsg.isNotEmpty) {
-                                  return SizedBox(
-                                    width: double.infinity,
-                                    height: double.infinity,
-                                    child: Column(
-                                      children: [
-                                        SizedBox(height: 42),
-                                        Center(
-                                          child: Column(
-                                            mainAxisSize: MainAxisSize.min,
-                                            spacing: 12,
-                                            children: [
-                                              Image.asset(
-                                                "assets/images/error.png",
-                                                width: 120,
-                                                height: 120,
-                                              ),
-                                              Zoom(
-                                                child: CupertinoButton.filled(
-                                                  padding: const EdgeInsets
-                                                      .symmetric(
-                                                    vertical: 12.0,
-                                                    horizontal: 24.0,
-                                                  ),
-                                                  onPressed: () {
-                                                    boop.selection();
-                                                    homeview.updateHomeData(
-                                                        isFirst: true);
-                                                  },
-                                                  child: const Text(
-                                                    "重新加载",
-                                                    style: TextStyle(
-                                                      fontSize: 12,
+                          child: SmartRefresher(
+                            header: const WaterDropHeader(
+                              refresh: Row(
+                                spacing: 12,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  CupertinoActivityIndicator(),
+                                  Text("加载中"),
+                                ],
+                              ),
+                              complete: Row(
+                                spacing: 12,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(CupertinoIcons.smiley),
+                                  Text("加载完成"),
+                                ],
+                              ),
+                            ),
+                            footer: CustomFooter(
+                              builder:
+                                  (BuildContext context, LoadStatus? mode) {
+                                Widget body;
+                                if (mode == LoadStatus.idle) {
+                                  body = const Text("上划加载更多");
+                                } else if (mode == LoadStatus.loading) {
+                                  body = const CupertinoActivityIndicator();
+                                } else if (mode == LoadStatus.failed) {
+                                  body = const Text("加载失败, 请重试");
+                                } else if (mode == LoadStatus.canLoading) {
+                                  body = const Text("释放以加载更多");
+                                } else {
+                                  body = const Text("没有更多数据");
+                                }
+                                return Center(child: body);
+                              },
+                            ),
+                            enablePullDown: indexEnablePullDown,
+                            enablePullUp: indexEnablePullUp,
+                            scrollController: scrollController,
+                            physics: const BouncingScrollPhysics(),
+                            controller: homeview.refreshController,
+                            onLoading: homeview.refreshOnLoading,
+                            onRefresh: homeview.refreshOnRefresh,
+                            child: Builder(
+                              builder: (_) {
+                                if (homeview.isLoading) {
+                                  return const SizedBox.shrink();
+                                }
+                                if (homeview.homedata.isEmpty) {
+                                  if (errorMsg.isNotEmpty) {
+                                    return SizedBox(
+                                      width: double.infinity,
+                                      height: double.infinity,
+                                      child: Column(
+                                        children: [
+                                          SizedBox(height: 42),
+                                          Center(
+                                            child: Column(
+                                              mainAxisSize: MainAxisSize.min,
+                                              spacing: 12,
+                                              children: [
+                                                Image.asset(
+                                                  "assets/images/error.png",
+                                                  width: 120,
+                                                  height: 120,
+                                                ),
+                                                Zoom(
+                                                  child: CupertinoButton.filled(
+                                                    padding: const EdgeInsets
+                                                        .symmetric(
+                                                      vertical: 12.0,
+                                                      horizontal: 24.0,
+                                                    ),
+                                                    onPressed: () {
+                                                      boop.selection();
+                                                      homeview.updateHomeData(
+                                                          isFirst: true);
+                                                    },
+                                                    child: const Text(
+                                                      "重新加载",
+                                                      style: TextStyle(
+                                                        fontSize: 12,
+                                                      ),
                                                     ),
                                                   ),
                                                 ),
-                                              ),
-                                            ],
+                                              ],
+                                            ),
                                           ),
-                                        ),
-                                        SizedBox(
-                                          width: double.infinity,
-                                          height:
-                                              context.mediaQuery.size.height *
-                                                  .42,
-                                          child: KErrorStack(msg: errorMsg),
-                                        ),
-                                      ],
-                                    ),
+                                          SizedBox(
+                                            width: double.infinity,
+                                            height:
+                                                context.mediaQuery.size.height *
+                                                    .42,
+                                            child: KErrorStack(msg: errorMsg),
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  }
+                                  return Column(
+                                    spacing: 12,
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      SizedBox(height: 42),
+                                      Image.asset(
+                                        "assets/images/error.png",
+                                        width: 120,
+                                        height: 120,
+                                      ),
+                                      Text("当前请求列表为空",
+                                          style: TextStyle(
+                                            color: (context.isDarkMode
+                                                    ? '#6f737a'
+                                                    : '#767a82')
+                                                .$color,
+                                          )),
+                                      SizedBox(height: 88),
+                                    ],
                                   );
                                 }
-                                return Column(
-                                  spacing: 12,
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    SizedBox(height: 42),
-                                    Image.asset(
-                                      "assets/images/error.png",
-                                      width: 120,
-                                      height: 120,
-                                    ),
-                                    Text("当前请求列表为空",
-                                        style: TextStyle(
-                                          color: (context.isDarkMode
-                                                  ? '#6f737a'
-                                                  : '#767a82')
-                                              .$color,
-                                        )),
-                                    SizedBox(height: 88),
-                                  ],
+                                return GridView.builder(
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  shrinkWrap: true,
+                                  gridDelegate:
+                                      SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: cardCount,
+                                    crossAxisSpacing: kHomeMovieCardSpacing,
+                                    mainAxisSpacing: kHomeMovieCardSpacing,
+                                    childAspectRatio: 12 / 9,
+                                  ),
+                                  itemCount: homeview.homedata.length,
+                                  itemBuilder: (
+                                    BuildContext context,
+                                    int index,
+                                  ) {
+                                    var subItem = homeview.homedata[index];
+                                    return MovieCardItem(
+                                      imageUrl: subItem.smallCoverImage,
+                                      title: subItem.title,
+                                      note: subItem.remark,
+                                      onTap: () {
+                                        EasyLoading.dismiss();
+                                        handleClickItem(subItem, controller);
+                                        boop.selection();
+                                      },
+                                    );
+                                  },
                                 );
-                              }
-                              return GridView.builder(
-                                controller: ScrollController(),
-                                physics: const NeverScrollableScrollPhysics(),
-                                shrinkWrap: true,
-                                gridDelegate:
-                                    SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount: cardCount,
-                                  crossAxisSpacing: kHomeMovieCardSpacing,
-                                  mainAxisSpacing: kHomeMovieCardSpacing,
-                                  childAspectRatio: 12 / 9,
-                                ),
-                                itemCount: homeview.homedata.length,
-                                itemBuilder: (BuildContext context, int index) {
-                                  var subItem = homeview.homedata[index];
-                                  return MovieCardItem(
-                                    imageUrl: subItem.smallCoverImage,
-                                    title: subItem.title,
-                                    note: subItem.remark,
-                                    onTap: () {
-                                      EasyLoading.dismiss();
-                                      handleClickItem(subItem, controller);
-                                      boop.selection();
-                                    },
-                                  );
-                                },
-                              );
-                            },
+                              },
+                            ),
                           ),
                         );
                       }),

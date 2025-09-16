@@ -38,10 +38,12 @@ enum UpdateSearchHistoryType {
 }
 
 Widget kActivityIndicator = NutsActivityIndicator(
-      tickCount: 12,
-      radius: 12,
-      relativeWidth: .72,
-    );
+  tickCount: 9,
+  radius: 12,
+  relativeWidth: 1.24,
+  inactiveColor: Colors.white.withValues(alpha: 0.42),
+  activeColor: Colors.white,
+);
 
 Function showLoading(String msg) {
   EasyLoading.show(

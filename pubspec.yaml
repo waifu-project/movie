@@ -34,7 +34,7 @@ dependencies:
   settings_ui: ^2.0.2
 
   file_picker: ^10.2.0
-  share_plus: ^11.0.0
+  share_plus: ^12.0.0
 
   equatable: ^2.0.7
 

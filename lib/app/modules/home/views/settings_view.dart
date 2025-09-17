@@ -367,6 +367,7 @@ class _SettingsViewState extends State<SettingsView>
       actions: [
         Zoom(
           child: CupertinoButton.filled(
+            sizeStyle: CupertinoButtonSize.small,
             padding: const EdgeInsets.symmetric(
               horizontal: 12,
             ),
@@ -378,6 +379,7 @@ class _SettingsViewState extends State<SettingsView>
         ),
         Zoom(
           child: CupertinoButton.filled(
+            sizeStyle: CupertinoButtonSize.small,
             padding: const EdgeInsets.symmetric(
               horizontal: 12,
             ),
@@ -391,7 +393,7 @@ class _SettingsViewState extends State<SettingsView>
       ],
       titlePadding: const EdgeInsets.symmetric(
         horizontal: 3,
-        vertical: 12,
+        vertical: 9,
       ),
       title: "我的视频源网络地址",
       titleStyle: TextStyle(
@@ -404,11 +406,11 @@ class _SettingsViewState extends State<SettingsView>
         child: Card(
           color: const Color.fromRGBO(0, 0, 0, 1),
           child: Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(12.0),
             child: TextField(
               controller: _editingController,
-              maxLines: 10,
-              style: TextStyle(color: Colors.white, fontSize: 14),
+              maxLines: 32,
+              style: TextStyle(color: Colors.white, fontSize: 12),
               decoration: InputDecoration.collapsed(
                 hintText: sourceHelpText,
               ),

@@ -29,16 +29,18 @@ class SpiderManage {
   static Future<void> init() async {
     final data = IsarRepository().mirrorAs.where(distinct: false).findAllSync();
     var result = data.map((item) {
-      return MacCMSSpider(
-        logo: item.logo,
-        name: item.name,
-        desc: item.desc,
-        api_path: item.api.path,
-        root_url: item.api.root,
-        nsfw: item.nsfw,
+      var meta = SourceMeta(
         id: item.sid,
+        name: item.name,
+        type: SourceType.maccms,
+        api: '${item.api.root}${item.api.path}',
+        logo: item.logo,
+        desc: item.desc,
         status: item.status == MirrorStatus.available,
+        isNsfw: item.nsfw,
+        extra: {'jiexiUrl': ''},
       );
+      return MacCMSSpider(meta);
     }).toList();
     extend = result;
   }
@@ -52,8 +54,7 @@ class SpiderManage {
       var isExist = [...extend, ...builtin].any(($item) {
         if ($item is MacCMSSpider) {
           // FIXME: 如果 name 相同了怎么办👀?
-          return $item.root_url == item.root_url &&
-              $item.api_path == item.api_path;
+          return $item.meta.api == item.meta.api;
         }
         return false;
       });
@@ -86,22 +87,23 @@ class SpiderManage {
   /// [full] 是否全量导出(nsfw 是否导出)
   static String export({bool full = false}) {
     // bool isNsfw = local.read(ConstDart.is_nsfw) ?? false;
-    List<SourceJsonData> to = extend
-        .map(
-          (e) => SourceJsonData(
-            name: e.meta.name,
-            logo: e.meta.logo,
-            desc: e.meta.desc,
-            nsfw: e.isNsfw,
-            api: Api(
-              root: e.meta.domain,
-              path: (e as MacCMSSpider).api_path,
-            ),
-            id: e.id,
-            status: e.status,
+    List<SourceJsonData> to = extend.map(
+      (e) {
+        var uri = Uri.parse(e.meta.api);
+        return SourceJsonData(
+          name: e.meta.name,
+          logo: e.meta.logo,
+          desc: e.meta.desc,
+          nsfw: e.meta.isNsfw,
+          api: Api(
+            root: uri.origin,
+            path: uri.path,
           ),
-        )
-        .toList();
+          id: e.meta.id,
+          status: e.meta.status,
+        );
+      },
+    ).toList();
     if (!full) {
       to = to.where((element) {
         return !(element.nsfw ?? false);
@@ -120,14 +122,15 @@ class SpiderManage {
         .map((e) {
           String id = e.meta.id;
           bool status = kvHash[id] ?? e.meta.status;
+          var uri = Uri.parse(e.meta.api);
           return SourceJsonData(
             name: e.meta.name,
             logo: e.meta.logo,
             desc: e.meta.desc,
-            nsfw: e.isNsfw,
+            nsfw: e.meta.isNsfw,
             api: Api(
-              root: e.meta.domain,
-              path: (e as MacCMSSpider).api_path,
+              root: uri.origin,
+              path: uri.path,
             ),
             id: id,
             status: status,
@@ -160,22 +163,23 @@ class SpiderManage {
   /// [该方法只可用来保存第三方源]
   /// 只适用于 [MacCMSSpider]
   static void saveToCache(List<ISpiderAdapter> saves) {
-    List<SourceJsonData> to = saves
-        .map(
-          (e) => SourceJsonData(
-            name: e.meta.name,
-            logo: e.meta.logo,
-            desc: e.meta.desc,
-            nsfw: e.isNsfw,
-            api: Api(
-              root: e.meta.domain,
-              path: (e as MacCMSSpider).api_path,
-            ),
-            id: e.id,
-            status: e.status,
+    List<SourceJsonData> to = saves.map(
+      (e) {
+        var uri = Uri.parse(e.meta.api);
+        return SourceJsonData(
+          name: e.meta.name,
+          logo: e.meta.logo,
+          desc: e.meta.desc,
+          nsfw: e.meta.isNsfw,
+          api: Api(
+            root: uri.origin,
+            path: uri.path,
           ),
-        )
-        .toList();
+          id: e.meta.id,
+          status: e.meta.status,
+        );
+      },
+    ).toList();
     mergeSpider(to);
   }
 

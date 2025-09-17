@@ -32,14 +32,15 @@ class MirrorStatusStack {
       if (bStatus != null) {
         status = bStatus;
       }
+      var uri = Uri.parse(e.meta.api);
       return SourceJsonData(
         name: e.meta.name,
         logo: e.meta.logo,
         desc: e.meta.desc,
-        nsfw: e.isNsfw,
+        nsfw: e.meta.isNsfw,
         api: Api(
-          root: e.meta.domain,
-          path: (e as MacCMSSpider).api_path,
+          root: uri.origin,
+          path: uri.path,
         ),
         id: id,
         status: status,

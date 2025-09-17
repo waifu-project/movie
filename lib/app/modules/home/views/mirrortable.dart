@@ -412,7 +412,8 @@ class MirrorCard extends StatelessWidget {
                 // NOTE(d1y): 这里的 logo 展示不太好看, 所以先不要了, 等待展示更好的图标
                 var logo = item.meta.logo;
                 if (logo.isEmpty || true) {
-                  logo = "${item.meta.domain}/favicon.ico";
+                  var uri = Uri.parse(item.meta.api);
+                  logo = "${uri.origin}/favicon.ico";
                 }
                 return CachedNetworkImage(
                   fit: BoxFit.cover,

@@ -35,17 +35,19 @@ class SourceUtils {
     if (status) {
       var data = tryData[1] as SourceJsonData;
       String id = data.id ?? Xid().toString();
-      return MacCMSSpider(
+      var api = '${data.api!.root}${data.api!.path}';
+      var meta = SourceMeta(
         id: id,
-        logo: data.logo ?? "",
         name: data.name ?? "",
+        type: SourceType.maccms,
+        api: api,
+        logo: data.logo ?? "",
         desc: data.desc ?? "",
-        api_path: data.api!.path ?? "",
-        root_url: data.api!.root ?? "",
-        nsfw: data.nsfw ?? false,
         status: data.status ?? true,
-        jiexiUrl: data.jiexiUrl ?? "",
+        isNsfw: data.nsfw ?? false,
+        extra: {'jiexiUrl': data.jiexiUrl ?? ''},
       );
+      return MacCMSSpider(meta);
     } else {
       return null;
     }
@@ -238,9 +240,9 @@ class SourceUtils {
 
     if (!cover) {
       for (var element in newSourceData) {
-        var newDataDomain = element.meta.domain;
+        var newDataApi = element.meta.api;
         extend.removeWhere(
-          (element) => element.meta.domain == newDataDomain,
+          (element) => element.meta.api == newDataApi,
         );
       }
       extend.addAll(newSourceData);
@@ -263,15 +265,16 @@ class SourceUtils {
       (e) {
         var id = e.meta.id;
         var status = e.meta.status;
+        var uri = Uri.parse(e.meta.api);
         return SourceJsonData(
           name: e.meta.name,
           logo: e.meta.logo,
           desc: e.meta.desc,
-          nsfw: e.isNsfw,
-          jiexiUrl: e.jiexiUrl,
+          nsfw: e.meta.isNsfw,
+          jiexiUrl: e.meta.extra['jiexiUrl'] ?? '',
           api: Api(
-            root: e.meta.domain,
-            path: e.api_path,
+            root: uri.origin,
+            path: uri.path,
           ),
           id: id,
           status: status,

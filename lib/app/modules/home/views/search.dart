@@ -20,11 +20,12 @@ import 'package:isar_community/isar.dart';
 import 'package:tuple/tuple.dart';
 import 'package:xi/xi.dart';
 
-final kAllSourceMeta = SourceItemMeta(id: "6324", name: "全部", domain: "empty");
+final kAllSourceMeta =
+    SourceMeta(id: "6324", name: "全部", type: SourceType.maccms, api: "empty");
 
 final int kDefaultPagingSize = 20;
 
-typedef MapVideosRecord = Tuple2<SourceItemMeta, List<VideoDetail>>;
+typedef MapVideosRecord = Tuple2<SourceMeta, List<VideoDetail>>;
 
 class SearchV2 extends StatefulWidget {
   const SearchV2({super.key});
@@ -36,11 +37,11 @@ class SearchV2 extends StatefulWidget {
 class _SearchV2State extends State<SearchV2> with AfterLayoutMixin {
   final home = Get.find<HomeController>();
 
-  Map<SourceItemMeta, List<VideoDetail>> map = {};
+  Map<SourceMeta, List<VideoDetail>> map = {};
 
   // [int]  -> 当前 page-size
   // [bool] -> 是否有更多视频
-  Map<SourceItemMeta, Tuple2<int, bool>> pagingMap = {};
+  Map<SourceMeta, Tuple2<int, bool>> pagingMap = {};
 
   TextEditingController textEditingController = TextEditingController();
 
@@ -62,9 +63,9 @@ class _SearchV2State extends State<SearchV2> with AfterLayoutMixin {
     });
   }
 
-  SourceItemMeta currSource = kAllSourceMeta;
+  SourceMeta currSource = kAllSourceMeta;
 
-  List<SourceItemMeta> get sourceList {
+  List<SourceMeta> get sourceList {
     var result = map.keys.toList();
     result = result.where((item) {
       return (map[item] ?? []).isNotEmpty;

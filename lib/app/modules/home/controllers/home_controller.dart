@@ -668,13 +668,15 @@ class HomeController extends GetxController
         var flag = await confirmAlert(msg);
         if (!flag) break;
         var $id = Xid().toString();
-        var cms = MacCMSSpider(
-          name: name,
-          nsfw: nsfw,
-          root_url: $url.origin,
-          api_path: $url.path,
+        var meta = SourceMeta(
           id: $id,
+          name: name,
+          type: SourceType.maccms,
+          api: realURL,
+          desc: nsfw ? '18+' : '',
+          isNsfw: nsfw,
         );
+        var cms = MacCMSSpider(meta);
         if (!SpiderManage.addItem(cms)) {
           await confirmAlert(
             "源已经存在了, 无法添加",

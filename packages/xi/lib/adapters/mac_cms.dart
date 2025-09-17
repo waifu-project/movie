@@ -25,26 +25,20 @@ enum ResponseCustomType {
 }
 
 class MacCMSSpider extends ISpiderAdapter {
-  final bool nsfw;
-  final String jiexiUrl;
-  final String name;
-  final String logo;
-  final String desc;
-  final String root_url;
-  final String api_path;
-  final String id;
-  final bool status;
-  MacCMSSpider({
-    this.nsfw = false,
-    this.name = "",
-    this.logo = "",
-    this.desc = "",
-    this.jiexiUrl = "",
-    this.status = true,
-    required this.id,
-    required this.root_url,
-    required this.api_path,
-  });
+  MacCMSSpider(SourceMeta sourceMeta) {
+    meta = sourceMeta;
+  }
+
+  String get jiexiUrl => meta.extra['jiexiUrl'] ?? '';
+  String get root_url {
+    var uri = Uri.parse(meta.api);
+    return uri.origin;
+  }
+
+  String get api_path {
+    var uri = Uri.parse(meta.api);
+    return uri.path;
+  }
 
   String createUrl({
     required String suffix,
@@ -226,17 +220,7 @@ class MacCMSSpider extends ISpiderAdapter {
   }
 
   @override
-  bool get isNsfw => nsfw;
-
-  @override
-  SourceItemMeta get meta => SourceItemMeta(
-        name: name,
-        logo: logo,
-        desc: desc,
-        domain: root_url,
-        id: id,
-        status: status,
-      );
+  bool get isNsfw => meta.isNsfw;
 
   @override
   Future<List<SourceSpiderQueryCategory>> getCategory() async {
@@ -521,7 +505,7 @@ class MacCMSSpider extends ISpiderAdapter {
   @override
   String toString() {
     var output = "\n";
-    output += "name: $name\n";
+    output += "name: ${meta.name}\n";
     output += " url: $root_url$api_path";
     return output;
   }

@@ -374,6 +374,14 @@ class HomeController extends GetxController
     update();
   }
 
+  void initHapticFeedback() {
+    var __hapticFeedback = getSettingAsKeyIdent<bool>(
+      SettingsAllKey.hapticFeedback,
+      defaultValue: true,
+    );
+    boop.enabled = __hapticFeedback;
+  }
+
   @override
   void onInit() {
     protocolHandler.addListener(this);
@@ -384,6 +392,7 @@ class HomeController extends GetxController
     updateHomeData(isFirst: true);
     initCacheMirrorTableScrollControllerOffset();
     initMovieParseVipList();
+    initHapticFeedback();
     super.onInit();
   }
 

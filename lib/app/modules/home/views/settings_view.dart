@@ -135,12 +135,13 @@ class _SettingsViewState extends State<SettingsView>
       _videoKernel =
           getSettingAsKeyIdent<VideoKernel>(SettingsAllKey.videoKernel);
       _mirrorLength = SpiderManage.data.length;
-      var __hapticFeedback = getSettingAsKeyIdent<bool>(
-        SettingsAllKey.hapticFeedback,
-        defaultValue: true,
-      );
-      _hapticFeedback = __hapticFeedback;
-      boop.enabled = _hapticFeedback;
+      // var __hapticFeedback = getSettingAsKeyIdent<bool>(
+      //   SettingsAllKey.hapticFeedback,
+      //   defaultValue: true,
+      // );
+      // _hapticFeedback = __hapticFeedback;
+      // boop.enabled = _hapticFeedback;
+      _hapticFeedback = boop.enabled; // 初始化已经在 initHapticFeedback 中做了
     });
     loadSourceHelp();
     addMirrorMangerTextareaLister();
@@ -457,7 +458,7 @@ class _SettingsViewState extends State<SettingsView>
     );
   }
 
-  Widget leadingIcon(String icon, { double? width, double? height }) {
+  Widget leadingIcon(String icon, {double? width, double? height}) {
     return Builder(
       builder: (context) {
         return SvgPicture.string(

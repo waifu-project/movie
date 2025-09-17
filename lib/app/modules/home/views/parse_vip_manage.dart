@@ -89,6 +89,7 @@ class _ParseVipManagePageViewState extends State<ParseVipManagePageView> {
 
   @override
   Widget build(BuildContext context) {
+    var textColor = context.isDarkMode ? Colors.white : Colors.black;
     return Scaffold(
       appBar: WindowAppBar(
         iosBackStyle: true,
@@ -103,28 +104,28 @@ class _ParseVipManagePageViewState extends State<ParseVipManagePageView> {
                   height: 24,
                   child: Icon(
                     CupertinoIcons.back,
-                    color: Theme.of(context).primaryIconTheme.color,
+                    color: textColor,
                   ),
                 ),
                 onTap: () {
                   Get.back();
                 },
               ),
-              const Padding(
+              Padding(
                 padding: EdgeInsets.symmetric(horizontal: 9),
                 child: Text(
                   "解析源管理",
                   textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 18),
+                  style: TextStyle(fontSize: 18, color: textColor),
                 ),
               ),
             ],
           ),
         ),
         actions: [
-          Zoom(onTap: easyAddVipParseModel, child: const Icon(Icons.add)),
+          Zoom(onTap: easyAddVipParseModel, child: Icon(Icons.add, color: textColor,)),
           const SizedBox(width: 12.0),
-          Zoom(onTap: easyShowHelp, child: const Icon(Icons.help)),
+          Zoom(onTap: easyShowHelp, child: Icon(Icons.help, color: textColor,)),
           const SizedBox(width: 12.0),
         ],
       ),

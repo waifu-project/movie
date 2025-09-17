@@ -1418,7 +1418,7 @@ class TVUIState extends State<TVUI>
                                                     size: 66,
                                                     color: Colors.white,
                                                   ),
-                                                  Text("请先选择频道 :)"),
+                                                  Text("请先选择频道 :)", style: TextStyle(color: Colors.white),),
                                                   SizedBox(
                                                     height: context.mediaQuery
                                                             .size.height *

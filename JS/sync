@@ -1,0 +1,7 @@
+#!/usr/bin/env zsh
+pushd JS/bundle
+pwd
+bun install
+bun run build
+popd
+cp JS/bundle/dist/kitty.umd.js packages/xi/assets/js

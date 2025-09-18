@@ -208,14 +208,14 @@ class _SourceHelpTableState extends State<SourceHelpTable> {
       );
       return;
     }
-    var collData = <String, List<MacCMSSpider>>{};
+    var collData = <String, List<ISpiderAdapter>>{};
     for (var item in data) {
       String source = item[sourceKey] as String;
       String filename = item[filenameKey] as String;
       var easyParseData = SourceUtils.tryParseDynamic(source);
       if (easyParseData == null) continue;
-      List<MacCMSSpider> result = [];
-      if (easyParseData is MacCMSSpider) {
+      List<ISpiderAdapter> result = [];
+      if (easyParseData is ISpiderAdapter) {
         result = [easyParseData];
       } else if (easyParseData is List) {
         var append = easyParseData
@@ -224,7 +224,7 @@ class _SourceHelpTableState extends State<SourceHelpTable> {
             })
             .toList()
             .map((ele) {
-              return ele as MacCMSSpider;
+              return ele as ISpiderAdapter;
             });
         result.addAll(append);
       }
@@ -232,7 +232,7 @@ class _SourceHelpTableState extends State<SourceHelpTable> {
     }
 
     String easyMessage = "";
-    List<MacCMSSpider> stack = [];
+    List<ISpiderAdapter> stack = [];
 
     collData.forEach((k, v) async {
       int len = v.length;

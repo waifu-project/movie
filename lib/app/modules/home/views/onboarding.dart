@@ -28,7 +28,7 @@ class _OnBoardingState extends State<OnBoarding> {
     if (isLoading) return;
     isLoading = true;
     setState(() {});
-    List<MacCMSSpider> sources = [];
+    List<ISpiderAdapter> sources = [];
     try {
       sources = await SourceUtils.runTaks([kV1JSON]);
     } catch (e) {

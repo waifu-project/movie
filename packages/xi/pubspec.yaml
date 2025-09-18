@@ -1,5 +1,6 @@
 name: xi
 version: 0.0.1
+publish_to: none
 
 environment:
   sdk: '>=3.4.0 <4.0.0'
@@ -19,3 +20,13 @@ dependencies:
   path: ^1.9.1
   html_unescape: ^2.0.0
   equatable: ^2.0.7
+
+    # flutter_js: ^0.8.5
+  flutter_js:
+    git: https://github.com/yhsj0919/flutter_js
+
+  dart_qjson: ^1.0.2
+
+flutter:
+  assets:
+    - assets/js/

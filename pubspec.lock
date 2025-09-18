@@ -371,6 +371,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.3.0"
+  dart_qjson:
+    dependency: transitive
+    description:
+      name: dart_qjson
+      sha256: "27bb2ad1a624adf55c034850c8a1d930e3283b70fb2c330b8a66e2ef28496f85"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.2"
+  dart_qvariant:
+    dependency: transitive
+    description:
+      name: dart_qvariant
+      sha256: "28d201b42d753d785dfd8fc48422cc8464f623855ed3e445b43b5152daa3bf07"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.7"
   dart_style:
     dependency: transitive
     description:
@@ -476,6 +492,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.2.5"
+  fast_gbk:
+    dependency: transitive
+    description:
+      name: fast_gbk
+      sha256: "3f0dc0309986f615404ea8d1fccf00a535dc00ee90b88d71492866bd95586489"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.0"
   ffi:
     dependency: transitive
     description:
@@ -537,6 +561,15 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.7.0"
+  flutter_js:
+    dependency: transitive
+    description:
+      path: "."
+      ref: HEAD
+      resolved-ref: a9b2f6b8625d40da707c73048f368b81ec6fb392
+      url: "https://github.com/yhsj0919/flutter_js"
+    source: git
+    version: "0.8.5"
   flutter_keyboard_visibility:
     dependency: "direct main"
     description:
@@ -1477,6 +1510,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.33"
+  sync_http:
+    dependency: transitive
+    description:
+      name: sync_http
+      sha256: "7f0cd72eca000d2e026bcd6f990b81d0ca06022ef4e32fb257b30d3d1014a961"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.3.1"
   synchronized:
     dependency: transitive
     description:

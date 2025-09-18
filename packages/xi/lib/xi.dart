@@ -8,3 +8,4 @@ export 'utils/utils.dart';
 export 'models/models.dart';
 
 export 'adapters/mac_cms.dart';
+export 'adapters/universal.dart';

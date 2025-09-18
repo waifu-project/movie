@@ -5,6 +5,7 @@
 list(APPEND FLUTTER_PLUGIN_LIST
   bitsdojo_window_windows
   desktop_webview_window
+  flutter_js
   hide_cursor
   isar_community_flutter_libs
   media_kit_libs_windows_video

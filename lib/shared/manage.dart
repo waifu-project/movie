@@ -8,8 +8,6 @@ import 'package:catmovie/isar/repo.dart';
 import 'package:catmovie/isar/schema/mirror_schema.dart';
 import 'package:catmovie/shared/enum.dart';
 
-
-
 class SpiderManage {
   SpiderManage._internal();
 
@@ -29,18 +27,40 @@ class SpiderManage {
   static Future<void> init() async {
     final data = IsarRepository().mirrorAs.where(distinct: false).findAllSync();
     var result = data.map((item) {
+      Map<String, dynamic> extraMap = {
+        'jiexiUrl': item.extra.jiexiUrl ?? '',
+      };
+
+      // 如果有 JS 配置，添加到 extra 中
+      if (item.extra.js != null) {
+        extraMap['js'] = {
+          'category': item.extra.js!.category,
+          'home': item.extra.js!.home,
+          'search': item.extra.js!.search,
+          'detail': item.extra.js!.detail,
+          'parseIframe': item.extra.js!.parseIframe,
+        };
+      }
+
       var meta = SourceMeta(
         id: item.sid,
         name: item.name,
-        type: SourceType.maccms,
+        type: item.type,
         api: item.api,
         logo: item.logo,
         desc: item.desc,
         status: item.status == MirrorStatus.available,
         isNsfw: item.nsfw,
-        extra: {'jiexiUrl': item.jiexiUrl ?? ''},
+        extra: extraMap,
       );
-      return MacCMSSpider(meta);
+
+      switch (item.type) {
+        case SourceType.universal:
+          return UniversalSpider(meta);
+        case SourceType.maccms:
+        default:
+          return MacCMSSpider(meta);
+      }
     }).toList();
     extend = result;
   }
@@ -50,23 +70,20 @@ class SpiderManage {
   /// 返回 false 可能是源已经存在过
   static bool addItem(ISpiderAdapter item) {
     var wasAdd = true;
-    if (item is MacCMSSpider) {
-      var isExist = [...extend, ...builtin].any(($item) {
-        if ($item is MacCMSSpider) {
-          // FIXME: 如果 name 相同了怎么办👀?
-          return $item.meta.api == item.meta.api;
-        }
-        return false;
-      });
-      if (isExist) {
-        wasAdd = false;
-      } else {
-        extend.add(item);
-      }
+    var isExist = [...extend, ...builtin].any(($item) {
+      // Check for duplicate by API URL
+      return $item.meta.api == item.meta.api;
+    });
+
+    if (isExist) {
+      wasAdd = false;
     } else {
       extend.add(item);
     }
-    saveToCache(extend);
+
+    if (wasAdd) {
+      saveToCache(extend);
+    }
     return wasAdd;
   }
 
@@ -96,7 +113,8 @@ class SpiderManage {
           "api": e.meta.api,
           "id": e.meta.id,
           "status": e.meta.status,
-          "jiexiUrl": e.meta.extra['jiexiUrl'] ?? '',
+          "type": e.meta.type.name,
+          "extra": e.meta.extra,
         };
       },
     ).toList();
@@ -155,7 +173,7 @@ class SpiderManage {
 
   /// 保存缓存
   /// [该方法只可用来保存第三方源]
-  /// 只适用于 [MacCMSSpider]
+  /// 适用于所有 ISpiderAdapter 实现
   static void saveToCache(List<ISpiderAdapter> saves) {
     List<SourceMeta> to = saves.map((e) => e.meta).toList();
     mergeSpiderFromMeta(to);
@@ -163,6 +181,19 @@ class SpiderManage {
 
   static void mergeSpiderFromMeta(List<SourceMeta> data) {
     var output = data.map((item) {
+      var extra = MirrorExtra()..jiexiUrl = item.extra['jiexiUrl'];
+
+      // 如果有 JS 配置，保存到 MirrorExtra 中
+      if (item.extra.containsKey('js') && item.extra['js'] is Map) {
+        var jsMap = item.extra['js'] as Map<String, dynamic>;
+        extra.js = MirrorExtraJS()
+          ..category = jsMap['category'] ?? ''
+          ..home = jsMap['home'] ?? ''
+          ..search = jsMap['search'] ?? ''
+          ..detail = jsMap['detail'] ?? ''
+          ..parseIframe = jsMap['parseIframe'] ?? '';
+      }
+
       return MirrorIsarModel(
         sid: item.id,
         name: item.name,
@@ -171,7 +202,8 @@ class SpiderManage {
         desc: item.desc,
         nsfw: item.isNsfw,
         status: item.status ? MirrorStatus.available : MirrorStatus.unavailable,
-        jiexiUrl: item.extra['jiexiUrl'],
+        type: item.type,
+        extra: extra,
       );
     }).toList();
     IsarRepository().safeWrite(() {
@@ -179,6 +211,4 @@ class SpiderManage {
       IsarRepository().mirrorAs.putAllSync(output);
     });
   }
-
-
 }

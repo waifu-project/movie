@@ -13,26 +13,52 @@ class SourceUtils {
     }).toList();
   }
 
-  static MacCMSSpider? parse(Map<String, dynamic> rawData) {
+  static ISpiderAdapter? parse(Map<String, dynamic> rawData) {
     List<dynamic> tryData = tryParseData(rawData);
     bool status = tryData[0];
     if (status) {
       var data = tryData[1] as Map<String, dynamic>;
+      var sourceType = _getSourceType(data);
+      Map<String, dynamic> extraMap = {
+        'jiexiUrl': data['jiexiUrl'] ?? '',
+      };
+
+      // 如果有 JS 配置，添加到 extra 中
+      if (data['js'] != null) {
+        extraMap['js'] = data['js'];
+      }
+
       var meta = SourceMeta(
         id: data['id'] ?? Xid().toString(),
         name: data['name'] ?? "",
-        type: SourceType.maccms,
+        type: sourceType,
         api: data['api'] ?? "",
         logo: data['logo'] ?? "",
         desc: data['desc'] ?? "",
         status: data['status'] ?? true,
         isNsfw: data['nsfw'] ?? false,
-        extra: {'jiexiUrl': data['jiexiUrl'] ?? ''},
+        extra: extraMap,
       );
-      return MacCMSSpider(meta);
+
+      switch (sourceType) {
+        case SourceType.universal:
+          return UniversalSpider(meta);
+        case SourceType.maccms:
+          return MacCMSSpider(meta);
+      }
     } else {
       return null;
     }
+  }
+
+  static SourceType _getSourceType(Map<String, dynamic> data) {
+    if (data.containsKey('type')) {
+      var typeStr = data['type'].toString().toLowerCase();
+      if (typeStr == 'universal' || typeStr == '1') {
+        return SourceType.universal;
+      }
+    }
+    return SourceType.maccms;
   }
 
   /// 返回一个数组
@@ -48,7 +74,11 @@ class SourceUtils {
     bool hasName = name != null;
     var api = rawData['api'];
     String id = rawData['id'] ?? Xid().toString();
-    var jiexiUrl = rawData['jiexiUrl'];
+
+    // 从 extra 中获取 jiexiUrl 和 js
+    var extra = rawData['extra'] as Map<String, dynamic>? ?? {};
+    var jiexiUrl = extra['jiexiUrl'];
+    var js = extra['js'];
 
     String apiUrl = '';
     if (api is String) {
@@ -75,6 +105,8 @@ class SourceUtils {
         'jiexiUrl': jiexiUrl,
         'api': apiUrl,
         'status': rawData['status'] ?? true,
+        'type': rawData['type'],
+        'js': js,
       };
       return [true, data];
     }
@@ -93,9 +125,9 @@ class SourceUtils {
   ///
   /// => [null]
   ///
-  /// => [List<SourceJsonData>]
+  /// => [List<ISpiderAdapter>]
   ///
-  /// => [KBaseMirrorMovie?]
+  /// => [ISpiderAdapter?]
   static dynamic tryParseDynamic(dynamic data) {
     if (data is String) {
       bool isJSON = verifyStringIsJSON(data);
@@ -153,8 +185,8 @@ class SourceUtils {
   }
 
   /// 加载网络源
-  static Future<List<MacCMSSpider>> runTaks(List<String> sources) async {
-    List<MacCMSSpider> result = [];
+  static Future<List<ISpiderAdapter>> runTaks(List<String> sources) async {
+    List<ISpiderAdapter> result = [];
     await Future.forEach(sources, (String element) async {
       debugPrint("加载网络源: $element");
       try {
@@ -162,7 +194,7 @@ class SourceUtils {
         var resp = await XHttp.dio.get(
           element,
           options: Options(
-            responseType: ResponseType.json, // 暂未设计出 `.xv` 文件, 通过 `json` 导入
+            responseType: ResponseType.plain,
             receiveTimeout: time,
             sendTimeout: time,
           ),
@@ -170,7 +202,7 @@ class SourceUtils {
         dynamic respData = resp.data;
         var data = tryParseDynamic(respData);
         if (data == null) return;
-        if (data is MacCMSSpider) {
+        if (data is ISpiderAdapter) {
           result.add(data);
         } else if (data is List) {
           var append = data
@@ -179,7 +211,7 @@ class SourceUtils {
               })
               .toList()
               .map((ele) {
-                return ele as MacCMSSpider;
+                return ele as ISpiderAdapter;
               })
               .toList();
           result.addAll(append);
@@ -194,17 +226,15 @@ class SourceUtils {
 
   /// 合并资源
   ///
-  /// [List<SourceJsonData>]
-  ///
   /// [diff] 时返回
   ///
-  /// => [len, List<KBaseMirrorMovie>]
+  /// => [len, List<Map<String, dynamic>>]
   ///
-  /// => [List<KBaseMirrorMovie>]
+  /// => [List<Map<String, dynamic>>]
   @Deprecated("REMOVE THIS")
   static dynamic mergeMirror(
     List<ISpiderAdapter> extend,
-    List<MacCMSSpider> newSourceData, {
+    List<ISpiderAdapter> newSourceData, {
     /// diff 是为了返回增加的源源量
     bool diff = false,
 
@@ -231,12 +261,7 @@ class SourceUtils {
     /// 如果比对之后发现没有改变, 则返回 [0, []]
     if (newLen <= 0 && diff) return [0, []];
 
-    var inputData = extend;
-    inputData = inputData.map((e) {
-      return e as MacCMSSpider;
-    }).toList();
-    // return [0, []];
-    var copyData = (inputData as List<MacCMSSpider>).map(
+    var copyData = extend.map(
       (e) {
         return {
           'name': e.meta.name,
@@ -247,6 +272,7 @@ class SourceUtils {
           'api': e.meta.api,
           'id': e.meta.id,
           'status': e.meta.status,
+          'type': e.meta.type.name,
         };
       },
     ).toList();

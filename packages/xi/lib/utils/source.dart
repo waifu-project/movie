@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:xi/xi.dart';
-import 'package:xi/models/mac_cms/source_data.dart';
 
 class SourceUtils {
   /// [rawString] 从输入框拿到值
@@ -14,38 +13,21 @@ class SourceUtils {
     }).toList();
   }
 
-  /// [url] 需要测试的链接
-  /// 支持类型
-  ///   github.com/d1y/1/2.json
-  ///   d1y/repo/1/2.json
-  static bool isGithubUrl(String url) {
-    return false;
-  }
-
-  /// 通过 [isGithubUrl] 判断
-  /// 如果是 `github` 链接的话就通过这个方法
-  /// 生成一个 `jsdelivr` cdn 链接用于下载
-  static String shortToGithubCDNURL() {
-    return "";
-  }
-
   static MacCMSSpider? parse(Map<String, dynamic> rawData) {
     List<dynamic> tryData = tryParseData(rawData);
     bool status = tryData[0];
     if (status) {
-      var data = tryData[1] as SourceJsonData;
-      String id = data.id ?? Xid().toString();
-      var api = '${data.api!.root}${data.api!.path}';
+      var data = tryData[1] as Map<String, dynamic>;
       var meta = SourceMeta(
-        id: id,
-        name: data.name ?? "",
+        id: data['id'] ?? Xid().toString(),
+        name: data['name'] ?? "",
         type: SourceType.maccms,
-        api: api,
-        logo: data.logo ?? "",
-        desc: data.desc ?? "",
-        status: data.status ?? true,
-        isNsfw: data.nsfw ?? false,
-        extra: {'jiexiUrl': data.jiexiUrl ?? ''},
+        api: data['api'] ?? "",
+        logo: data['logo'] ?? "",
+        desc: data['desc'] ?? "",
+        status: data['status'] ?? true,
+        isNsfw: data['nsfw'] ?? false,
+        extra: {'jiexiUrl': data['jiexiUrl'] ?? ''},
       );
       return MacCMSSpider(meta);
     } else {
@@ -53,19 +35,12 @@ class SourceUtils {
     }
   }
 
-  /// 校验数据处理边界情况
-  ///
-  /// ```markdown
-  /// 1. 必须存在 `name`
-  /// 2. 必须有 `api` => `root` + `path`
-  /// ```
-  ///
   /// 返回一个数组
   ///
   /// ```js
   /// [
   ///   status: bool,
-  ///   data: SourceJsonData
+  ///   data: Map<String, dynamic>
   /// ]
   /// ```
   static List<dynamic> tryParseData(Map<String, dynamic> rawData) {
@@ -75,15 +50,14 @@ class SourceUtils {
     String id = rawData['id'] ?? Xid().toString();
     var jiexiUrl = rawData['jiexiUrl'];
 
-    Uri? url;
+    String apiUrl = '';
     if (api is String) {
-      url = Uri.parse(api);
+      apiUrl = api;
     } else if (api is Map<String, dynamic>) {
-      url = Uri.parse(api['root'] + api['path']);
+      apiUrl = '${api['root'] ?? ''}${api['path'] ?? ''}';
     }
-    if (url == null) return [false, null];
+    if (apiUrl.isEmpty) return [false, null];
 
-    // NOTE(d1y): 没有名称的话就不解析了
     if (hasName) {
       bool isNsfw = false;
       if ((rawData['group'] ?? "") == "18禁") {
@@ -92,15 +66,16 @@ class SourceUtils {
       if (rawData['nsfw'] ?? false) {
         isNsfw = true;
       }
-      var data = SourceJsonData(
-        id: id,
-        name: name,
-        logo: rawData["logo"] ?? "",
-        desc: rawData["desc"] ?? "",
-        nsfw: isNsfw,
-        jiexiUrl: jiexiUrl,
-        api: Api(path: url.path, root: url.origin),
-      );
+      var data = {
+        'id': id,
+        'name': name,
+        'logo': rawData["logo"] ?? "",
+        'desc': rawData["desc"] ?? "",
+        'nsfw': isNsfw,
+        'jiexiUrl': jiexiUrl,
+        'api': apiUrl,
+        'status': rawData['status'] ?? true,
+      };
       return [true, data];
     }
     return [false, null];
@@ -263,22 +238,16 @@ class SourceUtils {
     // return [0, []];
     var copyData = (inputData as List<MacCMSSpider>).map(
       (e) {
-        var id = e.meta.id;
-        var status = e.meta.status;
-        var uri = Uri.parse(e.meta.api);
-        return SourceJsonData(
-          name: e.meta.name,
-          logo: e.meta.logo,
-          desc: e.meta.desc,
-          nsfw: e.meta.isNsfw,
-          jiexiUrl: e.meta.extra['jiexiUrl'] ?? '',
-          api: Api(
-            root: uri.origin,
-            path: uri.path,
-          ),
-          id: id,
-          status: status,
-        );
+        return {
+          'name': e.meta.name,
+          'logo': e.meta.logo,
+          'desc': e.meta.desc,
+          'nsfw': e.meta.isNsfw,
+          'jiexiUrl': e.meta.extra['jiexiUrl'] ?? '',
+          'api': e.meta.api,
+          'id': e.meta.id,
+          'status': e.meta.status,
+        };
       },
     ).toList();
     if (diff) {

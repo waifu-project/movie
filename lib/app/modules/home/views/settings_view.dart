@@ -25,7 +25,7 @@ import 'package:catmovie/shared/manage.dart';
 import 'package:catmovie/app/modules/home/views/cupertino_license.dart';
 import 'package:pull_down_button/pull_down_button.dart';
 import 'package:settings_ui/settings_ui.dart';
-import 'package:xi/models/mac_cms/source_data.dart';
+
 import 'package:xi/xi.dart';
 
 const kTelegramGroup = "https://t.me/catmovie1145";
@@ -285,17 +285,13 @@ class _SettingsViewState extends State<SettingsView>
           boop.error();
           return;
         }
-        List<SourceJsonData> realSources = SourceUtils.mergeMirror(
-          SpiderManage.extend,
-          data,
-          cover: true,
-          diff: false,
-        );
-        SpiderManage.mergeSpider(realSources);
-        var showMessage = "已同步成功(${realSources.length}个源)!";
+        SpiderManage.extend.clear();
+        SpiderManage.extend.addAll(data);
+        SpiderManage.saveToCache(SpiderManage.extend);
+        var showMessage = "已同步成功(${data.length}个源)!";
         updateSetting(SettingsAllKey.onBoardingShowed, true);
         EasyLoading.showSuccess(showMessage);
-        _mirrorLength = realSources.length;
+        _mirrorLength = data.length;
         if (mounted) setState(() {});
         boop.success();
         break;

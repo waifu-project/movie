@@ -663,7 +663,6 @@ class HomeController extends GetxController
         } else {
           nsfw = false;
         }
-        var $url = Uri.parse(realURL);
         var msg = "将添加视频源\n名称: $name\n源地址: $realURL\n类型: ${nsfw ? '18+' : '-'}";
         var flag = await confirmAlert(msg);
         if (!flag) break;

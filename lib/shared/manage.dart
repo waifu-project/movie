@@ -8,7 +8,7 @@ import 'package:catmovie/isar/repo.dart';
 import 'package:catmovie/isar/schema/mirror_schema.dart';
 import 'package:catmovie/shared/enum.dart';
 
-import 'package:xi/models/mac_cms/source_data.dart';
+
 
 class SpiderManage {
   SpiderManage._internal();
@@ -33,12 +33,12 @@ class SpiderManage {
         id: item.sid,
         name: item.name,
         type: SourceType.maccms,
-        api: '${item.api.root}${item.api.path}',
+        api: item.api,
         logo: item.logo,
         desc: item.desc,
         status: item.status == MirrorStatus.available,
         isNsfw: item.nsfw,
-        extra: {'jiexiUrl': ''},
+        extra: {'jiexiUrl': item.jiexiUrl ?? ''},
       );
       return MacCMSSpider(meta);
     }).toList();
@@ -86,27 +86,23 @@ class SpiderManage {
   ///
   /// [full] 是否全量导出(nsfw 是否导出)
   static String export({bool full = false}) {
-    // bool isNsfw = local.read(ConstDart.is_nsfw) ?? false;
-    List<SourceJsonData> to = extend.map(
+    List<Map<String, dynamic>> to = extend.map(
       (e) {
-        var uri = Uri.parse(e.meta.api);
-        return SourceJsonData(
-          name: e.meta.name,
-          logo: e.meta.logo,
-          desc: e.meta.desc,
-          nsfw: e.meta.isNsfw,
-          api: Api(
-            root: uri.origin,
-            path: uri.path,
-          ),
-          id: e.meta.id,
-          status: e.meta.status,
-        );
+        return {
+          "name": e.meta.name,
+          "logo": e.meta.logo,
+          "desc": e.meta.desc,
+          "nsfw": e.meta.isNsfw,
+          "api": e.meta.api,
+          "id": e.meta.id,
+          "status": e.meta.status,
+          "jiexiUrl": e.meta.extra['jiexiUrl'] ?? '',
+        };
       },
     ).toList();
     if (!full) {
       to = to.where((element) {
-        return !(element.nsfw ?? false);
+        return !(element['nsfw'] ?? false);
       }).toList();
     }
     String result = jsonEncode(to);
@@ -118,28 +114,26 @@ class SpiderManage {
   /// 返回被删除的 [List<String> ids]
   static List<String> removeUnavailable(Map<String, bool> kvHash) {
     List<String> result = [];
-    List<SourceJsonData> newData = extend
+    List<SourceMeta> newData = extend
         .map((e) {
           String id = e.meta.id;
           bool status = kvHash[id] ?? e.meta.status;
-          var uri = Uri.parse(e.meta.api);
-          return SourceJsonData(
+          return SourceMeta(
+            id: id,
             name: e.meta.name,
+            type: e.meta.type,
+            api: e.meta.api,
             logo: e.meta.logo,
             desc: e.meta.desc,
-            nsfw: e.meta.isNsfw,
-            api: Api(
-              root: uri.origin,
-              path: uri.path,
-            ),
-            id: id,
+            isNsfw: e.meta.isNsfw,
             status: status,
+            extra: e.meta.extra,
           );
         })
         .toList()
         .where((item) {
-          String id = item.id as String;
-          bool status = item.status ?? true;
+          String id = item.id;
+          bool status = item.status;
           if (!status) {
             result.add(id);
           }
@@ -147,7 +141,7 @@ class SpiderManage {
         })
         .toList();
     extend.removeWhere((e) => result.contains(e.meta.id));
-    mergeSpider(newData);
+    mergeSpiderFromMeta(newData);
     return result;
   }
 
@@ -155,7 +149,7 @@ class SpiderManage {
   static void cleanAll({bool saveToCahe = false}) {
     extend = [];
     if (saveToCahe) {
-      mergeSpider([]);
+      mergeSpiderFromMeta([]);
     }
   }
 
@@ -163,40 +157,21 @@ class SpiderManage {
   /// [该方法只可用来保存第三方源]
   /// 只适用于 [MacCMSSpider]
   static void saveToCache(List<ISpiderAdapter> saves) {
-    List<SourceJsonData> to = saves.map(
-      (e) {
-        var uri = Uri.parse(e.meta.api);
-        return SourceJsonData(
-          name: e.meta.name,
-          logo: e.meta.logo,
-          desc: e.meta.desc,
-          nsfw: e.meta.isNsfw,
-          api: Api(
-            root: uri.origin,
-            path: uri.path,
-          ),
-          id: e.meta.id,
-          status: e.meta.status,
-        );
-      },
-    ).toList();
-    mergeSpider(to);
+    List<SourceMeta> to = saves.map((e) => e.meta).toList();
+    mergeSpiderFromMeta(to);
   }
 
-  static void mergeSpider(List<SourceJsonData> data) {
+  static void mergeSpiderFromMeta(List<SourceMeta> data) {
     var output = data.map((item) {
-      var api = MirrorApiIsardModel();
-      api.root = item.api?.root ?? "";
-      api.path = item.api?.path ?? "";
-      var status = item.status ?? true;
       return MirrorIsarModel(
-        sid: item.id ?? Xid().toString(),
-        name: item.name ?? "",
-        logo: item.name ?? "",
-        api: api,
-        desc: item.desc ?? "",
-        nsfw: item.nsfw ?? false,
-        status: status ? MirrorStatus.available : MirrorStatus.unavailable,
+        sid: item.id,
+        name: item.name,
+        logo: item.logo,
+        api: item.api,
+        desc: item.desc,
+        nsfw: item.isNsfw,
+        status: item.status ? MirrorStatus.available : MirrorStatus.unavailable,
+        jiexiUrl: item.extra['jiexiUrl'],
       );
     }).toList();
     IsarRepository().safeWrite(() {
@@ -204,4 +179,6 @@ class SpiderManage {
       IsarRepository().mirrorAs.putAllSync(output);
     });
   }
+
+
 }

@@ -3,12 +3,6 @@ import 'package:catmovie/shared/enum.dart';
 
 part 'mirror_schema.g.dart';
 
-@embedded
-class MirrorApiIsardModel {
-  late String root;
-  late String path;
-}
-
 @collection
 class MirrorIsarModel {
   MirrorIsarModel({
@@ -33,7 +27,7 @@ class MirrorIsarModel {
 
   bool nsfw = false;
 
-  late MirrorApiIsardModel api;
+  late String api;
 
   @Enumerated(EnumType.ordinal)
   MirrorStatus status = MirrorStatus.unknow;

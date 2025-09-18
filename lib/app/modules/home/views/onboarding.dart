@@ -6,7 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
-import 'package:xi/models/mac_cms/source_data.dart';
+
 import 'package:xi/xi.dart';
 
 String kV1JSON =
@@ -43,13 +43,8 @@ class _OnBoardingState extends State<OnBoarding> {
     }
     Get.back();
     SpiderManage.extend.addAll(sources);
-    List<SourceJsonData> realData = SourceUtils.mergeMirror(
-      SpiderManage.extend,
-      [],
-      diff: false,
-    );
-    SpiderManage.mergeSpider(realData);
-    EasyLoading.showSuccess("获取成功, 已添加${realData.length}个源!");
+    SpiderManage.saveToCache(SpiderManage.extend);
+    EasyLoading.showSuccess("获取成功, 已添加${sources.length}个源!");
     widget.onNext?.call();
   }
 

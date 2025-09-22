@@ -52,7 +52,8 @@ class KEmptyMirror extends StatelessWidget {
             child: MouseRegion(
               cursor: SystemMouseCursors.click,
               child: Text(
-                "设置 -> 视频源帮助",
+                // "设置 -> 视频源帮助",
+                "设置 -> 视频源管理",
                 style: _style,
               ),
             ),

@@ -630,7 +630,8 @@ class _SettingsViewState extends State<SettingsView>
                     );
                   },
                 ),
-                SettingsTile.navigation(
+                // ignore: dead_code
+                if (false) SettingsTile.navigation(
                   leading: Icon(CupertinoIcons.arrow_down_right_square_fill),
                   title: Text('视频源帮助'),
                   onPressed: (cx) {

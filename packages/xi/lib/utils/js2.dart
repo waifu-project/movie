@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_js/extensions/fetch.dart';
 import 'package:flutter_js/extensions/xhr.dart';
@@ -70,13 +71,20 @@ class JS2 {
 
         options.headers = defaultHeaders;
 
-        var resp = await XHttp.dio.request(
-          url,
-          options: options,
-          data: argMap["data"],
-          queryParameters: argMap["params"],
-        );
-        return resp.data?.toString() ?? "";
+        var result = "";
+        try {
+          var resp = await XHttp.dio.request(
+            url,
+            options: options,
+            data: argMap["data"],
+            queryParameters: argMap["params"],
+          );
+          result = resp.data?.toString() ?? "";
+        } catch (e) {
+          // TODO(d1y): handle error
+          debugPrint(e.toString());
+        }
+        return result;
       }
       return "";
     });

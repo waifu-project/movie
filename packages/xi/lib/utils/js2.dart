@@ -64,17 +64,33 @@ class JS2 {
               'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36 Edg/91.0.864.59'
         };
 
-        if (argMap["headers"] is Map) {
+        argMap["headers"] ??= {};
+
+        argMap["noCache"] ??= false;
+
+        var bodyType = argMap["bodyType"] ?? "json";
+
+        if (bodyType == "form") {
+          defaultHeaders["Content-Type"] = "application/x-www-form-urlencoded";
+        } else {
+          defaultHeaders["Content-Type"] = "application/json";
+        }
+
+        if ((argMap["headers"] as Map).isNotEmpty) {
           var customHeaders = Map<String, String>.from(argMap["headers"]);
           defaultHeaders.addAll(customHeaders);
         }
 
         options.headers = defaultHeaders;
 
-        if ((argMap["bodyType"] ?? "") == "form") {
+        if (bodyType == "form") {
           if (argMap["data"] is Map) {
             argMap["data"] = FormData.fromMap(argMap["data"]);
           }
+        }
+
+        if (argMap["noCache"] == true) {
+          options = options.withNoCache();
         }
 
         var result = "";

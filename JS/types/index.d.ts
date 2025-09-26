@@ -56,6 +56,11 @@ declare global {
     headers?: Record<string, string>
     params?: Record<string, any>
     bodyType?: 'json' | 'form'
+    /**
+     * 小猫中会默认缓存请求, 当你不需要缓存时候, 可以设置为 true
+     * > 如果遇到 url 一致的但只是参数不同时, 这个时候就需要设置为 true
+     */
+    noCache?: boolean
     data?: any
   }
 

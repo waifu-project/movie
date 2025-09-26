@@ -79,7 +79,6 @@ dependencies:
       url: https://github.com/dridino/smooth_list_view
       ref: main
 
-  dio_cache_interceptor: ^4.0.3
   provider: ^6.1.5
   dio: ^5.8.0+1
   collection: ^1.19.1

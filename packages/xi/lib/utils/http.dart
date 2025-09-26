@@ -16,24 +16,26 @@ const kHttpCacheTime = Duration(hours: 2);
 const kConnectTimeout = Duration(seconds: 12);
 const kReceiveTimeout = Duration(seconds: 12);
 
+extension DioWithForceNoCache on Options {
+  Options withNoCache() {
+    extra ??= {};
+    extra!["no-cache"] = true;
+    return this;
+  }
+}
+
 /// 默认所有的 `dio-http` 请求都持久化话([kHttpCacheTime])
 ///
 /// 此扩展可以修改 `options` 控制缓存行为
-///
-/// 参考: https://pub.dev/packages/dio_cache_interceptor
-///
 /// ```dart
 /// var resp = await XHttp.dio.get(
 ///  fetchMirrorAPI,
-///  options: $toDioOptions(CachePolicy.noCache),
+///  options: $noCacheOption,
 /// );
 ///```
 extension AnyInjectHttpCacheOptions on Object {
-  Options $toDioOptions([CachePolicy? cachePolicy]) {
-    var options = kHttpCacheMiddlewareOptions
-        .copyWith(policy: CachePolicy.noCache)
-        .toOptions();
-    return options;
+  Options $noCacheOption() {
+    return Options().withNoCache();
   }
 }
 

@@ -22,6 +22,7 @@ class SourceUtils {
       Map<String, dynamic> extraMap = {
         'jiexiUrl': data['jiexiUrl'] ?? '',
         'gfw': data['gfw'] ?? false,
+        'searchLimit': _getSearchLimit(data, sourceType),
       };
 
       // 如果有 JS 配置，添加到 extra 中
@@ -52,6 +53,15 @@ class SourceUtils {
     }
   }
 
+  static int _getSearchLimit(Map<String, dynamic> data, SourceType sourceType) {
+    // 如果数据中明确指定了 searchLimit，使用指定值
+    if (data.containsKey('searchLimit') && data['searchLimit'] is int) {
+      return data['searchLimit'] as int;
+    }
+    // 根据源类型设置默认值
+    return sourceType == SourceType.universal ? 10 : 20;
+  }
+
   static SourceType _getSourceType(Map<String, dynamic> data) {
     if (data.containsKey('type')) {
       var typeStr = data['type'].toString().toLowerCase();
@@ -76,10 +86,11 @@ class SourceUtils {
     var api = rawData['api'];
     String id = rawData['id'] ?? Xid().toString();
 
-    // 从 extra 中获取 jiexiUrl 和 js
+    // 从 extra 中获取 jiexiUrl、gfw 和 searchLimit
     var extra = rawData['extra'] as Map<String, dynamic>? ?? {};
     var jiexiUrl = extra['jiexiUrl'];
     var gfw = extra['gfw'];
+    var searchLimit = extra['searchLimit'];
     var js = extra['js'];
 
     String apiUrl = '';
@@ -106,6 +117,7 @@ class SourceUtils {
         'nsfw': isNsfw,
         'jiexiUrl': jiexiUrl,
         'gfw': gfw,
+        'searchLimit': searchLimit,
         'api': apiUrl,
         'status': rawData['status'] ?? true,
         'type': rawData['type'],

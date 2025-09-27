@@ -137,6 +137,11 @@ class _SearchV2State extends State<SearchV2> with AfterLayoutMixin {
 
   ScrollController scrollController = ScrollController();
 
+  /// 根据源类型获取期望的分页大小
+  int getPageSize(SourceMeta sourceMeta) {
+    return sourceMeta.searchLimit;
+  }
+
   FocusNode searchFocusNode = FocusNode();
   bool _hasFocus = true;
 
@@ -197,7 +202,8 @@ class _SearchV2State extends State<SearchV2> with AfterLayoutMixin {
         var result = event.result as MapVideosRecord;
         if (result.item2.isNotEmpty) {
           map[result.item1] = result.item2;
-          if (result.item2.length == kDefaultPagingSize) {
+          int expectedSize = getPageSize(result.item1);
+          if (result.item2.length == expectedSize) {
             pagingMap[result.item1] = Tuple2(1, true);
           } else {
             pagingMap[result.item1] = Tuple2(1, false);
@@ -806,7 +812,8 @@ class _SearchV2State extends State<SearchV2> with AfterLayoutMixin {
                       showMoreBtn = false;
                       if (mounted) setState(() {});
                       map[currSource]!.addAll(list);
-                      if (list.length == kDefaultPagingSize) {
+                      int expectedSize = getPageSize(currSource);
+                      if (list.length == expectedSize) {
                         pagingMap[currSource] = Tuple2(nextPage, true);
                       } else {
                         pagingMap[currSource] = Tuple2(nextPage, false);

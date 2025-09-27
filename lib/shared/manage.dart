@@ -32,6 +32,11 @@ class SpiderManage {
         'gfw': item.extra.gfw ?? false,
       };
 
+      // 添加 searchLimit
+      if (item.extra.searchLimit != null) {
+        extraMap['searchLimit'] = item.extra.searchLimit;
+      }
+
       // 如果有 JS 配置，添加到 extra 中
       if (item.extra.js != null) {
         extraMap['js'] = {
@@ -184,7 +189,8 @@ class SpiderManage {
     var output = data.map((item) {
       var extra = MirrorExtra()
       ..jiexiUrl = item.extra['jiexiUrl']
-      ..gfw = item.extra['gfw'];
+      ..gfw = item.extra['gfw']
+      ..searchLimit = item.extra['searchLimit'];
 
       // 如果有 JS 配置，保存到 MirrorExtra 中
       if (item.extra.containsKey('js') && item.extra['js'] is Map) {

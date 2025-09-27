@@ -113,6 +113,7 @@ declare global {
   interface IconfigExtra {
     jiexiUrl?: string
     gfw?: boolean
+    searchLimit?: number
     js?: IconfigExtraJS
     [prop: string]: any
   }

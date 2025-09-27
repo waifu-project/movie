@@ -196,6 +196,11 @@ class SourceMeta extends Equatable {
     this.extra = const {},
   });
 
+  /// 获取搜索分页大小
+  int get searchLimit {
+    return extra['searchLimit'] ?? (type == SourceType.universal ? 10 : 20);
+  }
+
   @override
   List<Object?> get props => [id, name, type, api, isNsfw];
 }

@@ -33,6 +33,9 @@ class SettingsIsarModel {
   /// 震动反馈
   bool hapticFeedback = true;
 
+  /// 是否显示绅士模式设置（通过点击 Copyright 10次解锁）
+  bool showNsfwSetting = false;
+
   @Enumerated(EnumType.ordinal)
   IWebPlayerEmbeddedType webviewPlayType = IWebPlayerEmbeddedType.p2pHLS;
 }

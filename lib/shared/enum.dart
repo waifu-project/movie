@@ -70,6 +70,8 @@ enum SettingsAllKey {
   onBoardingShowed,
   /// 震动反馈
   hapticFeedback,
+  /// 是否显示绅士模式设置
+  showNsfwSetting,
 }
 
 /// 镜像源状态

@@ -37,8 +37,10 @@ class _SourceHelpTableState extends State<SourceHelpTable> {
       _isLoadingFromAJAX = true;
     });
     try {
-      var resp =
-          await XHttp.dio.get(kCatMovieSourceAPI, options: $toDioOptions());
+      var resp = await XHttp.dio.get(
+        kCatMovieSourceAPI,
+        options: $noCacheOption(),
+      );
       late List<dynamic> list;
       if (resp.data is List) {
         list = resp.data;
@@ -250,21 +252,21 @@ class _SourceHelpTableState extends State<SourceHelpTable> {
     } else {
       // 合并新源到现有源列表
       int oldLength = SpiderManage.extend.length;
-      
+
       // 去重：移除已存在的源
       for (var newSource in stack) {
-        bool exists = SpiderManage.extend.any((existing) => 
-          existing.meta.api == newSource.meta.api);
+        bool exists = SpiderManage.extend
+            .any((existing) => existing.meta.api == newSource.meta.api);
         if (!exists) {
           SpiderManage.extend.add(newSource);
         }
       }
-      
+
       int diff = SpiderManage.extend.length - oldLength;
       if (diff > 0) {
         SpiderManage.saveToCache(SpiderManage.extend);
       }
-      
+
       var diffMsg = "本次共合并$diff个源!";
       if (diff <= 0) {
         diffMsg = "本次未合并!没有新的源!";

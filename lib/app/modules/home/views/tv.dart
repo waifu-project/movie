@@ -10,7 +10,6 @@ import 'package:catmovie/app/modules/home/controllers/home_controller.dart';
 import 'package:catmovie/app/widget/k_body.dart';
 import 'package:catmovie/app/widget/window_appbar.dart';
 import 'package:catmovie/app/widget/zoom.dart';
-import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -361,7 +360,7 @@ class LiveSourceGroups {
       var resp = await XHttp.dio.get<String>(
         source.url,
         // NOTE(d1y): 我想我们在这里不需要缓存!
-        options: $toDioOptions(CachePolicy.noCache),
+        options: $noCacheOption(),
       );
       String body = resp.data ?? "";
       if (body.isEmpty) return false;

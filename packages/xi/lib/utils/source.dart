@@ -200,7 +200,7 @@ class SourceUtils {
             responseType: ResponseType.plain,
             receiveTimeout: time,
             sendTimeout: time,
-          ),
+          ).withNoCache(),
         );
         dynamic respData = resp.data;
         var data = tryParseDynamic(respData);

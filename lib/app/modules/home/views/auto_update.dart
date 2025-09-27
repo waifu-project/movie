@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:after_layout/after_layout.dart';
 import 'package:catmovie/app/extension.dart';
 import 'package:catmovie/app/widget/zoom.dart';
-import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -27,7 +26,7 @@ class _AutoUpdateState extends State<AutoUpdate> with AfterLayoutMixin {
   FutureOr<void> afterFirstLayout(BuildContext context) async {
     var resp = await XHttp.dio.get<List<dynamic>>(
       kUpdateUpstream,
-      options: $toDioOptions(CachePolicy.noCache),
+      options: $noCacheOption(),
     );
     var tags = (resp.data ?? []).map((item) {
       return GithubTag.fromJson(item as Map<String, dynamic>);

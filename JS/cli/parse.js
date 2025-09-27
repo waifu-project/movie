@@ -86,8 +86,37 @@ function parseWithStr(rawCode) {
                         value = prop.value.value;
                       } else if (prop.value.type === 'BooleanLiteral') {
                         value = prop.value.value;
+                      } else if (prop.value.type === 'Identifier') {
+                        // Handle identifier type, but this usually means syntax error
+                        // We log a warning here but don't process it
+                        console.warn(`Warning: Found identifier '${prop.value.name}' as value for key '${key}'. This might be a syntax error. Use quotes for strings.`);
+                        value = undefined; // Don't process identifier type
+                      } else if (prop.value.type === 'ObjectExpression' && key === 'extra') {
+                        // Handle extra object
+                        value = {};
+                        prop.value.properties.forEach(extraProp => {
+                          if (extraProp.type === 'ObjectProperty' && extraProp.key.type === 'Identifier') {
+                            const extraKey = extraProp.key.name;
+                            let extraValue;
+                            if (extraProp.value.type === 'StringLiteral') {
+                              extraValue = extraProp.value.value;
+                            } else if (extraProp.value.type === 'NumericLiteral') {
+                              extraValue = extraProp.value.value;
+                            } else if (extraProp.value.type === 'BooleanLiteral') {
+                              extraValue = extraProp.value.value;
+                            } else if (extraProp.value.type === 'Identifier') {
+                              console.warn(`Warning: Found identifier '${extraProp.value.name}' as value for extra key '${extraKey}'. Use quotes for strings.`);
+                              extraValue = undefined;
+                            }
+                            if (extraValue !== undefined) {
+                              value[extraKey] = extraValue;
+                            }
+                          }
+                        });
                       }
-                      config[key] = value;
+                      if (value !== undefined) {
+                        config[key] = value;
+                      }
                     }
                   });
                 }

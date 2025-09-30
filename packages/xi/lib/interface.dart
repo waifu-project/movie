@@ -149,8 +149,9 @@ class VideoDetail {
     var bigCoverImage = neoDetail.bigCoverImage.isEmpty ? this.bigCoverImage : neoDetail.bigCoverImage;
     var smallCoverImage = neoDetail.smallCoverImage.isEmpty ? this.smallCoverImage : neoDetail.smallCoverImage;
     var videos = neoDetail.videos.isEmpty ? this.videos : neoDetail.videos;
+    var id = neoDetail.id.isEmpty ? this.id : neoDetail.id;
     return VideoDetail(
-      id: neoDetail.id,
+      id: id,
       title: title,
       desc: desc,
       updateTime: updateTime,

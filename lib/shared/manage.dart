@@ -37,6 +37,11 @@ class SpiderManage {
         extraMap['searchLimit'] = item.extra.searchLimit;
       }
 
+      // 添加 template
+      if (item.extra.template != null) {
+        extraMap['template'] = item.extra.template;
+      }
+
       // 如果有 JS 配置，添加到 extra 中
       if (item.extra.js != null) {
         extraMap['js'] = {
@@ -190,7 +195,8 @@ class SpiderManage {
       var extra = MirrorExtra()
       ..jiexiUrl = item.extra['jiexiUrl']
       ..gfw = item.extra['gfw']
-      ..searchLimit = item.extra['searchLimit'];
+      ..searchLimit = item.extra['searchLimit']
+      ..template = item.extra['template'];
 
       // 如果有 JS 配置，保存到 MirrorExtra 中
       if (item.extra.containsKey('js') && item.extra['js'] is Map) {

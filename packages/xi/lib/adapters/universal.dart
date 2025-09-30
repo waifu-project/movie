@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'package:dart_qjson/dart_qjson.dart';
 import 'package:xi/xi.dart';
+import 'package:xi/adapters/template.dart';
 
 const kEvalTimeout = Duration(seconds: 6);
 
@@ -119,6 +120,10 @@ class UniversalSpider extends ISpiderAdapter {
 
   Map<String, dynamic> get _jsMap => meta.extra['js'] ?? {};
 
+  String? get _templateId => meta.extra['template'];
+
+  bool get _hasTemplate => _templateId != null && _templateId!.isNotEmpty;
+
   String _generateJSCode(String realCode, {Map<String, dynamic>? params}) {
     var ps = jsonEncode(params ?? {});
     var result = """
@@ -136,6 +141,20 @@ class UniversalSpider extends ISpiderAdapter {
   }
 
   String _getLogicJSCode(JSCodeType type) {
+    // 如果有模板ID，优先使用模板中的JS代码
+    if (_hasTemplate) {
+      try {
+        var template = jsTemplate.get(_templateId!);
+        var code = template.get(type);
+        if (code.isNotEmpty) {
+          return code;
+        }
+      } catch (e) {
+        // 模板不存在或获取失败，回退到原始逻辑
+      }
+    }
+    
+    // 使用原始的JS配置
     var code = _jsMap[type.name];
     if (code is! String) {
       return jsonEncode(code);
@@ -224,5 +243,21 @@ class UniversalSpider extends ISpiderAdapter {
     // 所以可能还需要在解析一下
     String realResult = jsonDecode(result);
     return [realResult];
+  }
+}
+
+class Template {
+  Map<JSCodeType, String> jsCodeMap = {};
+  Template(this.jsCodeMap);
+  String get(JSCodeType type) {
+    return jsCodeMap[type] ?? "";
+  }
+}
+
+class Templates {
+  Map<String, Template> templates = {};
+  Templates(this.templates);
+  Template get(String id) {
+    return templates[id]!;
   }
 }

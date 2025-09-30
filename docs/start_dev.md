@@ -22,6 +22,9 @@ flutter pub run build_runner build
 flutter run
 # chmod u+x JS/sync
 ./JS/sync
+pushd packages/xi/lib/adapters/templates
+bun install && bun run build
+popd
 ```
 
 # PR: 贡献源(代码)

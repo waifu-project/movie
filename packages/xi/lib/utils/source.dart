@@ -25,6 +25,11 @@ class SourceUtils {
         'searchLimit': _getSearchLimit(data, sourceType),
       };
 
+      // 如果有 template 配置，添加到 extra 中
+      if (data['template'] != null) {
+        extraMap['template'] = data['template'];
+      }
+
       // 如果有 JS 配置，添加到 extra 中
       if (data['js'] != null) {
         extraMap['js'] = data['js'];
@@ -86,11 +91,12 @@ class SourceUtils {
     var api = rawData['api'];
     String id = rawData['id'] ?? Xid().toString();
 
-    // 从 extra 中获取 jiexiUrl、gfw 和 searchLimit
+    // 从 extra 中获取 jiexiUrl、gfw、searchLimit 和 template
     var extra = rawData['extra'] as Map<String, dynamic>? ?? {};
     var jiexiUrl = extra['jiexiUrl'];
     var gfw = extra['gfw'];
     var searchLimit = extra['searchLimit'];
+    var template = extra['template'];
     var js = extra['js'];
 
     String apiUrl = '';
@@ -118,6 +124,7 @@ class SourceUtils {
         'jiexiUrl': jiexiUrl,
         'gfw': gfw,
         'searchLimit': searchLimit,
+        'template': template,
         'api': apiUrl,
         'status': rawData['status'] ?? true,
         'type': rawData['type'],

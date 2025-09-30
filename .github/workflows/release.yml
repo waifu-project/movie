@@ -17,6 +17,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
       - uses: subosito/flutter-action@v2
         with:
           flutter-version: ${{ env.FLUTTER_VERSION }}
@@ -37,6 +40,11 @@ jobs:
           # dart run script/add_builtin.dart > lib/builtin/maccms/maccms.dart
           $env:version = "${{ github.ref_name }}" -replace "^release-v", ""
           dart run script/replace_version.dart
+      - name: Generate templates
+        run: |
+          cd packages/xi/lib/adapters/templates
+          bun install
+          bun run build
       - name: Build windows
         run: |
           flutter config --enable-windows-desktop
@@ -65,6 +73,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
       - uses: subosito/flutter-action@v2
         with:
           flutter-version: ${{ env.FLUTTER_VERSION }}
@@ -83,6 +94,11 @@ jobs:
         run: |
           flutter pub get
           flutter pub run build_runner build
+      - name: Generate templates
+        run: |
+          cd packages/xi/lib/adapters/templates
+          bun install
+          bun run build
       - name: Enable Linux support
         run: flutter config --enable-linux-desktop
       - name: Install dependencies
@@ -114,6 +130,9 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
       - uses: actions/setup-java@v4
         with:
           distribution: "zulu"
@@ -147,6 +166,13 @@ jobs:
           # dart run script/add_builtin.dart > lib/builtin/maccms/maccms.dart
           export version=$(echo "${{ github.ref_name }}" | sed 's/^release-v//')
           dart run script/replace_version.dart
+      - name: Generate templates
+        run: |
+          cd packages/xi/lib/adapters/templates
+          bun install
+          bun run build
+      - name: Build APK and IPA
+        run: |
           flutter build apk --release
           flutter build apk --release --split-per-abi
           cp build/app/outputs/flutter-apk/app-arm64-v8a-release.apk catmovie.apk

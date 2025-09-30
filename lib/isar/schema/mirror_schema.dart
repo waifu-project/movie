@@ -18,6 +18,7 @@ class MirrorExtra {
   String? jiexiUrl;
   bool? gfw;
   int? searchLimit;
+  String? template;
   MirrorExtraJS? js;
 }
 

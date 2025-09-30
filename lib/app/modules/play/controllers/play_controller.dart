@@ -409,7 +409,7 @@ document.addEventListener('DOMContentLoaded', function() {
       EasyLoading.showError(error);
       return "";
     }
-    if (result.isEmpty) {
+    if (result.isEmpty || result[0].isEmpty) {
       EasyLoading.showError("解析失败, 无法播放");
       return "";
     }

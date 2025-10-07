@@ -1,0 +1,24 @@
+{
+  "dependencies": {
+    "@babel/generator": "^7.28.3",
+    "@babel/parser": "^7.28.4",
+    "@babel/traverse": "^7.28.4",
+    "@types/babel__generator": "^7.27.0",
+    "@types/babel__traverse": "^7.28.0",
+    "@types/node": "^24.5.2",
+    "typescript": "^5.9.2",
+    "commander": "^14.0.1"
+  },
+  "name": "cli",
+  "bin": {
+    "kitty-parse": "parse.js"
+  },
+  "version": "1.0.0",
+  "description": "",
+  "main": "parse.js",
+  "devDependencies": {},
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module"
+}

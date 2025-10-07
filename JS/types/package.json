@@ -1,0 +1,7 @@
+{
+  "devDependencies": {
+    "@types/node": "^24.3.0",
+    "cheerio": "^1.1.2"
+  },
+  "types": "./cm.d.ts"
+}
